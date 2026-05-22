@@ -101,7 +101,3 @@ Coefficient self-checks run on load (see the browser console in dev mode).
 - Fixed step size h (no adaptive stepping)
 - Expression evaluation via `new Function` — suitable for **local learning**, not untrusted public deployment
 - UI math is plain Unicode text (no MathJax/KaTeX)
-
-## License
-
-See repository settings on GitHub. Add a `LICENSE` file here if you intend to open-source the project formally.
