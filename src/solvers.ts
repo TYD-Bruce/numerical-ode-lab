@@ -1,16 +1,27 @@
-/** Scalar ODE helpers for teaching-style solvers. */
+import {
+  adamsBashforthCoefficients,
+  adamsMoultonCoefficients,
+  bdfCoefficients,
+} from "./polynomial";
+import { catalogByFamily, displayNameFor } from "./methodCatalog";
+import { runCoefficientValidation, runSanityCheck } from "./coefficientValidation";
 
 export type OdeMode = "first" | "second";
 
-export type MethodId =
+export type MethodFamily =
   | "forward_euler"
   | "backward_euler"
-  | "taylor2"
+  | "taylor"
   | "rk4"
   | "adams_bashforth"
   | "adams_moulton"
-  | "leapfrog"
-  | "bdf2";
+  | "bdf"
+  | "leapfrog";
+
+export interface MethodConfig {
+  family: MethodFamily;
+  order?: number;
+}
 
 export interface FirstOrderParams {
   t0: number;
@@ -26,81 +37,218 @@ export interface SecondOrderParams {
   v0: number;
   tEnd: number;
   h: number;
-  /** u'' = a(t, u) */
   a: (t: number, u: number) => number;
 }
 
 export interface SeriesPoint {
   t: number;
   y: number;
-  /** For second-order problems, y is position u; this holds velocity when present */
   v?: number;
 }
 
+export interface SolverMetadata {
+  displayName: string;
+  family: MethodFamily;
+  order: number;
+  formulaType: string;
+  formulaDisplay: string;
+  coefficients?: { alpha?: number[]; beta?: number[] };
+  isImplicit: boolean;
+  startupMethod?: string;
+  notes: string[];
+}
+
+export interface SolverResult {
+  points: SeriesPoint[];
+  metadata: SolverMetadata;
+}
+
+const IMPLICIT_MAX_IT = 100;
+const IMPLICIT_TOL = 1e-10;
+const STARTUP_LABEL = "Runge-Kutta 4";
+
 function assertStepPositive(h: number): void {
-  if (!(h > 0)) throw new Error("Step size h must be positive.");
+  if (!(h > 0)) {
+    throw new Error("Step size h must be positive.");
+  }
 }
 
 function countSteps(t0: number, tEnd: number, h: number): number {
-  if (tEnd < t0) throw new Error("End time must be >= start time.");
+  if (tEnd < t0) {
+    throw new Error("End time must satisfy t_end ≥ t₀.");
+  }
   const n = Math.floor((tEnd - t0) / h + 1e-12);
-  if (n < 1) throw new Error("Time span too short for the chosen step size.");
+  if (n < 1) {
+    throw new Error("Time span is too short for the chosen step size h.");
+  }
   return n;
 }
 
-/** Fixed-point iteration for backward Euler / implicit stages (scalar). */
-function solveImplicit(
-  g: (yNext: number) => number,
-  yGuess: number,
-  maxIt = 50,
-  tol = 1e-10
-): number {
-  let y = yGuess;
-  for (let i = 0; i < maxIt; i++) {
-    const yn = g(y);
-    if (Math.abs(yn - y) < tol) return yn;
-    y = yn;
+function assertFinite(value: number, context: string): void {
+  if (!Number.isFinite(value)) {
+    throw new Error(`Non-finite numerical result during ${context}.`);
   }
-  return y;
 }
 
-export function forwardEuler(p: FirstOrderParams): SeriesPoint[] {
+function solveImplicit(
+  g: (uNext: number) => number,
+  guess: number,
+  label: string
+): number {
+  let u = guess;
+  for (let i = 0; i < IMPLICIT_MAX_IT; i++) {
+    const un = g(u);
+    if (!Number.isFinite(un)) {
+      throw new Error(
+        "The implicit iteration produced a non-finite value. Try a smaller step size h."
+      );
+    }
+    if (Math.abs(un - u) < IMPLICIT_TOL) return un;
+    u = un;
+  }
+  throw new Error(
+    `The implicit iteration did not converge (${label}). Try a smaller step size h.`
+  );
+}
+
+function rk4Step(
+  f: (t: number, y: number) => number,
+  t: number,
+  y: number,
+  h: number
+): { tNext: number; yNext: number } {
+  const k1 = f(t, y);
+  const k2 = f(t + h / 2, y + (h / 2) * k1);
+  const k3 = f(t + h / 2, y + (h / 2) * k2);
+  const k4 = f(t + h, y + h * k3);
+  const yNext = y + (h / 6) * (k1 + 2 * k2 + 2 * k3 + k4);
+  return { tNext: t + h, yNext };
+}
+
+function validateOrder(family: MethodFamily, order: number | undefined): number {
+  const cat = catalogByFamily(family);
+  if (!cat.hasOrderSelector) {
+    if (order !== undefined && order !== cat.orderOfAccuracy) {
+      /* fixed-order methods ignore extra order */
+    }
+    return typeof cat.orderOfAccuracy === "number" ? cat.orderOfAccuracy : 1;
+  }
+  if (order === undefined || !Number.isInteger(order)) {
+    throw new Error(`${cat.displayName} requires an integer order of accuracy p.`);
+  }
+  const min = cat.orderMin ?? 1;
+  const max = cat.orderMax ?? 8;
+  if (order < min || order > max) {
+    if (family === "bdf") {
+      throw new Error("BDF is currently restricted to 1 ≤ p ≤ 6.");
+    }
+    throw new Error(
+      `${cat.displayName} requires order p with ${min} ≤ p ≤ ${max}.`
+    );
+  }
+  return order;
+}
+
+function buildMetadata(
+  config: MethodConfig,
+  coeffs?: { alpha?: number[]; beta?: number[] }
+): SolverMetadata {
+  const cat = catalogByFamily(config.family);
+  const order = validateOrder(config.family, config.order ?? cat.orderDefault);
+  const notes: string[] = [];
+
+  if (cat.isImplicit) {
+    if (config.family === "backward_euler") {
+      notes.push(
+        "Backward Euler is implicit, so each step solves an equation for uₙ₊₁."
+      );
+    } else if (config.family === "adams_moulton") {
+      notes.push(
+        "Adams-Moulton is implicit. The app uses an Adams-Bashforth predictor and fixed-point correction."
+      );
+    } else if (config.family === "bdf") {
+      notes.push(
+        "BDF methods are usually restricted to orders 1 through 6 in standard practical use."
+      );
+      notes.push(
+        "Each BDF step solves for uₙ₊₁ with scalar fixed-point iteration."
+      );
+    }
+  }
+
+  if (cat.hasOrderSelector) {
+    notes.push(
+      "Multistep methods require previous solution values. This app generates startup values using Runge-Kutta 4."
+    );
+    notes.push(
+      "If the local truncation error is O(hᵖ⁺¹), then the global error is usually O(hᵖ), assuming stability."
+    );
+  }
+
+  if (config.family === "leapfrog") {
+    notes.push(
+      "Leap-Frog is shown separately because it is naturally used here for second-order equations."
+    );
+  }
+
+  return {
+    displayName: displayNameFor(config.family, order),
+    family: config.family,
+    order,
+    formulaType: cat.formulaType,
+    formulaDisplay: cat.formulaDisplay,
+    coefficients: coeffs,
+    isImplicit: cat.isImplicit,
+    startupMethod: cat.hasOrderSelector ? STARTUP_LABEL : undefined,
+    notes,
+  };
+}
+
+function pushPoint(out: SeriesPoint[], t: number, y: number): void {
+  assertFinite(y, "integration");
+  out.push({ t, y });
+}
+
+function forwardEulerCore(p: FirstOrderParams): SeriesPoint[] {
   assertStepPositive(p.h);
   const n = countSteps(p.t0, p.tEnd, p.h);
   const out: SeriesPoint[] = [];
   let t = p.t0;
   let y = p.y0;
-  out.push({ t, y });
+  pushPoint(out, t, y);
   for (let i = 0; i < n; i++) {
     const tNext = Math.min(p.t0 + (i + 1) * p.h, p.tEnd);
     const h = tNext - t;
     y = y + h * p.f(t, y);
     t = tNext;
-    out.push({ t, y });
+    pushPoint(out, t, y);
   }
   return out;
 }
 
-export function backwardEuler(p: FirstOrderParams): SeriesPoint[] {
+function backwardEulerCore(p: FirstOrderParams): SeriesPoint[] {
   assertStepPositive(p.h);
   const n = countSteps(p.t0, p.tEnd, p.h);
   const out: SeriesPoint[] = [];
   let t = p.t0;
   let y = p.y0;
-  out.push({ t, y });
+  pushPoint(out, t, y);
   for (let i = 0; i < n; i++) {
     const tNext = Math.min(p.t0 + (i + 1) * p.h, p.tEnd);
     const h = tNext - t;
     const yPred = y + h * p.f(t, y);
-    y = solveImplicit((yNext) => y + h * p.f(tNext, yNext), yPred);
+    y = solveImplicit(
+      (uNext) => y + h * p.f(tNext, uNext),
+      yPred,
+      "Backward Euler"
+    );
     t = tNext;
-    out.push({ t, y });
+    pushPoint(out, t, y);
   }
   return out;
 }
 
-/** Second-order Taylor using numeric partials of f(t,y). */
-export function taylorOrder2(p: FirstOrderParams, eps = 1e-6): SeriesPoint[] {
+function taylorOrder2Core(p: FirstOrderParams, eps = 1e-6): SeriesPoint[] {
   assertStepPositive(p.h);
   const n = countSteps(p.t0, p.tEnd, p.h);
   const ft = (t: number, y: number) =>
@@ -111,121 +259,217 @@ export function taylorOrder2(p: FirstOrderParams, eps = 1e-6): SeriesPoint[] {
   const out: SeriesPoint[] = [];
   let t = p.t0;
   let y = p.y0;
-  out.push({ t, y });
+  pushPoint(out, t, y);
   for (let i = 0; i < n; i++) {
-    const h = Math.min(p.t0 + (i + 1) * p.h, p.tEnd) - t;
+    const tNext = Math.min(p.t0 + (i + 1) * p.h, p.tEnd);
+    const h = tNext - t;
     const f0 = p.f(t, y);
     const fp = ft(t, y) + fy(t, y) * f0;
     y = y + h * f0 + (h * h) / 2 * fp;
-    t = t + h;
-    out.push({ t, y });
+    t = tNext;
+    pushPoint(out, t, y);
   }
   return out;
 }
 
-export function rk4(p: FirstOrderParams): SeriesPoint[] {
+function rk4Core(p: FirstOrderParams): SeriesPoint[] {
   assertStepPositive(p.h);
   const n = countSteps(p.t0, p.tEnd, p.h);
   const out: SeriesPoint[] = [];
   let t = p.t0;
   let y = p.y0;
-  out.push({ t, y });
+  pushPoint(out, t, y);
   for (let i = 0; i < n; i++) {
     const tNext = Math.min(p.t0 + (i + 1) * p.h, p.tEnd);
     const h = tNext - t;
-    const k1 = p.f(t, y);
-    const k2 = p.f(t + h / 2, y + (h / 2) * k1);
-    const k3 = p.f(t + h / 2, y + (h / 2) * k2);
-    const k4 = p.f(t + h, y + h * k3);
-    y = y + (h / 6) * (k1 + 2 * k2 + 2 * k3 + k4);
+    const step = rk4Step(p.f, t, y, h);
+    y = step.yNext;
     t = tNext;
-    out.push({ t, y });
+    pushPoint(out, t, y);
   }
   return out;
 }
 
-/** Adams–Bashforth 2-step after one RK4 step. */
-export function adamsBashforth2(p: FirstOrderParams): SeriesPoint[] {
-  assertStepPositive(p.h);
-  const n = countSteps(p.t0, p.tEnd, p.h);
-  if (n < 1) return [{ t: p.t0, y: p.y0 }];
-
+/** Bootstrap multistep history with RK4; history[0]=current, history[j]=u at n-j. */
+function bootstrapMultistep(
+  p: FirstOrderParams,
+  order: number
+): { points: SeriesPoint[]; uHistory: number[]; fHistory: number[]; t: number } {
   const out: SeriesPoint[] = [];
   let t = p.t0;
-  let y = p.y0;
-  out.push({ t, y });
+  let u = p.y0;
+  pushPoint(out, t, u);
+  const uHistory: number[] = [u];
+  const fHistory: number[] = [p.f(t, u)];
 
-  const h0 = Math.min(p.h, p.tEnd - t);
-  if (h0 <= 0) return out;
-
-  const k1 = p.f(t, y);
-  const k2 = p.f(t + h0 / 2, y + (h0 / 2) * k1);
-  const k3 = p.f(t + h0 / 2, y + (h0 / 2) * k2);
-  const k4 = p.f(t + h0, y + h0 * k3);
-  const y1 = y + (h0 / 6) * (k1 + 2 * k2 + 2 * k3 + k4);
-  const t1 = t + h0;
-  out.push({ t: t1, y: y1 });
-
-  let fPrev = p.f(t, y);
-  let fCurr = p.f(t1, y1);
-  t = t1;
-  y = y1;
-
-  for (let i = 1; i < n; i++) {
-    const tNext = Math.min(p.t0 + (i + 1) * p.h, p.tEnd);
-    const h = tNext - t;
-    const yNext = y + (h / 2) * (3 * fCurr - fPrev);
-    fPrev = fCurr;
-    fCurr = p.f(tNext, yNext);
-    y = yNext;
+  for (let k = 1; k < order; k++) {
+    const tNext = Math.min(p.t0 + k * p.h, p.tEnd);
+    const hStep = tNext - t;
+    if (hStep <= 0) break;
+    const { yNext } = rk4Step(p.f, t, u, hStep);
+    u = yNext;
     t = tNext;
-    out.push({ t, y });
+    uHistory.unshift(u);
+    fHistory.unshift(p.f(t, u));
+    pushPoint(out, t, u);
   }
-  return out;
+
+  return { points: out, uHistory, fHistory, t };
 }
 
-/** Adams–Moulton 2-step PECE: AB2 predictor, AM2 corrector (one correction). */
-export function adamsMoulton2(p: FirstOrderParams): SeriesPoint[] {
-  assertStepPositive(p.h);
+function adamsBashforthCore(p: FirstOrderParams, order: number): SeriesPoint[] {
+  const beta = adamsBashforthCoefficients(order);
   const n = countSteps(p.t0, p.tEnd, p.h);
-  const out: SeriesPoint[] = [];
-  let t = p.t0;
-  let y = p.y0;
-  out.push({ t, y });
+  const boot = bootstrapMultistep(p, order);
+  const out = boot.points;
+  let { uHistory, fHistory, t } = boot;
+  const stepsDone = out.length - 1;
 
-  const h0 = Math.min(p.h, p.tEnd - t);
-  if (h0 <= 0) return out;
-
-  const k1 = p.f(t, y);
-  const k2 = p.f(t + h0 / 2, y + (h0 / 2) * k1);
-  const k3 = p.f(t + h0 / 2, y + (h0 / 2) * k2);
-  const k4 = p.f(t + h0, y + h0 * k3);
-  const y1 = y + (h0 / 6) * (k1 + 2 * k2 + 2 * k3 + k4);
-  const t1 = t + h0;
-  out.push({ t: t1, y: y1 });
-
-  let fPrev = p.f(t, y);
-  let fCurr = p.f(t1, y1);
-  t = t1;
-  y = y1;
-
-  for (let i = 1; i < n; i++) {
+  for (let i = stepsDone; i < n; i++) {
     const tNext = Math.min(p.t0 + (i + 1) * p.h, p.tEnd);
     const h = tNext - t;
-    const yPred = y + (h / 2) * (3 * fCurr - fPrev);
-    const fPred = p.f(tNext, yPred);
-    const yCorr = y + (h / 12) * (5 * fPred + 8 * fCurr - fPrev);
-    fPrev = fCurr;
-    fCurr = p.f(tNext, yCorr);
-    y = yCorr;
+    let uNext = uHistory[0]!;
+    for (let j = 0; j < order; j++) {
+      uNext += h * beta[j]! * fHistory[j]!;
+    }
+    uHistory.unshift(uNext);
+    fHistory.unshift(p.f(tNext, uNext));
+    uHistory.pop();
+    fHistory.pop();
     t = tNext;
-    out.push({ t, y });
+    pushPoint(out, t, uNext);
   }
   return out;
 }
 
-/** Leapfrog for u'' = a(t, u), with velocity kick initialization. */
-export function leapfrog(p: SecondOrderParams): SeriesPoint[] {
+function adamsMoultonCore(p: FirstOrderParams, order: number): SeriesPoint[] {
+  const beta = adamsMoultonCoefficients(order);
+  const n = countSteps(p.t0, p.tEnd, p.h);
+  const boot = bootstrapMultistep(p, order);
+  const out = boot.points;
+  let { uHistory, fHistory, t } = boot;
+  const stepsDone = out.length - 1;
+
+  for (let i = stepsDone; i < n; i++) {
+    const tNext = Math.min(p.t0 + (i + 1) * p.h, p.tEnd);
+    const h = tNext - t;
+    const uCurrent = uHistory[0]!;
+
+    let predictor = uCurrent;
+    const betaAb = adamsBashforthCoefficients(order);
+    for (let j = 0; j < order; j++) {
+      predictor += h * betaAb[j]! * fHistory[j]!;
+    }
+
+    const corrector = (uGuess: number) => {
+      let sum = 0;
+      sum += beta[0]! * p.f(tNext, uGuess);
+      for (let j = 1; j < order; j++) {
+        sum += beta[j]! * fHistory[j - 1]!;
+      }
+      return uCurrent + h * sum;
+    };
+
+    const uNext = solveImplicit(corrector, predictor, "Adams-Moulton");
+    uHistory.unshift(uNext);
+    fHistory.unshift(p.f(tNext, uNext));
+    uHistory.pop();
+    fHistory.pop();
+    t = tNext;
+    pushPoint(out, t, uNext);
+  }
+  return out;
+}
+
+function bdfCore(p: FirstOrderParams, order: number): SeriesPoint[] {
+  const alpha = bdfCoefficients(order);
+  const n = countSteps(p.t0, p.tEnd, p.h);
+  const boot = bootstrapMultistep(p, order + 1);
+  const out = boot.points;
+  let { uHistory, t } = boot;
+  const stepsDone = out.length - 1;
+
+  for (let i = stepsDone; i < n; i++) {
+    const tNext = Math.min(p.t0 + (i + 1) * p.h, p.tEnd);
+    const h = tNext - t;
+    const history = uHistory.slice(0, order + 1);
+    let explicit = 0;
+    for (let j = 1; j <= order; j++) {
+      explicit += alpha[j]! * history[j]!;
+    }
+    const a0 = alpha[0]!;
+    const guess = history[0]!;
+    const uNext = solveImplicit(
+      (u) => (h * p.f(tNext, u) - explicit) / a0,
+      guess,
+      "BDF"
+    );
+    uHistory.unshift(uNext);
+    if (uHistory.length > order + 1) uHistory.pop();
+    t = tNext;
+    pushPoint(out, t, uNext);
+  }
+  return out;
+}
+
+export function integrateFirstOrder(
+  config: MethodConfig,
+  p: FirstOrderParams
+): SolverResult {
+  const order = validateOrder(
+    config.family,
+    config.order ?? catalogByFamily(config.family).orderDefault
+  );
+
+  let points: SeriesPoint[];
+  let coeffs: { alpha?: number[]; beta?: number[] } | undefined;
+
+  switch (config.family) {
+    case "forward_euler":
+      points = forwardEulerCore(p);
+      break;
+    case "backward_euler":
+      points = backwardEulerCore(p);
+      break;
+    case "taylor":
+      points = taylorOrder2Core(p);
+      break;
+    case "rk4":
+      points = rk4Core(p);
+      break;
+    case "adams_bashforth": {
+      const beta = adamsBashforthCoefficients(order);
+      coeffs = { beta };
+      points = adamsBashforthCore(p, order);
+      break;
+    }
+    case "adams_moulton": {
+      const beta = adamsMoultonCoefficients(order);
+      coeffs = { beta };
+      points = adamsMoultonCore(p, order);
+      break;
+    }
+    case "bdf": {
+      const alpha = bdfCoefficients(order);
+      coeffs = { alpha };
+      points = bdfCore(p, order);
+      break;
+    }
+    case "leapfrog":
+      throw new Error("Leap-Frog uses integrateSecondOrder for u″ = a(t, u).");
+    default: {
+      const _ex: never = config.family;
+      return _ex;
+    }
+  }
+
+  return {
+    points,
+    metadata: buildMetadata({ family: config.family, order }, coeffs),
+  };
+}
+
+export function integrateSecondOrder(p: SecondOrderParams): SolverResult {
   assertStepPositive(p.h);
   const n = countSteps(p.t0, p.tEnd, p.h);
   const out: SeriesPoint[] = [];
@@ -240,74 +484,13 @@ export function leapfrog(p: SecondOrderParams): SeriesPoint[] {
     u = u + h * vm;
     t = tNext;
     const v = vm + (h / 2) * p.a(t, u);
+    assertFinite(u, "Leap-Frog");
     out.push({ t, y: u, v });
   }
-  return out;
-}
-
-/** BDF2: (3 y_{n+1} - 4 y_n + y_{n-1})/(2h) = f(t_{n+1}, y_{n+1}), after BDF1 bootstrap. */
-export function bdf2(p: FirstOrderParams): SeriesPoint[] {
-  assertStepPositive(p.h);
-  const n = countSteps(p.t0, p.tEnd, p.h);
-  const out: SeriesPoint[] = [];
-  let t = p.t0;
-  let y = p.y0;
-  out.push({ t, y });
-
-  const h0 = Math.min(p.h, p.tEnd - t);
-  if (h0 <= 0) return out;
-
-  const t1 = t + h0;
-  const y1 = solveImplicit((yn) => y + h0 * p.f(t1, yn), y + h0 * p.f(t, y));
-  out.push({ t: t1, y: y1 });
-
-  let yPrev = y;
-  y = y1;
-  t = t1;
-
-  for (let i = 1; i < n; i++) {
-    const tNext = Math.min(p.t0 + (i + 1) * p.h, p.tEnd);
-    const h = tNext - t;
-    const explicit = (4 * y - yPrev) / 3;
-    const yNext = solveImplicit(
-      (yn) => explicit + (2 * h) / 3 * p.f(tNext, yn),
-      y
-    );
-    yPrev = y;
-    y = yNext;
-    t = tNext;
-    out.push({ t, y });
-  }
-  return out;
-}
-
-/** First-order integrators only (shared form y′ = f(t,y)). */
-export type FirstOrderMethodId = Exclude<MethodId, "leapfrog">;
-
-export function integrateFirstOrder(
-  id: FirstOrderMethodId,
-  p: FirstOrderParams
-): SeriesPoint[] {
-  switch (id) {
-    case "forward_euler":
-      return forwardEuler(p);
-    case "backward_euler":
-      return backwardEuler(p);
-    case "taylor2":
-      return taylorOrder2(p);
-    case "rk4":
-      return rk4(p);
-    case "adams_bashforth":
-      return adamsBashforth2(p);
-    case "adams_moulton":
-      return adamsMoulton2(p);
-    case "bdf2":
-      return bdf2(p);
-    default: {
-      const _exhaustive: never = id;
-      return _exhaustive;
-    }
-  }
+  return {
+    points: out,
+    metadata: buildMetadata({ family: "leapfrog" }),
+  };
 }
 
 export function compileScalarExpr(
@@ -322,14 +505,38 @@ export function compileScalarExpr(
         t: number,
         y: number
       ) => unknown;
-      return (t, y) => Number(fn(t, y));
+      return (t, y) => {
+        const v = Number(fn(t, y));
+        if (!Number.isFinite(v)) {
+          throw new Error("Function returned a non-finite value.");
+        }
+        return v;
+      };
     }
     const fn = new Function("t", "u", `return (${trimmed});`) as (
       t: number,
       u: number
     ) => unknown;
-    return (t, u) => Number(fn(t, u));
-  } catch {
+    return (t, u) => {
+      const v = Number(fn(t, u));
+      if (!Number.isFinite(v)) {
+        throw new Error("Function returned a non-finite value.");
+      }
+      return v;
+    };
+  } catch (e) {
+    if (e instanceof Error && e.message.includes("non-finite")) throw e;
     throw new Error("Could not parse the function. Check JavaScript syntax.");
   }
 }
+
+/** Legacy alias: returns points only. */
+export function integrateFirstOrderPoints(
+  config: MethodConfig,
+  p: FirstOrderParams
+): SeriesPoint[] {
+  return integrateFirstOrder(config, p).points;
+}
+
+runCoefficientValidation();
+runSanityCheck();

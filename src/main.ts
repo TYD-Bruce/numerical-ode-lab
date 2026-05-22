@@ -10,12 +10,20 @@ import {
   Filler,
   CategoryScale,
 } from "chart.js";
-import type { FirstOrderMethodId, MethodId, SeriesPoint } from "./solvers";
+import type { MethodFamily, MethodConfig, SeriesPoint, SolverResult } from "./solvers";
 import {
   integrateFirstOrder,
-  leapfrog,
+  integrateSecondOrder,
   compileScalarExpr,
 } from "./solvers";
+import {
+  METHOD_CATALOG,
+  FIRST_ORDER_CATALOG,
+  catalogByFamily,
+  displayNameFor,
+  type MethodCatalogEntry,
+} from "./methodCatalog";
+import { escapeHtml, formatCoefficients } from "./mathDisplay";
 import "./style.css";
 
 Chart.register(
@@ -30,70 +38,17 @@ Chart.register(
   Filler
 );
 
-const METHODS: {
-  id: MethodId;
-  name: string;
-  blurb: string;
-  mode: "first" | "second";
-}[] = [
-  {
-    id: "forward_euler",
-    name: "Forward Euler",
-    blurb: "Explicit first-order; simple and fast, can be unstable for stiff problems.",
-    mode: "first",
-  },
-  {
-    id: "backward_euler",
-    name: "Backward Euler",
-    blurb: "Implicit first-order; very stable, needs a fixed-point solve each step.",
-    mode: "first",
-  },
-  {
-    id: "taylor2",
-    name: "Taylor (order 2)",
-    blurb: "Uses f and numeric estimates of ∂f/∂t and ∂f/∂y for a second-order step.",
-    mode: "first",
-  },
-  {
-    id: "rk4",
-    name: "Runge–Kutta 4",
-    blurb: "Classic fourth-order explicit method; accurate for smooth problems.",
-    mode: "first",
-  },
-  {
-    id: "adams_bashforth",
-    name: "Adams–Bashforth (2-step)",
-    blurb: "Multistep explicit method; bootstrapped with one RK4 step.",
-    mode: "first",
-  },
-  {
-    id: "adams_moulton",
-    name: "Adams–Moulton (2-step, PECE)",
-    blurb: "Predictor–corrector multistep pair; more stable than AB alone.",
-    mode: "first",
-  },
-  {
-    id: "leapfrog",
-    name: "Leapfrog",
-    blurb: "For u'' = a(t, u). Good energy behavior on oscillatory systems.",
-    mode: "second",
-  },
-  {
-    id: "bdf2",
-    name: "BDF (order 2)",
-    blurb: "Implicit multistep; BDF1 bootstrap then BDF2 with fixed-point solves.",
-    mode: "first",
-  },
-];
-
-const FIRST_ORDER_LIST = METHODS.filter((m) => m.mode === "first");
+export interface SelectedMethod {
+  family: MethodFamily;
+  order?: number;
+}
 
 type Step = "choose" | "configure" | "results";
 
 type Session =
   | { mode: "single" }
-  | { mode: "compare_pick"; first: MethodId | null }
-  | { mode: "compare"; a: MethodId; b: MethodId };
+  | { mode: "compare_pick"; first: SelectedMethod | null }
+  | { mode: "compare"; a: SelectedMethod; b: SelectedMethod };
 
 interface PersistedForm {
   t0: string;
@@ -103,31 +58,47 @@ interface PersistedForm {
   y0: string;
   u0: string;
   v0: string;
+  order: string;
   problemKind: "first" | "second";
 }
 
+const DEFAULT_LEDE =
+  "Explore numerical methods for initial value problems, compare orders of accuracy, and visualize approximate solutions.";
+
 let step: Step = "choose";
 let session: Session = { mode: "single" };
-let selected: MethodId | null = null;
+let selected: SelectedMethod | null = null;
 let chart: Chart | null = null;
-let lastSeries: SeriesPoint[] | null = null;
+let lastResult: SolverResult | null = null;
 let lastCompare: {
-  a: MethodId;
-  b: MethodId;
-  seriesA: SeriesPoint[];
-  seriesB: SeriesPoint[];
+  a: SelectedMethod;
+  b: SelectedMethod;
+  resultA: SolverResult;
+  resultB: SolverResult;
 } | null = null;
 let persisted: PersistedForm | null = null;
 let comparePickError = "";
 
 const app = document.querySelector<HTMLDivElement>("#app")!;
 
-function methodById(id: MethodId) {
-  return METHODS.find((m) => m.id === id) ?? null;
+function catalogEntry(sel: SelectedMethod): MethodCatalogEntry {
+  return catalogByFamily(sel.family);
 }
 
-function selectedMeta() {
-  return selected ? methodById(selected) : null;
+function methodLabel(sel: SelectedMethod): string {
+  return displayNameFor(sel.family, sel.order);
+}
+
+function selectedMeta(): MethodCatalogEntry | null {
+  return selected ? catalogEntry(selected) : null;
+}
+
+function configFromSelection(sel: SelectedMethod): MethodConfig {
+  const cat = catalogEntry(sel);
+  const order = cat.hasOrderSelector
+    ? Number(sel.order ?? cat.orderDefault ?? 2)
+    : undefined;
+  return { family: sel.family, order };
 }
 
 function persistFromFirstOrderFd(fd: FormData): void {
@@ -139,6 +110,7 @@ function persistFromFirstOrderFd(fd: FormData): void {
     y0: String(fd.get("y0") ?? "1"),
     u0: persisted?.u0 ?? "1",
     v0: persisted?.v0 ?? "0",
+    order: String(fd.get("order") ?? persisted?.order ?? "2"),
     problemKind: "first",
   };
 }
@@ -152,15 +124,29 @@ function persistFromSecondOrderFd(fd: FormData): void {
     y0: persisted?.y0 ?? "1",
     u0: String(fd.get("u0") ?? "1"),
     v0: String(fd.get("v0") ?? "0"),
+    order: persisted?.order ?? "2",
     problemKind: "second",
   };
 }
 
 function readPersistedFromFormEl(form: HTMLFormElement): void {
   const fd = new FormData(form);
-  const hasY0 = fd.has("y0");
-  if (hasY0) persistFromFirstOrderFd(fd);
+  if (fd.has("y0")) persistFromFirstOrderFd(fd);
   else persistFromSecondOrderFd(fd);
+}
+
+function orderFieldHtml(cat: MethodCatalogEntry): string {
+  if (!cat.hasOrderSelector) return "";
+  const min = cat.orderMin ?? 1;
+  const max = cat.orderMax ?? 8;
+  const val = persisted?.order ?? String(cat.orderDefault ?? 2);
+  return `
+    <label class="field">
+      <span>Order of accuracy p</span>
+      <input name="order" type="number" min="${min}" max="${max}" step="1" value="${val}" required />
+    </label>
+    <p class="hint multistep-note">For multistep methods, startup values are generated by Runge-Kutta 4.</p>
+  `;
 }
 
 function render(): void {
@@ -171,17 +157,20 @@ function render(): void {
   shell.className = "shell";
 
   const comparePicking = session.mode === "compare_pick";
-  const lede = comparePicking
-    ? session.first === null
-      ? "Choose the <strong>first</strong> first-order method (Leapfrog is not in this list). Then you will pick a second method and enter one shared model."
-      : `First method: <strong>${methodById(session.first!)?.name}</strong>. Now choose a <strong>different</strong> second method.`
-    : "Pick a method, enter your model and time settings, then inspect the last value and a time plot. Expressions use JavaScript syntax with variables <code>t</code> and <code>y</code> for first-order problems, or <code>t</code> and <code>u</code> for leapfrog (<code>u'' = a(t,u)</code>).";
+  let lede = DEFAULT_LEDE;
+  if (comparePicking && session.mode === "compare_pick") {
+    lede =
+      session.first === null
+        ? "Choose the first first-order method, then a second method. You will enter one shared model y′ = f(t, y)."
+        : `First method: ${methodLabel(session.first)}. Choose a different second method.`;
+  }
 
   shell.innerHTML = `
     <header class="hero">
-      <p class="eyebrow">Starter project</p>
+      <p class="eyebrow">AI-Assisted Educational Solver</p>
       <h1>Numerical ODE Lab</h1>
       <p class="lede">${lede}</p>
+      <p class="ivp-note">First-order IVP: y′ = f(t, y), y(t₀) = y₀. Use JavaScript syntax with <code>t</code> and <code>y</code> (or <code>u</code> for Leap-Frog).</p>
       ${
         comparePickError
           ? `<p class="compare-error" role="alert">${comparePickError}</p>`
@@ -204,49 +193,35 @@ function render(): void {
     main.append(renderChoosePanel());
   } else if (step === "configure") {
     if (session.mode === "compare") {
-      const ma = methodById(session.a);
-      const mb = methodById(session.b);
-      if (ma && mb) main.append(renderCompareForm(ma, mb));
-      else {
-        session = { mode: "single" };
-        step = "choose";
-        main.append(renderChoosePanel());
-      }
-    } else if (meta) {
-      main.append(renderForm(meta));
+      main.append(
+        renderCompareForm(
+          catalogEntry(session.a),
+          catalogEntry(session.b),
+          session.a,
+          session.b
+        )
+      );
+    } else if (meta && selected) {
+      main.append(renderForm(meta, selected));
     } else {
       step = "choose";
       main.append(renderChoosePanel());
     }
   } else if (step === "results") {
     if (lastCompare) {
-      const ma = methodById(lastCompare.a);
-      const mb = methodById(lastCompare.b);
-      if (ma && mb) {
-        main.append(
-          renderCompareResultsShell(
-            ma,
-            mb,
-            lastCompare.seriesA,
-            lastCompare.seriesB
-          )
-        );
-      } else {
-        lastCompare = null;
-        step = "choose";
-        main.append(renderChoosePanel());
-      }
-    } else if (meta && lastSeries) {
-      main.append(renderResultsShell(meta, lastSeries));
+      main.append(
+        renderCompareResultsShell(
+          catalogEntry(lastCompare.a),
+          catalogEntry(lastCompare.b),
+          lastCompare.resultA,
+          lastCompare.resultB
+        )
+      );
+    } else if (meta && lastResult) {
+      main.append(renderResultsShell(meta, lastResult));
     } else {
       step = "configure";
-      if (session.mode === "compare") {
-        const ma = methodById(session.a);
-        const mb = methodById(session.b);
-        if (ma && mb) main.append(renderCompareForm(ma, mb));
-        else main.append(renderChoosePanel());
-      } else if (meta) main.append(renderForm(meta));
-      else main.append(renderChoosePanel());
+      main.append(renderChoosePanel());
     }
   } else {
     step = "choose";
@@ -264,16 +239,12 @@ function renderChoosePanel(): HTMLElement {
   if (session.mode === "compare_pick") {
     const bar = document.createElement("div");
     bar.className = "choose-actions";
-    bar.innerHTML = `
-      <button type="button" class="btn ghost" data-cancel-compare>Cancel compare</button>
-    `;
-    bar
-      .querySelector("[data-cancel-compare]")!
-      .addEventListener("click", () => {
-        session = { mode: "single" };
-        comparePickError = "";
-        render();
-      });
+    bar.innerHTML = `<button type="button" class="btn ghost" data-cancel-compare>Cancel compare</button>`;
+    bar.querySelector("[data-cancel-compare]")!.addEventListener("click", () => {
+      session = { mode: "single" };
+      comparePickError = "";
+      render();
+    });
     wrap.append(bar);
     wrap.append(renderCompareMethodGrid());
     return wrap;
@@ -283,7 +254,7 @@ function renderChoosePanel(): HTMLElement {
   bar.className = "choose-actions";
   bar.innerHTML = `
     <button type="button" class="btn secondary" data-compare>Compare two methods</button>
-    <p class="compare-hint">Uses one shared <code>y′ = f(t,y)</code> setup (first-order solvers only).</p>
+    <p class="compare-hint">One shared y′ = f(t, y) setup (first-order methods only).</p>
   `;
   bar.querySelector("[data-compare]")!.addEventListener("click", () => {
     session = { mode: "compare_pick", first: null };
@@ -295,65 +266,79 @@ function renderChoosePanel(): HTMLElement {
   return wrap;
 }
 
+function renderMethodCard(
+  cat: MethodCatalogEntry,
+  onClick: () => void
+): HTMLButtonElement {
+  const card = document.createElement("button");
+  card.type = "button";
+  card.className = "card";
+  const tag =
+    cat.mode === "first"
+      ? "First-order y′ = f(t, y)"
+      : "Second-order u″ = a(t, u)";
+  card.innerHTML = `
+    <h2>${cat.displayName}</h2>
+    <p>${cat.blurb}</p>
+    <span class="tag">${tag}</span>
+  `;
+  card.addEventListener("click", onClick);
+  return card;
+}
+
 function renderSingleMethodGrid(): HTMLElement {
   const grid = document.createElement("div");
   grid.className = "grid-methods";
-
-  METHODS.forEach((m) => {
-    const card = document.createElement("button");
-    card.type = "button";
-    card.className = "card";
-    card.innerHTML = `
-      <h2>${m.name}</h2>
-      <p>${m.blurb}</p>
-      <span class="tag">${m.mode === "first" ? "First-order y′ = f(t,y)" : "Second-order u″ = a(t,u)"}</span>
-    `;
-    card.addEventListener("click", () => {
-      session = { mode: "single" };
-      selected = m.id;
-      step = "configure";
-      render();
-    });
-    grid.append(card);
+  METHOD_CATALOG.forEach((cat) => {
+    grid.append(
+      renderMethodCard(cat, () => {
+        session = { mode: "single" };
+        selected = {
+          family: cat.family,
+          order: cat.orderDefault,
+        };
+        step = "configure";
+        render();
+      })
+    );
   });
-
   return grid;
 }
 
 function renderCompareMethodGrid(): HTMLElement {
   const grid = document.createElement("div");
   grid.className = "grid-methods";
-
-  FIRST_ORDER_LIST.forEach((m) => {
-    const card = document.createElement("button");
-    card.type = "button";
-    card.className = "card";
-    card.innerHTML = `
-      <h2>${m.name}</h2>
-      <p>${m.blurb}</p>
-      <span class="tag">First-order y′ = f(t,y)</span>
-    `;
-    card.addEventListener("click", () => {
-      if (session.mode !== "compare_pick") return;
-      if (session.first === null) {
+  FIRST_ORDER_CATALOG.forEach((cat) => {
+    grid.append(
+      renderMethodCard(cat, () => {
+        if (session.mode !== "compare_pick") return;
+        const pick: SelectedMethod = {
+          family: cat.family,
+          order: cat.orderDefault,
+        };
+        if (session.first === null) {
+          comparePickError = "";
+          session = { mode: "compare_pick", first: pick };
+          render();
+          return;
+        }
+        const sameConfig =
+          session.first.family === pick.family &&
+          (session.first.order ?? cat.orderDefault) ===
+            (pick.order ?? cat.orderDefault);
+        if (sameConfig) {
+          comparePickError =
+            "Pick a different method (or change order p in the next step).";
+          render();
+          return;
+        }
         comparePickError = "";
-        session = { mode: "compare_pick", first: m.id };
+        session = { mode: "compare", a: session.first, b: pick };
+        step = "configure";
         render();
-        return;
-      }
-      if (session.first === m.id) {
-        comparePickError = "Pick a different method for the second choice.";
-        render();
-        return;
-      }
-      comparePickError = "";
-      session = { mode: "compare", a: session.first, b: m.id };
-      step = "configure";
-      render();
-    });
-    grid.append(card);
+      })
+    );
   });
-
   return grid;
 }
 
@@ -365,6 +350,7 @@ function firstOrderInputDefaults() {
     h: p?.h ?? "0.05",
     y0: p?.y0 ?? "1",
     expr: p?.problemKind === "first" ? p.expr : "-y",
+    order: p?.order ?? "2",
   };
 }
 
@@ -380,33 +366,34 @@ function secondOrderInputDefaults() {
   };
 }
 
-function renderForm(meta: (typeof METHODS)[number]): HTMLElement {
+function renderForm(meta: MethodCatalogEntry, sel: SelectedMethod): HTMLElement {
   const wrap = document.createElement("div");
   wrap.className = "form-wrap";
-
   const isSecond = meta.mode === "second";
   const fo = firstOrderInputDefaults();
   const so = secondOrderInputDefaults();
   const t0v = isSecond ? so.t0 : fo.t0;
   const tEndv = isSecond ? so.tEnd : fo.tEnd;
   const hv = isSecond ? so.h : fo.h;
+  const title = methodLabel(sel);
 
   wrap.innerHTML = `
     <div class="form-head">
       <button type="button" class="btn ghost" data-back-methods>← All methods (keep my numbers)</button>
-      <h2>${meta.name}</h2>
+      <h2>${title}</h2>
     </div>
     <form class="form" id="ode-form">
+      ${!isSecond ? orderFieldHtml(meta) : ""}
       <label class="field">
         <span>Start time t₀</span>
         <input name="t0" type="number" value="${t0v}" step="any" required />
       </label>
       <label class="field">
-        <span>End time</span>
+        <span>End time t_end</span>
         <input name="tEnd" type="number" value="${tEndv}" step="any" required />
       </label>
       <label class="field">
-        <span>Step size h</span>
+        <span>Step size h = Δt</span>
         <input name="h" type="number" value="${hv}" min="1e-9" step="any" required />
       </label>
       ${
@@ -417,11 +404,11 @@ function renderForm(meta: (typeof METHODS)[number]): HTMLElement {
         <input name="u0" type="number" value="${so.u0}" step="any" required />
       </label>
       <label class="field">
-        <span>Initial velocity u′₀ (v₀)</span>
+        <span>Initial velocity u′₀</span>
         <input name="v0" type="number" value="${so.v0}" step="any" required />
       </label>
       <label class="field wide">
-        <span>Acceleration u″ = a(t, u) — use <code>t</code> and <code>u</code></span>
+        <span>u″ = a(t, u) — use <code>t</code> and <code>u</code></span>
         <input name="expr" type="text" value="" required placeholder="-u" />
       </label>
       `
@@ -431,7 +418,7 @@ function renderForm(meta: (typeof METHODS)[number]): HTMLElement {
         <input name="y0" type="number" value="${fo.y0}" step="any" required />
       </label>
       <label class="field wide">
-        <span>Right-hand side y′ = f(t, y) — use <code>t</code> and <code>y</code></span>
+        <span>y′ = f(t, y) — use <code>t</code> and <code>y</code></span>
         <input name="expr" type="text" value="" required placeholder="-y" />
       </label>
       `
@@ -452,7 +439,7 @@ function renderForm(meta: (typeof METHODS)[number]): HTMLElement {
     if (form) readPersistedFromFormEl(form);
     step = "choose";
     selected = null;
-    lastSeries = null;
+    lastResult = null;
     lastCompare = null;
     session = { mode: "single" };
     render();
@@ -470,23 +457,30 @@ function renderForm(meta: (typeof METHODS)[number]): HTMLElement {
       const h = Number(fd.get("h"));
       const expr = String(fd.get("expr") ?? "");
 
-      let series: SeriesPoint[];
+      let result: SolverResult;
       if (isSecond) {
         persistFromSecondOrderFd(fd);
         const u0 = Number(fd.get("u0"));
         const v0 = Number(fd.get("v0"));
-        const acc = compileScalarExpr(expr, "second");
-        series = leapfrog({ t0, u0, v0, tEnd, h, a: acc });
+        const a = compileScalarExpr(expr, "second");
+        result = integrateSecondOrder({ t0, u0, v0, tEnd, h, a });
       } else {
         persistFromFirstOrderFd(fd);
         const y0 = Number(fd.get("y0"));
+        const order = Number(fd.get("order"));
+        sel.order = order;
         const f = compileScalarExpr(expr, "first");
-        const base = { t0, y0, tEnd, h, f };
-        series = integrateFirstOrder(meta.id as FirstOrderMethodId, base);
+        result = integrateFirstOrder(configFromSelection(sel), {
+          t0,
+          y0,
+          tEnd,
+          h,
+          f,
+        });
       }
 
       lastCompare = null;
-      lastSeries = series;
+      lastResult = result;
       step = "results";
       render();
     } catch (e) {
@@ -499,8 +493,10 @@ function renderForm(meta: (typeof METHODS)[number]): HTMLElement {
 }
 
 function renderCompareForm(
-  metaA: (typeof METHODS)[number],
-  metaB: (typeof METHODS)[number]
+  metaA: MethodCatalogEntry,
+  metaB: MethodCatalogEntry,
+  selA: SelectedMethod,
+  selB: SelectedMethod
 ): HTMLElement {
   const wrap = document.createElement("div");
   wrap.className = "form-wrap";
@@ -509,15 +505,24 @@ function renderCompareForm(
   wrap.innerHTML = `
     <div class="form-head">
       <button type="button" class="btn ghost" data-back-methods>← Change method pair</button>
-      <h2>Compare: ${metaA.name} vs ${metaB.name}</h2>
+      <h2>Compare: ${methodLabel(selA)} vs ${methodLabel(selB)}</h2>
     </div>
+    <p class="hint">Set order p for each multistep method before running (defaults from method cards).</p>
     <form class="form" id="ode-form">
+      <label class="field">
+        <span>Order p — ${metaA.displayName}</span>
+        <input name="orderA" type="number" min="${metaA.orderMin ?? 1}" max="${metaA.orderMax ?? 8}" value="${selA.order ?? metaA.orderDefault ?? 2}" ${metaA.hasOrderSelector ? "required" : "disabled"} />
+      </label>
+      <label class="field">
+        <span>Order p — ${metaB.displayName}</span>
+        <input name="orderB" type="number" min="${metaB.orderMin ?? 1}" max="${metaB.orderMax ?? 8}" value="${selB.order ?? metaB.orderDefault ?? 2}" ${metaB.hasOrderSelector ? "required" : "disabled"} />
+      </label>
       <label class="field">
         <span>Start time t₀</span>
         <input name="t0" type="number" value="${fo.t0}" step="any" required />
       </label>
       <label class="field">
-        <span>End time</span>
+        <span>End time t_end</span>
         <input name="tEnd" type="number" value="${fo.tEnd}" step="any" required />
       </label>
       <label class="field">
@@ -529,10 +534,10 @@ function renderCompareForm(
         <input name="y0" type="number" value="${fo.y0}" step="any" required />
       </label>
       <label class="field wide">
-        <span>Shared right-hand side y′ = f(t, y) — use <code>t</code> and <code>y</code></span>
+        <span>Shared y′ = f(t, y)</span>
         <input name="expr" type="text" value="" required placeholder="-y" />
       </label>
-      <p class="hint">Both integrators use the same f(t, y), times, and step size.</p>
+      <p class="hint multistep-note">For multistep methods, startup values are generated by Runge-Kutta 4.</p>
       <div class="actions">
         <button type="submit" class="btn primary">Run comparison</button>
       </div>
@@ -548,7 +553,7 @@ function renderCompareForm(
     if (form) persistFromFirstOrderFd(new FormData(form));
     step = "choose";
     lastCompare = null;
-    lastSeries = null;
+    lastResult = null;
     session = { mode: "compare_pick", first: null };
     render();
   });
@@ -568,13 +573,29 @@ function renderCompareForm(
       const expr = String(fd.get("expr") ?? "");
       const y0 = Number(fd.get("y0"));
       const f = compileScalarExpr(expr, "first");
+
+      const a: SelectedMethod = {
+        ...session.a,
+        order: metaA.hasOrderSelector
+          ? Number(fd.get("orderA"))
+          : typeof metaA.orderOfAccuracy === "number"
+            ? metaA.orderOfAccuracy
+            : undefined,
+      };
+      const b: SelectedMethod = {
+        ...session.b,
+        order: metaB.hasOrderSelector
+          ? Number(fd.get("orderB"))
+          : typeof metaB.orderOfAccuracy === "number"
+            ? metaB.orderOfAccuracy
+            : undefined,
+      };
+
       const base = { t0, y0, tEnd, h, f };
-      const idA = session.a as FirstOrderMethodId;
-      const idB = session.b as FirstOrderMethodId;
-      const seriesA = integrateFirstOrder(idA, base);
-      const seriesB = integrateFirstOrder(idB, base);
-      lastSeries = null;
-      lastCompare = { a: session.a, b: session.b, seriesA, seriesB };
+      const resultA = integrateFirstOrder(configFromSelection(a), base);
+      const resultB = integrateFirstOrder(configFromSelection(b), base);
+      lastResult = null;
+      lastCompare = { a, b, resultA, resultB };
       step = "results";
       render();
     } catch (e) {
@@ -589,15 +610,52 @@ function renderCompareForm(
 function goToMethodListKeepInputs(): void {
   step = "choose";
   selected = null;
-  lastSeries = null;
+  lastResult = null;
   lastCompare = null;
   session = { mode: "single" };
   render();
 }
 
+function metadataPanelHtml(meta: SolverResult["metadata"]): string {
+  const coeffText = formatCoefficients(
+    meta.coefficients?.alpha,
+    meta.coefficients?.beta
+  );
+  const notesHtml = meta.notes
+    .map((n) => `<li>${escapeHtml(n)}</li>`)
+    .join("");
+  return `
+    <section class="edu-panel">
+      <h3>Method details</h3>
+      <dl class="meta-dl">
+        <dt>Method</dt><dd>${escapeHtml(meta.displayName)}</dd>
+        <dt>Order of accuracy p</dt><dd>${meta.order}</dd>
+        <dt>Type</dt><dd>${meta.isImplicit ? "Implicit" : "Explicit"}</dd>
+        ${
+          meta.startupMethod
+            ? `<dt>Startup</dt><dd>${escapeHtml(meta.startupMethod)}</dd>`
+            : ""
+        }
+      </dl>
+      <h4>Formula</h4>
+      <div class="formula-block">${escapeHtml(meta.formulaDisplay)}</div>
+      ${
+        coeffText
+          ? `<h4>Coefficients</h4><div class="formula-inline">${escapeHtml(coeffText)}</div>`
+          : ""
+      }
+      ${
+        notesHtml
+          ? `<h4>Notes</h4><ul class="edu-notes">${notesHtml}</ul>`
+          : ""
+      }
+    </section>
+  `;
+}
+
 function renderResultsShell(
-  meta: (typeof METHODS)[number],
-  series: SeriesPoint[]
+  meta: MethodCatalogEntry,
+  result: SolverResult
 ): HTMLElement {
   const wrap = document.createElement("div");
   wrap.className = "results-wrap";
@@ -615,15 +673,15 @@ function renderResultsShell(
   wrap.querySelector("[data-methods]")!.addEventListener("click", () => {
     goToMethodListKeepInputs();
   });
-  queueMicrotask(() => mountResults(meta, series));
+  queueMicrotask(() => mountResults(meta, result));
   return wrap;
 }
 
 function renderCompareResultsShell(
-  metaA: (typeof METHODS)[number],
-  metaB: (typeof METHODS)[number],
-  seriesA: SeriesPoint[],
-  seriesB: SeriesPoint[]
+  metaA: MethodCatalogEntry,
+  metaB: MethodCatalogEntry,
+  resultA: SolverResult,
+  resultB: SolverResult
 ): HTMLElement {
   const wrap = document.createElement("div");
   wrap.className = "results-wrap";
@@ -642,7 +700,7 @@ function renderCompareResultsShell(
   wrap.querySelector("[data-pair]")!.addEventListener("click", () => {
     step = "choose";
     lastCompare = null;
-    lastSeries = null;
+    lastResult = null;
     session = { mode: "compare_pick", first: null };
     render();
   });
@@ -650,24 +708,25 @@ function renderCompareResultsShell(
     goToMethodListKeepInputs();
   });
   queueMicrotask(() =>
-    mountCompareResults(metaA, metaB, seriesA, seriesB)
+    mountCompareResults(metaA, metaB, resultA, resultB)
   );
   return wrap;
 }
 
 function mountResults(
-  meta: (typeof METHODS)[number],
-  series: SeriesPoint[]
+  meta: MethodCatalogEntry,
+  result: SolverResult
 ): void {
   const body = document.querySelector("#results-body");
   if (!body) return;
 
-  const last = series[series.length - 1];
+  const series = result.points;
+  const last = series[series.length - 1]!;
   const valueLabel = meta.mode === "second" ? "u" : "y";
 
   body.innerHTML = `
     <section class="summary">
-      <h2>${meta.name} · results</h2>
+      <h2>${result.metadata.displayName} · results</h2>
       <div class="stat-grid">
         <div class="stat">
           <span class="stat-label">Steps taken</span>
@@ -683,15 +742,12 @@ function mountResults(
         </div>
         ${
           meta.mode === "second" && last.v !== undefined
-            ? `
-        <div class="stat">
-          <span class="stat-label">Final u′</span>
-          <span class="stat-value">${last.v.toFixed(8)}</span>
-        </div>`
+            ? `<div class="stat"><span class="stat-label">Final u′</span><span class="stat-value">${last.v.toFixed(8)}</span></div>`
             : ""
         }
       </div>
     </section>
+    ${metadataPanelHtml(result.metadata)}
     <section class="chart-section">
       <canvas id="plot" height="120"></canvas>
     </section>
@@ -700,20 +756,14 @@ function mountResults(
       <div class="table-scroll">
         <table>
           <thead>
-            <tr>
-              <th>t</th>
-              <th>${valueLabel}</th>
-              ${meta.mode === "second" ? "<th>u′</th>" : ""}
-            </tr>
+            <tr><th>t</th><th>${valueLabel}</th>${meta.mode === "second" ? "<th>u′</th>" : ""}</tr>
           </thead>
           <tbody>
             ${series
               .slice(-12)
               .map(
                 (p) =>
-                  `<tr><td>${p.t.toFixed(5)}</td><td>${p.y.toFixed(
-                    8
-                  )}</td>${
+                  `<tr><td>${p.t.toFixed(5)}</td><td>${p.y.toFixed(8)}</td>${
                     meta.mode === "second"
                       ? `<td>${p.v?.toFixed(8) ?? ""}</td>`
                       : ""
@@ -726,12 +776,19 @@ function mountResults(
     </section>
   `;
 
+  drawSingleChart(meta, series);
+}
+
+function drawSingleChart(
+  meta: MethodCatalogEntry,
+  series: SeriesPoint[]
+): void {
   const canvas = document.querySelector<HTMLCanvasElement>("#plot");
   if (!canvas) return;
-
   chart?.destroy();
   const ts = series.map((p) => p.t.toFixed(3));
   const ys = series.map((p) => p.y);
+  const valueLabel = meta.mode === "second" ? "u" : "y";
 
   const datasets =
     meta.mode === "second" && series.some((p) => p.v !== undefined)
@@ -740,7 +797,6 @@ function mountResults(
             label: "u(t)",
             data: ys,
             borderColor: "#5b8cff",
-            backgroundColor: "rgba(91, 140, 255, 0.12)",
             tension: 0.15,
             fill: false,
             pointRadius: 0,
@@ -768,96 +824,87 @@ function mountResults(
 
   chart = new Chart(canvas, {
     type: "line",
-    data: {
-      labels: ts,
-      datasets,
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: "index", intersect: false },
-      plugins: {
-        legend: { labels: { color: "#d8e2ff" } },
-        title: {
-          display: true,
-          text: "Solution vs time",
-          color: "#f2f5ff",
-          font: { size: 16, weight: "600" },
-        },
-        tooltip: {
-          callbacks: {
-            title: (items) => {
-              const i = items[0]?.dataIndex ?? 0;
-              return `t = ${series[i]?.t.toFixed(6)}`;
-            },
-          },
-        },
-      },
-      scales: {
-        x: {
-          title: { display: true, text: "t", color: "#9fb2df" },
-          ticks: { color: "#9fb2df", maxTicksLimit: 8 },
-          grid: { color: "rgba(255,255,255,0.06)" },
-        },
-        y: {
-          title: {
-            display: true,
-            text: meta.mode === "second" ? "u , u′" : valueLabel,
-            color: "#9fb2df",
-          },
-          ticks: { color: "#9fb2df" },
-          grid: { color: "rgba(255,255,255,0.06)" },
-        },
-      },
-    },
+    data: { labels: ts, datasets },
+    options: chartOptions(series, meta.mode === "second" ? "u , u′" : valueLabel),
   });
 }
 
+function chartOptions(
+  series: SeriesPoint[],
+  yTitle: string
+): object {
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: "index", intersect: false },
+    plugins: {
+      legend: { labels: { color: "#d8e2ff" } },
+      title: {
+        display: true,
+        text: "Approximate solution vs time",
+        color: "#f2f5ff",
+        font: { size: 16, weight: "600" },
+      },
+      tooltip: {
+        callbacks: {
+          title: (items: { dataIndex?: number }[]) => {
+            const i = items[0]?.dataIndex ?? 0;
+            return `t = ${series[i]?.t.toFixed(6)}`;
+          },
+        },
+      },
+    },
+    scales: {
+      x: {
+        title: { display: true, text: "t", color: "#9fb2df" },
+        ticks: { color: "#9fb2df", maxTicksLimit: 8 },
+        grid: { color: "rgba(255, 255, 255, 0.06)" },
+      },
+      y: {
+        title: { display: true, text: yTitle, color: "#9fb2df" },
+        ticks: { color: "#9fb2df" },
+        grid: { color: "rgba(255, 255, 255, 0.06)" },
+      },
+    },
+  };
+}
+
 function mountCompareResults(
-  metaA: (typeof METHODS)[number],
-  metaB: (typeof METHODS)[number],
-  seriesA: SeriesPoint[],
-  seriesB: SeriesPoint[]
+  _metaA: MethodCatalogEntry,
+  _metaB: MethodCatalogEntry,
+  resultA: SolverResult,
+  resultB: SolverResult
 ): void {
   const body = document.querySelector("#results-body");
   if (!body) return;
 
-  const la = seriesA[seriesA.length - 1];
-  const lb = seriesB[seriesB.length - 1];
+  const seriesA = resultA.points;
+  const seriesB = resultB.points;
+  const la = seriesA[seriesA.length - 1]!;
+  const lb = seriesB[seriesB.length - 1]!;
   const diff = Math.abs(la.y - lb.y);
 
   if (seriesA.length !== seriesB.length) {
     body.innerHTML =
-      "<p class=\"compare-error\">Series length mismatch; plots may be unreliable.</p>";
+      '<p class="compare-error">Series length mismatch; plots may be unreliable.</p>';
     return;
   }
 
   body.innerHTML = `
     <section class="summary">
-      <h2>Comparison · ${metaA.name} vs ${metaB.name}</h2>
+      <h2>Comparison · ${resultA.metadata.displayName} vs ${resultB.metadata.displayName}</h2>
       <div class="stat-grid">
-        <div class="stat">
-          <span class="stat-label">Steps (each)</span>
-          <span class="stat-value">${seriesA.length}</span>
-        </div>
-        <div class="stat">
-          <span class="stat-label">Final time</span>
-          <span class="stat-value">${la.t.toFixed(6)}</span>
-        </div>
-        <div class="stat">
-          <span class="stat-label">Final y (${metaA.name})</span>
-          <span class="stat-value">${la.y.toFixed(8)}</span>
-        </div>
-        <div class="stat">
-          <span class="stat-label">Final y (${metaB.name})</span>
-          <span class="stat-value">${lb.y.toFixed(8)}</span>
-        </div>
-        <div class="stat">
-          <span class="stat-label">|difference| at final t</span>
-          <span class="stat-value">${diff.toExponential(4)}</span>
-        </div>
+        <div class="stat"><span class="stat-label">Steps (each)</span><span class="stat-value">${seriesA.length}</span></div>
+        <div class="stat"><span class="stat-label">Final time</span><span class="stat-value">${la.t.toFixed(6)}</span></div>
+        <div class="stat"><span class="stat-label">Final y — ${escapeHtml(resultA.metadata.displayName)}</span><span class="stat-value">${la.y.toFixed(8)}</span></div>
+        <div class="stat"><span class="stat-label">Final y — ${escapeHtml(resultB.metadata.displayName)}</span><span class="stat-value">${lb.y.toFixed(8)}</span></div>
+        <div class="stat"><span class="stat-label">|uₙ − yₙ| at final t</span><span class="stat-value">${diff.toExponential(4)}</span></div>
       </div>
     </section>
+    <div class="compare-meta-grid">
+      ${metadataPanelHtml(resultA.metadata)}
+      ${metadataPanelHtml(resultB.metadata)}
+    </div>
     <section class="chart-section">
       <canvas id="plot" height="120"></canvas>
     </section>
@@ -868,8 +915,8 @@ function mountCompareResults(
           <thead>
             <tr>
               <th>t</th>
-              <th>y (${metaA.name})</th>
-              <th>y (${metaB.name})</th>
+              <th>y — ${escapeHtml(resultA.metadata.displayName)}</th>
+              <th>y — ${escapeHtml(resultB.metadata.displayName)}</th>
               <th>|Δy|</th>
             </tr>
           </thead>
@@ -879,13 +926,8 @@ function mountCompareResults(
               const off = seriesA.length - tailA.length;
               return tailA
                 .map((pa, idx) => {
-                  const pb = seriesB[off + idx];
-                  const d = Math.abs(pa.y - pb.y);
-                  return `<tr><td>${pa.t.toFixed(5)}</td><td>${pa.y.toFixed(
-                    8
-                  )}</td><td>${pb.y.toFixed(8)}</td><td>${d.toExponential(
-                    4
-                  )}</td></tr>`;
+                  const pb = seriesB[off + idx]!;
+                  return `<tr><td>${pa.t.toFixed(5)}</td><td>${pa.y.toFixed(8)}</td><td>${pb.y.toFixed(8)}</td><td>${Math.abs(pa.y - pb.y).toExponential(4)}</td></tr>`;
                 })
                 .join("");
             })()}
@@ -897,71 +939,29 @@ function mountCompareResults(
 
   const canvas = document.querySelector<HTMLCanvasElement>("#plot");
   if (!canvas) return;
-
   chart?.destroy();
-  const ts = seriesA.map((p) => p.t.toFixed(3));
-  const ya = seriesA.map((p) => p.y);
-  const yb = seriesB.map((p) => p.y);
-
   chart = new Chart(canvas, {
     type: "line",
     data: {
-      labels: ts,
+      labels: seriesA.map((p) => p.t.toFixed(3)),
       datasets: [
         {
-          label: metaA.name,
-          data: ya,
+          label: resultA.metadata.displayName,
+          data: seriesA.map((p) => p.y),
           borderColor: "#5b8cff",
-          backgroundColor: "rgba(91, 140, 255, 0.08)",
           tension: 0.15,
-          fill: false,
           pointRadius: 0,
         },
         {
-          label: metaB.name,
-          data: yb,
+          label: resultB.metadata.displayName,
+          data: seriesB.map((p) => p.y),
           borderColor: "#ffb86b",
-          backgroundColor: "rgba(255, 184, 107, 0.08)",
           tension: 0.15,
-          fill: false,
           pointRadius: 0,
         },
       ],
     },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: "index", intersect: false },
-      plugins: {
-        legend: { labels: { color: "#d8e2ff" } },
-        title: {
-          display: true,
-          text: "y(t): both methods",
-          color: "#f2f5ff",
-          font: { size: 16, weight: "600" },
-        },
-        tooltip: {
-          callbacks: {
-            title: (items) => {
-              const i = items[0]?.dataIndex ?? 0;
-              return `t = ${seriesA[i]?.t.toFixed(6)}`;
-            },
-          },
-        },
-      },
-      scales: {
-        x: {
-          title: { display: true, text: "t", color: "#9fb2df" },
-          ticks: { color: "#9fb2df", maxTicksLimit: 8 },
-          grid: { color: "rgba(255,255,255,0.06)" },
-        },
-        y: {
-          title: { display: true, text: "y", color: "#9fb2df" },
-          ticks: { color: "#9fb2df" },
-          grid: { color: "rgba(255,255,255,0.06)" },
-        },
-      },
-    },
+    options: chartOptions(seriesA, "y"),
   });
 }
 
