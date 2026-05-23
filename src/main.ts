@@ -24,6 +24,8 @@ import {
   type MethodCatalogEntry,
 } from "./methodCatalog";
 import { escapeHtml, formatCoefficients } from "./mathDisplay";
+import type { ProblemInputs } from "./aiTutor";
+import { mountAiTutorPanel, resetTutorConversation } from "./aiTutorPanel";
 import "./style.css";
 
 Chart.register(
@@ -77,6 +79,7 @@ let lastCompare: {
   resultB: SolverResult;
 } | null = null;
 let persisted: PersistedForm | null = null;
+let lastProblemInputs: ProblemInputs | null = null;
 let comparePickError = "";
 
 const app = document.querySelector<HTMLDivElement>("#app")!;
@@ -481,6 +484,25 @@ function renderForm(meta: MethodCatalogEntry, sel: SelectedMethod): HTMLElement 
 
       lastCompare = null;
       lastResult = result;
+      lastProblemInputs = isSecond
+        ? {
+            kind: "second_order",
+            equationDisplay: `u″ = a(t, u) with a(t, u) = ${expr}`,
+            t0,
+            tEnd,
+            h,
+            u0: Number(fd.get("u0")),
+            v0: Number(fd.get("v0")),
+          }
+        : {
+            kind: "first_order",
+            equationDisplay: `y′ = f(t, y) with f(t, y) = ${expr}`,
+            t0,
+            tEnd,
+            h,
+            y0: Number(fd.get("y0")),
+          };
+      resetTutorConversation();
       step = "results";
       render();
     } catch (e) {
@@ -595,7 +617,9 @@ function renderCompareForm(
       const resultA = integrateFirstOrder(configFromSelection(a), base);
       const resultB = integrateFirstOrder(configFromSelection(b), base);
       lastResult = null;
+      lastProblemInputs = null;
       lastCompare = { a, b, resultA, resultB };
+      resetTutorConversation();
       step = "results";
       render();
     } catch (e) {
@@ -664,7 +688,10 @@ function renderResultsShell(
       <button type="button" class="btn ghost" data-back>← Edit inputs</button>
       <button type="button" class="btn ghost" data-methods>All methods (keep my numbers)</button>
     </div>
-    <div id="results-body"></div>
+    <div class="results-layout">
+      <div class="results-main" id="results-body"></div>
+      <div id="ai-tutor-host"></div>
+    </div>
   `;
   wrap.querySelector("[data-back]")!.addEventListener("click", () => {
     step = "configure";
@@ -673,7 +700,19 @@ function renderResultsShell(
   wrap.querySelector("[data-methods]")!.addEventListener("click", () => {
     goToMethodListKeepInputs();
   });
-  queueMicrotask(() => mountResults(meta, result));
+  queueMicrotask(() => {
+    mountResults(meta, result);
+    const tutorHost = wrap.querySelector<HTMLDivElement>("#ai-tutor-host");
+    if (tutorHost) {
+      mountAiTutorPanel(tutorHost, {
+        enabled: true,
+        result,
+        meta,
+        problem: lastProblemInputs,
+        getChart: () => chart,
+      });
+    }
+  });
   return wrap;
 }
 
@@ -691,7 +730,10 @@ function renderCompareResultsShell(
       <button type="button" class="btn ghost" data-pair>Change method pair</button>
       <button type="button" class="btn ghost" data-methods>All methods (keep my numbers)</button>
     </div>
-    <div id="results-body"></div>
+    <div class="results-layout">
+      <div class="results-main" id="results-body"></div>
+      <div id="ai-tutor-host"></div>
+    </div>
   `;
   wrap.querySelector("[data-back]")!.addEventListener("click", () => {
     step = "configure";
@@ -707,9 +749,19 @@ function renderCompareResultsShell(
   wrap.querySelector("[data-methods]")!.addEventListener("click", () => {
     goToMethodListKeepInputs();
   });
-  queueMicrotask(() =>
-    mountCompareResults(metaA, metaB, resultA, resultB)
-  );
+  queueMicrotask(() => {
+    mountCompareResults(metaA, metaB, resultA, resultB);
+    const tutorHost = wrap.querySelector<HTMLDivElement>("#ai-tutor-host");
+    if (tutorHost) {
+      mountAiTutorPanel(tutorHost, {
+        enabled: false,
+        result: null,
+        meta: null,
+        problem: null,
+        getChart: () => chart,
+      });
+    }
+  });
   return wrap;
 }
 
