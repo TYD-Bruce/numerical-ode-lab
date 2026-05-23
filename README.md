@@ -153,3 +153,4 @@ Coefficient self-checks run on load (see the browser console in dev mode).
 - UI math is plain Unicode text (no MathJax/KaTeX)
 
 ## License
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
