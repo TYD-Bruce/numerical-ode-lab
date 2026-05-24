@@ -60,6 +60,8 @@ export interface ChatRequest {
 export interface ChatResponse {
   message: string;
   chartInstruction?: ChartInstruction;
+  /** True when AI_TUTOR_MOCK is active on the server (public demo). */
+  demoMode?: boolean;
 }
 
 export type TutorMessage = ChatRequest["messages"][number];

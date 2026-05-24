@@ -88,15 +88,18 @@ The tutor calls **`POST /api/chat`** on the server so your OpenAI key is never s
 2. Choose one:
    - **Free UI testing:** `AI_TUTOR_MOCK=true` — grounded mock replies, no OpenAI key.
    - **Live tutoring:** `OPENAI_API_KEY=sk-...` (server-side only).
-3. **Do not** use a `VITE_` prefix on the OpenAI key; Vite exposes those variables to client code.
+3. **Do not** use `VITE_OPENAI_API_KEY` or any `VITE_` prefix for OpenAI; Vite exposes those to the browser.
 4. Restart **`npm run dev:api`** after editing `.env.local` (env is read at startup).
-5. **Vercel:** set `OPENAI_API_KEY` (or `AI_TUTOR_MOCK=true`) in project environment variables; [`api/chat.ts`](api/chat.ts) deploys as a serverless function.
 
 Example `.env.local` for mock mode:
 
 ```env
 AI_TUTOR_MOCK=true
 ```
+
+For a **live** local tutor, use `OPENAI_API_KEY` instead and leave `AI_TUTOR_MOCK` unset or `false`.
+
+See **[Deploying a public demo](#deploying-a-public-demo)** for Vercel (mock mode, no API key).
 
 ### Port 3001 already in use
 
@@ -105,6 +108,38 @@ Only one `dev:api` instance should listen on port 3001. If you see `EADDRINUSE`:
 - Close the other terminal running `npm run dev:api`, or
 - On Windows: `netstat -ano | findstr :3001` then `taskkill /PID <pid> /F`
 - Or set `API_PORT=3002` in `.env.local` and update the proxy `target` in [`vite.config.ts`](vite.config.ts) to match.
+
+## Deploying a public demo
+
+Use this for a stable link anyone can open (e.g. Vercel). The public demo should use **demo tutor mode** — no OpenAI key and no API cost.
+
+**A.** Push the project to GitHub.
+
+**B.** In [Vercel](https://vercel.com), import the repo [TYD-Bruce/numerical-ode-lab](https://github.com/TYD-Bruce/numerical-ode-lab).
+
+**C.** Confirm build settings (usually auto-detected from [`vercel.json`](vercel.json)):
+
+| Setting | Value |
+|---------|--------|
+| Framework Preset | Vite |
+| Build Command | `npm run build` |
+| Output Directory | `dist` |
+
+**D.** In **Project Settings → Environment Variables** (Production), set:
+
+```env
+AI_TUTOR_MOCK=true
+```
+
+**E.** Do **not** set `OPENAI_API_KEY` for the public mock demo.
+
+**F.** Deploy. The serverless route [`api/chat.ts`](api/chat.ts) serves `POST /api/chat` on the same domain as the app.
+
+**G.** Copy the Vercel URL (e.g. `https://your-project.vercel.app`) and add it to the GitHub repo **About** website field and optionally at the top of this README.
+
+**Live AI later:** On Vercel, set `OPENAI_API_KEY`, remove `AI_TUTOR_MOCK` or set it to `false`, and redeploy. Never use `VITE_OPENAI_API_KEY`.
+
+**Do not commit** `.env.local`. Secrets belong only in Vercel env settings or local `.env.local`.
 
 ## Project layout
 

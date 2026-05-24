@@ -28,6 +28,11 @@ export function resetTutorConversation(): void {
   conversation = [];
 }
 
+function setDemoBadge(host: HTMLElement, visible: boolean): void {
+  const badge = host.querySelector<HTMLSpanElement>("#ai-demo-badge");
+  if (badge) badge.hidden = !visible;
+}
+
 function renderMessages(container: HTMLElement): void {
   if (conversation.length === 0) {
     container.innerHTML =
@@ -57,7 +62,10 @@ export function mountAiTutorPanel(
   host.innerHTML = `
     <aside class="ai-tutor-panel" aria-label="AI Method Tutor">
       <header class="ai-tutor-header">
-        <h3>AI Method Tutor</h3>
+        <div class="ai-tutor-title-row">
+          <h3>AI Method Tutor</h3>
+          <span class="ai-demo-badge" id="ai-demo-badge" hidden>Demo mode</span>
+        </div>
         <p class="ai-tutor-sub">Ask about the method, variables, coefficients, stability, accuracy, or graph behavior.</p>
       </header>
       ${
@@ -160,6 +168,9 @@ export function mountAiTutorPanel(
         messages: conversation,
         context,
       });
+      if (response.demoMode) {
+        setDemoBadge(host, true);
+      }
       const answer = sanitizeTutorText(response.message);
       conversation.push({ role: "assistant", content: answer });
       renderMessages(messagesEl);
@@ -183,6 +194,7 @@ export function mountAiTutorPanel(
 
   clearBtn.addEventListener("click", () => {
     conversation = [];
+    setDemoBadge(host, false);
     errEl.hidden = true;
     renderMessages(messagesEl);
     input.focus();

@@ -41,6 +41,14 @@ function isMockMode(): boolean {
   return isTruthyEnv(process.env.AI_TUTOR_MOCK);
 }
 
+/** Appended to demo/mock tutor replies — honest, professional disclaimer. */
+const DEMO_REPLY_FOOTER =
+  "\n\n— Demo mode: replies are generated from your run data on the server; no live AI model is used.";
+
+function demoReply(body: string): string {
+  return body.trimEnd() + DEMO_REPLY_FOOTER;
+}
+
 function ctxString(ctx: Record<string, unknown>, path: string[]): string | undefined {
   let cur: unknown = ctx;
   for (const key of path) {
@@ -100,7 +108,9 @@ function buildMockResponse(
       q.includes("0 to 2") || q.includes("0–2")
         ? 2
         : (tEnd ?? finalT ?? tMin + 2);
-    message = `[Mock tutor] I would narrow the plot to t ∈ [${tMin}, ${tMax}] so you can inspect the solution on that window. The curve still comes from your computed series (${pointCount ?? "?"} points, h = ${h ?? "?"}).\n\nThis is a mock response (AI_TUTOR_MOCK=true) — no OpenAI call was made.`;
+    message = demoReply(
+      `I can narrow the plot to t ∈ [${tMin}, ${tMax}] so you can inspect the solution on that window. The curve still comes from your computed series (${pointCount ?? "?"} points, h = ${h ?? "?"}).`
+    );
     chartInstruction = {
       type: "zoom_range",
       title: `Solution on [${tMin}, ${tMax}]`,
@@ -108,7 +118,9 @@ function buildMockResponse(
       tMax,
     };
   } else if (q.includes("table") || q.includes("summary")) {
-    message = `[Mock tutor] Table summary for ${methodName} on the current IVP:\n\n• Problem: ${equation}\n• Grid: t₀ = ${t0 ?? "?"}, t_end = ${tEnd ?? "?"}, h = ${h ?? "?"}\n• Steps stored: ${pointCount ?? "?"}\n• Final: u ≈ ${finalY?.toFixed(6) ?? "?"} at t = ${finalT?.toFixed(6) ?? "?"}\n\nOpen the “Last 12 values” table below the chart for numeric rows. Mock mode — set AI_TUTOR_MOCK=false and OPENAI_API_KEY for full answers.`;
+    message = demoReply(
+      `Table summary for ${methodName} on the current IVP:\n\n• Problem: ${equation}\n• Grid: t₀ = ${t0 ?? "?"}, t_end = ${tEnd ?? "?"}, h = ${h ?? "?"}\n• Steps stored: ${pointCount ?? "?"}\n• Final: u ≈ ${finalY?.toFixed(6) ?? "?"} at t = ${finalT?.toFixed(6) ?? "?"}\n\nSee the “Last 12 values” table below the chart for step-by-step numbers.`
+    );
     chartInstruction = {
       type: "error_table",
       title: "Mock result summary",
@@ -127,43 +139,61 @@ function buildMockResponse(
       ?.coefficients;
     const alpha = coeffs?.alpha?.map((v) => v.toFixed(6)).join(", ");
     const beta = coeffs?.beta?.map((v) => v.toFixed(6)).join(", ");
-    message = `[Mock tutor] Coefficients for ${methodName} (from your run metadata only):\n\n${alpha ? `α = [${alpha}] (BDF-style stencil on uₙ₊₁₋ⱼ)\n\n` : ""}${beta ? `β = [${beta}] (weights on fₙ₋ⱼ in the Adams form)\n\n` : ""}${!alpha && !beta ? "This method has no α/β arrays in context — typical for one-step schemes.\n\n" : ""}Formula on screen: ${formula}\n\nMock mode — coefficients are not invented beyond what the solver sent.`;
+    message = demoReply(
+      `Coefficients for ${methodName} (from your run metadata only):\n\n${alpha ? `α = [${alpha}] (BDF-style stencil on uₙ₊₁₋ⱼ)\n\n` : ""}${beta ? `β = [${beta}] (weights on fₙ₋ⱼ in the Adams form)\n\n` : ""}${!alpha && !beta ? "This method has no α/β arrays in context — typical for one-step schemes.\n\n" : ""}Formula on screen: ${formula}`
+    );
   } else if (
     q.includes("step by step") ||
     q.includes("procedure") ||
     q.includes("explain this method")
   ) {
-    message = `[Mock tutor] Step-by-step sketch for ${methodName}:\n\n1. Start from the IVP ${equation} with h = Δt.\n2. At each step, form tₙ = t₀ + nh and approximate values uₙ ≈ y(tₙ).\n3. Apply the update: ${formula}\n4. ${isImplicit ? "Because the method is implicit, the new value satisfies a fixed-point equation in uₙ₊₁ (see app notes)." : "The update is explicit: uₙ₊₁ is computed directly from past u and f values."}\n5. After ${pointCount ?? "N"} points, the run ends near t = ${finalT?.toFixed(4) ?? "?"} with u ≈ ${finalY?.toFixed(6) ?? "?"}.\n\n${orderLine} Mock response only.`;
+    message = demoReply(
+      `Step-by-step sketch for ${methodName}:\n\n1. Start from the IVP ${equation} with h = Δt.\n2. At each step, form tₙ = t₀ + nh and approximate values uₙ ≈ y(tₙ).\n3. Apply the update: ${formula}\n4. ${isImplicit ? "Because the method is implicit, the new value satisfies a fixed-point equation in uₙ₊₁ (see app notes)." : "The update is explicit: uₙ₊₁ is computed directly from past u and f values."}\n5. After ${pointCount ?? "N"} points, the run ends near t = ${finalT?.toFixed(4) ?? "?"} with u ≈ ${finalY?.toFixed(6) ?? "?"}.\n\n${orderLine}`
+    );
   } else if (
     q.includes("graph") ||
     q.includes("interpret") ||
     q.includes("plot")
   ) {
-    message = `[Mock tutor] The chart shows the approximate solution uₙ versus t for ${methodName}. With ${pointCount ?? "?"} points from t₀ to about t = ${finalT?.toFixed(4) ?? "?"}, the curve reflects how your chosen f and h affect stability and accuracy.\n\nIf the graph looks jagged, try smaller h. If it blows up, the method may be unstable for this step size. Mock mode — no live model analysis.`;
+    message = demoReply(
+      `The chart shows the approximate solution uₙ versus t for ${methodName}. With ${pointCount ?? "?"} points from t₀ to about t = ${finalT?.toFixed(4) ?? "?"}, the curve reflects how your chosen f and h affect stability and accuracy.\n\nIf the graph looks jagged, try smaller h. If it blows up, the method may be unstable for this step size.`
+    );
   } else if (
     q.includes("smaller h") ||
     q.includes("step size") ||
     q.includes("refine")
   ) {
-    message = `[Mock tutor] With smaller h = Δt, you take more steps over [${t0 ?? "?"}, ${tEnd ?? "?"}], so the local truncation error per step shrinks like O(hᵖ) for order p. Expect a smoother plot and a final value closer to the exact solution (when one exists).\n\nYour current run used h = ${h ?? "?"} and p ≈ ${order ?? "?"}. Mock mode.`;
+    message = demoReply(
+      `With smaller h = Δt, you take more steps over [${t0 ?? "?"}, ${tEnd ?? "?"}], so the local truncation error per step shrinks like O(hᵖ) for order p. Expect a smoother plot and a final value closer to the exact solution (when one exists).\n\nYour current run used h = ${h ?? "?"} and p ≈ ${order ?? "?"}.`
+    );
   } else if (
     q.includes("startup") ||
     q.includes("multistep")
   ) {
     const startup = ctxString(context, ["method", "startupMethod"]);
-    message = `[Mock tutor] Multistep methods need history before the main formula applies. ${startup ? `This run lists startup: ${startup}.` : "No startup line in context — likely a one-step method."}\n\nEarly steps build uₙ₋ⱼ and fₙ₋ⱼ so the first full step matches order p. Mock mode.`;
+    message = demoReply(
+      `Multistep methods need history before the main formula applies. ${startup ? `This run lists startup: ${startup}.` : "No startup line in context — likely a one-step method."}\n\nEarly steps build uₙ₋ⱼ and fₙ₋ⱼ so the first full step matches order p.`
+    );
   } else if (
     q.includes("truncation") ||
     q.includes("global error") ||
     q.includes("local error")
   ) {
-    message = `[Mock tutor] Local truncation error (LTE) measures one step’s mismatch with the exact flow; global error is the accumulated effect over many steps. For a consistent method of order p, LTE is O(hᵖ⁺¹) and global error is typically O(hᵖ) on a fixed interval.\n\n${orderLine} Mock mode — use a real key for exam-style detail tied to your coefficients.`;
+    message = demoReply(
+      `Local truncation error (LTE) measures one step’s mismatch with the exact flow; global error is the accumulated effect over many steps. For a consistent method of order p, LTE is O(hᵖ⁺¹) and global error is typically O(hᵖ) on a fixed interval.\n\n${orderLine}`
+    );
   } else if (q.includes("variable") || q.includes("what does") || q.includes("mean")) {
-    message = `[Mock tutor] Symbols for this run:\n\n• t, y: independent time and exact solution in y′ = f(t, y)\n• uₙ: numerical approximation at tₙ; fₙ = f(tₙ, uₙ)\n• h = Δt: step size (${h ?? "?"})\n• ${formula}\n\nAll values above come from your current session. Mock mode.`;
+    message = demoReply(
+      `Symbols for this run:\n\n• t, y: independent time and exact solution in y′ = f(t, y)\n• uₙ: numerical approximation at tₙ; fₙ = f(tₙ, uₙ)\n• h = Δt: step size (${h ?? "?"})\n• ${formula}\n\nAll values above come from your current session.`
+    );
   } else if (q.includes("exam") || q.includes("review")) {
-    message = `[Mock tutor] Exam-style recap: You solved ${equation} with ${methodName} on [${t0 ?? "?"}, ${tEnd ?? "?"}] using h = ${h ?? "?"}. The method is ${isImplicit ? "implicit" : "explicit"}. ${orderLine} Final computed value u ≈ ${finalY?.toFixed(6) ?? "?"} at t = ${finalT?.toFixed(6) ?? "?"}.\n\nBe ready to state the update formula, define LTE vs global error, and explain why ${family.includes("bdf") ? "BDF needs iteration" : "this scheme behaves as it does"} for order p. Mock mode.`;
+    message = demoReply(
+      `Exam-style recap: You solved ${equation} with ${methodName} on [${t0 ?? "?"}, ${tEnd ?? "?"}] using h = ${h ?? "?"}. The method is ${isImplicit ? "implicit" : "explicit"}. ${orderLine} Final computed value u ≈ ${finalY?.toFixed(6) ?? "?"} at t = ${finalT?.toFixed(6) ?? "?"}.\n\nBe ready to state the update formula, define LTE vs global error, and explain why ${family.includes("bdf") ? "BDF needs iteration" : "this scheme behaves as it does"} for order p.`
+    );
   } else {
-    message = `[Mock tutor] You asked about “${userMessage.slice(0, 120)}${userMessage.length > 120 ? "…" : ""}” for ${methodName}.\n\nContext I see: ${equation}; h = ${h ?? "?"}; ${pointCount ?? "?"} points; final u ≈ ${finalY?.toFixed(6) ?? "?"} at t = ${finalT?.toFixed(6) ?? "?"}.\n\n${orderLine}\n\nThis answer is generated locally (AI_TUTOR_MOCK=true). Set OPENAI_API_KEY and AI_TUTOR_MOCK=false for full tutoring.`;
+    message = demoReply(
+      `You asked about “${userMessage.slice(0, 120)}${userMessage.length > 120 ? "…" : ""}” for ${methodName}.\n\nContext from this run: ${equation}; h = ${h ?? "?"}; ${pointCount ?? "?"} points; final u ≈ ${finalY?.toFixed(6) ?? "?"} at t = ${finalT?.toFixed(6) ?? "?"}.\n\n${orderLine}`
+    );
   }
 
   return { message, chartInstruction };
@@ -291,7 +321,10 @@ export async function handleChatRequest(
 
   if (isMockMode()) {
     const mock = buildMockResponse(body.context, last.content);
-    const response: Record<string, unknown> = { message: mock.message };
+    const response: Record<string, unknown> = {
+      message: mock.message,
+      demoMode: true,
+    };
     if (
       mock.chartInstruction &&
       mock.chartInstruction.type !== "none"
@@ -307,7 +340,7 @@ export async function handleChatRequest(
       status: 503,
       body: {
         error:
-          "OPENAI_API_KEY is not configured. Add it to .env.local (local) or your deployment environment. Do not use VITE_ prefixes. Or set AI_TUTOR_MOCK=true to test the UI without OpenAI.",
+          "OPENAI_API_KEY is not configured. For the public demo, set AI_TUTOR_MOCK=true on Vercel. Locally, add it to .env.local (never use VITE_ prefixes).",
       },
     };
   }
