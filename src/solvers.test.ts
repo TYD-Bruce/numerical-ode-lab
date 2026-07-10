@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { bdfCoefficients } from "./polynomial";
 import {
   integrateFirstOrder,
+  integrateSecondOrder,
   type SeriesPoint,
   type SolverResult,
 } from "./solvers";
@@ -157,4 +158,192 @@ describe("BDF numerical properties", () => {
       }
     }
   );
+});
+
+const FIRST_ORDER_CONFIGS = [
+  { family: "forward_euler" },
+  { family: "backward_euler" },
+  { family: "taylor" },
+  { family: "rk4" },
+  { family: "adams_bashforth", order: 3 },
+  { family: "adams_moulton", order: 3 },
+  { family: "bdf", order: 4 },
+] as const;
+
+function expectFixedGrid(
+  result: SolverResult,
+  t0: number,
+  tEnd: number,
+  h: number
+): void {
+  const expectedSteps = Math.round((tEnd - t0) / h);
+  expect(result.points).toHaveLength(expectedSteps + 1);
+  expect(result.points[0]!.t).toBe(t0);
+  expect(result.points.at(-1)!.t).toBeCloseTo(tEnd, 12);
+
+  for (let i = 0; i < result.points.length; i++) {
+    const point = result.points[i]!;
+    expect(Number.isFinite(point.y)).toBe(true);
+    if (point.v !== undefined) expect(Number.isFinite(point.v)).toBe(true);
+    if (i > 0) {
+      const previous = result.points[i - 1]!;
+      expect(point.t).toBeGreaterThan(previous.t);
+      expect(point.t - previous.t).toBeCloseTo(h, 12);
+    }
+  }
+}
+
+describe("fixed-step solver contract", () => {
+  it.each(FIRST_ORDER_CONFIGS)(
+    "$family rejects a misaligned grid instead of silently stopping at 0.9",
+    (config) => {
+      expect(() =>
+        integrateFirstOrder(config, {
+          t0: 0,
+          y0: 1,
+          tEnd: 1,
+          h: 0.3,
+          f: () => 0,
+        })
+      ).toThrow("Fixed-step methods require (t_end - t₀) / h to be an integer");
+    }
+  );
+
+  it("Leap-Frog rejects a misaligned grid", () => {
+    expect(() =>
+      integrateSecondOrder({
+        t0: 0,
+        u0: 1,
+        v0: 0,
+        tEnd: 1,
+        h: 0.3,
+        a: () => 0,
+      })
+    ).toThrow("Fixed-step methods require (t_end - t₀) / h to be an integer");
+  });
+
+  it.each([Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY])(
+    "rejects non-finite y₀ (%p)",
+    (y0) => {
+      expect(() =>
+        integrateFirstOrder(
+          { family: "forward_euler" },
+          { t0: 0, y0, tEnd: 1, h: 0.1, f: () => 0 }
+        )
+      ).toThrow("Initial value y₀ must be finite.");
+    }
+  );
+
+  it.each([Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY])(
+    "rejects non-finite Leap-Frog initial values (%p)",
+    (value) => {
+      expect(() =>
+        integrateSecondOrder({
+          t0: 0,
+          u0: value,
+          v0: 0,
+          tEnd: 1,
+          h: 0.1,
+          a: () => 0,
+        })
+      ).toThrow("Initial displacement u₀ must be finite.");
+      expect(() =>
+        integrateSecondOrder({
+          t0: 0,
+          u0: 0,
+          v0: value,
+          tEnd: 1,
+          h: 0.1,
+          a: () => 0,
+        })
+      ).toThrow("Initial velocity v₀ must be finite.");
+    }
+  );
+
+  it("checks a first-order RHS at every evaluation", () => {
+    expect(() =>
+      integrateFirstOrder(
+        { family: "forward_euler" },
+        { t0: 0, y0: 1, tEnd: 0.1, h: 0.1, f: () => Number.NaN }
+      )
+    ).toThrow("non-finite derivative at t=0");
+    expect(() =>
+      integrateFirstOrder(
+        { family: "rk4" },
+        {
+          t0: 0,
+          y0: 1,
+          tEnd: 0.4,
+          h: 0.1,
+          f: (t) => (t >= 0.2 ? Number.POSITIVE_INFINITY : 0),
+        }
+      )
+    ).toThrow("non-finite derivative at t=0.2");
+  });
+
+  it("checks a Leap-Frog acceleration at every evaluation", () => {
+    expect(() =>
+      integrateSecondOrder({
+        t0: 0,
+        u0: 1,
+        v0: 0,
+        tEnd: 0.1,
+        h: 0.1,
+        a: () => Number.POSITIVE_INFINITY,
+      })
+    ).toThrow("non-finite acceleration at t=0");
+    expect(() =>
+      integrateSecondOrder({
+        t0: 0,
+        u0: 1,
+        v0: 0,
+        tEnd: 0.4,
+        h: 0.1,
+        a: (t) => (t >= 0.2 ? Number.NaN : 0),
+      })
+    ).toThrow("non-finite acceleration at t=0.2");
+  });
+
+  it("rejects a step count over the shared limit before evaluating the RHS", () => {
+    expect(() =>
+      integrateFirstOrder(
+        { family: "forward_euler" },
+        {
+          t0: 0,
+          y0: 1,
+          tEnd: 100_001,
+          h: 1,
+          f: () => {
+            throw new Error("RHS must not be evaluated");
+          },
+        }
+      )
+    ).toThrow("above the current limit of 100000");
+  });
+
+  it.each(FIRST_ORDER_CONFIGS)(
+    "$family produces the complete aligned grid with finite values",
+    (config) => {
+      const result = integrateFirstOrder(config, {
+        t0: 0.2,
+        y0: 1,
+        tEnd: 1.2,
+        h: 0.1,
+        f: (_t, y) => -y,
+      });
+      expectFixedGrid(result, 0.2, 1.2, 0.1);
+    }
+  );
+
+  it("Leap-Frog produces the complete aligned grid with finite values", () => {
+    const result = integrateSecondOrder({
+      t0: 0.2,
+      u0: 1,
+      v0: 0,
+      tEnd: 1.2,
+      h: 0.1,
+      a: (_t, u) => -u,
+    });
+    expectFixedGrid(result, 0.2, 1.2, 0.1);
+  });
 });

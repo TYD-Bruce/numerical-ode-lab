@@ -3,6 +3,10 @@ import {
   adamsMoultonCoefficients,
   bdfCoefficients,
 } from "./polynomial";
+import {
+  validateFixedStepGrid,
+  withinFloatingPointTolerance,
+} from "./grid";
 import { catalogByFamily, displayNameFor } from "./methodCatalog";
 import { runCoefficientValidation, runSanityCheck } from "./coefficientValidation";
 
@@ -74,19 +78,67 @@ function assertStepPositive(h: number): void {
 }
 
 function countSteps(t0: number, tEnd: number, h: number): number {
-  if (tEnd < t0) {
-    throw new Error("End time must satisfy t_end ≥ t₀.");
-  }
-  const n = Math.floor((tEnd - t0) / h + 1e-12);
-  if (n < 1) {
-    throw new Error("Time span is too short for the chosen step size h.");
-  }
-  return n;
+  return validateFixedStepGrid(t0, tEnd, h).steps;
 }
 
 function assertFinite(value: number, context: string): void {
   if (!Number.isFinite(value)) {
     throw new Error(`Non-finite numerical result during ${context}.`);
+  }
+}
+
+function assertFiniteInput(value: number, label: string): void {
+  if (!Number.isFinite(value)) {
+    throw new Error(`${label} must be finite.`);
+  }
+}
+
+function validateFirstOrderParams(p: FirstOrderParams): number {
+  assertFiniteInput(p.y0, "Initial value y₀");
+  return validateFixedStepGrid(p.t0, p.tEnd, p.h).steps;
+}
+
+function validateSecondOrderParams(p: SecondOrderParams): number {
+  assertFiniteInput(p.u0, "Initial displacement u₀");
+  assertFiniteInput(p.v0, "Initial velocity v₀");
+  return validateFixedStepGrid(p.t0, p.tEnd, p.h).steps;
+}
+
+function evaluateFirstOrderRhs(
+  p: FirstOrderParams,
+  t: number,
+  y: number
+): number {
+  try {
+    const value = p.f(t, y);
+    if (!Number.isFinite(value)) throw new Error("non-finite");
+    return value;
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("non-finite")) {
+      throw new Error(
+        `The model expression produced a non-finite derivative at t=${t}.`
+      );
+    }
+    throw error;
+  }
+}
+
+function evaluateSecondOrderAcceleration(
+  p: SecondOrderParams,
+  t: number,
+  u: number
+): number {
+  try {
+    const value = p.a(t, u);
+    if (!Number.isFinite(value)) throw new Error("non-finite");
+    return value;
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("non-finite")) {
+      throw new Error(
+        `The model expression produced a non-finite acceleration at t=${t}.`
+      );
+    }
+    throw error;
   }
 }
 
@@ -112,15 +164,15 @@ function solveImplicit(
 }
 
 function rk4Step(
-  f: (t: number, y: number) => number,
+  p: FirstOrderParams,
   t: number,
   y: number,
   h: number
 ): { tNext: number; yNext: number } {
-  const k1 = f(t, y);
-  const k2 = f(t + h / 2, y + (h / 2) * k1);
-  const k3 = f(t + h / 2, y + (h / 2) * k2);
-  const k4 = f(t + h, y + h * k3);
+  const k1 = evaluateFirstOrderRhs(p, t, y);
+  const k2 = evaluateFirstOrderRhs(p, t + h / 2, y + (h / 2) * k1);
+  const k3 = evaluateFirstOrderRhs(p, t + h / 2, y + (h / 2) * k2);
+  const k4 = evaluateFirstOrderRhs(p, t + h, y + h * k3);
   const yNext = y + (h / 6) * (k1 + 2 * k2 + 2 * k3 + k4);
   return { tNext: t + h, yNext };
 }
@@ -205,8 +257,46 @@ function buildMetadata(
 }
 
 function pushPoint(out: SeriesPoint[], t: number, y: number): void {
+  assertFinite(t, "time grid");
   assertFinite(y, "integration");
   out.push({ t, y });
+}
+
+function assertFixedStepResult(
+  points: SeriesPoint[],
+  t0: number,
+  tEnd: number,
+  h: number,
+  steps: number
+): void {
+  if (points.length !== steps + 1) {
+    throw new Error("Internal error: fixed-step point count does not match the grid.");
+  }
+  for (let i = 0; i < points.length; i++) {
+    const point = points[i]!;
+    const expectedTime = t0 + i * h;
+    if (!Number.isFinite(point.t) || !Number.isFinite(point.y)) {
+      throw new Error("Internal error: integration produced a non-finite point.");
+    }
+    if (point.v !== undefined && !Number.isFinite(point.v)) {
+      throw new Error("Internal error: integration produced a non-finite velocity.");
+    }
+    if (!withinFloatingPointTolerance(point.t, expectedTime)) {
+      throw new Error("Internal error: integration left the fixed time grid.");
+    }
+    if (i > 0) {
+      const previous = points[i - 1]!;
+      if (
+        !(point.t > previous.t) ||
+        !withinFloatingPointTolerance(point.t - previous.t, h)
+      ) {
+        throw new Error("Internal error: integration produced an invalid time grid.");
+      }
+    }
+  }
+  if (!withinFloatingPointTolerance(points.at(-1)!.t, tEnd)) {
+    throw new Error("Internal error: integration did not reach the requested end time.");
+  }
 }
 
 function forwardEulerCore(p: FirstOrderParams): SeriesPoint[] {
@@ -217,9 +307,9 @@ function forwardEulerCore(p: FirstOrderParams): SeriesPoint[] {
   let y = p.y0;
   pushPoint(out, t, y);
   for (let i = 0; i < n; i++) {
-    const tNext = Math.min(p.t0 + (i + 1) * p.h, p.tEnd);
-    const h = tNext - t;
-    y = y + h * p.f(t, y);
+    const tNext = p.t0 + (i + 1) * p.h;
+    const h = p.h;
+    y = y + h * evaluateFirstOrderRhs(p, t, y);
     t = tNext;
     pushPoint(out, t, y);
   }
@@ -234,11 +324,11 @@ function backwardEulerCore(p: FirstOrderParams): SeriesPoint[] {
   let y = p.y0;
   pushPoint(out, t, y);
   for (let i = 0; i < n; i++) {
-    const tNext = Math.min(p.t0 + (i + 1) * p.h, p.tEnd);
-    const h = tNext - t;
-    const yPred = y + h * p.f(t, y);
+    const tNext = p.t0 + (i + 1) * p.h;
+    const h = p.h;
+    const yPred = y + h * evaluateFirstOrderRhs(p, t, y);
     y = solveImplicit(
-      (uNext) => y + h * p.f(tNext, uNext),
+      (uNext) => y + h * evaluateFirstOrderRhs(p, tNext, uNext),
       yPred,
       "Backward Euler"
     );
@@ -252,18 +342,22 @@ function taylorOrder2Core(p: FirstOrderParams, eps = 1e-6): SeriesPoint[] {
   assertStepPositive(p.h);
   const n = countSteps(p.t0, p.tEnd, p.h);
   const ft = (t: number, y: number) =>
-    (p.f(t + eps, y) - p.f(t - eps, y)) / (2 * eps);
+    (evaluateFirstOrderRhs(p, t + eps, y) -
+      evaluateFirstOrderRhs(p, t - eps, y)) /
+    (2 * eps);
   const fy = (t: number, y: number) =>
-    (p.f(t, y + eps) - p.f(t, y - eps)) / (2 * eps);
+    (evaluateFirstOrderRhs(p, t, y + eps) -
+      evaluateFirstOrderRhs(p, t, y - eps)) /
+    (2 * eps);
 
   const out: SeriesPoint[] = [];
   let t = p.t0;
   let y = p.y0;
   pushPoint(out, t, y);
   for (let i = 0; i < n; i++) {
-    const tNext = Math.min(p.t0 + (i + 1) * p.h, p.tEnd);
-    const h = tNext - t;
-    const f0 = p.f(t, y);
+    const tNext = p.t0 + (i + 1) * p.h;
+    const h = p.h;
+    const f0 = evaluateFirstOrderRhs(p, t, y);
     const fp = ft(t, y) + fy(t, y) * f0;
     y = y + h * f0 + (h * h) / 2 * fp;
     t = tNext;
@@ -280,9 +374,9 @@ function rk4Core(p: FirstOrderParams): SeriesPoint[] {
   let y = p.y0;
   pushPoint(out, t, y);
   for (let i = 0; i < n; i++) {
-    const tNext = Math.min(p.t0 + (i + 1) * p.h, p.tEnd);
-    const h = tNext - t;
-    const step = rk4Step(p.f, t, y, h);
+    const tNext = p.t0 + (i + 1) * p.h;
+    const h = p.h;
+    const step = rk4Step(p, t, y, h);
     y = step.yNext;
     t = tNext;
     pushPoint(out, t, y);
@@ -300,17 +394,16 @@ function bootstrapMultistep(
   let u = p.y0;
   pushPoint(out, t, u);
   const uHistory: number[] = [u];
-  const fHistory: number[] = [p.f(t, u)];
+  const fHistory: number[] = [evaluateFirstOrderRhs(p, t, u)];
 
   for (let k = 1; k < order; k++) {
-    const tNext = Math.min(p.t0 + k * p.h, p.tEnd);
-    const hStep = tNext - t;
-    if (hStep <= 0) break;
-    const { yNext } = rk4Step(p.f, t, u, hStep);
+    const tNext = p.t0 + k * p.h;
+    const hStep = p.h;
+    const { yNext } = rk4Step(p, t, u, hStep);
     u = yNext;
     t = tNext;
     uHistory.unshift(u);
-    fHistory.unshift(p.f(t, u));
+    fHistory.unshift(evaluateFirstOrderRhs(p, t, u));
     pushPoint(out, t, u);
   }
 
@@ -326,14 +419,14 @@ function adamsBashforthCore(p: FirstOrderParams, order: number): SeriesPoint[] {
   const stepsDone = out.length - 1;
 
   for (let i = stepsDone; i < n; i++) {
-    const tNext = Math.min(p.t0 + (i + 1) * p.h, p.tEnd);
-    const h = tNext - t;
+    const tNext = p.t0 + (i + 1) * p.h;
+    const h = p.h;
     let uNext = uHistory[0]!;
     for (let j = 0; j < order; j++) {
       uNext += h * beta[j]! * fHistory[j]!;
     }
     uHistory.unshift(uNext);
-    fHistory.unshift(p.f(tNext, uNext));
+    fHistory.unshift(evaluateFirstOrderRhs(p, tNext, uNext));
     uHistory.pop();
     fHistory.pop();
     t = tNext;
@@ -351,8 +444,8 @@ function adamsMoultonCore(p: FirstOrderParams, order: number): SeriesPoint[] {
   const stepsDone = out.length - 1;
 
   for (let i = stepsDone; i < n; i++) {
-    const tNext = Math.min(p.t0 + (i + 1) * p.h, p.tEnd);
-    const h = tNext - t;
+    const tNext = p.t0 + (i + 1) * p.h;
+    const h = p.h;
     const uCurrent = uHistory[0]!;
 
     let predictor = uCurrent;
@@ -363,7 +456,7 @@ function adamsMoultonCore(p: FirstOrderParams, order: number): SeriesPoint[] {
 
     const corrector = (uGuess: number) => {
       let sum = 0;
-      sum += beta[0]! * p.f(tNext, uGuess);
+      sum += beta[0]! * evaluateFirstOrderRhs(p, tNext, uGuess);
       for (let j = 1; j < order; j++) {
         sum += beta[j]! * fHistory[j - 1]!;
       }
@@ -372,7 +465,7 @@ function adamsMoultonCore(p: FirstOrderParams, order: number): SeriesPoint[] {
 
     const uNext = solveImplicit(corrector, predictor, "Adams-Moulton");
     uHistory.unshift(uNext);
-    fHistory.unshift(p.f(tNext, uNext));
+    fHistory.unshift(evaluateFirstOrderRhs(p, tNext, uNext));
     uHistory.pop();
     fHistory.pop();
     t = tNext;
@@ -390,8 +483,8 @@ function bdfCore(p: FirstOrderParams, order: number): SeriesPoint[] {
   const stepsDone = out.length - 1;
 
   for (let i = stepsDone; i < n; i++) {
-    const tNext = Math.min(p.t0 + (i + 1) * p.h, p.tEnd);
-    const h = tNext - t;
+    const tNext = p.t0 + (i + 1) * p.h;
+    const h = p.h;
     const history = uHistory.slice(0, order);
     let explicit = 0;
     for (let j = 1; j <= order; j++) {
@@ -400,7 +493,7 @@ function bdfCore(p: FirstOrderParams, order: number): SeriesPoint[] {
     const a0 = alpha[0]!;
     const guess = history[0]!;
     const uNext = solveImplicit(
-      (u) => (h * p.f(tNext, u) - explicit) / a0,
+      (u) => (h * evaluateFirstOrderRhs(p, tNext, u) - explicit) / a0,
       guess,
       "BDF"
     );
@@ -416,6 +509,7 @@ export function integrateFirstOrder(
   config: MethodConfig,
   p: FirstOrderParams
 ): SolverResult {
+  const steps = validateFirstOrderParams(p);
   const order = validateOrder(
     config.family,
     config.order ?? catalogByFamily(config.family).orderDefault
@@ -463,6 +557,8 @@ export function integrateFirstOrder(
     }
   }
 
+  assertFixedStepResult(points, p.t0, p.tEnd, p.h, steps);
+
   return {
     points,
     metadata: buildMetadata({ family: config.family, order }, coeffs),
@@ -470,23 +566,24 @@ export function integrateFirstOrder(
 }
 
 export function integrateSecondOrder(p: SecondOrderParams): SolverResult {
-  assertStepPositive(p.h);
-  const n = countSteps(p.t0, p.tEnd, p.h);
+  const n = validateSecondOrderParams(p);
   const out: SeriesPoint[] = [];
   let t = p.t0;
   let u = p.u0;
-  let vm = p.v0 - (p.h / 2) * p.a(t, u);
+  let vm = p.v0 - (p.h / 2) * evaluateSecondOrderAcceleration(p, t, u);
   out.push({ t, y: u, v: p.v0 });
   for (let i = 0; i < n; i++) {
-    const tNext = Math.min(p.t0 + (i + 1) * p.h, p.tEnd);
-    const h = tNext - t;
-    vm = vm + h * p.a(t, u);
+    const tNext = p.t0 + (i + 1) * p.h;
+    const h = p.h;
+    vm = vm + h * evaluateSecondOrderAcceleration(p, t, u);
     u = u + h * vm;
     t = tNext;
-    const v = vm + (h / 2) * p.a(t, u);
+    const v = vm + (h / 2) * evaluateSecondOrderAcceleration(p, t, u);
     assertFinite(u, "Leap-Frog");
+    assertFinite(v, "Leap-Frog");
     out.push({ t, y: u, v });
   }
+  assertFixedStepResult(out, p.t0, p.tEnd, p.h, n);
   return {
     points: out,
     metadata: buildMetadata({ family: "leapfrog" }),

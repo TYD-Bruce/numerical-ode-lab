@@ -378,7 +378,7 @@ function renderForm(meta: MethodCatalogEntry, sel: SelectedMethod): HTMLElement 
   const t0v = isSecond ? so.t0 : fo.t0;
   const tEndv = isSecond ? so.tEnd : fo.tEnd;
   const hv = isSecond ? so.h : fo.h;
-  const title = methodLabel(sel);
+  const title = meta.displayName;
 
   wrap.innerHTML = `
     <div class="form-head">
@@ -527,7 +527,7 @@ function renderCompareForm(
   wrap.innerHTML = `
     <div class="form-head">
       <button type="button" class="btn ghost" data-back-methods>← Change method pair</button>
-      <h2>Compare: ${methodLabel(selA)} vs ${methodLabel(selB)}</h2>
+      <h2>Compare: ${metaA.displayName} vs ${metaB.displayName}</h2>
     </div>
     <p class="hint">Set order p for each multistep method before running (defaults from method cards).</p>
     <form class="form" id="ode-form">
