@@ -640,6 +640,34 @@ function goToMethodListKeepInputs(): void {
   render();
 }
 
+function formatImplicitResidual(value: number): string {
+  if (value === 0) return "0";
+  const magnitude = Math.abs(value);
+  if (magnitude < 1e-4 || magnitude >= 1e4) {
+    return value.toExponential(3);
+  }
+  return value.toPrecision(6);
+}
+
+function implicitDiagnosticsHtml(meta: SolverResult["metadata"]): string {
+  const diagnostics = meta.implicitDiagnostics;
+  if (!diagnostics) return "";
+  const solverName =
+    diagnostics.nonlinearMethod === "fixed_point" ? "Fixed-point" : "Newton";
+  return `
+    <h4>Implicit solve diagnostics</h4>
+    <dl class="meta-dl implicit-diagnostics">
+      <dt>Nonlinear solver</dt><dd>${solverName}</dd>
+      <dt>Total nonlinear iterations</dt><dd>${diagnostics.totalIterations}</dd>
+      <dt>Maximum iterations in one step</dt><dd>${diagnostics.maxIterationsPerStep}</dd>
+      <dt>Final residual</dt><dd>${formatImplicitResidual(diagnostics.finalResidual)}</dd>
+      <dt>Maximum residual</dt><dd>${formatImplicitResidual(diagnostics.maxResidual)}</dd>
+      <dt>Failed steps</dt><dd>${diagnostics.failedSteps}</dd>
+    </dl>
+    <p class="implicit-diagnostics-note">Nonlinear-solver convergence is different from absolute stability of the numerical method. A stable implicit scheme can still fail if its nonlinear equation is not solved successfully.</p>
+  `;
+}
+
 function metadataPanelHtml(meta: SolverResult["metadata"]): string {
   const coeffText = formatCoefficients(
     meta.coefficients?.alpha,
@@ -661,6 +689,7 @@ function metadataPanelHtml(meta: SolverResult["metadata"]): string {
             : ""
         }
       </dl>
+      ${implicitDiagnosticsHtml(meta)}
       <h4>Formula</h4>
       <div class="formula-block">${escapeHtml(meta.formulaDisplay)}</div>
       ${

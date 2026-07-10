@@ -18,3 +18,12 @@ larger studies.
 All time/initial numeric inputs and every evaluated derivative or acceleration
 must be finite. Non-finite values stop the run with a descriptive error rather
 than being propagated into result points.
+
+## Implicit nonlinear solves
+
+Each implicit time step requires solving a scalar algebraic equation `G(u) = 0`.
+A run succeeds only when both the nonlinear update and residual meet their
+scale-aware tolerances; failed steps throw rather than return partial results.
+The default solver is scalar Newton iteration with a numerical central-difference
+derivative. Nonlinear-solver convergence is distinct from absolute stability of
+the time-stepping scheme, and Newton convergence is not universally guaranteed.

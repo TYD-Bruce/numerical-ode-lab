@@ -1,4 +1,13 @@
 /** Context sent to /api/chat — grounded in the current solver run. */
+export interface ImplicitDiagnosticsContext {
+  nonlinearMethod: "newton" | "fixed_point";
+  totalIterations: number;
+  maxIterationsPerStep: number;
+  finalResidual: number;
+  maxResidual: number;
+  failedSteps: number;
+}
+
 export interface OdeLabContext {
   problem: {
     kind: "first_order" | "second_order";
@@ -21,6 +30,7 @@ export interface OdeLabContext {
       alpha?: number[];
       beta?: number[];
     };
+    implicitDiagnostics?: ImplicitDiagnosticsContext;
     notes?: string[];
   };
   result: {

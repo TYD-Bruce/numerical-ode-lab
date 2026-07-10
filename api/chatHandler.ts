@@ -23,6 +23,12 @@ Notation (use in answers):
 
 Scope: Only discuss the current ODE problem, the selected numerical method, numerical ODE concepts (truncation error, stability, convergence, order of accuracy), coefficients, and graph interpretation for this run. Do not solve unrelated math.
 
+Implicit-solve rules:
+- Distinguish nonlinear-solver convergence from absolute stability of the numerical method. A Newton or fixed-point failure does not by itself mean the time-stepping scheme is unstable.
+- When implicitDiagnostics are supplied, use their actual method, iteration counts, residuals, and failed-step count. Never invent missing diagnostics or claim guarantees beyond this run.
+- Explain residual as the remaining algebraic mismatch in the implicit equation G(u) = 0.
+- Successful result context normally has failedSteps = 0 because failed implicit steps throw instead of returning partial results.
+
 Response format: Reply with exactly one JSON object (no markdown fences, no extra text) with:
 - "message": string (2–5 short paragraphs max; Unicode math only, never \\( \\) or \\[ \\] or \\alpha_j)
 - "chartInstruction": optional object with type one of "line_chart" | "error_table" | "zoom_range" | "none", plus optional title, xLabel, yLabel, tMin, tMax, includePoints, includeLine, tableRows
@@ -88,6 +94,12 @@ function buildMockResponse(
   const finalT = ctxNumber(context, ["result", "finalT"]);
   const finalY = ctxNumber(context, ["result", "finalY"]);
   const pointCount = ctxNumber(context, ["result", "pointCount"]);
+  const nonlinearMethod = ctxString(context, ["method", "implicitDiagnostics", "nonlinearMethod"]);
+  const totalIterations = ctxNumber(context, ["method", "implicitDiagnostics", "totalIterations"]);
+  const maxIterationsPerStep = ctxNumber(context, ["method", "implicitDiagnostics", "maxIterationsPerStep"]);
+  const finalResidual = ctxNumber(context, ["method", "implicitDiagnostics", "finalResidual"]);
+  const maxResidual = ctxNumber(context, ["method", "implicitDiagnostics", "maxResidual"]);
+  const failedSteps = ctxNumber(context, ["method", "implicitDiagnostics", "failedSteps"]);
   const q = userMessage.toLowerCase();
 
   const orderLine =
@@ -98,7 +110,61 @@ function buildMockResponse(
   let message = "";
   let chartInstruction: Record<string, unknown> | undefined;
 
-  if (
+  const asksStabilityVsNonlinear =
+    q.includes("unstable") || q.includes("stability");
+  const asksImplicitDiagnostics =
+    q.includes("newton") ||
+    q.includes("fixed-point") ||
+    q.includes("fixed point") ||
+    q.includes("residual") ||
+    q.includes("nonlinear") ||
+    q.includes("implicit solve") ||
+    (q.includes("implicit") && q.includes("fail")) ||
+    // Only route stability questions here when this run actually has
+    // implicit diagnostics; otherwise fall through to general method help.
+    (asksStabilityVsNonlinear && !!nonlinearMethod);
+
+  if (asksImplicitDiagnostics) {
+    if (!nonlinearMethod) {
+      message = demoReply(
+        "The selected method did not expose an implicit nonlinear solve for this run, so the supplied context has no iteration or residual diagnostics. I will not infer or invent those values."
+      );
+    } else {
+      const solverName = nonlinearMethod === "fixed_point" ? "Fixed-point" : "Newton";
+      const finalResidualText = finalResidual?.toExponential(3) ?? "not supplied";
+      const maxResidualText = maxResidual?.toExponential(3) ?? "not supplied";
+      if (q.includes("residual")) {
+        message = demoReply(
+          `The residual is the remaining algebraic mismatch in the implicit equation G(u) = 0. For this run, ${solverName} reports final residual ${finalResidualText} and maximum residual ${maxResidualText}. Smaller residual magnitude means the computed step satisfies its implicit equation more closely; these values alone do not prove a general convergence guarantee.`
+        );
+      } else if (q.includes("iteration") || q.includes("how many")) {
+        message = demoReply(
+          `${solverName} used ${totalIterations ?? "not supplied"} nonlinear iterations in total. The largest count for one time step was ${maxIterationsPerStep ?? "not supplied"}. These are the actual aggregate diagnostics supplied by this run.`
+        );
+      } else if (
+        asksStabilityVsNonlinear ||
+        q.includes("fail") ||
+        q.includes("converge")
+      ) {
+        message = demoReply(
+          `This run reports ${failedSteps ?? "not supplied"} failed steps for the ${solverName} nonlinear solve. Nonlinear-solver convergence is different from absolute stability of the numerical method: a stable implicit scheme can still fail if its algebraic equation is not solved successfully, and successful Newton convergence does not by itself prove the scheme is stable for every problem or step size.`
+        );
+      } else {
+        message = demoReply(
+          [
+            "Implicit solve diagnostics from this run:",
+            `• Nonlinear solver: ${solverName}`,
+            `• Total iterations: ${totalIterations ?? "not supplied"}`,
+            `• Maximum in one step: ${maxIterationsPerStep ?? "not supplied"}`,
+            `• Final residual: ${finalResidualText}`,
+            `• Maximum residual: ${maxResidualText}`,
+            `• Failed steps: ${failedSteps ?? "not supplied"}`,
+            "Residual is the remaining algebraic mismatch in G(u) = 0. Nonlinear convergence and method stability are not the same claim.",
+          ].join("\n")
+        );
+      }
+    }
+  } else if (
     q.includes("zoom") ||
     q.includes("focus") ||
     /t from|time from|graph.*\d/.test(q)
@@ -147,8 +213,22 @@ function buildMockResponse(
     q.includes("procedure") ||
     q.includes("explain this method")
   ) {
+    let stepFour: string;
+    if (!isImplicit) {
+      stepFour =
+        "The update is explicit: uₙ₊₁ is computed directly from past u and f values.";
+    } else if (nonlinearMethod === "newton") {
+      stepFour =
+        "Because the method is implicit, each step solves the equation G(u) = 0 for uₙ₊₁ with Newton iteration.";
+    } else if (nonlinearMethod === "fixed_point") {
+      stepFour =
+        "Because the method is implicit, each step solves for uₙ₊₁ with fixed-point iteration.";
+    } else {
+      stepFour =
+        "Because the method is implicit, each step requires solving an equation for uₙ₊₁.";
+    }
     message = demoReply(
-      `Step-by-step sketch for ${methodName}:\n\n1. Start from the IVP ${equation} with h = Δt.\n2. At each step, form tₙ = t₀ + nh and approximate values uₙ ≈ y(tₙ).\n3. Apply the update: ${formula}\n4. ${isImplicit ? "Because the method is implicit, the new value satisfies a fixed-point equation in uₙ₊₁ (see app notes)." : "The update is explicit: uₙ₊₁ is computed directly from past u and f values."}\n5. After ${pointCount ?? "N"} points, the run ends near t = ${finalT?.toFixed(4) ?? "?"} with u ≈ ${finalY?.toFixed(6) ?? "?"}.\n\n${orderLine}`
+      `Step-by-step sketch for ${methodName}:\n\n1. Start from the IVP ${equation} with h = Δt.\n2. At each step, form tₙ = t₀ + nh and approximate values uₙ ≈ y(tₙ).\n3. Apply the update: ${formula}\n4. ${stepFour}\n5. After ${pointCount ?? "N"} points, the run ends near t = ${finalT?.toFixed(4) ?? "?"} with u ≈ ${finalY?.toFixed(6) ?? "?"}.\n\n${orderLine}`
     );
   } else if (
     q.includes("graph") ||

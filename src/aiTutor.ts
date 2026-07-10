@@ -15,6 +15,7 @@ export const SUGGESTED_QUESTIONS = [
   "What does each variable mean?",
   "Why is the order of accuracy p?",
   "Explain the coefficients.",
+  "Explain the implicit solve diagnostics.",
   "How should I interpret the graph?",
   "What would happen if I used a smaller h?",
   "Create a table summary of the result.",
@@ -106,6 +107,9 @@ export function buildOdeLabContext(
       startupMethod: md.startupMethod,
       formulaDisplay: md.formulaDisplay,
       coefficients: md.coefficients,
+      ...(md.implicitDiagnostics
+        ? { implicitDiagnostics: { ...md.implicitDiagnostics } }
+        : {}),
       notes: md.notes,
     },
     result: resultBlock,

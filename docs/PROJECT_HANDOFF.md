@@ -268,7 +268,9 @@ If adding KaTeX/MathJax later:
 
 1. **Method** — grid of methods; optional **Compare two methods** (first-order only; Leap-Frog excluded).
 2. **Data** — t₀, t_end, h, y₀ (or u₀, v₀ for Leap-Frog), expression; order selector p for AB / AM / BDF.
-3. **Output** — final values, Chart.js plot, method metadata panel (formula, coefficients, notes), last 12 steps table.
+3. **Output** — final values, Chart.js plot, method metadata panel (formula, coefficients, notes), last 12 steps table. Successful implicit runs also show aggregate nonlinear-solve diagnostics; explicit runs omit that section.
+
+The AI Method Tutor context copies `implicitDiagnostics` only when present in the actual `SolverResult.metadata`, so live and demo responses can discuss measured iteration counts and residuals without fabricating them.
 
 Navigation:
 
