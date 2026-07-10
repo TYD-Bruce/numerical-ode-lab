@@ -25,6 +25,8 @@ The app should feel like a real teaching tool, not a toy starter template.
 | Language | TypeScript (strict) |
 | Bundler / dev server | Vite 5 (`npm run dev` → http://localhost:5173/) |
 | Charts | Chart.js 4 |
+| Tests | Vitest (`npm run test:run`) |
+| CI | GitHub Actions runs `npm ci` then `npm run verify` on push and pull requests |
 | Math in UI | **Unicode / plain text only** (KaTeX was removed; do not reintroduce raw LaTeX in visible UI without a renderer) |
 
 ### Main source files
@@ -32,6 +34,7 @@ The app should feel like a real teaching tool, not a toy starter template.
 | File | Role |
 |------|------|
 | `src/solvers.ts` | Integration API, one-step and generic multistep solvers, expression compile, `SolverResult` + metadata |
+| `src/grid.ts` | Shared fixed-step grid validation, alignment tolerance, and browser-safe step cap |
 | `src/polynomial.ts` | Polynomial helpers + Lagrange-based coefficient generators (AB, AM, BDF) |
 | `src/coefficientValidation.ts` | Self-checks for reference coefficients + simple Forward Euler sanity log |
 | `src/methodCatalog.ts` | Display names, blurbs, Unicode `formulaDisplay` strings |
@@ -45,6 +48,8 @@ The app should feel like a real teaching tool, not a toy starter template.
 ```bash
 npm install
 npm run dev      # local development
+npm run test:run # deterministic Vitest suite
+npm run verify   # tests, frontend/API type checks, and production build
 npm run build    # tsc && vite build
 npm run preview  # preview production build
 ```
@@ -125,14 +130,14 @@ integrateSecondOrder(params) → SolverResult         // Leap-Frog only
 compileScalarExpr(expr, "first" | "second")         // JS expression → function
 ```
 
-`SolverResult.metadata` includes: `displayName`, `family`, `order`, `formulaDisplay`, `coefficients` (alpha/beta when applicable), `isImplicit`, `startupMethod`, `notes`.
+`SolverResult.metadata` includes: `displayName`, `family`, `order`, `formulaDisplay`, `coefficients` (alpha/beta when applicable), `isImplicit`, `startupMethod`, `notes`, and optional `implicitDiagnostics` for implicit runs. Diagnostics aggregate the nonlinear method, iteration totals, per-step maximum, final/max residuals, and failed-step count.
 
 ### One-step methods (fixed implementations)
 
 | Method | Status |
 |--------|--------|
 | Forward Euler | Implemented (`forwardEulerCore`) |
-| Backward Euler | Implemented; scalar fixed-point iteration |
+| Backward Euler | Implemented; scalar Newton solve by default (fixed-point remains an internal option) |
 | Taylor Method (Order 2) | Implemented; numeric fₜ, fᵧ, y″ = fₜ + fᵧ f |
 | Runge-Kutta 4 | Implemented |
 | Leap-Frog | Implemented for u″ = a(t, u); **separate** second-order path |
@@ -157,10 +162,11 @@ There are **no** separate hard-coded `AB3`, `AB4`, `BDF3` functions — orders a
 ### Validation
 
 - `src/coefficientValidation.ts` runs on module load: checks AB/AM/BDF reference coefficients (tolerance 1e-10) and a simple Forward Euler decay sanity log in dev.
+- Vitest covers coefficient, BDF, fixed-grid, finite-input/RHS, nonlinear-solver, and solver-result invariants. The suite evolves; run `npm run test:run` for the current count.
+- All fixed-step solvers require a positive, grid-aligned integer `N = (tEnd - t0) / h`; no final short step is used. The active limit is 100,000 steps, and numeric inputs plus evaluated RHS outputs must be finite. See `docs/NUMERICAL_CONTRACTS.md`.
 
 ### Known incomplete / out-of-scope (do not assume done)
 
-- No automated test framework (only console validation).
 - No systems of ODEs.
 - No adaptive time stepping.
 - No arbitrary Runge-Kutta order or arbitrary Taylor order.
@@ -194,7 +200,7 @@ uₙ₊₁ = uₙ + h(β₋₁ fₙ₊₁ + β₀ fₙ + …)
 Nodes s = 1, 0, −1, …, −(p−2). Integrate each Lⱼ over [0, 1].  
 β[0] corresponds to fₙ₊₁, β[1] to fₙ, etc.
 
-**Implicit solve:** Adams-Bashforth predictor + scalar fixed-point corrector (max 100 iterations, tol 1e−10). Fail with a clear error if iteration does not converge.
+**Implicit solve:** Adams-Bashforth predictor followed by a scalar Newton solve by default. Fixed-point iteration remains available internally for tests/teaching comparisons. The nonlinear solver uses both update and residual tolerances and reports controlled failure reasons; convergence of this iteration is distinct from method stability.
 
 ### BDF (order p)
 
@@ -206,7 +212,9 @@ Interpolate through solution nodes s = 0, −1, …, −p (s = 0 → uₙ₊₁)
 αⱼ = (d/ds Lⱼ)|_{s=0}.
 
 **Solve:**  
-uₙ₊₁ = (h f(tₙ₊₁, uₙ₊₁) − Σ_{j=1..p} αⱼ uₙ₊₁₋ⱼ) / α₀ via fixed-point iteration.
+The BDF algebraic residual is solved by scalar Newton iteration by default; its fixed-point rearrangement remains available internally. A nonlinear-iteration failure does not by itself imply BDF scheme instability.
+
+**History indexing:** `bdfCore` uses `history[j - 1]` for each historical αⱼ term, where `history[0] = uₙ`.
 
 **Restrict:** 1 ≤ p ≤ 6 in UI and validation.
 
@@ -217,7 +225,7 @@ uₙ₊₁ = (h f(tₙ₊₁, uₙ₊₁) − Σ_{j=1..p} αⱼ uₙ₊₁₋ⱼ
 - Multistep method of order p needs **p − 1** startup steps after the initial value (p = 1 needs none beyond u₀).
 - **Startup method:** Runge-Kutta 4 with the **same** step size h as the main integration.
 - Bootstrap builds `uHistory` / `fHistory` with **newest first**: `history[0]` = current uₙ, `history[1]` = uₙ₋₁, etc.
-- BDF bootstrap uses `order + 1` history values (needs uₙ₊₁, uₙ, … through the stencil width).
+- AB, AM, and BDF share `bootstrapMultistep(p, order)`; BDF does not bootstrap an extra point. Every order-p multistep run requires at least p fixed steps so its selected formula executes at least once.
 
 Metadata should show: **Startup method: Runge-Kutta 4** when applicable.
 
@@ -272,10 +280,9 @@ Navigation:
 ## 11. Next recommended tasks (ordered, small scope)
 
 1. **Add `README.md`** at repo root with install, `npm run dev`, project overview, and link to this handoff — lowest risk, helps new contributors.
-2. **Add a minimal test runner** (e.g. Vitest) with unit tests for `adamsBashforthCoefficients`, `adamsMoultonCoefficients`, `bdfCoefficients` against §8 tables — protects the core refactor.
-3. **Compare mode UX:** when picking two methods on the grid, allow setting **different orders p** per method on the compare data form (partially exists; verify disabled fields for non-multistep and document behavior).
-4. **Educational “observed order” panel** for the model y′ = y, y(0) = 1: run two step sizes, estimate order from error at t = 1 vs e — small UI addition, reuses existing solvers.
-5. **Persist inputs in `localStorage`** so refresh does not lose t₀, h, expression, and order p — small `main.ts` change, high student UX value.
+2. **Compare mode UX:** when picking two methods on the grid, allow setting **different orders p** per method on the compare data form (partially exists; verify disabled fields for non-multistep and document behavior).
+3. **Educational “observed order” panel** for the model y′ = y, y(0) = 1: run two step sizes, estimate order from error at t = 1 vs e — small UI addition, reuses existing solvers.
+4. **Persist inputs in `localStorage`** so refresh does not lose t₀, h, expression, and order p — small `main.ts` change, high student UX value.
 
 ---
 

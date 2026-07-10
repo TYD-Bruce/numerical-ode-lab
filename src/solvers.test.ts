@@ -347,3 +347,98 @@ describe("fixed-step solver contract", () => {
     expectFixedGrid(result, 0.2, 1.2, 0.1);
   });
 });
+
+const MULTISTEP_FAMILIES = [
+  ["adams_bashforth", "Adams-Bashforth"],
+  ["adams_moulton", "Adams-Moulton"],
+  ["bdf", "Backward Differentiation Formula"],
+] as const;
+
+describe("multistep minimum-grid contract", () => {
+  it.each(MULTISTEP_FAMILIES)(
+    "%s rejects N < p before bootstrap can create an internal grid error",
+    (family, displayName) => {
+      expect(() =>
+        integrateFirstOrder(
+          { family, order: 4 },
+          { t0: 0, y0: 1, tEnd: 0.2, h: 0.1, f: (_t, y) => -y }
+        )
+      ).toThrow(
+        `${displayName} of order 4 requires at least 4 fixed steps; this grid provides N = 2.`
+      );
+    }
+  );
+
+  it.each(MULTISTEP_FAMILIES)(
+    "%s applies an order-p multistep update when N = p",
+    (family) => {
+      const result = integrateFirstOrder(
+        { family, order: 4 },
+        { t0: 0, y0: 1, tEnd: 0.4, h: 0.1, f: (_t, y) => -y }
+      );
+
+      expect(result.points).toHaveLength(5);
+      expect(result.points.at(-1)!.t).toBeCloseTo(0.4, 12);
+      expect(result.points.every((point) => Number.isFinite(point.y))).toBe(
+        true
+      );
+    }
+  );
+});
+
+describe("implicit Newton diagnostics", () => {
+  it("solves stiff Backward Euler even though its fixed-point map is non-contractive", () => {
+    const h = 0.1;
+    const result = integrateFirstOrder(
+      { family: "backward_euler" },
+      { t0: 0, y0: 1, tEnd: h, h, f: (_t, y) => -1000 * y }
+    );
+    const u1 = result.points[1]!.y;
+
+    expect(Number.isFinite(u1)).toBe(true);
+    expect(u1).toBeCloseTo(1 / 101, 10);
+    expect(Math.abs(u1 - 1 - h * (-1000 * u1))).toBeLessThan(1e-10);
+    expect(result.metadata.implicitDiagnostics).toMatchObject({
+      nonlinearMethod: "newton",
+      failedSteps: 0,
+    });
+    expect(result.metadata.implicitDiagnostics!.totalIterations).toBeGreaterThan(0);
+    expect(result.metadata.implicitDiagnostics!.maxResidual).toBeLessThan(1e-10);
+  });
+
+  it("reports fixed-point failure separately from Backward Euler stability", () => {
+    expect(() =>
+      integrateFirstOrder(
+        { family: "backward_euler" },
+        {
+          t0: 0,
+          y0: 1,
+          tEnd: 0.1,
+          h: 0.1,
+          f: (_t, y) => -1000 * y,
+          implicitSolver: {
+            method: "fixed_point",
+            maxIterations: 10,
+          },
+        }
+      )
+    ).toThrow("Fixed-point iteration did not converge");
+  });
+
+  it("keeps Newton residuals small for implicit Adams-Moulton and BDF", () => {
+    const f: ScalarRhs = (_t, y) => -1000 * y;
+    const am = integrateFirstOrder(
+      { family: "adams_moulton", order: 2 },
+      { t0: 0, y0: 1, tEnd: 0.02, h: 0.01, f }
+    );
+    const bdf = integrateFirstOrder(
+      { family: "bdf", order: 1 },
+      { t0: 0, y0: 1, tEnd: 0.1, h: 0.1, f }
+    );
+
+    expect(am.points.every((point) => Number.isFinite(point.y))).toBe(true);
+    expect(bdf.points.every((point) => Number.isFinite(point.y))).toBe(true);
+    expect(am.metadata.implicitDiagnostics!.maxResidual).toBeLessThan(1e-9);
+    expect(bdf.metadata.implicitDiagnostics!.maxResidual).toBeLessThan(1e-10);
+  });
+});

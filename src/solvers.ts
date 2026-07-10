@@ -7,6 +7,13 @@ import {
   validateFixedStepGrid,
   withinFloatingPointTolerance,
 } from "./grid";
+import {
+  solveScalarNonlinear,
+  type NonlinearMethod,
+  type NonlinearSolveOptions,
+  type NonlinearSolveResult,
+  type ScalarNonlinearProblem,
+} from "./nonlinearSolver";
 import { catalogByFamily, displayNameFor } from "./methodCatalog";
 import { runCoefficientValidation, runSanityCheck } from "./coefficientValidation";
 
@@ -33,6 +40,8 @@ export interface FirstOrderParams {
   tEnd: number;
   h: number;
   f: (t: number, y: number) => number;
+  /** Internal numerical-kernel override; UI runs use Newton defaults. */
+  implicitSolver?: Partial<NonlinearSolveOptions>;
 }
 
 export interface SecondOrderParams {
@@ -59,7 +68,17 @@ export interface SolverMetadata {
   coefficients?: { alpha?: number[]; beta?: number[] };
   isImplicit: boolean;
   startupMethod?: string;
+  implicitDiagnostics?: ImplicitDiagnostics;
   notes: string[];
+}
+
+export interface ImplicitDiagnostics {
+  nonlinearMethod: NonlinearMethod;
+  totalIterations: number;
+  maxIterationsPerStep: number;
+  finalResidual: number;
+  maxResidual: number;
+  failedSteps: number;
 }
 
 export interface SolverResult {
@@ -67,8 +86,12 @@ export interface SolverResult {
   metadata: SolverMetadata;
 }
 
-const IMPLICIT_MAX_IT = 100;
-const IMPLICIT_TOL = 1e-10;
+const DEFAULT_IMPLICIT_OPTIONS: NonlinearSolveOptions = {
+  method: "newton",
+  maxIterations: 50,
+  absoluteTolerance: 1e-12,
+  relativeTolerance: 1e-10,
+};
 const STARTUP_LABEL = "Runge-Kutta 4";
 
 function assertStepPositive(h: number): void {
@@ -142,25 +165,80 @@ function evaluateSecondOrderAcceleration(
   }
 }
 
-function solveImplicit(
-  g: (uNext: number) => number,
-  guess: number,
-  label: string
-): number {
-  let u = guess;
-  for (let i = 0; i < IMPLICIT_MAX_IT; i++) {
-    const un = g(u);
-    if (!Number.isFinite(un)) {
-      throw new Error(
-        "The implicit iteration produced a non-finite value. Try a smaller step size h."
-      );
-    }
-    if (Math.abs(un - u) < IMPLICIT_TOL) return un;
-    u = un;
-  }
-  throw new Error(
-    `The implicit iteration did not converge (${label}). Try a smaller step size h.`
+function implicitOptions(p: FirstOrderParams): NonlinearSolveOptions {
+  return { ...DEFAULT_IMPLICIT_OPTIONS, ...p.implicitSolver };
+}
+
+function createImplicitDiagnostics(
+  nonlinearMethod: NonlinearMethod
+): ImplicitDiagnostics {
+  return {
+    nonlinearMethod,
+    totalIterations: 0,
+    maxIterationsPerStep: 0,
+    finalResidual: 0,
+    maxResidual: 0,
+    failedSteps: 0,
+  };
+}
+
+function recordImplicitSolve(
+  diagnostics: ImplicitDiagnostics,
+  nonlinear: NonlinearSolveResult
+): void {
+  diagnostics.totalIterations += nonlinear.iterations;
+  diagnostics.maxIterationsPerStep = Math.max(
+    diagnostics.maxIterationsPerStep,
+    nonlinear.iterations
   );
+  diagnostics.finalResidual = nonlinear.residual;
+  diagnostics.maxResidual = Math.max(
+    diagnostics.maxResidual,
+    Math.abs(nonlinear.residual)
+  );
+}
+
+function throwImplicitFailure(
+  nonlinear: NonlinearSolveResult,
+  label: string,
+  t: number
+): never {
+  const prefix = `${label}: `;
+  switch (nonlinear.reason) {
+    case "max_iterations":
+      throw new Error(
+        `${prefix}${nonlinear.method === "newton" ? "Newton" : "Fixed-point"} iteration did not converge after ${nonlinear.iterations} iterations at t = ${t}. The nonlinear solve failed; this is distinct from absolute stability of the numerical method.`
+      );
+    case "derivative_too_small":
+      throw new Error(
+        `${prefix}Newton derivative was too small near u = ${nonlinear.value} at t = ${t}. The nonlinear solve failed; this is distinct from absolute stability of the numerical method.`
+      );
+    case "non_finite_residual":
+      throw new Error(`The implicit residual became non-finite at t = ${t}.`);
+    case "non_finite_value":
+      throw new Error(
+        `${prefix}${nonlinear.method} iteration produced a non-finite value at t = ${t}.`
+      );
+    case "converged":
+      throw new Error("Internal error: converged nonlinear solve was reported as failed.");
+  }
+}
+
+function solveImplicit(
+  problem: ScalarNonlinearProblem,
+  guess: number,
+  label: string,
+  t: number,
+  options: NonlinearSolveOptions,
+  diagnostics: ImplicitDiagnostics
+): number {
+  const nonlinear = solveScalarNonlinear(problem, guess, options);
+  if (!nonlinear.converged) {
+    diagnostics.failedSteps++;
+    return throwImplicitFailure(nonlinear, label, t);
+  }
+  recordImplicitSolve(diagnostics, nonlinear);
+  return nonlinear.value;
 }
 
 function rk4Step(
@@ -201,9 +279,28 @@ function validateOrder(family: MethodFamily, order: number | undefined): number 
   return order;
 }
 
+function assertMultistepMinimumSteps(
+  family: MethodFamily,
+  order: number,
+  steps: number
+): void {
+  if (
+    (family === "adams_bashforth" ||
+      family === "adams_moulton" ||
+      family === "bdf") &&
+    steps < order
+  ) {
+    const { displayName } = catalogByFamily(family);
+    throw new Error(
+      `${displayName} of order ${order} requires at least ${order} fixed steps; this grid provides N = ${steps}. Increase the interval or decrease h.`
+    );
+  }
+}
+
 function buildMetadata(
   config: MethodConfig,
-  coeffs?: { alpha?: number[]; beta?: number[] }
+  coeffs?: { alpha?: number[]; beta?: number[] },
+  implicitDiagnostics?: ImplicitDiagnostics
 ): SolverMetadata {
   const cat = catalogByFamily(config.family);
   const order = validateOrder(config.family, config.order ?? cat.orderDefault);
@@ -252,6 +349,7 @@ function buildMetadata(
     coefficients: coeffs,
     isImplicit: cat.isImplicit,
     startupMethod: cat.hasOrderSelector ? STARTUP_LABEL : undefined,
+    implicitDiagnostics,
     notes,
   };
 }
@@ -316,7 +414,11 @@ function forwardEulerCore(p: FirstOrderParams): SeriesPoint[] {
   return out;
 }
 
-function backwardEulerCore(p: FirstOrderParams): SeriesPoint[] {
+function backwardEulerCore(
+  p: FirstOrderParams,
+  options: NonlinearSolveOptions,
+  diagnostics: ImplicitDiagnostics
+): SeriesPoint[] {
   assertStepPositive(p.h);
   const n = countSteps(p.t0, p.tEnd, p.h);
   const out: SeriesPoint[] = [];
@@ -328,9 +430,17 @@ function backwardEulerCore(p: FirstOrderParams): SeriesPoint[] {
     const h = p.h;
     const yPred = y + h * evaluateFirstOrderRhs(p, t, y);
     y = solveImplicit(
-      (uNext) => y + h * evaluateFirstOrderRhs(p, tNext, uNext),
+      {
+        residual: (uNext) =>
+          uNext - y - h * evaluateFirstOrderRhs(p, tNext, uNext),
+        fixedPointMap: (uNext) =>
+          y + h * evaluateFirstOrderRhs(p, tNext, uNext),
+      },
       yPred,
-      "Backward Euler"
+      "Backward Euler",
+      tNext,
+      options,
+      diagnostics
     );
     t = tNext;
     pushPoint(out, t, y);
@@ -435,7 +545,12 @@ function adamsBashforthCore(p: FirstOrderParams, order: number): SeriesPoint[] {
   return out;
 }
 
-function adamsMoultonCore(p: FirstOrderParams, order: number): SeriesPoint[] {
+function adamsMoultonCore(
+  p: FirstOrderParams,
+  order: number,
+  options: NonlinearSolveOptions,
+  diagnostics: ImplicitDiagnostics
+): SeriesPoint[] {
   const beta = adamsMoultonCoefficients(order);
   const n = countSteps(p.t0, p.tEnd, p.h);
   const boot = bootstrapMultistep(p, order);
@@ -463,7 +578,17 @@ function adamsMoultonCore(p: FirstOrderParams, order: number): SeriesPoint[] {
       return uCurrent + h * sum;
     };
 
-    const uNext = solveImplicit(corrector, predictor, "Adams-Moulton");
+    const uNext = solveImplicit(
+      {
+        residual: (uGuess) => uGuess - corrector(uGuess),
+        fixedPointMap: corrector,
+      },
+      predictor,
+      "Adams-Moulton",
+      tNext,
+      options,
+      diagnostics
+    );
     uHistory.unshift(uNext);
     fHistory.unshift(evaluateFirstOrderRhs(p, tNext, uNext));
     uHistory.pop();
@@ -474,7 +599,12 @@ function adamsMoultonCore(p: FirstOrderParams, order: number): SeriesPoint[] {
   return out;
 }
 
-function bdfCore(p: FirstOrderParams, order: number): SeriesPoint[] {
+function bdfCore(
+  p: FirstOrderParams,
+  order: number,
+  options: NonlinearSolveOptions,
+  diagnostics: ImplicitDiagnostics
+): SeriesPoint[] {
   const alpha = bdfCoefficients(order);
   const n = countSteps(p.t0, p.tEnd, p.h);
   const boot = bootstrapMultistep(p, order);
@@ -492,10 +622,19 @@ function bdfCore(p: FirstOrderParams, order: number): SeriesPoint[] {
     }
     const a0 = alpha[0]!;
     const guess = history[0]!;
+    const fixedPointMap = (u: number) =>
+      (h * evaluateFirstOrderRhs(p, tNext, u) - explicit) / a0;
     const uNext = solveImplicit(
-      (u) => (h * evaluateFirstOrderRhs(p, tNext, u) - explicit) / a0,
+      {
+        residual: (u) =>
+          a0 * u + explicit - h * evaluateFirstOrderRhs(p, tNext, u),
+        fixedPointMap,
+      },
       guess,
-      "BDF"
+      "BDF",
+      tNext,
+      options,
+      diagnostics
     );
     uHistory.unshift(uNext);
     if (uHistory.length > order) uHistory.pop();
@@ -514,16 +653,20 @@ export function integrateFirstOrder(
     config.family,
     config.order ?? catalogByFamily(config.family).orderDefault
   );
+  assertMultistepMinimumSteps(config.family, order, steps);
 
   let points: SeriesPoint[];
   let coeffs: { alpha?: number[]; beta?: number[] } | undefined;
+  const nonlinearOptions = implicitOptions(p);
+  let implicitDiagnostics: ImplicitDiagnostics | undefined;
 
   switch (config.family) {
     case "forward_euler":
       points = forwardEulerCore(p);
       break;
     case "backward_euler":
-      points = backwardEulerCore(p);
+      implicitDiagnostics = createImplicitDiagnostics(nonlinearOptions.method);
+      points = backwardEulerCore(p, nonlinearOptions, implicitDiagnostics);
       break;
     case "taylor":
       points = taylorOrder2Core(p);
@@ -540,13 +683,15 @@ export function integrateFirstOrder(
     case "adams_moulton": {
       const beta = adamsMoultonCoefficients(order);
       coeffs = { beta };
-      points = adamsMoultonCore(p, order);
+      implicitDiagnostics = createImplicitDiagnostics(nonlinearOptions.method);
+      points = adamsMoultonCore(p, order, nonlinearOptions, implicitDiagnostics);
       break;
     }
     case "bdf": {
       const alpha = bdfCoefficients(order);
       coeffs = { alpha };
-      points = bdfCore(p, order);
+      implicitDiagnostics = createImplicitDiagnostics(nonlinearOptions.method);
+      points = bdfCore(p, order, nonlinearOptions, implicitDiagnostics);
       break;
     }
     case "leapfrog":
@@ -561,7 +706,11 @@ export function integrateFirstOrder(
 
   return {
     points,
-    metadata: buildMetadata({ family: config.family, order }, coeffs),
+    metadata: buildMetadata(
+      { family: config.family, order },
+      coeffs,
+      implicitDiagnostics
+    ),
   };
 }
 
