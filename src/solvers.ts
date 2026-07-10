@@ -384,7 +384,7 @@ function adamsMoultonCore(p: FirstOrderParams, order: number): SeriesPoint[] {
 function bdfCore(p: FirstOrderParams, order: number): SeriesPoint[] {
   const alpha = bdfCoefficients(order);
   const n = countSteps(p.t0, p.tEnd, p.h);
-  const boot = bootstrapMultistep(p, order + 1);
+  const boot = bootstrapMultistep(p, order);
   const out = boot.points;
   let { uHistory, t } = boot;
   const stepsDone = out.length - 1;
@@ -392,10 +392,10 @@ function bdfCore(p: FirstOrderParams, order: number): SeriesPoint[] {
   for (let i = stepsDone; i < n; i++) {
     const tNext = Math.min(p.t0 + (i + 1) * p.h, p.tEnd);
     const h = tNext - t;
-    const history = uHistory.slice(0, order + 1);
+    const history = uHistory.slice(0, order);
     let explicit = 0;
     for (let j = 1; j <= order; j++) {
-      explicit += alpha[j]! * history[j]!;
+      explicit += alpha[j]! * history[j - 1]!;
     }
     const a0 = alpha[0]!;
     const guess = history[0]!;
@@ -405,7 +405,7 @@ function bdfCore(p: FirstOrderParams, order: number): SeriesPoint[] {
       "BDF"
     );
     uHistory.unshift(uNext);
-    if (uHistory.length > order + 1) uHistory.pop();
+    if (uHistory.length > order) uHistory.pop();
     t = tNext;
     pushPoint(out, t, uNext);
   }

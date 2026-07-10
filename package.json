@@ -6,6 +6,11 @@
   "scripts": {
     "dev": "vite",
     "dev:api": "tsx server/dev.ts",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "typecheck": "tsc -p tsconfig.json",
+    "typecheck:api": "tsc -p tsconfig.api.json",
+    "verify": "npm run test:run && npm run typecheck && npm run typecheck:api && npm run build",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
@@ -14,7 +19,8 @@
     "@vercel/node": "^3.2.0",
     "tsx": "^4.19.0",
     "typescript": "~5.4.0",
-    "vite": "^5.4.0"
+    "vite": "^5.4.0",
+    "vitest": "^2.1.9"
   },
   "dependencies": {
     "chart.js": "^4.4.0"
