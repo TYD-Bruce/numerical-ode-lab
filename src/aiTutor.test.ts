@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { buildOdeLabContext, type ProblemInputs } from "./aiTutor";
+import { buildOdeLabContext, sanitizeTutorText, type ProblemInputs } from "./aiTutor";
 import { integrateFirstOrder } from "./solvers";
 
 const PROBLEM: ProblemInputs = {
@@ -39,5 +39,12 @@ describe("AI tutor implicit diagnostics context", () => {
     const context = buildOdeLabContext(result, PROBLEM);
 
     expect(context.method).not.toHaveProperty("implicitDiagnostics");
+  });
+});
+
+describe("AI tutor controlled math text", () => {
+  it("preserves controlled delimiters while retaining legacy notation cleanup", () => {
+    expect(sanitizeTutorText("Order \\(p=\\alpha_j\\).\n\\[E=h^p\\]"))
+      .toBe("Order \\(p=αⱼ\\).\n\\[E=h^p\\]");
   });
 });

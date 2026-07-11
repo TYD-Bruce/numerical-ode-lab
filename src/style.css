@@ -430,6 +430,18 @@ code {
   color: var(--text);
 }
 
+.ai-math-inline {
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: -0.12em;
+}
+
+.ai-math-block {
+  display: block;
+  margin: 8px 0;
+  overflow-x: auto;
+}
+
 .ai-error {
   margin: 0;
   color: var(--danger);
@@ -566,6 +578,20 @@ code {
   border-radius: 8px;
   background: rgba(0, 0, 0, 0.2);
   overflow-x: auto;
+}
+
+.readonly-math {
+  max-width: 100%;
+  color: inherit;
+}
+
+.readonly-math-block {
+  display: block;
+}
+
+.readonly-math-fallback {
+  font-family: inherit;
+  white-space: normal;
 }
 
 .formula-inline {

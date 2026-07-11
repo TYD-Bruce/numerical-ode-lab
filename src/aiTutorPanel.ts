@@ -12,6 +12,7 @@ import {
 } from "./aiTutor";
 import type { ChartInstruction } from "./aiTypes";
 import { escapeHtml } from "./mathDisplay";
+import { renderTutorMessageContent } from "./math/ui/tutorMath";
 
 export interface AiTutorPanelOptions {
   enabled: boolean;
@@ -34,22 +35,32 @@ function setDemoBadge(host: HTMLElement, visible: boolean): void {
 }
 
 function renderMessages(container: HTMLElement): void {
+  container.replaceChildren();
   if (conversation.length === 0) {
-    container.innerHTML =
-      '<p class="ai-tutor-empty">Ask a question about this run, method, or plot.</p>';
+    const empty = document.createElement("p");
+    empty.className = "ai-tutor-empty";
+    empty.textContent = "Ask a question about this run, method, or plot.";
+    container.append(empty);
     return;
   }
-  container.innerHTML = conversation
-    .map((m) => {
-      const role = m.role === "user" ? "You" : "Tutor";
-      const cls = m.role === "user" ? "ai-msg-user" : "ai-msg-assistant";
-      const body = escapeHtml(sanitizeTutorText(m.content)).replace(
-        /\n/g,
-        "<br>"
-      );
-      return `<div class="ai-msg ${cls}"><span class="ai-msg-role">${role}</span><div class="ai-msg-body">${body}</div></div>`;
-    })
-    .join("");
+  for (const message of conversation) {
+    const item = document.createElement("div");
+    item.className = `ai-msg ${message.role === "user" ? "ai-msg-user" : "ai-msg-assistant"}`;
+    const role = document.createElement("span");
+    role.className = "ai-msg-role";
+    role.textContent = message.role === "user" ? "You" : "Tutor";
+    const body = document.createElement("div");
+    body.className = "ai-msg-body";
+    item.append(role, body);
+    container.append(item);
+    renderTutorMessageContent(body, {
+      ...message,
+      content:
+        message.role === "assistant"
+          ? sanitizeTutorText(message.content)
+          : message.content,
+    });
+  }
   container.scrollTop = container.scrollHeight;
 }
 

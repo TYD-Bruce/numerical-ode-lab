@@ -26,6 +26,8 @@ import {
 import { escapeHtml, formatCoefficients } from "./mathDisplay";
 import type { ProblemInputs } from "./aiTutor";
 import { mountAiTutorPanel, resetTutorConversation } from "./aiTutorPanel";
+import { methodMathContent } from "./math/ui/methodMathContent";
+import { renderReadonlyMath } from "./math/ui/readonlyMath";
 import "./style.css";
 
 Chart.register(
@@ -691,7 +693,7 @@ function metadataPanelHtml(meta: SolverResult["metadata"]): string {
       </dl>
       ${implicitDiagnosticsHtml(meta)}
       <h4>Formula</h4>
-      <div class="formula-block">${escapeHtml(meta.formulaDisplay)}</div>
+      <div class="formula-block" data-method-formula>${escapeHtml(meta.formulaDisplay)}</div>
       ${
         coeffText
           ? `<h4>Coefficients</h4><div class="formula-inline">${escapeHtml(coeffText)}</div>`
@@ -704,6 +706,16 @@ function metadataPanelHtml(meta: SolverResult["metadata"]): string {
       }
     </section>
   `;
+}
+
+function renderMethodFormulas(
+  container: Element,
+  methods: Array<Pick<MethodCatalogEntry, "family" | "formulaDisplay">>
+): void {
+  container.querySelectorAll<HTMLElement>("[data-method-formula]").forEach((target, index) => {
+    const formula = methods[index] ? methodMathContent(methods[index]!).formula : undefined;
+    if (formula) renderReadonlyMath(target, formula, { display: "block" });
+  });
 }
 
 function renderResultsShell(
@@ -857,6 +869,8 @@ function mountResults(
     </section>
   `;
 
+  renderMethodFormulas(body, [meta]);
+
   drawSingleChart(meta, series);
 }
 
@@ -951,8 +965,8 @@ function chartOptions(
 }
 
 function mountCompareResults(
-  _metaA: MethodCatalogEntry,
-  _metaB: MethodCatalogEntry,
+  metaA: MethodCatalogEntry,
+  metaB: MethodCatalogEntry,
   resultA: SolverResult,
   resultB: SolverResult
 ): void {
@@ -1017,6 +1031,8 @@ function mountCompareResults(
       </div>
     </section>
   `;
+
+  renderMethodFormulas(body, [metaA, metaB]);
 
   const canvas = document.querySelector<HTMLCanvasElement>("#plot");
   if (!canvas) return;

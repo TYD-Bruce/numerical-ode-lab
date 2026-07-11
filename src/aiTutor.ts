@@ -142,10 +142,9 @@ export async function sendChatMessage(
   return data;
 }
 
-/** Strip common LaTeX delimiters if the model returns them anyway. */
+/** Normalize a few legacy notation spellings while preserving controlled math delimiters. */
 export function sanitizeTutorText(text: string): string {
   return text
-    .replace(/\\\(|\\\)|\\\[|\\\]/g, "")
     .replace(/\\alpha_j/g, "αⱼ")
     .replace(/\\beta_j/g, "βⱼ")
     .replace(/u_\{n\+1\}/g, "uₙ₊₁")
