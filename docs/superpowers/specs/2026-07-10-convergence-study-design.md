@@ -1,6 +1,6 @@
 # Observed Convergence Order Experiment Design
 
-**Status:** Approved for implementation planning
+**Status:** Approved, pending Human-Friendly Math Expressions prerequisite
 
 **Date:** 2026-07-10
 
@@ -19,6 +19,10 @@ The existing three-step flow remains unchanged:
 The drawer is analysis attached to a completed run, not a fourth step. It is collapsed by default and never changes the numerical result already shown in Step 3.
 
 The feature teaches the distinction between exact and numerical solutions, what grid refinement means, how global errors are measured, how observed order relates to theoretical order, how to read a log-log error plot, and why finite experiments may not reproduce theory exactly.
+
+### Prerequisite
+
+This design depends on [Human-Friendly Math Expressions](./2026-07-10-human-friendly-math-expressions-design.md). Convergence Study implementation begins only after that foundation is implemented, tested, and reviewed. The prerequisite owns MathLive editing/rendering, MathJSON adaptation, the project-owned `MathAst`, variable profiles, canonical expression serialization, legacy import, and explicit numerical evaluation. This document states only the convergence integration contract and remains authoritative for convergence numerical rules.
 
 ## 2. Version 1 boundaries
 
@@ -55,7 +59,7 @@ The experiment calls the existing `integrateFirstOrder` integration API. It must
 - AB, AM, and BDF continue to use Runge-Kutta 4 startup values at the same level step size.
 - Existing implicit nonlinear-solve behavior and failure messages remain unchanged. A Newton failure is not automatically described as method instability.
 - The theoretical order is taken from the successful level result's `SolverMetadata.order`, derived from the actual selected method configuration. The study verifies that all levels report the same method family and order.
-- Visible mathematics uses Unicode and plain text. No raw LaTeX is added.
+- Visible mathematics uses the prerequisite's shared read-only math renderer with accessible plain-text fallback. No KaTeX or MathJax is added, and rendering never affects numerical results.
 
 The study adds a separate aggregate budget of 250,000 integration steps. A configuration must satisfy both the 100,000-step per-level solver cap and the 250,000-step study cap. This aggregate budget is a browser-protection proxy for limiting synchronous work and stored points, not an exact runtime or RHS-evaluation estimate. Per-step costs differ: Forward Euler uses less work than RK4, while Newton-based implicit methods may require multiple residual and derivative evaluations per step.
 
@@ -67,8 +71,8 @@ The experiment model is pure TypeScript and independent of the DOM. `main.ts` co
 
 The planned responsibility split is:
 
-- `src/problemPresets.ts`: immutable preset definitions, preset IDs, recommended inputs, teaching text, suggested methods, and explicit-step warnings.
-- `src/exactSolution.ts`: exact-expression compilation and the nine-point numerical consistency check.
+- `src/problemPresets.ts`: immutable AST-backed preset definitions, preset IDs, recommended inputs, teaching text, suggested methods, and explicit-step warnings.
+- `src/exactSolution.ts`: exact-solution profile integration and the nine-point numerical consistency check; parsing, validation, canonicalization, and evaluation come from the prerequisite expression foundation.
 - `src/convergenceStudy.ts`: configuration validation, refinement preview, study execution, errors, observed-order assessments, interpretation, theoretical reference data, and stable fingerprints.
 - `src/convergenceStudyView.ts`: drawer markup, table, teaching accordions, conclusion card, and Chart.js adapter. It receives model results and emits user intents; it contains no numerical policy.
 - `src/main.ts`: integration into the existing Step 2 and Step 3 lifecycle, preset undo state, current-run identity, convergence result persistence, and stale-state transitions.
@@ -79,14 +83,11 @@ This split is a design target, not authorization for unrelated refactoring. The 
 ### Core types
 
 ```ts
-type ExactSolutionFunction = (
-  t: number,
-  t0: number,
-  y0: number
-) => number;
+// Supplied by the Human-Friendly Math Expressions foundation.
+type ExactSolutionEvaluator = (t: number, t0: number, y0: number) => number;
 
 interface FirstOrderProblemDefinition {
-  expression: string;
+  rhsExpression: MathExpression;
   rhs: (t: number, y: number) => number;
   t0: number;
   y0: number;
@@ -116,8 +117,8 @@ interface ExactSolutionCheckResult {
 interface ConvergenceStudyConfig {
   method: MethodConfig;
   problem: FirstOrderProblemDefinition;
-  exactSolutionExpression: string;
-  exactSolution: ExactSolutionFunction;
+  exactSolution: MathExpression;
+  exactSolutionEvaluator: ExactSolutionEvaluator;
   baseStepSize: number;
   refinementLevels: number;
   allowConsistencyWarning: boolean;
@@ -184,7 +185,7 @@ A preset selector appears near the first-order equation input. It is absent from
 
 ### Replacement, snapshot, and customization behavior
 
-The first-order form tracks whether its problem fields differ from their initial defaults or the last loaded preset. The tracked problem fields are equation, `t0`, `y0`, `tEnd`, `h`, exact-solution enabled state, and exact-solution expression. Method and method order are not preset fields.
+The first-order form tracks whether its problem fields differ from their initial defaults or the last loaded preset. The tracked problem fields are the confirmed RHS `MathExpression`, `t0`, `y0`, `tEnd`, `h`, exact-solution enabled state, and confirmed exact-solution `MathExpression`. Method and method order are not preset fields.
 
 - If the tracked fields are unchanged, selecting a preset loads it immediately.
 - If any tracked field was edited, selecting a preset opens a confirmation: replacing the current problem will overwrite those fields.
@@ -193,34 +194,30 @@ The first-order form tracks whether its problem fields differ from their initial
 - Editing any problem field after loading a preset changes the display identity to **Customised from: \<Preset Name\>**. Returning values manually to the preset defaults does not silently remove this label; reloading that preset restores its unmodified identity.
 - Undo restores the identity from the snapshot. It does not alter the selected numerical method.
 
-Preset loading sets the ODE expression, `t0`, `y0`, `tEnd`, recommended `h`, enables **I know the exact solution**, fills the exact expression, and exposes the preset's teaching summary and observation guidance.
+Preset loading sets the AST-backed ODE expression, `t0`, `y0`, `tEnd`, recommended `h`, enables **I know the exact solution**, fills the AST-backed exact solution, and exposes the preset's teaching summary and observation guidance. Preset mathematical meaning is stored as validated project-owned AST plus restorable LaTeX and accessible display text under the correct variable profile; raw JavaScript strings and raw MathJSON are not authoritative.
 
 ### Preset catalog
 
 | Preset | Inputs | Recommended setup | Teaching summary and observation guidance |
 |---|---|---|---|
-| Exponential Decay | `f(t,y) = -y`; `t0 = 0`; `y0 = 1`; exact `Math.exp(-t)` | `tEnd = 5`; base `h = 0.2`; suggested: Forward Euler, Taylor 2, RK4, then implicit or multistep comparisons in separate single runs | Basic decay, global error, and stability. Watch how absolute error changes as the exact solution approaches zero. Explicit Euler is stable for this recommended step; unusually large explicit steps can oscillate or grow. |
-| Exponential Growth | `f(t,y) = y`; `t0 = 0`; `y0 = 1`; exact `Math.exp(t)` | `tEnd = 3`; base `h = 0.1`; suggested: Forward Euler, Taylor 2, RK4 | Shows error growth with solution magnitude. Compare absolute error with the rapidly growing exact value; convergence order concerns how error changes with `h`, not whether absolute error is visually small. |
-| Linear Forced Equation | `f(t,y) = t - y`; `t0 = 0`; `y0 = 1`; exact `t - 1 + 2 * Math.exp(-t)` | `tEnd = 5`; base `h = 0.2`; suggested: Taylor 2, RK4, Adams-Bashforth, Adams-Moulton | A nonhomogeneous linear equation combining a transient and a growing forcing term. Observe whether final-time and interval-wide error tell the same story. |
-| Logistic Growth | `f(t,y) = y * (1 - y)`; `t0 = 0`; `y0 = 0.5`; exact `1 / (1 + Math.exp(-t))` | `tEnd = 10`; base `h = 0.25`; suggested: Forward Euler, RK4, Adams-Moulton | Demonstrates nonlinearity, saturation, and approach to equilibrium. Observe where the maximum error occurs rather than assuming it is at the endpoint. Very large explicit steps can overshoot the physical interval or destabilize the discrete solution. |
-| Oscillatory Forcing | `f(t,y) = Math.cos(t)`; `t0 = 0`; `y0 = 0`; exact `Math.sin(t)` | `tEnd = 6`; base `h = 0.1`; suggested: Forward Euler, Taylor 2, RK4, Adams-Bashforth | Shows a periodic solution and why maximum global error can be more informative than endpoint error. At some endpoints, cancellation can make final-time error unusually small and its observed order unreliable. |
-| Stiff Relaxation | `f(t,y) = -1000 * (y - Math.cos(t)) - Math.sin(t)`; `t0 = 0`; `y0 = 1`; exact `Math.cos(t)` | `tEnd = 0.1`; base `h = 0.0005`; suggested: Backward Euler, Adams-Moulton, BDF; RK4 only at suitably small `h` | Separates stiffness, absolute stability, and nonlinear-solve diagnostics. Warn that Forward Euler and Taylor 2 require approximately `h < 0.002` on the fast linear mode, while RK4's negative-real-axis limit is approximately `h < 0.0028`; these are linear stability guidance, not guarantees for every run. For explicit Adams-Bashforth orders, avoid a universal numeric threshold and advise using a much smaller step or an implicit method. |
+| Exponential Decay | f(t,y) = −y; `t0 = 0`; `y0 = 1`; exact y(t) = e⁻ᵗ | `tEnd = 5`; base `h = 0.2`; suggested: Forward Euler, Taylor 2, RK4, then implicit or multistep comparisons in separate single runs | Basic decay, global error, and stability. Watch how absolute error changes as the exact solution approaches zero. Explicit Euler is stable for this recommended step; unusually large explicit steps can oscillate or grow. |
+| Exponential Growth | f(t,y) = y; `t0 = 0`; `y0 = 1`; exact y(t) = eᵗ | `tEnd = 3`; base `h = 0.1`; suggested: Forward Euler, Taylor 2, RK4 | Shows error growth with solution magnitude. Compare absolute error with the rapidly growing exact value; convergence order concerns how error changes with `h`, not whether absolute error is visually small. |
+| Linear Forced Equation | f(t,y) = t − y; `t0 = 0`; `y0 = 1`; exact y(t) = t − 1 + 2e⁻ᵗ | `tEnd = 5`; base `h = 0.2`; suggested: Taylor 2, RK4, Adams-Bashforth, Adams-Moulton | A nonhomogeneous linear equation combining a transient and a growing forcing term. Observe whether final-time and interval-wide error tell the same story. |
+| Logistic Growth | f(t,y) = y(1 − y); `t0 = 0`; `y0 = 0.5`; exact y(t) = 1/(1 + e⁻ᵗ), rendered as a stacked fraction | `tEnd = 10`; base `h = 0.25`; suggested: Forward Euler, RK4, Adams-Moulton | Demonstrates nonlinearity, saturation, and approach to equilibrium. Observe where the maximum error occurs rather than assuming it is at the endpoint. Very large explicit steps can overshoot the physical interval or destabilize the discrete solution. |
+| Oscillatory Forcing | f(t,y) = cos(t); `t0 = 0`; `y0 = 0`; exact y(t) = sin(t) | `tEnd = 6`; base `h = 0.1`; suggested: Forward Euler, Taylor 2, RK4, Adams-Bashforth | Shows a periodic solution and why maximum global error can be more informative than endpoint error. At some endpoints, cancellation can make final-time error unusually small and its observed order unreliable. |
+| Stiff Relaxation | f(t,y) = −1000(y − cos(t)) − sin(t); `t0 = 0`; `y0 = 1`; exact y(t) = cos(t) | `tEnd = 0.1`; base `h = 0.0005`; suggested: Backward Euler, Adams-Moulton, BDF; RK4 only at suitably small `h` | Separates stiffness, absolute stability, and nonlinear-solve diagnostics. Warn that Forward Euler and Taylor 2 require approximately `h < 0.002` on the fast linear mode, while RK4's negative-real-axis limit is approximately `h < 0.0028`; these are linear stability guidance, not guarantees for every run. For explicit Adams-Bashforth orders, avoid a universal numeric threshold and advise using a much smaller step or an implicit method. |
 
 Warnings are educational and do not replace solver validation. For Stiff Relaxation, the UI compares the entered base `h` with the stated method-specific guidance and warns before the original run or study when appropriate. Other presets use qualitative warnings rather than claiming a sharp stability boundary.
 
-## 6. Exact-solution input and compilation
+## 6. Exact-solution input and evaluation
 
-The Step 2 switch is labeled **I know the exact solution**. When enabled, it reveals **Exact solution y(t)**, an input hint listing the only allowed variables (`t`, `t0`, `y0`), and the example:
-
-```text
-y0 * Math.exp(-(t - t0))
-```
+The Step 2 switch is labeled **I know the exact solution**. When enabled, it reveals the prerequisite's visual math field with the fixed label **Exact solution y(t)**, an input hint listing the only allowed variables (`t`, `t0`, `y0`), and a textbook-rendered example equivalent to y₀ multiplied by e raised to −(t−t₀).
 
 The exact solution is optional. It is evaluated only for consistency checks, error analysis, convergence studies, and grounded explanations. It never changes the RHS, initial data, grid, numerical integration, startup values, or original Step 3 result.
 
-Compilation returns `ExactSolutionFunction`. Version 1 may follow the repository's existing expression strategy, but it must construct a function whose only named parameters are `t`, `t0`, and `y0`; it must not deliberately inject application state or pass the mutable problem object. This parameter restriction is an API and documentation convention, not a security sandbox. Syntax/compilation errors become controlled educational errors such as **The exact solution expression could not be parsed. Check its variables and parentheses.** Every evaluation is checked with `Number.isFinite`; `NaN` or infinity blocks the check or study and identifies the sample or grid time.
+The field uses the prerequisite's `exact_solution` variable profile. Successful strict validation produces a `MathExpression` whose project-owned AST is authoritative and an `ExactSolutionEvaluator` compiled by exhaustive AST dispatch. LaTeX restores/displays the field, MathJSON is only an adapter, and neither raw form defines exact-solution meaning. Parse or profile errors become controlled educational errors such as **The exact solution could not be parsed. Use only t, t₀, and y₀.** Every evaluation is checked with `Number.isFinite`; `NaN` or infinity blocks the check or study and identifies the sample or grid time.
 
-Using dynamic JavaScript expression execution is acceptable only under the repository's current local educational-use assumption. It is not safe for untrusted public input and may still access ambient JavaScript globals despite the named-parameter convention. The UI and documentation must not claim that exact expressions run in a secure sandbox. A future security hardening task must replace both RHS and exact-expression execution with a whitelist AST parser that permits approved arithmetic and `Math` functions and rejects property traversal, assignment, statements, and global access. This limitation must be documented; Version 1 does not solve it.
+Exact solutions are never executed through `eval`, `new Function`, raw LaTeX, raw MathJSON, legacy pasted JavaScript, or Tutor output. The Convergence Study reuses the prerequisite's closed AST, whitelist validation, legacy compatibility adapter, canonical serialization, and explicit evaluator rather than defining a second expression language or security policy.
 
 ## 7. Numerical consistency check
 
@@ -234,7 +231,7 @@ The nine times are the check locations, not the finite-difference increment. Usi
 
 ### A. Finite exact values
 
-Evaluate the exact expression at all nine times. Any non-finite value or evaluation exception is a hard blocker. No derivative or integration runs after this failure.
+Evaluate the validated exact-solution evaluator at all nine times. Any non-finite value or evaluation exception is a hard blocker. No derivative or integration runs after this failure.
 
 ### B. Initial value
 
@@ -287,11 +284,11 @@ Every result displays: **This is a numerical consistency check, not a formal pro
 
 The default-collapsed **Convergence Study** drawer appears after the normal method details in single first-order Step 3 output. Compare and Leap-Frog output do not show runnable study controls or disabled controls that imply support. They may show a brief availability note only where users would otherwise expect the drawer.
 
-If the completed run has no enabled exact expression, opening the drawer shows:
+If the completed run has no enabled, confirmed exact-solution `MathExpression`, opening the drawer shows:
 
 > Add an exact solution in Step 2 to run error and convergence analysis.
 
-Before a run, the drawer always shows experiment setup, the exact expression, editable study base step size `h`, refinement levels, refinement preview, estimated total steps, and Run button. The study base step size starts from the current run step size; editing it affects only the convergence study and does not alter the original Step 2 simulation or its Step 3 result. Levels default to 3 and accept integer values from 3 through 6.
+Before a run, the drawer always shows experiment setup, the exact solution through the shared read-only math renderer, editable study base step size `h`, refinement levels, refinement preview, estimated total steps, and Run button. The study base step size starts from the current run step size; editing it affects only the convergence study and does not alter the original Step 2 simulation or its Step 3 result. Levels default to 3 and accept integer values from 3 through 6.
 
 For levels `l = 0, ..., L - 1`:
 
@@ -312,7 +309,7 @@ The preview uses integer validated counts, not an unrounded estimate. Validation
 
 After validation and consistency confirmation, the model runs levels from coarse to fine using the same method configuration, RHS, interval, and initial value as the current Step 3 run, changing only `h`. The study does not reuse the original run as a level because the drawer's base `h` may differ; every level is produced consistently by the experiment runner.
 
-For each returned numerical grid point `(t_n, u_n)`, evaluate the exact expression at the actual `t_n`. Do not create an idealized parallel grid, interpolate exact values, interpolate numerical values, or use a numerical reference solution.
+For each returned numerical grid point `(t_n, u_n)`, call the validated exact-solution evaluator at the actual `t_n`. Do not create an idealized parallel grid, interpolate exact values, interpolate numerical values, or use a numerical reference solution.
 
 ```text
 E_final(h) = |u_N - y(tEnd)|
@@ -429,33 +426,33 @@ The drawer's pre-run and post-run content follows the structure above. It also c
 Every section is rendered from a model that supplies four required elements:
 
 1. One plain-language sentence.
-2. The mathematical definition in Unicode/plain text.
+2. The mathematical definition through the shared read-only math renderer with accessible plain-text fallback.
 3. A concrete example populated from the current experiment, such as the current pair's `h`, errors, and calculated order.
 4. A **Why this matters** statement.
 
-Before a successful experiment, examples use the validated preview and exact expression where possible and clearly say that errors are not yet measured. After the first successful study for the current run, **What are we testing?** and **What is an exact solution?** default open; all other sections default closed. User open/closed choices persist while that Step 3 run remains current.
+Before a successful experiment, examples use the validated preview and confirmed exact solution where possible and clearly say that errors are not yet measured. After the first successful study for the current run, **What are we testing?** and **What is an exact solution?** default open; all other sections default closed. User open/closed choices persist while that Step 3 run remains current.
 
 The conclusion card **What this experiment found** displays method name, theoretical order, final reliable maximum-error observed order if available, interpretation category, an explanatory sentence, and the refinement pairs used as evidence. It distinguishes “no reliable order available” from a numerical order of zero.
 
 ## 14. State, fingerprint, persistence, and invalidation
 
-The app distinguishes the **current completed run configuration** from editable Step 2 draft fields. A successful original run captures an immutable first-order run snapshot containing method family, effective method order, RHS expression, `t0`, `tEnd`, `y0`, run `h`, exact-solution enabled state/expression, preset ID, and customization-source preset ID.
+The app distinguishes the **current completed run configuration** from editable Step 2 draft fields. A successful original run captures an immutable first-order run snapshot containing method family, effective method order, canonical RHS AST serialization, `t0`, `tEnd`, `y0`, run `h`, exact-solution enabled state and canonical AST serialization, preset ID, and customization-source preset ID.
 
 The stable current-run fingerprint uses an explicit versioned canonical serialization, not object property enumeration:
 
 ```text
-v1|family|effectiveOrder|fExpression|t0|tEnd|y0|runH|
-exactEnabled|exactExpression|presetId|customizationSourcePresetId
+v1|family|effectiveOrder|rhsCanonicalAst|t0|tEnd|y0|runH|
+exactEnabled|exactCanonicalAst|presetId|customizationSourcePresetId
 ```
 
-Strings are length-prefixed or JSON-string encoded so delimiters cannot collide. Numbers use a canonical finite representation that distinguishes values exactly as JavaScript uses them; `-0` is normalized to `0`. Whitespace in expressions is preserved because changing entered expressions is an invalidating input even if mathematically equivalent. Hashing is optional; correctness depends on canonical content, not cryptographic security.
+Fields are length-prefixed or JSON-string encoded so delimiters cannot collide. Numbers use a canonical finite representation that distinguishes values exactly as JavaScript uses them; `-0` is normalized to `0`. Expression components use the prerequisite's versioned canonical AST serialization, not raw LaTeX, raw MathJSON, display text, legacy source text, or arbitrary object enumeration. Explicit and implicit multiplication therefore share meaning where the prerequisite explicitly canonicalizes them, while expressions are not silently equated beyond its safe canonical rules. Hashing is optional; correctness depends on canonical content, not cryptographic security.
 
 The convergence configuration fingerprint combines the current-run fingerprint with the canonical study base step size (`baseH`), levels, and a model-policy version. It is stored in `ConvergenceStudyResult.configFingerprint`.
 
 - Closing and reopening the drawer preserves setup, successful result, chart metric, and accordion state.
 - Returning to Step 2 without running changed draft inputs preserves the completed Step 3 run and its convergence result. Returning to Output without a new original run shows that same completed result.
 - Editing Step 2 fields alone does not relabel the old result as belonging to the draft.
-- Successfully rerunning after a change to method, effective order, RHS, `t0`, `tEnd`, `y0`, exact expression/enabled state, preset identity, or customization identity establishes a new run fingerprint and invalidates the prior convergence result.
+- Successfully rerunning after a change to method, effective order, canonical RHS meaning, `t0`, `tEnd`, `y0`, canonical exact-solution meaning/enabled state, preset identity, or customization identity establishes a new run fingerprint and invalidates the prior convergence result.
 - A rerun with an identical canonical configuration retains the matching convergence result.
 - Changing the study base step size or levels marks the displayed convergence result **stale** immediately. It does not alter the run step size or original simulation result. The old table/chart may remain visible only with a prominent stale label and disabled conclusion claims; Run is required to replace it. It is never presented as the result of the edited settings.
 - A failed original simulation does not replace the current successful Step 3 run or its convergence result.
@@ -468,7 +465,7 @@ No result is silently associated with a different completed run.
 Pre-run validation is ordered to fail cheaply before allocation or integration:
 
 1. Confirm single first-order eligibility and a current successful run.
-2. Require an enabled, non-empty exact expression and successful compilation.
+2. Require an enabled, confirmed exact-solution `MathExpression` and its validated `exact_solution` evaluator.
 3. Validate integer levels in `[3, 6]` and a positive finite study base step size.
 4. Build and validate every fixed grid with the existing grid validator.
 5. Validate the multistep minimum and both per-level and aggregate budgets.
