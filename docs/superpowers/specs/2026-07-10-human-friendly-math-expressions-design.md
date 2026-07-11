@@ -21,7 +21,7 @@ The approved sequence is:
 
 The [Observed Convergence Order Experiment design](./2026-07-10-convergence-study-design.md) depends on this specification. Convergence implementation must not begin until Milestone 1 is implemented, tested, and reviewed.
 
-Milestone 1 exposes visual ODE right-hand-side editing and shared mathematical rendering. It must not expose an exact-solution field, exact-solution switch, convergence drawer, or convergence experiment. It must nevertheless implement and unit-test the `exact_solution` variable profile throughout parsing, validation, canonicalization, serialization, and evaluation so Milestone 2 can reuse the foundation without redesign.
+Milestone 1 exposes visual ODE right-hand-side editing, migrates the existing Leap-Frog acceleration-expression field to the same safe editing system, and adds shared mathematical rendering. It must not expose an exact-solution field, exact-solution switch, convergence drawer, or convergence experiment. It must nevertheless implement and unit-test the `exact_solution` variable profile throughout parsing, validation, canonicalization, serialization, and evaluation so Milestone 2 can reuse the foundation without redesign.
 
 ## 3. Version 1 boundaries
 
@@ -65,6 +65,14 @@ The user edits only the right-hand side f(t,y), not the complete equation. Repre
 - (t+1)(y−1)
 
 Physical-keyboard entry and the MathLive virtual keyboard remain available. The field must preserve natural caret behavior, selection, undo, and paste behavior supplied by MathLive while application state updates only through the validated expression pipeline.
+
+The existing Leap-Frog form uses the same component with its current acceleration prefix:
+
+```text
+u″ = [editable math field]
+```
+
+The field continues to edit only a(t,u). This is an internal migration to the `second_order_rhs` profile, not new Leap-Frog functionality. Compare remains a first-order flow and continues to use the `rhs` profile.
 
 Milestone 2 will use the same component with the fixed prefix:
 
@@ -130,7 +138,7 @@ Version 1 uses a closed discriminated union:
 type MathAst =
   | { kind: "number"; value: number }
   | { kind: "constant"; name: "e" | "pi" }
-  | { kind: "variable"; name: "t" | "y" | "t0" | "y0" }
+  | { kind: "variable"; name: "t" | "y" | "u" | "t0" | "y0" }
   | { kind: "negate"; operand: MathAst }
   | { kind: "add"; terms: MathAst[] }
   | { kind: "multiply"; factors: MathAst[] }
@@ -150,13 +158,17 @@ Subtraction canonicalizes to addition plus negation. Explicit and implicit multi
 ## 8. Variable profiles
 
 ```ts
-type MathVariableProfile = "rhs" | "exact_solution";
+type MathVariableProfile =
+  | "rhs"
+  | "exact_solution"
+  | "second_order_rhs";
 ```
 
 | Profile | Allowed variables | UI availability in Milestone 1 |
 |---|---|---|
 | `rhs` | `t`, `y` | Exposed in the Step 2 ODE field |
 | `exact_solution` | `t`, `t0`, `y0` | Not exposed; parser, validator, canonicalizer, serializer, and evaluator support is unit-tested |
+| `second_order_rhs` | `t`, `u` | Exposed only through the existing Leap-Frog acceleration-expression field |
 
 Validation runs after structural conversion and before evaluation. Unknown or disallowed variables produce profile-specific English errors. Examples:
 
@@ -164,7 +176,11 @@ Validation runs after structural conversion and before evaluation. Unknown or di
 
 > Variable y is not available in an exact solution. Use only t, t₀, and y₀.
 
+> Unknown variable y. Use only t and u in the Leap-Frog acceleration expression.
+
 The error identifies the actual name and relevant field. It does not expose MathJSON or internal node data.
+
+`second_order_rhs` is required so the existing Leap-Frog user-expression path can leave `new Function` with every other user expression. It is supported by structured parsing, profile validation, canonicalization, serialization, explicit evaluation, legacy import, and tests. It does not add a new equation type, solver, control, or analysis.
 
 ## 9. Supported mathematical subset
 
@@ -182,7 +198,9 @@ The error identifies the actual name and relevant field. It does not expose Math
 - Natural logarithm, represented internally as `log` and always displayed to users as ln.
 - Absolute value `abs`.
 
-The shared renderer supports textbook forms including e raised to x, sin x, cos x, tan x, √x, ln x, |x|, stacked fractions, superscripts, and subscripts. `e^x` and `exp(x)` map to equivalent approved AST forms only through an explicit canonical rule: both canonicalize to a `power` node with constant `e` as base. The `exp` function node remains accepted at adapter boundaries and is normalized deterministically to that canonical form. No other function-to-power identity is inferred.
+The shared renderer supports textbook forms including e raised to x, sin x, cos x, tan x, √x, ln x, |x|, stacked fractions, superscripts, and subscripts. The specific visual pattern e raised to x, imported `exp(x)`, and imported `Math.exp(x)` all canonicalize to `{ kind: "function", name: "exp", argument: x }`. The explicit evaluator dispatches that node to `Math.exp`, and the renderer typesets it as textbook-style e raised to x.
+
+A standalone e remains `{ kind: "constant", name: "e" }`. A general a raised to b remains a `power` node, including a power whose base happens to be a compound expression. Only a `power` adapter input whose base is the standalone constant e is normalized to the `exp` function node. The canonicalizer never rewrites an `exp` node to `power(e, x)` because `Math.exp(x)` and `Math.pow(Math.E, x)` are not guaranteed to have identical floating-point results.
 
 ## 10. Implicit multiplication
 
@@ -204,10 +222,11 @@ Current saved values and pasted text pass through a narrow compatibility importe
 
 - `exp(-t)`, `sin(t)`, and `sqrt(t)`.
 - `y0 * exp(-(t - t0))` under the `exact_solution` profile.
+- `-u` and supported functions of `t` and `u` under the `second_order_rhs` profile.
 - `Math.exp(-t)` and `Math.sin(t)`.
 - `Math.PI`.
 
-The importer tokenizes and parses this grammar; it does not sanitize with regular expressions and does not execute the string. Approved `Math` aliases map directly to project AST nodes and are re-rendered as textbook-style mathematics. Imported strings never remain authoritative.
+The importer tokenizes and parses this grammar; it does not sanitize with regular expressions and does not execute the string. `exp(x)` and the approved `Math.exp(x)` alias map directly to the project `exp` function node and are re-rendered as textbook-style e raised to x. Other approved `Math` aliases map directly to their corresponding project AST nodes. Imported strings never remain authoritative.
 
 It rejects `window.alert(...)`, `Math.random()`, assignments, statements, ternaries, property traversal outside the explicitly listed `Math.exp`, `Math.sin`, and `Math.PI` aliases, computed properties, and any extra tokens. Additional aliases require an explicit design amendment or implementation-plan decision backed by tests; they are not accepted accidentally through general property access.
 
@@ -303,13 +322,14 @@ The solver receives only numeric evaluators compiled from validated project AST 
 ```ts
 type RhsEvaluator = (t: number, y: number) => number;
 type ExactSolutionEvaluator = (t: number, t0: number, y0: number) => number;
+type SecondOrderRhsEvaluator = (t: number, u: number) => number;
 ```
 
 The solver does not depend on MathLive, MathJSON, LaTeX, DOM nodes, rendering components, or draft validation state. Compilation uses exhaustive AST dispatch, never `eval` or `new Function`.
 
 Before dispatch, inputs must be finite under existing numerical contracts. Every operation and function result must be finite. Division by zero, square root of a negative real, logarithm of a non-positive real, tangent at a numerically undefined point when it yields non-finite output, overflow, and any other non-finite result produce controlled English domain errors naming the operation and evaluation point where available. Complex continuation is not attempted.
 
-The evaluator preserves established JavaScript `number` arithmetic for supported real expressions. Replacing expression compilation must not alter integration algorithms or fixed-grid behavior.
+The evaluator preserves established JavaScript `number` arithmetic for supported real expressions. In particular, the `exp` function node is evaluated with `Math.exp(argument)` rather than `Math.pow(Math.E, argument)`. General `power` nodes use JavaScript power semantics without being treated as exponentials. Replacing expression compilation must not alter integration algorithms or fixed-grid behavior.
 
 ## 18. Presets, persistence, and fingerprints
 
@@ -328,12 +348,14 @@ Fingerprints use a stable, versioned canonical AST serialization, never raw Math
 - Encode each node as a fixed tag followed by length-delimited child encodings; do not depend on object key order.
 - Accept only finite numeric literals. Normalize `-0` to `0` and serialize other numbers using JavaScript's shortest round-trip decimal representation.
 - Encode constants by canonical names `e` and `pi`, variables by canonical ASCII names, and functions by the closed AST name.
-- Normalize subtraction to `add` plus `negate`, and normalize approved `exp(x)` to `power(e, x)`.
+- Normalize subtraction to `add` plus `negate`. Normalize the specific visual pattern e raised to x and approved imported `exp(x)`/`Math.exp(x)` forms to the `exp` function node; never normalize that node to `power(e, x)`.
 - Preserve nested `add` and `multiply` grouping and left-to-right semantic input order. Do not flatten or sort commutative terms or factors in Version 1 because regrouping or reordering can change floating-point results and would silently equate expressions beyond the approved rules.
 - Encode explicit and implicit multiplication identically after parsing.
-- Preserve `divide` and `power` structure; do not apply cancellation, constant folding, distributivity, associativity beyond the stated flattening, or domain-changing identities.
+- Preserve `divide` and general `power` structure; do not apply cancellation, constant folding, distributivity, associativity, or domain-changing identities. The sole power-pattern exception is conversion of a standalone constant-e base into the canonical `exp` function node.
 
 Thus visually different explicit/implicit multiplication can share a fingerprint, while `t+y` and `y+t` remain distinct in Version 1. Future canonical changes require a new version prefix and an explicit saved-state migration.
+
+For exponentials, visual e raised to t, `exp(t)`, and `Math.exp(t)` share the same versioned serialization because each produces the same `exp` function node. Standalone e and general power nodes retain different serializations.
 
 ## 19. Security boundary
 
@@ -374,18 +396,22 @@ Tests are deterministic and cover the following.
 - Numbers, variables, constants, unary minus, arithmetic, powers, fractions, every supported function, nested expressions, and grouping.
 - Structured implicit multiplication for `2t`, `ty`, `2 sin(t)`, y₀e raised to −t, and adjacent groups.
 - MathJSON conversion accepts the closed subset and rejects every unrepresentable node.
-- Canonical serialization covers all node types, `-0`, numeric round trips, preserved grouping and term/factor order, `exp` normalization, and explicit/implicit multiplication equivalence.
+- Canonical serialization covers all node types, `-0`, numeric round trips, preserved grouping and term/factor order, canonical `exp` function nodes, and explicit/implicit multiplication equivalence.
+- Visual e raised to t, imported `exp(t)`, and imported `Math.exp(t)` produce the same `exp` node and canonical serialization.
+- Standalone e remains a constant; a general a raised to b remains a `power` node; no `power(e, x)` representation is retained as the canonical exponential form.
 
 ### Variable profiles
 
 - `rhs` accepts `t` and `y`; rejects `t0`, `y0`, `x`, and other names with RHS-specific copy.
 - `exact_solution` accepts `t`, `t0`, and `y0`; rejects `y` and unknown names with exact-solution-specific copy.
-- Both profiles pass through parser, validator, canonicalizer, serializer, and evaluator tests even though only `rhs` is exposed.
+- `second_order_rhs` accepts `t` and `u`; rejects `y`, `t0`, `y0`, and unknown names with Leap-Frog-specific copy.
+- All three profiles pass through parser, validator, canonicalizer, serializer, evaluator, and legacy-import tests. `rhs` and `second_order_rhs` preserve their existing UI roles; `exact_solution` remains unexposed.
 
 ### Legacy compatibility
 
 - Accept `exp`, `sin`, `sqrt`, and `y0 * exp(-(t - t0))` in the applicable profile.
 - Accept only the approved `Math.exp`, `Math.sin`, and `Math.PI` aliases.
+- Confirm `exp(t)` and `Math.exp(t)` import directly to the same canonical `exp` function node as visual e raised to t.
 - Reject arbitrary property access, statements, assignments, ternaries, computed properties, `Math.random`, `window.alert`, and trailing tokens.
 - Prove accepted legacy text reaches AST evaluation without dynamic execution.
 
@@ -393,6 +419,8 @@ Tests are deterministic and cover the following.
 
 - Incomplete editing state, valid strict state, unknown variable, unsupported function, missing function argument, invalid structure, and restore/preset validation failure.
 - Representative numeric values, implicit multiplication, e, π, natural log, absolute value, nested functions, powers, and fractions.
+- The `exp` function node uses `Math.exp` semantics at representative, boundary, overflow, and underflow inputs; tests must not calculate its expected value with `Math.pow(Math.E, x)`.
+- A general a raised to b evaluates through the `power` node, while standalone e evaluates through the constant node.
 - Non-finite inputs/outputs, division by zero, invalid square root/log domains, and overflow return controlled errors.
 - Results agree with current built-in ODE examples at representative finite inputs.
 
@@ -410,7 +438,7 @@ Tests are deterministic and cover the following.
 
 - All current solver tests remain green.
 - Explicit and implicit methods produce unchanged numerical results for equivalent supported expressions.
-- Compare and Leap-Frog behavior remains unchanged.
+- Compare continues to use `rhs`. Leap-Frog uses `second_order_rhs`, leaves `new Function`, and otherwise retains its existing acceleration-expression UX and numerical behavior.
 - Production type checks and build succeed.
 - No Chinese UI strings are added.
 - Milestone 1 exposes no exact-solution or convergence controls.
@@ -436,10 +464,10 @@ Tests are deterministic and cover the following.
 17. Force or simulate a rendering failure and confirm readable fallback without changing the numeric result.
 18. Confirm no Chinese UI text appears.
 
-Also confirm Compare and Leap-Frog retain their current behavior, legacy saved RHS input restores through the adapter, invalid restored input is controlled, and no exact-solution or convergence UI is present.
+Also confirm Compare continues to use the first-order `rhs` profile; the existing Leap-Frog acceleration field accepts `t` and `u` through `second_order_rhs`; both retain their current behavior; legacy saved RHS input restores through the adapter; invalid restored input is controlled; and no exact-solution or convergence UI is present.
 
 ## 23. Acceptance criteria
 
-Milestone 1 is ready for review when users can enter the approved RHS subset in a visual MathLive field, inspect its LaTeX and canonical parsed meaning, receive accessible and specific validation feedback, run unchanged numerical methods through an explicit AST evaluator, and read textbook-style formulas with robust fallback.
+Milestone 1 is ready for review when users can enter the approved first-order RHS subset and existing Leap-Frog acceleration subset in visual MathLive fields, inspect LaTeX and canonical parsed meaning, receive accessible and specific validation feedback, run unchanged numerical methods through explicit AST evaluators, and read textbook-style formulas with robust fallback.
 
-The AST is the single authoritative mathematical representation; MathJSON, LaTeX, legacy text, and Tutor formulas are non-executable adapters or display data. Fingerprints are deterministic and versioned. Both variable profiles are tested, but only `rhs` is exposed. No exact-solution or convergence feature is implemented, no Chinese UI is added, and no arbitrary JavaScript reaches the numerical boundary.
+The AST is the single authoritative mathematical representation; MathJSON, LaTeX, legacy text, and Tutor formulas are non-executable adapters or display data. Fingerprints are deterministic and versioned. All three variable profiles are tested: `rhs` remains the first-order/Compare profile, `second_order_rhs` migrates only the existing Leap-Frog field, and `exact_solution` remains unexposed. Canonical exponential expressions use the `exp` function node and `Math.exp` evaluation semantics. No exact-solution or convergence feature is implemented, no new Leap-Frog functionality is added, no Chinese UI is added, and no arbitrary JavaScript reaches the numerical boundary.
