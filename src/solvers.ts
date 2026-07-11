@@ -17,8 +17,6 @@ import {
 import { catalogByFamily, displayNameFor } from "./methodCatalog";
 import { runCoefficientValidation, runSanityCheck } from "./coefficientValidation";
 
-export type OdeMode = "first" | "second";
-
 export type MethodFamily =
   | "forward_euler"
   | "backward_euler"
@@ -737,43 +735,6 @@ export function integrateSecondOrder(p: SecondOrderParams): SolverResult {
     points: out,
     metadata: buildMetadata({ family: "leapfrog" }),
   };
-}
-
-export function compileScalarExpr(
-  expr: string,
-  mode: OdeMode
-): (t: number, y: number) => number {
-  const trimmed = expr.trim();
-  if (!trimmed) throw new Error("Function expression is empty.");
-  try {
-    if (mode === "first") {
-      const fn = new Function("t", "y", `return (${trimmed});`) as (
-        t: number,
-        y: number
-      ) => unknown;
-      return (t, y) => {
-        const v = Number(fn(t, y));
-        if (!Number.isFinite(v)) {
-          throw new Error("Function returned a non-finite value.");
-        }
-        return v;
-      };
-    }
-    const fn = new Function("t", "u", `return (${trimmed});`) as (
-      t: number,
-      u: number
-    ) => unknown;
-    return (t, u) => {
-      const v = Number(fn(t, u));
-      if (!Number.isFinite(v)) {
-        throw new Error("Function returned a non-finite value.");
-      }
-      return v;
-    };
-  } catch (e) {
-    if (e instanceof Error && e.message.includes("non-finite")) throw e;
-    throw new Error("Could not parse the function. Check JavaScript syntax.");
-  }
 }
 
 /** Legacy alias: returns points only. */

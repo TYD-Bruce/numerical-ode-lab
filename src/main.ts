@@ -11,11 +11,7 @@ import {
   CategoryScale,
 } from "chart.js";
 import type { MethodFamily, MethodConfig, SeriesPoint, SolverResult } from "./solvers";
-import {
-  integrateFirstOrder,
-  integrateSecondOrder,
-  compileScalarExpr,
-} from "./solvers";
+import { integrateFirstOrder, integrateSecondOrder } from "./solvers";
 import {
   METHOD_CATALOG,
   FIRST_ORDER_CATALOG,
@@ -28,6 +24,22 @@ import type { ProblemInputs } from "./aiTutor";
 import { mountAiTutorPanel, resetTutorConversation } from "./aiTutorPanel";
 import { methodMathContent } from "./math/ui/methodMathContent";
 import { renderReadonlyMath } from "./math/ui/readonlyMath";
+import { validateFixedStepGrid } from "./grid";
+import {
+  compileProductionExpression,
+  createDefaultMathExpressionState,
+  createSuccessfulExpressionSnapshot,
+  currentReadyExpression,
+  persistMathFieldSnapshot,
+  type PersistedMathExpressionState,
+  type ProductionMathProfile,
+  type SuccessfulExpressionSnapshot,
+} from "./math/problemExpressions";
+import type { EditableMathFieldHandle } from "./math/ui/editableMathField";
+import {
+  mountExpressionErrorSummary,
+  type ExpressionErrorSummaryHandle,
+} from "./math/ui/expressionErrorSummary";
 import "./style.css";
 
 Chart.register(
@@ -58,12 +70,12 @@ interface PersistedForm {
   t0: string;
   tEnd: string;
   h: string;
-  expr: string;
+  firstExpression: PersistedMathExpressionState;
+  secondExpression: PersistedMathExpressionState;
   y0: string;
   u0: string;
   v0: string;
   order: string;
-  problemKind: "first" | "second";
 }
 
 const DEFAULT_LEDE =
@@ -74,15 +86,29 @@ let session: Session = { mode: "single" };
 let selected: SelectedMethod | null = null;
 let chart: Chart | null = null;
 let lastResult: SolverResult | null = null;
+let lastResultExpression: SuccessfulExpressionSnapshot | null = null;
 let lastCompare: {
   a: SelectedMethod;
   b: SelectedMethod;
   resultA: SolverResult;
   resultB: SolverResult;
+  expression: SuccessfulExpressionSnapshot;
 } | null = null;
-let persisted: PersistedForm | null = null;
+let persisted: PersistedForm = {
+  t0: "0",
+  tEnd: "5",
+  h: "0.05",
+  firstExpression: createDefaultMathExpressionState("rhs"),
+  secondExpression: createDefaultMathExpressionState("second_order_rhs"),
+  y0: "1",
+  u0: "1",
+  v0: "0",
+  order: "2",
+};
 let lastProblemInputs: ProblemInputs | null = null;
 let comparePickError = "";
+let activeExpressionField: EditableMathFieldHandle | null = null;
+let activeExpressionSummary: ExpressionErrorSummaryHandle | null = null;
 
 const app = document.querySelector<HTMLDivElement>("#app")!;
 
@@ -111,12 +137,12 @@ function persistFromFirstOrderFd(fd: FormData): void {
     t0: String(fd.get("t0") ?? "0"),
     tEnd: String(fd.get("tEnd") ?? "5"),
     h: String(fd.get("h") ?? "0.05"),
-    expr: String(fd.get("expr") ?? "-y"),
+    firstExpression: persisted.firstExpression,
+    secondExpression: persisted.secondExpression,
     y0: String(fd.get("y0") ?? "1"),
     u0: persisted?.u0 ?? "1",
     v0: persisted?.v0 ?? "0",
     order: String(fd.get("order") ?? persisted?.order ?? "2"),
-    problemKind: "first",
   };
 }
 
@@ -125,12 +151,12 @@ function persistFromSecondOrderFd(fd: FormData): void {
     t0: String(fd.get("t0") ?? "0"),
     tEnd: String(fd.get("tEnd") ?? "5"),
     h: String(fd.get("h") ?? "0.05"),
-    expr: String(fd.get("expr") ?? "-u"),
+    firstExpression: persisted.firstExpression,
+    secondExpression: persisted.secondExpression,
     y0: persisted?.y0 ?? "1",
     u0: String(fd.get("u0") ?? "1"),
     v0: String(fd.get("v0") ?? "0"),
     order: persisted?.order ?? "2",
-    problemKind: "second",
   };
 }
 
@@ -138,6 +164,13 @@ function readPersistedFromFormEl(form: HTMLFormElement): void {
   const fd = new FormData(form);
   if (fd.has("y0")) persistFromFirstOrderFd(fd);
   else persistFromSecondOrderFd(fd);
+}
+
+function disposeExpressionUi(): void {
+  activeExpressionField?.dispose();
+  activeExpressionSummary?.dispose();
+  activeExpressionField = null;
+  activeExpressionSummary = null;
 }
 
 function orderFieldHtml(cat: MethodCatalogEntry): string {
@@ -156,6 +189,7 @@ function orderFieldHtml(cat: MethodCatalogEntry): string {
 
 function render(): void {
   const meta = selectedMeta();
+  disposeExpressionUi();
   app.innerHTML = "";
 
   const shell = document.createElement("div");
@@ -175,7 +209,7 @@ function render(): void {
       <p class="eyebrow">AI-Assisted Educational Solver</p>
       <h1>Numerical ODE Lab</h1>
       <p class="lede">${lede}</p>
-      <p class="ivp-note">First-order IVP: y′ = f(t, y), y(t₀) = y₀. Use JavaScript syntax with <code>t</code> and <code>y</code> (or <code>u</code> for Leap-Frog).</p>
+      <p class="ivp-note">Enter the equation in familiar mathematical notation. First-order fields use t and y; Leap-Frog acceleration uses t and u.</p>
       ${
         comparePickError
           ? `<p class="compare-error" role="alert">${comparePickError}</p>`
@@ -219,11 +253,12 @@ function render(): void {
           catalogEntry(lastCompare.a),
           catalogEntry(lastCompare.b),
           lastCompare.resultA,
-          lastCompare.resultB
+          lastCompare.resultB,
+          lastCompare.expression
         )
       );
-    } else if (meta && lastResult) {
-      main.append(renderResultsShell(meta, lastResult));
+    } else if (meta && lastResult && lastResultExpression) {
+      main.append(renderResultsShell(meta, lastResult, lastResultExpression));
     } else {
       step = "configure";
       main.append(renderChoosePanel());
@@ -350,25 +385,118 @@ function renderCompareMethodGrid(): HTMLElement {
 function firstOrderInputDefaults() {
   const p = persisted;
   return {
-    t0: p?.t0 ?? "0",
-    tEnd: p?.tEnd ?? "5",
-    h: p?.h ?? "0.05",
-    y0: p?.y0 ?? "1",
-    expr: p?.problemKind === "first" ? p.expr : "-y",
-    order: p?.order ?? "2",
+    t0: p.t0,
+    tEnd: p.tEnd,
+    h: p.h,
+    y0: p.y0,
+    order: p.order,
   };
 }
 
 function secondOrderInputDefaults() {
   const p = persisted;
   return {
-    t0: p?.t0 ?? "0",
-    tEnd: p?.tEnd ?? "5",
-    h: p?.h ?? "0.05",
-    u0: p?.u0 ?? "1",
-    v0: p?.v0 ?? "0",
-    expr: p?.problemKind === "second" ? p.expr : "-u",
+    t0: p.t0,
+    tEnd: p.tEnd,
+    h: p.h,
+    u0: p.u0,
+    v0: p.v0,
   };
+}
+
+async function mountProductionExpressionField(
+  wrap: HTMLElement,
+  profile: ProductionMathProfile
+): Promise<EditableMathFieldHandle | undefined> {
+  const persistedState =
+    profile === "rhs" ? persisted.firstExpression : persisted.secondExpression;
+  const fieldId = profile === "rhs" ? "rhs-expression" : "second-order-rhs-expression";
+  const fieldLabel =
+    profile === "rhs"
+      ? "Right-hand side of y prime"
+      : "Leap-Frog acceleration right-hand side";
+  const host = wrap.querySelector<HTMLElement>("[data-expression-field]")!;
+  const summaryHost = wrap.querySelector<HTMLElement>("[data-expression-summary]")!;
+
+  activeExpressionSummary = mountExpressionErrorSummary(summaryHost);
+  host.textContent = "Loading mathematical editor…";
+  let mountEditableMathField: typeof import("./math/ui/editableMathField")["mountEditableMathField"];
+  try {
+    ({ mountEditableMathField } = await import("./math/ui/editableMathField"));
+  } catch {
+    if (wrap.isConnected) host.textContent = "The mathematical editor could not be loaded.";
+    return undefined;
+  }
+  if (!wrap.isConnected) return undefined;
+  activeExpressionField = mountEditableMathField(host, {
+    fieldId,
+    fieldLabel,
+    profile,
+    equationPrefix:
+      profile === "rhs"
+        ? { visual: "y′ =", accessible: "y prime equals" }
+        : { visual: "u″ =", accessible: "u double prime equals" },
+    initialConfirmed: persistedState.confirmed,
+    initialDraftLatex: persistedState.draftLatex,
+    initialValidation:
+      persistedState.validationKind === "incomplete" ? "gentle" : "strict",
+    description:
+      profile === "rhs"
+        ? "Use only t and y. Enter textbook-style mathematics."
+        : "Use only t and u for the Leap-Frog acceleration.",
+    onDraftStateChange(snapshot) {
+      if (profile === "rhs") {
+        persisted.firstExpression = persistMathFieldSnapshot(
+          profile,
+          snapshot,
+          persisted.firstExpression
+        );
+      } else {
+        persisted.secondExpression = persistMathFieldSnapshot(
+          profile,
+          snapshot,
+          persisted.secondExpression
+        );
+      }
+      activeExpressionSummary?.render([]);
+    },
+    onLegacyPasteError(error) {
+      const formError = wrap.querySelector<HTMLParagraphElement>("#form-error");
+      if (formError) {
+        formError.textContent = error.message;
+        formError.hidden = false;
+      }
+      activeExpressionSummary?.render(
+        [
+          {
+            fieldId,
+            fieldLabel,
+            message: error.message,
+            focus: () => activeExpressionField?.focus(),
+          },
+        ],
+        true
+      );
+    },
+  });
+  return activeExpressionField;
+}
+
+function requireCurrentExpression(field: EditableMathFieldHandle) {
+  const snapshot = field.validateStrict();
+  const expression = currentReadyExpression(snapshot);
+  if (expression) {
+    activeExpressionSummary?.render([]);
+    return expression;
+  }
+  const issue = field.getIssue();
+  activeExpressionSummary?.render(issue ? [issue] : [], true);
+  activeExpressionSummary?.element.focus();
+  return undefined;
+}
+
+function requireFiniteField(value: number, label: string): void {
+  if (!Number.isFinite(value)) throw new Error(`${label} must be finite.`);
 }
 
 function renderForm(meta: MethodCatalogEntry, sel: SelectedMethod): HTMLElement {
@@ -412,23 +540,22 @@ function renderForm(meta: MethodCatalogEntry, sel: SelectedMethod): HTMLElement 
         <span>Initial velocity u′₀</span>
         <input name="v0" type="number" value="${so.v0}" step="any" required />
       </label>
-      <label class="field wide">
-        <span>u″ = a(t, u) — use <code>t</code> and <code>u</code></span>
-        <input name="expr" type="text" value="" required placeholder="-u" />
-      </label>
+      <div class="field wide" data-expression-field></div>
       `
           : `
       <label class="field">
         <span>Initial value y₀</span>
         <input name="y0" type="number" value="${fo.y0}" step="any" required />
       </label>
-      <label class="field wide">
-        <span>y′ = f(t, y) — use <code>t</code> and <code>y</code></span>
-        <input name="expr" type="text" value="" required placeholder="-y" />
-      </label>
+      <div class="field wide" data-expression-field></div>
       `
       }
-      <p class="hint">Examples: <code>-y</code>, <code>t - y</code>, <code>Math.sin(t) - 0.1*y</code></p>
+      <p class="hint">${
+        isSecond
+          ? "Examples: −u, −2u, or cos(t) − u."
+          : "Examples: −y, t − y, sin(t) − 0.1y, or e raised to t."
+      }</p>
+      <div class="wide" data-expression-summary></div>
       <div class="actions">
         <button type="submit" class="btn primary">Run simulation</button>
       </div>
@@ -436,8 +563,10 @@ function renderForm(meta: MethodCatalogEntry, sel: SelectedMethod): HTMLElement 
     </form>
   `;
 
-  const exprEl = wrap.querySelector<HTMLInputElement>('input[name="expr"]');
-  if (exprEl) exprEl.value = isSecond ? so.expr : fo.expr;
+  const expressionField = mountProductionExpressionField(
+    wrap,
+    isSecond ? "second_order_rhs" : "rhs"
+  );
 
   wrap.querySelector("[data-back-methods]")!.addEventListener("click", () => {
     const form = wrap.querySelector<HTMLFormElement>("#ode-form");
@@ -445,12 +574,14 @@ function renderForm(meta: MethodCatalogEntry, sel: SelectedMethod): HTMLElement 
     step = "choose";
     selected = null;
     lastResult = null;
+    lastResultExpression = null;
     lastCompare = null;
+    lastProblemInputs = null;
     session = { mode: "single" };
     render();
   });
 
-  wrap.querySelector("#ode-form")!.addEventListener("submit", (ev) => {
+  wrap.querySelector("#ode-form")!.addEventListener("submit", async (ev) => {
     ev.preventDefault();
     const form = ev.target as HTMLFormElement;
     const err = wrap.querySelector<HTMLParagraphElement>("#form-error")!;
@@ -460,21 +591,33 @@ function renderForm(meta: MethodCatalogEntry, sel: SelectedMethod): HTMLElement 
       const t0 = Number(fd.get("t0"));
       const tEnd = Number(fd.get("tEnd"));
       const h = Number(fd.get("h"));
-      const expr = String(fd.get("expr") ?? "");
+      validateFixedStepGrid(t0, tEnd, h);
+      if (isSecond) {
+        requireFiniteField(Number(fd.get("u0")), "Initial position u₀");
+        requireFiniteField(Number(fd.get("v0")), "Initial velocity u′₀");
+      } else {
+        requireFiniteField(Number(fd.get("y0")), "Initial value y₀");
+      }
+      const mountedExpressionField = await expressionField;
+      if (!mountedExpressionField) {
+        throw new Error("The mathematical editor is not available. Return to Step 2 and try again.");
+      }
+      const expression = requireCurrentExpression(mountedExpressionField);
+      if (!expression) return;
 
       let result: SolverResult;
       if (isSecond) {
         persistFromSecondOrderFd(fd);
         const u0 = Number(fd.get("u0"));
         const v0 = Number(fd.get("v0"));
-        const a = compileScalarExpr(expr, "second");
+        const a = compileProductionExpression(expression, "second_order_rhs");
         result = integrateSecondOrder({ t0, u0, v0, tEnd, h, a });
       } else {
         persistFromFirstOrderFd(fd);
         const y0 = Number(fd.get("y0"));
         const order = Number(fd.get("order"));
         sel.order = order;
-        const f = compileScalarExpr(expr, "first");
+        const f = compileProductionExpression(expression, "rhs");
         result = integrateFirstOrder(configFromSelection(sel), {
           t0,
           y0,
@@ -484,12 +627,17 @@ function renderForm(meta: MethodCatalogEntry, sel: SelectedMethod): HTMLElement 
         });
       }
 
+      const expressionSnapshot = createSuccessfulExpressionSnapshot(
+        expression,
+        isSecond ? "second_order_rhs" : "rhs"
+      );
       lastCompare = null;
       lastResult = result;
+      lastResultExpression = expressionSnapshot;
       lastProblemInputs = isSecond
         ? {
             kind: "second_order",
-            equationDisplay: `u″ = a(t, u) with a(t, u) = ${expr}`,
+            equationDisplay: expressionSnapshot.equationDisplay,
             t0,
             tEnd,
             h,
@@ -498,7 +646,7 @@ function renderForm(meta: MethodCatalogEntry, sel: SelectedMethod): HTMLElement 
           }
         : {
             kind: "first_order",
-            equationDisplay: `y′ = f(t, y) with f(t, y) = ${expr}`,
+            equationDisplay: expressionSnapshot.equationDisplay,
             t0,
             tEnd,
             h,
@@ -557,10 +705,9 @@ function renderCompareForm(
         <span>Initial value y₀</span>
         <input name="y0" type="number" value="${fo.y0}" step="any" required />
       </label>
-      <label class="field wide">
-        <span>Shared y′ = f(t, y)</span>
-        <input name="expr" type="text" value="" required placeholder="-y" />
-      </label>
+      <div class="field wide" data-expression-field></div>
+      <p class="hint">The same right-hand side is used by both methods.</p>
+      <div class="wide" data-expression-summary></div>
       <p class="hint multistep-note">For multistep methods, startup values are generated by Runge-Kutta 4.</p>
       <div class="actions">
         <button type="submit" class="btn primary">Run comparison</button>
@@ -569,8 +716,7 @@ function renderCompareForm(
     </form>
   `;
 
-  const exprCmp = wrap.querySelector<HTMLInputElement>('input[name="expr"]');
-  if (exprCmp) exprCmp.value = fo.expr;
+  const expressionField = mountProductionExpressionField(wrap, "rhs");
 
   wrap.querySelector("[data-back-methods]")!.addEventListener("click", () => {
     const form = wrap.querySelector<HTMLFormElement>("#ode-form");
@@ -578,11 +724,13 @@ function renderCompareForm(
     step = "choose";
     lastCompare = null;
     lastResult = null;
+    lastResultExpression = null;
+    lastProblemInputs = null;
     session = { mode: "compare_pick", first: null };
     render();
   });
 
-  wrap.querySelector("#ode-form")!.addEventListener("submit", (ev) => {
+  wrap.querySelector("#ode-form")!.addEventListener("submit", async (ev) => {
     ev.preventDefault();
     const form = ev.target as HTMLFormElement;
     const err = wrap.querySelector<HTMLParagraphElement>("#form-error")!;
@@ -594,9 +742,16 @@ function renderCompareForm(
       const t0 = Number(fd.get("t0"));
       const tEnd = Number(fd.get("tEnd"));
       const h = Number(fd.get("h"));
-      const expr = String(fd.get("expr") ?? "");
       const y0 = Number(fd.get("y0"));
-      const f = compileScalarExpr(expr, "first");
+      validateFixedStepGrid(t0, tEnd, h);
+      requireFiniteField(y0, "Initial value y₀");
+      const mountedExpressionField = await expressionField;
+      if (!mountedExpressionField) {
+        throw new Error("The mathematical editor is not available. Return to Step 2 and try again.");
+      }
+      const expression = requireCurrentExpression(mountedExpressionField);
+      if (!expression) return;
+      const f = compileProductionExpression(expression, "rhs");
 
       const a: SelectedMethod = {
         ...session.a,
@@ -618,9 +773,11 @@ function renderCompareForm(
       const base = { t0, y0, tEnd, h, f };
       const resultA = integrateFirstOrder(configFromSelection(a), base);
       const resultB = integrateFirstOrder(configFromSelection(b), base);
+      const expressionSnapshot = createSuccessfulExpressionSnapshot(expression, "rhs");
       lastResult = null;
+      lastResultExpression = null;
       lastProblemInputs = null;
-      lastCompare = { a, b, resultA, resultB };
+      lastCompare = { a, b, resultA, resultB, expression: expressionSnapshot };
       resetTutorConversation();
       step = "results";
       render();
@@ -637,7 +794,9 @@ function goToMethodListKeepInputs(): void {
   step = "choose";
   selected = null;
   lastResult = null;
+  lastResultExpression = null;
   lastCompare = null;
+  lastProblemInputs = null;
   session = { mode: "single" };
   render();
 }
@@ -720,7 +879,8 @@ function renderMethodFormulas(
 
 function renderResultsShell(
   meta: MethodCatalogEntry,
-  result: SolverResult
+  result: SolverResult,
+  expression: SuccessfulExpressionSnapshot
 ): HTMLElement {
   const wrap = document.createElement("div");
   wrap.className = "results-wrap";
@@ -742,7 +902,7 @@ function renderResultsShell(
     goToMethodListKeepInputs();
   });
   queueMicrotask(() => {
-    mountResults(meta, result);
+    mountResults(meta, result, expression);
     const tutorHost = wrap.querySelector<HTMLDivElement>("#ai-tutor-host");
     if (tutorHost) {
       mountAiTutorPanel(tutorHost, {
@@ -761,7 +921,8 @@ function renderCompareResultsShell(
   metaA: MethodCatalogEntry,
   metaB: MethodCatalogEntry,
   resultA: SolverResult,
-  resultB: SolverResult
+  resultB: SolverResult,
+  expression: SuccessfulExpressionSnapshot
 ): HTMLElement {
   const wrap = document.createElement("div");
   wrap.className = "results-wrap";
@@ -784,6 +945,8 @@ function renderCompareResultsShell(
     step = "choose";
     lastCompare = null;
     lastResult = null;
+    lastResultExpression = null;
+    lastProblemInputs = null;
     session = { mode: "compare_pick", first: null };
     render();
   });
@@ -791,7 +954,7 @@ function renderCompareResultsShell(
     goToMethodListKeepInputs();
   });
   queueMicrotask(() => {
-    mountCompareResults(metaA, metaB, resultA, resultB);
+    mountCompareResults(metaA, metaB, resultA, resultB, expression);
     const tutorHost = wrap.querySelector<HTMLDivElement>("#ai-tutor-host");
     if (tutorHost) {
       mountAiTutorPanel(tutorHost, {
@@ -808,7 +971,8 @@ function renderCompareResultsShell(
 
 function mountResults(
   meta: MethodCatalogEntry,
-  result: SolverResult
+  result: SolverResult,
+  expression: SuccessfulExpressionSnapshot
 ): void {
   const body = document.querySelector("#results-body");
   if (!body) return;
@@ -820,6 +984,7 @@ function mountResults(
   body.innerHTML = `
     <section class="summary">
       <h2>${result.metadata.displayName} · results</h2>
+      <div class="problem-equation" data-problem-equation></div>
       <div class="stat-grid">
         <div class="stat">
           <span class="stat-label">Steps taken</span>
@@ -869,6 +1034,8 @@ function mountResults(
     </section>
   `;
 
+  const equationTarget = body.querySelector<HTMLElement>("[data-problem-equation]");
+  if (equationTarget) renderReadonlyMath(equationTarget, expression.equation, { display: "block" });
   renderMethodFormulas(body, [meta]);
 
   drawSingleChart(meta, series);
@@ -968,7 +1135,8 @@ function mountCompareResults(
   metaA: MethodCatalogEntry,
   metaB: MethodCatalogEntry,
   resultA: SolverResult,
-  resultB: SolverResult
+  resultB: SolverResult,
+  expression: SuccessfulExpressionSnapshot
 ): void {
   const body = document.querySelector("#results-body");
   if (!body) return;
@@ -988,6 +1156,7 @@ function mountCompareResults(
   body.innerHTML = `
     <section class="summary">
       <h2>Comparison · ${resultA.metadata.displayName} vs ${resultB.metadata.displayName}</h2>
+      <div class="problem-equation" data-problem-equation></div>
       <div class="stat-grid">
         <div class="stat"><span class="stat-label">Steps (each)</span><span class="stat-value">${seriesA.length}</span></div>
         <div class="stat"><span class="stat-label">Final time</span><span class="stat-value">${la.t.toFixed(6)}</span></div>
@@ -1031,6 +1200,9 @@ function mountCompareResults(
       </div>
     </section>
   `;
+
+  const equationTarget = body.querySelector<HTMLElement>("[data-problem-equation]");
+  if (equationTarget) renderReadonlyMath(equationTarget, expression.equation, { display: "block" });
 
   renderMethodFormulas(body, [metaA, metaB]);
 

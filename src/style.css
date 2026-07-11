@@ -230,6 +230,10 @@ code {
   grid-column: 1 / -1;
 }
 
+.form > .wide {
+  grid-column: 1 / -1;
+}
+
 .field input {
   border-radius: 10px;
   border: 1px solid var(--border);
@@ -495,6 +499,15 @@ code {
 
 .summary h2 {
   margin: 0 0 12px;
+}
+
+.problem-equation {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(15, 21, 43, 0.72);
+  overflow-x: auto;
 }
 
 .stat-grid {

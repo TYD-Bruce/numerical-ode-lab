@@ -1,10 +1,12 @@
 import type { MathVariableProfile } from "../ast";
 import type { MathExpression } from "../expression";
+import type { MathExpressionError } from "../errors";
 import { projectParsedExpression } from "../projection";
 import { mountExpressionToolbar, type ExpressionToolbarHandle } from "./expressionToolbar";
 import type { ExpressionFieldIssue } from "./expressionErrorSummary";
 import {
   validateMathFieldDraft,
+  importLegacyMathFieldExpression,
   type MathFieldSnapshot,
 } from "./mathFieldState";
 import { loadMathLiveModule } from "./readonlyMath";
@@ -46,6 +48,7 @@ export interface EditableMathFieldOptions {
   equationPrefix: EditableEquationPrefix;
   initialConfirmed: MathExpression;
   initialDraftLatex?: string;
+  initialValidation?: "gentle" | "strict";
   description?: string;
   descriptionId?: string;
   errorId?: string;
@@ -53,6 +56,7 @@ export interface EditableMathFieldOptions {
   loadBackend?: EditableMathBackendLoader;
   onDraftStateChange?: (snapshot: MathFieldSnapshot) => void;
   onConfirmedExpressionChange?: (expression: MathExpression) => void;
+  onLegacyPasteError?: (error: MathExpressionError) => void;
 }
 
 export interface EditableMathFieldHandle {
@@ -100,6 +104,16 @@ function readFieldLatex(field: EditableMathElement): string {
   return field.getValue?.("latex") ?? field.value;
 }
 
+function looksLikeLegacyPlainText(source: string): boolean {
+  return source.trim() !== "" && !source.includes("\\") && !source.includes("$");
+}
+
+function mustRejectLegacyPaste(source: string): boolean {
+  return /(?:Math\.|window|globalThis|document|constructor|prototype|[;=?\[\]{}])/.test(
+    source
+  );
+}
+
 export function mountEditableMathField(
   target: HTMLElement,
   options: EditableMathFieldOptions
@@ -111,7 +125,12 @@ export function mountEditableMathField(
   let toolbar: ExpressionToolbarHandle | undefined;
   let confirmed: MathExpression | undefined = options.initialConfirmed;
   let draft = options.initialDraftLatex ?? options.initialConfirmed.latex;
-  let snapshot = validateMathFieldDraft(draft, options.profile, confirmed, true);
+  let snapshot = validateMathFieldDraft(
+    draft,
+    options.profile,
+    confirmed,
+    options.initialValidation !== "gentle"
+  );
   if (snapshot.state.kind === "ready") confirmed = snapshot.state.confirmed;
 
   const wrapper = document.createElement("div");
@@ -262,10 +281,26 @@ export function mountEditableMathField(
           if (!wrapper.contains(document.activeElement)) toolbar?.setActive(false);
         });
       };
+      const onPaste = (event: Event): void => {
+        const clipboard = (event as ClipboardEvent).clipboardData;
+        const source = clipboard?.getData("text/plain") ?? "";
+        if (!looksLikeLegacyPlainText(source)) return;
+        const imported = importLegacyMathFieldExpression(source, options.profile);
+        if (imported.kind === "ready") {
+          event.preventDefault();
+          setDraft(imported.expression.latex, "strict");
+          return;
+        }
+        if (mustRejectLegacyPaste(source)) {
+          event.preventDefault();
+          options.onLegacyPasteError?.(imported.error);
+        }
+      };
       nextField.addEventListener("input", onInput);
       nextField.addEventListener("change", onChange);
       nextField.addEventListener("focus", onFocus);
       nextField.addEventListener("blur", onBlur);
+      nextField.addEventListener("paste", onPaste);
       let initialized = false;
       const initializeValue = (): void => {
         if (initialized) return;
@@ -308,6 +343,7 @@ export function mountEditableMathField(
         nextField.removeEventListener("change", onChange);
         nextField.removeEventListener("focus", onFocus);
         nextField.removeEventListener("blur", onBlur);
+        nextField.removeEventListener("paste", onPaste);
         nextField.removeEventListener("mount", initializeValue);
       };
       wrapper.addEventListener("math-field-dispose", disposeListeners, { once: true });

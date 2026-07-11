@@ -266,4 +266,33 @@ describe("editable MathLive field controller", () => {
     fieldIssue?.focus();
     expect(backend.focus).toHaveBeenCalled();
   });
+
+  it("normalizes approved legacy paste and rejects unsupported JavaScript", async () => {
+    const backend = mockBackend();
+    const rejected = vi.fn();
+    const handle = mountEditableMathField(connectedTarget(), options(backend, {
+      onLegacyPasteError: rejected,
+    }));
+    await settle();
+
+    const approved = new Event("paste", { cancelable: true });
+    Object.defineProperty(approved, "clipboardData", {
+      value: { getData: () => "Math.sin(t)-0.1*y" },
+    });
+    backend.field.dispatchEvent(approved);
+    expect(approved.defaultPrevented).toBe(true);
+    expect(backend.field.value).toBe("\\sin\\left(t\\right)-\\left(0.1\\cdot y\\right)");
+    expect(handle.getState().state.kind).toBe("ready");
+
+    const unsupported = new Event("paste", { cancelable: true });
+    Object.defineProperty(unsupported, "clipboardData", {
+      value: { getData: () => "Math.random()" },
+    });
+    backend.field.dispatchEvent(unsupported);
+    expect(unsupported.defaultPrevented).toBe(true);
+    expect(rejected).toHaveBeenCalledWith(
+      expect.objectContaining({ code: "invalid_legacy_expression" })
+    );
+    expect(handle.getState().state.kind).toBe("ready");
+  });
 });
