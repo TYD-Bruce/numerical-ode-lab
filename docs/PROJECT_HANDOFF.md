@@ -1,301 +1,183 @@
 # Numerical ODE Lab — Project Handoff
 
-This document is the durable handoff for future Cursor agents. **Do not rely on prior chat history.** Use this file plus the codebase as the source of truth.
+This is the durable handoff for future contributors and Cursor agents. Use it with the current codebase; do not rely on prior chat history.
 
-Repository: [TYD-Bruce/numerical-ode-lab](https://github.com/TYD-Bruce/numerical-ode-lab)
-
----
+**Status:** Human-Friendly Math Expressions implemented and verified on 2026-07-11. The Observed Convergence Order experiment is designed but not implemented.
 
 ## 1. Project identity
 
-| Field | Value |
-|--------|--------|
-| **App title** | Numerical ODE Lab |
-| **Subtitle / eyebrow** | AI-Assisted Educational Solver |
-| **Purpose** | Educational web app for numerical methods on **scalar initial value problems (IVPs)**. Students choose a method, enter a model and time grid, run the solver, and inspect numeric output, plots, method metadata, and (for multistep methods) generated coefficients. |
+Numerical ODE Lab is an educational browser application for scalar fixed-step initial value problems. Its three-step flow is **Method → Data → Output**. Students can run one method, compare two first-order methods, inspect plots and method metadata, and ask a grounded AI Method Tutor about successful single-method runs.
 
-The app should feel like a real teaching tool, not a toy starter template.
-
----
-
-## 2. Current technical stack
+## 2. Technical stack
 
 | Layer | Choice |
-|--------|--------|
-| Language | TypeScript (strict) |
-| Bundler / dev server | Vite 5 (`npm run dev` → http://localhost:5173/) |
+|---|---|
+| Language | Strict TypeScript |
+| Frontend | Vite 5 |
 | Charts | Chart.js 4 |
-| Tests | Vitest (`npm run test:run`) |
-| CI | GitHub Actions runs `npm ci` then `npm run verify` on push and pull requests |
-| Math in UI | **Unicode / plain text only** (KaTeX was removed; do not reintroduce raw LaTeX in visible UI without a renderer) |
+| Mathematical editing/rendering | MathLive 0.110.0 |
+| LaTeX adapter | Compute Engine 0.58.0 raw MathJSON |
+| Tests | Vitest; 543 tests passing at Milestone 1 finalization |
+| API | Vercel function plus local `server/dev.ts` |
 
-### Main source files
+MathLive and Compute Engine are deferred from the landing-screen bundle. Opening a Step 2 mathematical field loads the editable/Compute Engine chunk and MathLive assets. Static formulas use the shared lazy read-only renderer.
 
-| File | Role |
-|------|------|
-| `src/solvers.ts` | Integration API, one-step and generic multistep solvers, expression compile, `SolverResult` + metadata |
-| `src/grid.ts` | Shared fixed-step grid validation, alignment tolerance, and browser-safe step cap |
-| `src/polynomial.ts` | Polynomial helpers + Lagrange-based coefficient generators (AB, AM, BDF) |
-| `src/coefficientValidation.ts` | Self-checks for reference coefficients + simple Forward Euler sanity log |
-| `src/methodCatalog.ts` | Display names, blurbs, Unicode `formulaDisplay` strings |
-| `src/mathDisplay.ts` | `escapeHtml`, `formatCoefficients` for UI |
-| `src/main.ts` | 3-step UI: choose method → data → results; compare-two-methods flow |
-| `src/style.css` | Dark educational theme |
-| `index.html` | Shell + fonts (no KaTeX CDN) |
-
-### npm scripts
+Useful commands:
 
 ```bash
-npm install
-npm run dev      # local development
-npm run test:run # deterministic Vitest suite
-npm run verify   # tests, frontend/API type checks, and production build
-npm run build    # tsc && vite build
-npm run preview  # preview production build
+npm run test:run
+npm run typecheck
+npm run typecheck:api
+npm run build
+npm run verify
+npm run dev
+npm run dev:api
+npm run preview
 ```
 
----
+## 3. Expression architecture
 
-## 3. Mathematical notation rules
+The production expression flow is:
 
-### Standard IVP (first-order)
+```text
+MathLive draft LaTeX
+  -> raw-LaTeX incomplete-structure check
+  -> Compute Engine raw MathJSON
+  -> strict MathJSON adapter
+  -> project-owned closed MathAst
+  -> structural and variable-profile validation
+  -> deterministic math-ast-v1 serialization and projections
+  -> explicit numeric evaluator
+  -> existing solver function parameter
+```
 
-- **IVP:** y′ = f(t, y), y(t₀) = y₀
+### Ownership and trust
 
-### Time grid and solution
+- `MathAst` is the authoritative mathematical meaning.
+- LaTeX restores/displays the field; raw MathJSON is an adapter value only. Neither enters application run state as numerical authority.
+- The controlled legacy tokenizer/parser imports approved text without executing it.
+- The evaluator uses exhaustive AST dispatch. Production user expressions use neither `eval` nor `new Function`.
+- Solvers receive numeric closures only and do not import MathLive, MathJSON, LaTeX, DOM, or Tutor rendering code.
+- Rendering and Tutor mathematics are display-only and cannot become solver input.
 
-- h = Δt  
-- tₙ = t₀ + nh  
-- yₙ = y(tₙ) (exact)  
-- uₙ ≈ yₙ (numerical)  
-- fₙ = f(tₙ, uₙ)
+### Variable profiles
 
-### Multistep history (code convention)
+| Profile | Variables | Production use |
+|---|---|---|
+| `rhs` | `t`, `y` | First-order single method and Compare |
+| `second_order_rhs` | `t`, `u` | Existing Leap-Frog acceleration field |
+| `exact_solution` | `t`, `t0`, `y0` | Pure code and tests only; no UI yet |
 
-- `uHistory[0]` = uₙ, `uHistory[1]` = uₙ₋₁, …  
-- `fHistory[0]` = fₙ, `fHistory[1]` = fₙ₋₁, …
+`second_order_rhs` migrates the existing Leap-Frog expression path; it adds no new Leap-Frog capability. Compare continues to share one `rhs` expression.
 
-### Visible UI text
+### Exponential semantics
 
-- Use **human-readable Unicode / plain math** (e.g. y′, t₀, uₙ₊₁, Σ, α, β, Δ).
-- **Do not** show raw LaTeX delimiters or commands in normal UI: no `\( ... \)`, `\[ ... \]`, `\alpha_j`, `u_{n+1}`, etc.
+The input adapters map raw visual e raised to x, raw `Exp(x)`, legacy `exp(x)`, and legacy `Math.exp(x)` to the project `exp` function node. That node evaluates with `Math.exp`. The core canonicalizer does not rewrite a directly constructed project `power(constant("e"), x)` node. General powers remain power nodes and evaluate with `Math.pow`; standalone e remains a constant.
 
-**Correct (UI):**  
-`First-order IVP: y′ = f(t, y), y(t₀) = y₀.`
+### Drafts, validation, and snapshots
 
-**Incorrect (UI):**  
-`\(y'=f(t,y)\)`, `\(y(t_0)=y_0\)`
+- Draft LaTeX is separate from the last confirmed `MathExpression`.
+- Gentle input validation treats recognized unfinished structures neutrally.
+- Blur, Run, Expression details, and restoration use strict validation.
+- An invalid or incomplete visible draft cannot run by falling back to an older confirmed AST.
+- A successful run captures an immutable expression snapshot. Step 3 and Tutor context use that snapshot even if the user later edits Step 2.
+- A failed run does not replace the previous successful numerical result, equation snapshot, or Tutor context.
 
-### TypeScript code identifiers
+### Important source files
 
-Use readable **ASCII** names in code, not Greek letters as variable names:
+| File or directory | Role |
+|---|---|
+| `src/math/ast.ts` | Closed project AST |
+| `src/math/errors.ts` | Structured expression errors |
+| `src/math/validation.ts` | Runtime AST and profile validation |
+| `src/math/canonical.ts` | Structure-preserving normalization and `math-ast-v1` serialization |
+| `src/math/projection.ts` | Parsed-expression and accessible-text projections |
+| `src/math/evaluator.ts` | Explicit finite real-number evaluator/compiler |
+| `src/math/mathJsonAdapter.ts` | Strict raw MathJSON conversion |
+| `src/math/legacyAdapter.ts` | Controlled legacy tokenizer/parser |
+| `src/math/expression.ts` | Validated `MathExpression` construction |
+| `src/math/problemExpressions.ts` | AST-backed defaults, persisted field state, successful snapshots |
+| `src/math/ui/` | Lazy loader, editable fields, toolbar, errors, details, and read-only rendering |
+| `src/main.ts` | Three-step UI, mode state, strict Run integration, Step 3 snapshots |
 
-- `alpha[j]`, `beta[j]`, `uNext`, `uHistory`, `fHistory`, `tNext`, `order`, etc.
+## 4. User-facing mathematical input
 
-Internal storage may keep a future LaTeX field name only if it is **not** injected into visible HTML without a renderer.
+First-order and Compare forms show a fixed non-editable `y′ =` prefix; Leap-Frog shows `u″ =`. The field contains only the right-hand side. The compact toolbar inserts fraction, exponent, square root, exponential, trigonometric, natural-logarithm, absolute-value, and pi structures. **More symbols** opens MathLive's virtual keyboard.
 
----
+**Expression details** shows read-only LaTeX and deterministic parsed text for the current valid draft. Errors are specific, field-local, and summarized after a blocked Run. The Version 1 UI is English-only.
 
-## 4. UI naming rules
+Legacy compatibility intentionally accepts only the approved grammar and exact aliases such as `Math.exp`, `Math.sin`, and `Math.PI`. Arbitrary property traversal, assignments, statements, globals, and aliases such as `Math.random` are rejected. This is an intentional compatibility reduction from the former arbitrary JavaScript expression field.
 
-Internal `MethodFamily` ids use snake_case (e.g. `adams_bashforth`). **User-visible** names must be capitalized and polished:
+## 5. Read-only mathematics and Tutor
 
-| Internal family | Visible name |
-|-----------------|--------------|
-| `forward_euler` | Forward Euler |
-| `backward_euler` | Backward Euler |
-| `taylor` | Taylor Method (Order 2) |
-| `rk4` | Runge-Kutta 4 |
-| `adams_bashforth` | Adams-Bashforth (Order p) |
-| `adams_moulton` | Adams-Moulton (Order p) |
-| `bdf` | Backward Differentiation Formula (Order p) or **BDF (Order p)** |
-| `leapfrog` | Leap-Frog |
+`src/math/ui/readonlyMath.ts` immediately renders meaningful plain text, then upgrades to a non-editable, non-tab-stop `MathSpanElement` after the shared cached MathLive import succeeds. Removal, stale-content races, import failure, and rendering failure retain the fallback.
 
-Do not show snake_case method ids in the UI.
+Assistant Tutor text supports only controlled `\(...\)` inline and `\[...\]` block segments. Text uses text nodes and explicit line breaks; arbitrary HTML and unrestricted Markdown remain inert. User messages are always plain text. Tutor formulas never pass through the numerical adapters or evaluator.
 
----
+## 6. Solver architecture
 
-## 5. Current implemented solver architecture
-
-### Entry points
+The stable entry points remain:
 
 ```ts
 interface MethodConfig {
   family: MethodFamily;
-  order?: number;  // required for AB, AM, BDF
+  order?: number;
 }
 
-integrateFirstOrder(config, params) → SolverResult  // { points, metadata }
-integrateSecondOrder(params) → SolverResult         // Leap-Frog only
-compileScalarExpr(expr, "first" | "second")         // JS expression → function
+integrateFirstOrder(config, params): SolverResult
+integrateSecondOrder(params): SolverResult
 ```
 
-`SolverResult.metadata` includes: `displayName`, `family`, `order`, `formulaDisplay`, `coefficients` (alpha/beta when applicable), `isImplicit`, `startupMethod`, `notes`, and optional `implicitDiagnostics` for implicit runs. Diagnostics aggregate the nonlinear method, iteration totals, per-step maximum, final/max residuals, and failed-step count.
+Expression evaluators are compiled before these calls. `src/solvers.ts` owns no expression parser or dynamic compiler.
 
-### One-step methods (fixed implementations)
+Implemented methods:
 
-| Method | Status |
-|--------|--------|
-| Forward Euler | Implemented (`forwardEulerCore`) |
-| Backward Euler | Implemented; scalar Newton solve by default (fixed-point remains an internal option) |
-| Taylor Method (Order 2) | Implemented; numeric fₜ, fᵧ, y″ = fₜ + fᵧ f |
-| Runge-Kutta 4 | Implemented |
-| Leap-Frog | Implemented for u″ = a(t, u); **separate** second-order path |
+- Forward Euler, Backward Euler, Taylor Method (Order 2), and Runge-Kutta 4.
+- Adams-Bashforth and Adams-Moulton for orders 1–8.
+- BDF for orders 1–6.
+- Leap-Frog for scalar second-order equations `u″ = a(t,u)`.
 
-### Generic multistep (coefficient-driven)
+Generic multistep coefficients come from `src/polynomial.ts`; no per-order hard-coded solver family exists. Multistep startup uses Runge-Kutta 4 with the same step size and requires at least p fixed steps so the order-p formula runs at least once. Implicit methods use the existing scalar Newton policy and diagnostics. See `docs/NUMERICAL_CONTRACTS.md`.
 
-| Method | Arbitrary order? | Order UI range |
-|--------|------------------|----------------|
-| Adams-Bashforth | **Yes** — `adamsBashforthCoefficients(p)` + `adamsBashforthCore` | 1 ≤ p ≤ 8 |
-| Adams-Moulton | **Yes** — `adamsMoultonCoefficients(p)` + `adamsMoultonCore` | 1 ≤ p ≤ 8 |
-| BDF | **Yes** — `bdfCoefficients(p)` + `bdfCore` | 1 ≤ p ≤ 6 |
+## 7. Fixed-grid and metadata invariants
 
-**Generic coefficient generators exist** in `src/polynomial.ts`:
+- Every run uses a positive aligned integer step count and has a 100,000-step cap.
+- No final short step is introduced.
+- Numeric inputs and every evaluated derivative/acceleration must be finite.
+- `SolverResult.metadata` continues to carry display name, family, order, formula, coefficients, implicit/startup notes, and optional measured implicit diagnostics.
+- Human-friendly expression migration changed no method coefficient, time-stepping formula, grid rule, Newton policy, diagnostic, or solver signature.
 
-- `adamsBashforthCoefficients(order)`
-- `adamsMoultonCoefficients(order)`
-- `bdfCoefficients(order)`
-- Helpers: `lagrangeBasis`, `integrateLagrangeBasis`, `derivativeOfLagrangeAt`, polynomial add/multiply/integrate/derivative, etc.
+## 8. UI flow and state
 
-There are **no** separate hard-coded `AB3`, `AB4`, `BDF3` functions — orders are generated from Lagrange interpolation.
+1. **Method:** choose one method or Compare two first-order methods. Leap-Frog remains separate.
+2. **Data:** edit numeric data and one visual right-hand-side field; choose p for AB/AM/BDF.
+3. **Output:** view final values, chart, method metadata, last values, and optional implicit diagnostics. Single-method results can open the AI Tutor.
 
-### Validation
+**All methods (keep my numbers)** preserves per-mode in-memory field state. Compare has one shared `rhs`; Leap-Frog retains independent `second_order_rhs` state. No localStorage or URL fingerprinting was added.
 
-- `src/coefficientValidation.ts` runs on module load: checks AB/AM/BDF reference coefficients (tolerance 1e-10) and a simple Forward Euler decay sanity log in dev.
-- Vitest covers coefficient, BDF, fixed-grid, finite-input/RHS, nonlinear-solver, and solver-result invariants. The suite evolves; run `npm run test:run` for the current count.
-- All fixed-step solvers require a positive, grid-aligned integer `N = (tEnd - t0) / h`; no final short step is used. The active limit is 100,000 steps, and numeric inputs plus evaluated RHS outputs must be finite. See `docs/NUMERICAL_CONTRACTS.md`.
+## 9. Scope exclusions and next milestone
 
-### Known incomplete / out-of-scope (do not assume done)
+Not implemented:
 
-- No systems of ODEs.
-- No adaptive time stepping.
-- No arbitrary Runge-Kutta order or arbitrary Taylor order.
-- No PDE content.
-- Expression evaluation uses `new Function` — acceptable for **local educational use only**; not safe for untrusted public input.
-- Compare mode: order defaults come from method cards; users can edit order on the compare form for multistep methods, but picking two methods on the grid does not yet expose per-method order before the data step (only on compare form).
-- No README in repo root (handoff + code only).
-- Observed order / global error study UI not implemented (sanity check is console-only).
+- systems of ODEs or adaptive stepping;
+- exact-solution switch/field or exact-solution presets;
+- Convergence Study drawer or calculations;
+- Compare/Leap-Frog convergence experiments;
+- arbitrary JavaScript, arbitrary HTML, unrestricted Markdown, KaTeX, or MathJax;
+- Chinese UI.
 
----
+The Human-Friendly Math Expressions prerequisite is complete. The approved Convergence Study design may now enter implementation planning, but its numerical and UI work remains a separate milestone.
 
-## 6. Multistep method requirements
+## 10. Performance note
 
-### Adams-Bashforth (order p)
+The verified production build is approximately 235.96 kB minified / 79.10 kB gzip for the initial application, 1,143.45 kB / 308.64 kB gzip for the deferred editable/Compute Engine chunk, and 819.11 kB / 228.04 kB gzip for the deferred MathLive chunk. Font and MathLive CSS assets are emitted with hashed deployable paths. The two large lazy chunks trigger Vite size warnings. A small amount of Compute Engine-identifying code appears in both lazy artifacts, but the build inspection does not prove duplicate executable payload; investigate before attempting optimization.
 
-**Formula (UI):**  
-uₙ₊₁ = uₙ + h Σ βⱼ fₙ₋ⱼ, j = 0,…,p−1
+## 11. Contributor guidelines
 
-**Coefficients:**  
-s = (t − tₙ) / h. Interpolation nodes s = 0, −1, …, −(p−1).  
-βⱼ = ∫₀¹ Lⱼ(s) ds where Lⱼ is the Lagrange basis for node −j.
+- Preserve the dependency direction: UI/adapters → project AST/validation/evaluator → numeric closures → solvers.
+- Do not reorder, sort, flatten, fold, or symbolically simplify AST arithmetic; grouping and child order are numerical behavior.
+- Do not restore dynamic execution as a compatibility fallback.
+- Keep `exact_solution` unexposed until the downstream milestone implements its approved UI and consistency checks.
+- Run `npm run verify` after changes and extend focused tests for every expression-boundary change.
 
-**Implementation:** `adamsBashforthCoefficients` + explicit step using `fHistory`.
-
-### Adams-Moulton (order p)
-
-**Formula (UI):**  
-uₙ₊₁ = uₙ + h(β₋₁ fₙ₊₁ + β₀ fₙ + …)
-
-**Coefficients:**  
-Nodes s = 1, 0, −1, …, −(p−2). Integrate each Lⱼ over [0, 1].  
-β[0] corresponds to fₙ₊₁, β[1] to fₙ, etc.
-
-**Implicit solve:** Adams-Bashforth predictor followed by a scalar Newton solve by default. Fixed-point iteration remains available internally for tests/teaching comparisons. The nonlinear solver uses both update and residual tolerances and reports controlled failure reasons; convergence of this iteration is distinct from method stability.
-
-### BDF (order p)
-
-**Formula (UI):**  
-Σ αⱼ uₙ₊₁₋ⱼ = h f(tₙ₊₁, uₙ₊₁), j = 0,…,p
-
-**Coefficients:**  
-Interpolate through solution nodes s = 0, −1, …, −p (s = 0 → uₙ₊₁).  
-αⱼ = (d/ds Lⱼ)|_{s=0}.
-
-**Solve:**  
-The BDF algebraic residual is solved by scalar Newton iteration by default; its fixed-point rearrangement remains available internally. A nonlinear-iteration failure does not by itself imply BDF scheme instability.
-
-**History indexing:** `bdfCore` uses `history[j - 1]` for each historical αⱼ term, where `history[0] = uₙ`.
-
-**Restrict:** 1 ≤ p ≤ 6 in UI and validation.
-
----
-
-## 7. Startup values
-
-- Multistep method of order p needs **p − 1** startup steps after the initial value (p = 1 needs none beyond u₀).
-- **Startup method:** Runge-Kutta 4 with the **same** step size h as the main integration.
-- Bootstrap builds `uHistory` / `fHistory` with **newest first**: `history[0]` = current uₙ, `history[1]` = uₙ₋₁, etc.
-- AB, AM, and BDF share `bootstrapMultistep(p, order)`; BDF does not bootstrap an extra point. Every order-p multistep run requires at least p fixed steps so its selected formula executes at least once.
-
-Metadata should show: **Startup method: Runge-Kutta 4** when applicable.
-
----
-
-## 8. Required coefficient checks
-
-Tolerance: `|a − b| < 1e−10` (see `COEFF_TOL` in `polynomial.ts`).
-
-| Method | Order | Expected coefficients |
-|--------|-------|------------------------|
-| AB | 1 | [1] |
-| AB | 2 | [3/2, −1/2] |
-| AB | 3 | [23/12, −16/12, 5/12] |
-| AM | 1 | [1] |
-| AM | 2 | [1/2, 1/2] |
-| AM | 3 | [5/12, 8/12, −1/12] |
-| BDF | 1 | [1, −1] |
-| BDF | 2 | [3/2, −2, 1/2] |
-
-Implemented in `runCoefficientValidation()` in `src/coefficientValidation.ts`.
-
----
-
-## 9. Current known UI issue (resolved — guard against regression)
-
-**Problem that was fixed:** Visible UI showed raw LaTeX such as `\(y'=f(t,y)\)` because KaTeX was not reliably rendering.
-
-**Current rule:** All user-facing strings must use Unicode/plain math (see §3). Formulas use `formulaDisplay` in `methodCatalog.ts` / `SolverMetadata`, rendered as plain HTML via `escapeHtml` in `mathDisplay.ts`. **Do not** add `\( ... \)` to labels, hints, errors, or notes without installing and wiring a math renderer end-to-end.
-
-If adding KaTeX/MathJax later:
-
-1. Load the library in `index.html`.
-2. Render only designated formula nodes.
-3. Keep fallback plain Unicode for labels and errors.
-
----
-
-## 10. UI flow (current)
-
-1. **Method** — grid of methods; optional **Compare two methods** (first-order only; Leap-Frog excluded).
-2. **Data** — t₀, t_end, h, y₀ (or u₀, v₀ for Leap-Frog), expression; order selector p for AB / AM / BDF.
-3. **Output** — final values, Chart.js plot, method metadata panel (formula, coefficients, notes), last 12 steps table. Successful implicit runs also show aggregate nonlinear-solve diagnostics; explicit runs omit that section.
-
-The AI Method Tutor context copies `implicitDiagnostics` only when present in the actual `SolverResult.metadata`, so live and demo responses can discuss measured iteration counts and residuals without fabricating them.
-
-Navigation:
-
-- **All methods (keep my numbers)** — returns to step 1 and preserves form values in memory.
-- Compare flow: pick method A, then B → shared data form → overlaid plot + difference table.
-
----
-
-## 11. Next recommended tasks (ordered, small scope)
-
-1. **Add `README.md`** at repo root with install, `npm run dev`, project overview, and link to this handoff — lowest risk, helps new contributors.
-2. **Compare mode UX:** when picking two methods on the grid, allow setting **different orders p** per method on the compare data form (partially exists; verify disabled fields for non-multistep and document behavior).
-3. **Educational “observed order” panel** for the model y′ = y, y(0) = 1: run two step sizes, estimate order from error at t = 1 vs e — small UI addition, reuses existing solvers.
-4. **Persist inputs in `localStorage`** so refresh does not lose t₀, h, expression, and order p — small `main.ts` change, high student UX value.
-
----
-
-## 12. Agent guidelines
-
-- Prefer **small, focused diffs**; do not rewrite the whole app unless asked.
-- Keep charting and expression parsing working unless intentionally changing them.
-- Match existing naming: `MethodFamily`, `MethodConfig`, `SolverResult`, `METHOD_CATALOG`.
-- After changing coefficient math, run / extend validation in `coefficientValidation.ts`.
-- Before shipping UI copy, grep for `\\(`, `\\)`, `\\alpha`, `\\beta`, `_{`, `^{` in `src/main.ts` and user-visible catalog strings.
-
----
-
-*Last updated to reflect the codebase after generic multistep solvers, Unicode UI math, compare flow, and removal of KaTeX.*
+*Last updated: 2026-07-11 after Human-Friendly Math Expressions Phase 6 verification.*

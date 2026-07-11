@@ -1,10 +1,14 @@
 # Human-Friendly Math Expressions Design
 
-**Status:** Approved for implementation planning
+**Status:** Implemented and verified
 
 **Date:** 2026-07-10
 
-**Scope:** Milestone 1, documentation only
+**Scope:** Milestone 1, implemented
+
+**Implementation date:** 2026-07-11
+
+**Implementation record:** Phases 0–5 were delivered in commits `efb6447b815a5121da3c46b67f2c99de60b26e11` through `73780824d0897509c7aa3657fd5b6d403b8c0675`; Phase 6 verification and documentation are recorded by the finalization commit. The verified dependency versions are MathLive 0.110.0 and Compute Engine 0.58.0. The final suite contains 543 passing tests. The production build keeps the main application near 236 kB minified (79 kB gzip) and defers substantial editable/Compute Engine and MathLive chunks; this is a known performance tradeoff, not a correctness limitation.
 
 ## 1. Purpose
 
@@ -198,9 +202,9 @@ The error identifies the actual name and relevant field. It does not expose Math
 - Natural logarithm, represented internally as `log` and always displayed to users as ln.
 - Absolute value `abs`.
 
-The shared renderer supports textbook forms including e raised to x, sin x, cos x, tan x, √x, ln x, |x|, stacked fractions, superscripts, and subscripts. The specific visual pattern e raised to x, imported `exp(x)`, and imported `Math.exp(x)` all canonicalize to `{ kind: "function", name: "exp", argument: x }`. The explicit evaluator dispatches that node to `Math.exp`, and the renderer typesets it as textbook-style e raised to x.
+The shared renderer supports textbook forms including e raised to x, sin x, cos x, tan x, √x, ln x, |x|, stacked fractions, superscripts, and subscripts. The input adapters own exponential recognition: the raw MathJSON adapter maps visual `Power(ExponentialE, x)` and raw `Exp(x)` to `{ kind: "function", name: "exp", argument: x }`, while the legacy adapter maps `exp(x)` and `Math.exp(x)` to the same node. The explicit evaluator dispatches that node to `Math.exp`, and the renderer typesets it as textbook-style e raised to x.
 
-A standalone e remains `{ kind: "constant", name: "e" }`. A general a raised to b remains a `power` node, including a power whose base happens to be a compound expression. Only a `power` adapter input whose base is the standalone constant e is normalized to the `exp` function node. The canonicalizer never rewrites an `exp` node to `power(e, x)` because `Math.exp(x)` and `Math.pow(Math.E, x)` are not guaranteed to have identical floating-point results.
+A standalone e remains `{ kind: "constant", name: "e" }`. A general a raised to b remains a `power` node. Critically, the Phase 1/core canonicalizer does not rewrite an already constructed project AST `power(constant("e"), x)` node; only the input adapter can recognize that a raw visual power was the approved textbook exponential form. The canonicalizer also never rewrites an `exp` node to `power(e, x)` because `Math.exp(x)` and `Math.pow(Math.E, x)` are not guaranteed to have identical floating-point results.
 
 ## 10. Implicit multiplication
 
@@ -348,10 +352,10 @@ Fingerprints use a stable, versioned canonical AST serialization, never raw Math
 - Encode each node as a fixed tag followed by length-delimited child encodings; do not depend on object key order.
 - Accept only finite numeric literals. Normalize `-0` to `0` and serialize other numbers using JavaScript's shortest round-trip decimal representation.
 - Encode constants by canonical names `e` and `pi`, variables by canonical ASCII names, and functions by the closed AST name.
-- Normalize subtraction to `add` plus `negate`. Normalize the specific visual pattern e raised to x and approved imported `exp(x)`/`Math.exp(x)` forms to the `exp` function node; never normalize that node to `power(e, x)`.
+- Normalize subtraction to `add` plus `negate`. Before core canonicalization, the raw MathJSON adapter maps the specific visual pattern e raised to x and raw `Exp(x)` to the `exp` function node, and the legacy adapter does the same for `exp(x)`/`Math.exp(x)`. Never normalize that node to `power(e, x)`.
 - Preserve nested `add` and `multiply` grouping and left-to-right semantic input order. Do not flatten or sort commutative terms or factors in Version 1 because regrouping or reordering can change floating-point results and would silently equate expressions beyond the approved rules.
 - Encode explicit and implicit multiplication identically after parsing.
-- Preserve `divide` and general `power` structure; do not apply cancellation, constant folding, distributivity, associativity, or domain-changing identities. The sole power-pattern exception is conversion of a standalone constant-e base into the canonical `exp` function node.
+- Preserve `divide` and general project-AST `power` structure; do not apply cancellation, constant folding, distributivity, associativity, domain-changing identities, or a core `power(e, x)` rewrite. The adapter-only visual exponential recognition described above occurs before this boundary.
 
 Thus visually different explicit/implicit multiplication can share a fingerprint, while `t+y` and `y+t` remain distinct in Version 1. Future canonical changes require a new version prefix and an explicit saved-state migration.
 
@@ -398,7 +402,7 @@ Tests are deterministic and cover the following.
 - MathJSON conversion accepts the closed subset and rejects every unrepresentable node.
 - Canonical serialization covers all node types, `-0`, numeric round trips, preserved grouping and term/factor order, canonical `exp` function nodes, and explicit/implicit multiplication equivalence.
 - Visual e raised to t, imported `exp(t)`, and imported `Math.exp(t)` produce the same `exp` node and canonical serialization.
-- Standalone e remains a constant; a general a raised to b remains a `power` node; no `power(e, x)` representation is retained as the canonical exponential form.
+- Standalone e remains a constant; a general a raised to b remains a `power` node. Adapter-recognized visual e raised to x becomes `exp(x)`, while a directly constructed project AST `power(constant("e"), x)` remains a power and is not mutated by core canonicalization.
 
 ### Variable profiles
 
@@ -438,7 +442,7 @@ Tests are deterministic and cover the following.
 
 - All current solver tests remain green.
 - Explicit and implicit methods produce unchanged numerical results for equivalent supported expressions.
-- Compare continues to use `rhs`. Leap-Frog uses `second_order_rhs`, leaves `new Function`, and otherwise retains its existing acceleration-expression UX and numerical behavior.
+- Compare continues to use `rhs`. Leap-Frog uses `second_order_rhs`, no longer uses its former `new Function` execution path, and otherwise retains its existing acceleration-expression UX and numerical behavior.
 - Production type checks and build succeed.
 - No Chinese UI strings are added.
 - Milestone 1 exposes no exact-solution or convergence controls.

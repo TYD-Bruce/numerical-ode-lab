@@ -1,6 +1,6 @@
 # Observed Convergence Order Experiment Design
 
-**Status:** Approved, pending Human-Friendly Math Expressions prerequisite
+**Status:** Approved for implementation planning
 
 **Date:** 2026-07-10
 
@@ -22,7 +22,7 @@ The feature teaches the distinction between exact and numerical solutions, what 
 
 ### Prerequisite
 
-This design depends on [Human-Friendly Math Expressions](./2026-07-10-human-friendly-math-expressions-design.md). Convergence Study implementation begins only after that foundation is implemented, tested, and reviewed. The prerequisite owns MathLive editing/rendering, MathJSON adaptation, the project-owned `MathAst`, variable profiles, canonical expression serialization, legacy import, and explicit numerical evaluation. This document states only the convergence integration contract and remains authoritative for convergence numerical rules.
+This design depends on [Human-Friendly Math Expressions](./2026-07-10-human-friendly-math-expressions-design.md). That prerequisite was implemented, tested, and reviewed on 2026-07-11, so Convergence Study implementation planning may begin. The prerequisite owns MathLive editing/rendering, MathJSON adaptation, the project-owned `MathAst`, variable profiles, canonical expression serialization, legacy import, and explicit numerical evaluation. This document states only the convergence integration contract and remains authoritative for convergence numerical rules.
 
 ## 2. Version 1 boundaries
 

@@ -2,164 +2,106 @@
 
 **AI-Assisted Educational Solver**
 
-Explore numerical methods for initial value problems, compare orders of accuracy, visualize approximate solutions, and ask follow-up questions about each run — in the browser.
+Numerical ODE Lab is a browser-based teaching tool for scalar initial value problems. Choose a numerical method, enter a problem in textbook-style notation, inspect the computed values and plot, compare two first-order methods, and ask the grounded AI Method Tutor about a completed run.
 
 **Live demo:** [numerical-ode-lab-wai.vercel.app](https://numerical-ode-lab-wai.vercel.app/)
 
-Repository: [github.com/TYD-Bruce/numerical-ode-lab](https://github.com/TYD-Bruce/numerical-ode-lab)
+## Mathematical input
 
-## What it does
+Step 2 uses a visual MathLive field with a fixed equation prefix. First-order and Compare problems edit only the right-hand side of `y′ =` and allow `t` and `y`. Leap-Frog edits only the acceleration right-hand side of `u″ =` and allows `t` and `u`.
 
-Numerical ODE Lab is a teaching-oriented web app for **scalar first-order IVPs**
+The supported Version 1 subset includes:
 
-y′ = f(t, y), y(t₀) = y₀
+- addition, subtraction, multiplication, division, powers, and implicit multiplication;
+- fractions, square roots, true superscripts, and parentheses;
+- exponential, sine, cosine, tangent, natural logarithm, and absolute value;
+- constants e and pi.
 
-and a separate **Leap-Frog** mode for second-order problems u″ = a(t, u).
+For example, users can enter negative y, t minus y, e raised to t, 2 sin(t), y(1−y), a stacked fraction, or a square root without writing JavaScript. A compact toolbar inserts common structures, and **More symbols** opens MathLive's fuller virtual keyboard. The collapsed **Expression details** section shows the current LaTeX display form and a deterministic parsed-expression view; neither is executable source.
 
-You pick a method, enter times, step size, initial data, and a JavaScript expression for f (or a), then view:
+Legacy paste compatibility accepts the controlled grammar used by existing problems, including `-y`, `t-y`, `Math.sin(t)-0.1*y`, `-u`, `exp(-t)`, `Math.exp(-t)`, and `Math.PI`. Imported text is parsed into the project-owned AST and normalized back to textbook-style mathematics. Arbitrary JavaScript, global access, assignments, and unapproved `Math.*` properties such as `Math.random()` are intentionally rejected.
 
-- Final numerical values and a time plot (Chart.js)
-- Method metadata: formula, coefficients (multistep), implicit/explicit notes
-- Optional **compare two methods** on the same problem (first-order only)
-- **AI Method Tutor** (Step 3): context-aware chat that explains the current method, coefficients, accuracy, and graph using solver metadata and result data
+The Version 1 interface is English-only. Exact-solution input and the Convergence Study are not yet available.
 
 ## Supported methods
 
 | Method | Notes |
-|--------|--------|
+|---|---|
 | Forward Euler | Explicit, order 1 |
 | Backward Euler | Implicit, order 1 |
-| Taylor Method (Order 2) | Uses numeric partial derivatives |
+| Taylor Method (Order 2) | Uses numerical partial derivatives |
 | Runge-Kutta 4 | Fixed fourth-order RK |
-| Adams-Bashforth (Order p) | Explicit multistep, **1 ≤ p ≤ 8**, coefficients from Lagrange integration |
-| Adams-Moulton (Order p) | Implicit multistep, **1 ≤ p ≤ 8**, AB predictor + fixed-point correction |
-| BDF (Order p) | Implicit multistep, **1 ≤ p ≤ 6** |
-| Leap-Frog | Second-order u″ = a(t, u) |
+| Adams-Bashforth (Order p) | Explicit multistep, 1 ≤ p ≤ 8 |
+| Adams-Moulton (Order p) | Implicit multistep, 1 ≤ p ≤ 8 |
+| BDF (Order p) | Implicit multistep, 1 ≤ p ≤ 6 |
+| Leap-Frog | Second-order u″ = a(t,u) |
 
-Multistep methods bootstrap startup values with **Runge-Kutta 4** using the same step size h.
-
-## Live demo
-
-Open the hosted app anytime: **[numerical-ode-lab-wai.vercel.app](https://numerical-ode-lab-wai.vercel.app/)**
-
-No install required. Pick a method, run a simulation, and use the **AI Method Tutor** on Step 3 (demo mode on the public site — educational replies from your run data, no sign-in).
+Multistep methods bootstrap startup values with Runge-Kutta 4 using the same step size.
 
 ## Quick start
 
-Requires [Node.js](https://nodejs.org/) (LTS recommended).
+Requires a current Node.js LTS release.
 
 ```bash
 git clone https://github.com/TYD-Bruce/numerical-ode-lab.git
 cd numerical-ode-lab
 npm install
-```
-
-**Terminal 1 — frontend**
-
-```bash
 npm run dev
 ```
 
-Open the URL Vite prints (usually **http://localhost:5173/**).
+Vite normally serves the frontend at `http://localhost:5173/`.
 
-**Terminal 2 — API (required for the AI tutor)**
+For the AI Tutor, start a second terminal:
 
 ```bash
 npm run dev:api
 ```
 
-Vite proxies `/api/chat` to `http://localhost:3001`. Run a simulation, go to **Step 3 · Output**, then use the **AI Method Tutor** panel on the right.
+Set `AI_TUTOR_MOCK=true` in `.env.local` for grounded local demo replies, or set a server-side `OPENAI_API_KEY` for live tutoring. Never use a `VITE_` prefix for the OpenAI key because Vite exposes those variables to browser code.
 
-Other scripts:
+Useful commands:
 
 ```bash
-npm run build    # TypeScript check + production bundle in dist/
-npm run preview  # Serve the production build locally
+npm run test:run
+npm run typecheck
+npm run typecheck:api
+npm run build
+npm run verify
+npm run preview
 ```
 
-### Example expressions
+## Architecture
 
-Use JavaScript syntax with variables `t` and `y` (first-order) or `t` and `u` (Leap-Frog):
+User expressions follow this boundary:
 
-| Model | Expression |
-|--------|------------|
-| Exponential decay | `-y` |
-| Linear | `t - y` |
-| Damped oscillation | `-0.1*y + Math.sin(t)` |
-| Harmonic oscillator (Leap-Frog) | `-u` |
-
-## AI tutor setup
-
-The tutor calls **`POST /api/chat`** on the server so your OpenAI key is never sent to the browser.
-
-1. Copy [`.env.example`](.env.example) to **`.env.local`** (gitignored).
-2. Choose one:
-   - **Free UI testing:** `AI_TUTOR_MOCK=true` — grounded mock replies, no OpenAI key.
-   - **Live tutoring:** `OPENAI_API_KEY=sk-...` (server-side only).
-3. **Do not** use `VITE_OPENAI_API_KEY` or any `VITE_` prefix for OpenAI; Vite exposes those to the browser.
-4. Restart **`npm run dev:api`** after editing `.env.local` (env is read at startup).
-
-Example `.env.local` for mock mode:
-
-```env
-AI_TUTOR_MOCK=true
+```text
+MathLive field
+  -> Compute Engine raw MathJSON adapter
+  -> project-owned closed MathAst
+  -> profile validation and versioned serialization
+  -> explicit numeric evaluator
+  -> existing solver function parameters
 ```
 
-For a **live** local tutor, use `OPENAI_API_KEY` instead and leave `AI_TUTOR_MOCK` unset or `false`.
+LaTeX and MathJSON are display/adapter data, not numerical authority. Solvers receive numeric closures and do not import MathLive, MathJSON, LaTeX, or DOM code. Tutor math is presentation-only and cannot reach evaluation.
 
-### Port 3001 already in use
+Key locations:
 
-Only one `dev:api` instance should listen on port 3001. If you see `EADDRINUSE`:
+- `src/math/`: AST, validation, canonical serialization, projections, evaluator, adapters, production expression state, and tests.
+- `src/math/ui/`: lazy MathLive loading, editable fields, toolbar, validation UI, and read-only rendering.
+- `src/main.ts`: three-step application flow and successful-run expression snapshots.
+- `src/solvers.ts`: numerical integration APIs and algorithms.
+- `docs/PROJECT_HANDOFF.md`: durable contributor handoff.
+- `docs/NUMERICAL_CONTRACTS.md`: numerical correctness boundaries.
 
-- Close the other terminal running `npm run dev:api`, or
-- On Windows: `netstat -ano | findstr :3001` then `taskkill /PID <pid> /F`
-- Or set `API_PORT=3002` in `.env.local` and update the proxy `target` in [`vite.config.ts`](vite.config.ts) to match.
+## Current limitations
 
-## Project layout
-
-```
-numerical-ode-lab/
-├── api/
-│   ├── chat.ts              # Vercel serverless POST /api/chat
-│   └── chatHandler.ts       # OpenAI Responses API + AI_TUTOR_MOCK
-├── server/
-│   └── dev.ts               # Local API for npm run dev:api
-├── docs/
-│   └── PROJECT_HANDOFF.md   # Durable spec for agents & contributors
-├── src/
-│   ├── main.ts              # UI flow
-│   ├── aiTypes.ts           # Chat / context types
-│   ├── aiTutor.ts           # buildOdeLabContext, API client
-│   ├── aiTutorPanel.ts      # Step 3 tutor UI
-│   ├── solvers.ts           # Integration API
-│   ├── polynomial.ts        # AB / AM / BDF coefficient generators
-│   ├── methodCatalog.ts     # Display names & formulas
-│   ├── coefficientValidation.ts
-│   ├── mathDisplay.ts       # Unicode math in HTML
-│   └── style.css
-├── index.html
-├── .env.example
-└── package.json
-```
-
-## For developers and Cursor agents
-
-**Read [`docs/PROJECT_HANDOFF.md`](docs/PROJECT_HANDOFF.md)** before larger changes. It documents:
-
-- Mathematical notation and UI naming rules (Unicode in UI, ASCII in code)
-- Solver architecture and multistep requirements
-- Coefficient validation tables
-- Known limitations and recommended next tasks
-
-Coefficient self-checks run on load (see the browser console in dev mode).
-
-## Limitations (current)
-
-- Scalar ODEs only (no systems)
-- Fixed step size h (no adaptive stepping)
-- AI tutor enabled for single-method runs (not compare mode in v1)
-- Expression evaluation via `new Function` — suitable for **local learning**, not untrusted public deployment
-- UI math is plain Unicode text (no MathJax/KaTeX)
+- Scalar ODEs only; no systems.
+- Fixed step sizes only; no adaptive stepping.
+- The AI Tutor is enabled for single-method runs, not Compare mode.
+- The exact-solution field and Observed Convergence Order experiment remain future milestones.
+- MathLive and Compute Engine are deferred until mathematical editing/rendering is requested, but their lazy chunks are substantial.
 
 ## License
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE).
