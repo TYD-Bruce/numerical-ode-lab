@@ -16,7 +16,11 @@ export type MathExpressionErrorCode =
   | "logarithm_domain"
   | "power_domain"
   | "tangent_non_finite"
-  | "numeric_overflow";
+  | "numeric_overflow"
+  | "invalid_math_json"
+  | "incomplete_expression"
+  | "invalid_legacy_expression"
+  | "unexpected_token";
 
 export type MathExpressionErrorDetails = Readonly<{
   profile?: MathVariableProfile;
@@ -24,6 +28,8 @@ export type MathExpressionErrorDetails = Readonly<{
   operation?: string;
   operands?: readonly number[];
   inputs?: Readonly<Record<string, number>>;
+  adapter?: "math_json" | "legacy";
+  position?: number;
 }>;
 
 export class MathExpressionError extends Error {
