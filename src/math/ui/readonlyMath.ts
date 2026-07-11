@@ -35,12 +35,20 @@ export function createCachedMathBackendLoader(
   };
 }
 
-const loadDefaultBackend = createCachedMathBackendLoader(async () => {
-  const [mathlive] = await Promise.all([
+let mathLiveModulePromise: Promise<typeof import("mathlive")> | undefined;
+
+/** Shared deferred dependency boundary for static and editable MathLive UI. */
+export function loadMathLiveModule(): Promise<typeof import("mathlive")> {
+  mathLiveModulePromise ??= Promise.all([
     import("mathlive"),
     import("mathlive/fonts.css"),
     import("mathlive/static.css"),
-  ]);
+  ]).then(([mathlive]) => mathlive);
+  return mathLiveModulePromise;
+}
+
+const loadDefaultBackend = createCachedMathBackendLoader(async () => {
+  const mathlive = await loadMathLiveModule();
   return {
     createMathSpan: () => new mathlive.MathSpanElement() as StaticMathElement,
   };

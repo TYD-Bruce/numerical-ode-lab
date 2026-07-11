@@ -1,0 +1,128 @@
+.editable-math-field {
+  display: grid;
+  gap: 8px;
+  color: #e9eefc;
+}
+
+.editable-math-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.editable-math-prefix {
+  flex: none;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.editable-math-host,
+.editable-math-input {
+  min-width: 0;
+  width: 100%;
+}
+
+.editable-math-input {
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid #2b3968;
+  border-radius: 8px;
+  background: #0b1020;
+  color: #e9eefc;
+}
+
+.editable-math-input[aria-invalid="true"] {
+  border-color: #ff7b91;
+}
+
+.editable-math-input::part(menu-toggle),
+.editable-math-input::part(virtual-keyboard-toggle) {
+  display: none;
+}
+
+.editable-math-description,
+.editable-math-status,
+.expression-details-message {
+  margin: 0;
+  font-size: 0.82rem;
+}
+
+.editable-math-description,
+.editable-math-status.is-neutral,
+.expression-details-message {
+  color: #9fb2df;
+}
+
+.editable-math-status.is-ready {
+  color: #7ae2a8;
+}
+
+.editable-math-status.is-error {
+  color: #ff9cab;
+}
+
+.expression-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.expression-toolbar[hidden] {
+  display: none;
+}
+
+.expression-tool-button,
+.expression-error-summary button {
+  border: 1px solid #2b3968;
+  border-radius: 7px;
+  background: #141c38;
+  color: #e9eefc;
+  padding: 5px 9px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.expression-tool-button:focus-visible,
+.expression-error-summary button:focus-visible {
+  outline: 2px solid #7ea1ff;
+  outline-offset: 2px;
+}
+
+.expression-details {
+  border-top: 1px solid #2b3968;
+  padding-top: 8px;
+}
+
+.expression-details summary {
+  cursor: pointer;
+}
+
+.expression-details dl {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 6px 12px;
+}
+
+.expression-details dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.expression-error-summary {
+  border: 1px solid #ff7b91;
+  border-radius: 10px;
+  padding: 12px;
+  color: #e9eefc;
+  background: rgba(116, 20, 42, 0.18);
+}
+
+.expression-error-summary h3 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+.expression-error-summary ul {
+  margin: 0;
+  padding-left: 20px;
+}
