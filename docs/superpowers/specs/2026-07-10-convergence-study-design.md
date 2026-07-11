@@ -57,7 +57,9 @@ The experiment calls the existing `integrateFirstOrder` integration API. It must
 - The theoretical order is taken from the successful level result's `SolverMetadata.order`, derived from the actual selected method configuration. The study verifies that all levels report the same method family and order.
 - Visible mathematics uses Unicode and plain text. No raw LaTeX is added.
 
-The study adds a separate aggregate budget of 250,000 integration steps. A configuration must satisfy both the 100,000-step per-level solver cap and the 250,000-step study cap.
+The study adds a separate aggregate budget of 250,000 integration steps. A configuration must satisfy both the 100,000-step per-level solver cap and the 250,000-step study cap. This aggregate budget is a browser-protection proxy for limiting synchronous work and stored points, not an exact runtime or RHS-evaluation estimate. Per-step costs differ: Forward Euler uses less work than RK4, while Newton-based implicit methods may require multiple residual and derivative evaluations per step.
+
+This design uses **run step size** for the original Step 2 simulation setting and **study base step size** for the independently editable Step 3 convergence setting. The study base step size initializes from the run step size, but changing it never changes or reruns the original simulation.
 
 ## 4. Architecture and ownership
 
@@ -216,9 +218,9 @@ y0 * Math.exp(-(t - t0))
 
 The exact solution is optional. It is evaluated only for consistency checks, error analysis, convergence studies, and grounded explanations. It never changes the RHS, initial data, grid, numerical integration, startup values, or original Step 3 result.
 
-Compilation returns `ExactSolutionFunction`. Version 1 may follow the repository's existing expression strategy, but it must construct a function whose only named arguments are `t`, `t0`, and `y0`; it must not inject application state or permit the expression to mutate the problem object. Syntax/compilation errors become controlled educational errors such as **The exact solution expression could not be parsed. Check its variables and parentheses.** Every evaluation is checked with `Number.isFinite`; `NaN` or infinity blocks the check or study and identifies the sample or grid time.
+Compilation returns `ExactSolutionFunction`. Version 1 may follow the repository's existing expression strategy, but it must construct a function whose only named parameters are `t`, `t0`, and `y0`; it must not deliberately inject application state or pass the mutable problem object. This parameter restriction is an API and documentation convention, not a security sandbox. Syntax/compilation errors become controlled educational errors such as **The exact solution expression could not be parsed. Check its variables and parentheses.** Every evaluation is checked with `Number.isFinite`; `NaN` or infinity blocks the check or study and identifies the sample or grid time.
 
-Using dynamic JavaScript expression execution is acceptable only under the repository's current local educational-use assumption. It is not safe for untrusted public input. A future security hardening task must replace both RHS and exact-expression execution with a whitelist AST parser that permits approved arithmetic and `Math` functions and rejects property traversal, assignment, statements, and global access. This limitation must be documented; Version 1 does not solve it.
+Using dynamic JavaScript expression execution is acceptable only under the repository's current local educational-use assumption. It is not safe for untrusted public input and may still access ambient JavaScript globals despite the named-parameter convention. The UI and documentation must not claim that exact expressions run in a secure sandbox. A future security hardening task must replace both RHS and exact-expression execution with a whitelist AST parser that permits approved arithmetic and `Math` functions and rejects property traversal, assignment, statements, and global access. This limitation must be documented; Version 1 does not solve it.
 
 ## 7. Numerical consistency check
 
@@ -289,7 +291,7 @@ If the completed run has no enabled exact expression, opening the drawer shows:
 
 > Add an exact solution in Step 2 to run error and convergence analysis.
 
-Before a run, the drawer always shows experiment setup, the exact expression, editable base `h`, refinement levels, refinement preview, estimated total steps, and Run button. Base `h` starts from the current original run's `h`; editing it affects only the study. Levels default to 3 and accept integer values from 3 through 6.
+Before a run, the drawer always shows experiment setup, the exact expression, editable study base step size `h`, refinement levels, refinement preview, estimated total steps, and Run button. The study base step size starts from the current run step size; editing it affects only the convergence study and does not alter the original Step 2 simulation or its Step 3 result. Levels default to 3 and accept integer values from 3 through 6.
 
 For levels `l = 0, ..., L - 1`:
 
@@ -304,7 +306,7 @@ The preview lists level number, `h_l`, and `N_l`, plus `sum(N_l)`. When the base
 N_total = N * (2^L - 1)
 ```
 
-The preview uses integer validated counts, not an unrounded estimate. Validation happens before any large point arrays are allocated. Execution is blocked when any level is misaligned, any level exceeds 100,000 steps, `N_0 < p` for a multistep method, or `N_total > 250_000`. At exactly 250,000 aggregate steps the budget passes. Budget copy tells the user to increase base `h` while keeping it grid-aligned, shorten the interval in Step 2 and rerun, or reduce levels; the drawer cannot change the original interval.
+The preview uses integer validated counts, not an unrounded estimate. Validation happens before any large point arrays are allocated. Execution is blocked when any level is misaligned, any level exceeds 100,000 steps, `N_0 < p` for a multistep method, or `N_total > 250_000`. At exactly 250,000 aggregate steps the budget passes. The preview labels this total as an integration-step budget estimate and explains that it is a browser-protection proxy, not a runtime or RHS-evaluation estimate; Euler, RK4, and Newton-based implicit methods have different per-step costs. Budget copy tells the user to increase the study base step size while keeping it grid-aligned, shorten the interval in Step 2 and rerun, or reduce levels; the drawer cannot change the original interval.
 
 ## 9. Experiment execution and error definitions
 
@@ -448,14 +450,14 @@ exactEnabled|exactExpression|presetId|customizationSourcePresetId
 
 Strings are length-prefixed or JSON-string encoded so delimiters cannot collide. Numbers use a canonical finite representation that distinguishes values exactly as JavaScript uses them; `-0` is normalized to `0`. Whitespace in expressions is preserved because changing entered expressions is an invalidating input even if mathematically equivalent. Hashing is optional; correctness depends on canonical content, not cryptographic security.
 
-The convergence configuration fingerprint combines the current-run fingerprint with canonical study `baseH`, levels, and a model-policy version. It is stored in `ConvergenceStudyResult.configFingerprint`.
+The convergence configuration fingerprint combines the current-run fingerprint with the canonical study base step size (`baseH`), levels, and a model-policy version. It is stored in `ConvergenceStudyResult.configFingerprint`.
 
 - Closing and reopening the drawer preserves setup, successful result, chart metric, and accordion state.
 - Returning to Step 2 without running changed draft inputs preserves the completed Step 3 run and its convergence result. Returning to Output without a new original run shows that same completed result.
 - Editing Step 2 fields alone does not relabel the old result as belonging to the draft.
 - Successfully rerunning after a change to method, effective order, RHS, `t0`, `tEnd`, `y0`, exact expression/enabled state, preset identity, or customization identity establishes a new run fingerprint and invalidates the prior convergence result.
 - A rerun with an identical canonical configuration retains the matching convergence result.
-- Changing study base `h` or levels marks the displayed convergence result **stale** immediately. The old table/chart may remain visible only with a prominent stale label and disabled conclusion claims; Run is required to replace it. It is never presented as the result of the edited settings.
+- Changing the study base step size or levels marks the displayed convergence result **stale** immediately. It does not alter the run step size or original simulation result. The old table/chart may remain visible only with a prominent stale label and disabled conclusion claims; Run is required to replace it. It is never presented as the result of the edited settings.
 - A failed original simulation does not replace the current successful Step 3 run or its convergence result.
 - A failed convergence attempt does not overwrite a previous successful convergence result.
 
@@ -467,13 +469,13 @@ Pre-run validation is ordered to fail cheaply before allocation or integration:
 
 1. Confirm single first-order eligibility and a current successful run.
 2. Require an enabled, non-empty exact expression and successful compilation.
-3. Validate integer levels in `[3, 6]` and a positive finite base `h`.
+3. Validate integer levels in `[3, 6]` and a positive finite study base step size.
 4. Build and validate every fixed grid with the existing grid validator.
 5. Validate the multistep minimum and both per-level and aggregate budgets.
 6. Run the nine-point exact-solution consistency check.
 7. Require explicit confirmation for a warning or strong warning.
 
-Hard failures are missing/invalid exact solution, non-finite exact value, initial-value mismatch, invalid base `h`, invalid levels, misaligned refinement grid, `N < p`, per-level cap violation, aggregate budget violation, or unconfirmed warning. Errors name the field or level and state a user action.
+Hard failures are missing/invalid exact solution, non-finite exact value, initial-value mismatch, invalid study base step size, invalid levels, misaligned refinement grid, `N < p`, per-level cap violation, aggregate budget violation, or unconfirmed warning. Errors name the field or level and state a user action.
 
 During execution, the first level failure aborts the study and identifies display level and `h`. The app preserves the original Step 3 result and any last successful study, publishes no partial conclusion, and does not update Tutor context with partial data.
 
@@ -527,7 +529,7 @@ Tests are deterministic and exercise the pure model separately from DOM renderin
 - Taylor Method (Order 2) approaches order 2.
 - RK4 approaches order 4 on a grid whose errors remain above resolution.
 - Representative Adams-Bashforth, Adams-Moulton, and BDF orders approach their metadata order.
-- A BDF6 test allows that RK4 startup is order 4: it must verify the implementation reports and interprets measured evidence without requiring a false sixth-order result when startup error dominates. The test documents this limitation rather than changing the solver.
+- A BDF6 test accounts for a fixed number of Runge-Kutta 4 startup steps introducing startup-value errors of `O(h^5)`, which can limit observed end-to-end BDF6 convergence to approximately order five. It must report and interpret measured evidence rather than falsely require order six. The test documents this limitation rather than changing the solver.
 
 ### Errors and observed orders
 
