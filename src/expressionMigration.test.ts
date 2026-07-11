@@ -21,7 +21,7 @@ describe("production expression migration boundary", () => {
     expect(main).toContain('mountProductionExpressionField(wrap, "rhs")');
     expect(main).toContain('isSecond ? "second_order_rhs" : "rhs"');
     expect(main).not.toContain('name="expr"');
-    expect(main).not.toContain('"exact_solution"');
+    expect(main).toContain('profile: "exact_solution"');
   });
 
   it("keeps the solver module independent of UI and expression-source formats", () => {
@@ -29,7 +29,8 @@ describe("production expression migration boundary", () => {
     expect(solvers).not.toMatch(/from\s+["'].+math\//);
   });
 
-  it("does not add exact-solution or convergence production controls", () => {
-    expect(main).not.toMatch(/I know the exact solution|Convergence Study|convergence drawer/i);
+  it("adds exact-solution input without adding convergence controls", () => {
+    expect(main).toContain("I know the exact solution");
+    expect(main).not.toMatch(/Convergence Study|convergence drawer|observed order|refinement levels/i);
   });
 });

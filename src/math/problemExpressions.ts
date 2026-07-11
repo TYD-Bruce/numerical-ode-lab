@@ -13,11 +13,37 @@ export interface PersistedMathExpressionState {
   readonly confirmed: MathExpression;
 }
 
+export interface PersistedOptionalMathExpressionState {
+  readonly profile: "exact_solution";
+  readonly draftLatex: string;
+  readonly validationKind: MathFieldSnapshot["state"]["kind"];
+  readonly confirmed?: MathExpression;
+}
+
+export interface SuccessfulExpressionDetails {
+  readonly exactSolutionEnabled?: boolean;
+  readonly exactSolution?: MathExpression;
+  readonly presetId?: string;
+  readonly customizationSourcePresetId?: string;
+}
+
 export interface SuccessfulExpressionSnapshot {
   readonly profile: ProductionMathProfile;
   readonly expression: MathExpression;
   readonly equation: ReadonlyMathContent;
   readonly equationDisplay: string;
+  readonly exactSolutionEnabled: boolean;
+  readonly exactSolution?: MathExpression;
+  readonly presetId?: string;
+  readonly customizationSourcePresetId?: string;
+}
+
+export function createEmptyExactExpressionState(): PersistedOptionalMathExpressionState {
+  return {
+    profile: "exact_solution",
+    draftLatex: "",
+    validationKind: "incomplete",
+  };
 }
 
 function cloneAst(ast: MathAst): MathAst {
@@ -101,6 +127,21 @@ export function persistMathFieldSnapshot(
   };
 }
 
+export function persistOptionalMathFieldSnapshot(
+  snapshot: MathFieldSnapshot,
+  previous: PersistedOptionalMathExpressionState
+): PersistedOptionalMathExpressionState {
+  return {
+    profile: "exact_solution",
+    draftLatex: snapshot.state.draftLatex,
+    validationKind: snapshot.state.kind,
+    confirmed:
+      snapshot.state.kind === "ready"
+        ? snapshot.state.confirmed
+        : snapshot.state.confirmed ?? previous.confirmed,
+  };
+}
+
 export function currentReadyExpression(snapshot: MathFieldSnapshot): MathExpression | undefined {
   return snapshot.state.kind === "ready" ? snapshot.state.confirmed : undefined;
 }
@@ -124,13 +165,17 @@ export function compileProductionExpression(
 
 export function createSuccessfulExpressionSnapshot(
   expression: MathExpression,
-  profile: ProductionMathProfile
+  profile: ProductionMathProfile,
+  details: SuccessfulExpressionDetails = {}
 ): SuccessfulExpressionSnapshot {
   const frozenExpression = cloneExpression(expression, profile);
   const firstOrder = profile === "rhs";
   const prefixLatex = firstOrder ? "y'" : "u''";
   const prefixText = firstOrder ? "y prime" : "u double prime";
   const equationDisplay = `${prefixText} equals ${frozenExpression.displayText}`;
+  const exactSolution = details.exactSolution
+    ? cloneExpression(details.exactSolution, "exact_solution")
+    : undefined;
   return Object.freeze({
     profile,
     expression: frozenExpression,
@@ -140,5 +185,9 @@ export function createSuccessfulExpressionSnapshot(
       ariaLabel: equationDisplay,
     }),
     equationDisplay,
+    exactSolutionEnabled: details.exactSolutionEnabled === true,
+    exactSolution,
+    presetId: details.presetId,
+    customizationSourcePresetId: details.customizationSourcePresetId,
   });
 }

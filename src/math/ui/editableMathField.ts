@@ -46,7 +46,7 @@ export interface EditableMathFieldOptions {
   fieldLabel: string;
   profile: MathVariableProfile;
   equationPrefix: EditableEquationPrefix;
-  initialConfirmed: MathExpression;
+  initialConfirmed?: MathExpression;
   initialDraftLatex?: string;
   initialValidation?: "gentle" | "strict";
   description?: string;
@@ -65,6 +65,11 @@ export interface EditableMathFieldHandle {
   getMathfield(): EditableMathElement | undefined;
   setDraftLatex(latex: string, validation?: "gentle" | "strict"): MathFieldSnapshot;
   loadExpression(expression: MathExpression): MathFieldSnapshot;
+  restoreState(
+    draftLatex: string,
+    confirmed: MathExpression | undefined,
+    validation?: "gentle" | "strict"
+  ): MathFieldSnapshot;
   restoreDraft(latex: string): MathFieldSnapshot;
   validateStrict(): MathFieldSnapshot;
   getIssue(): ExpressionFieldIssue | undefined;
@@ -124,7 +129,7 @@ export function mountEditableMathField(
   let field: EditableMathElement | undefined;
   let toolbar: ExpressionToolbarHandle | undefined;
   let confirmed: MathExpression | undefined = options.initialConfirmed;
-  let draft = options.initialDraftLatex ?? options.initialConfirmed.latex;
+  let draft = options.initialDraftLatex ?? options.initialConfirmed?.latex ?? "";
   let snapshot = validateMathFieldDraft(
     draft,
     options.profile,
@@ -360,7 +365,12 @@ export function mountEditableMathField(
     getMathfield: () => field,
     setDraftLatex: setDraft,
     loadExpression(expression) {
+      confirmed = expression;
       return setDraft(expression.latex, "strict");
+    },
+    restoreState(draftLatex, restoredConfirmed, validation = "strict") {
+      confirmed = restoredConfirmed;
+      return setDraft(draftLatex, validation);
     },
     restoreDraft(latex) {
       return setDraft(latex, "strict");

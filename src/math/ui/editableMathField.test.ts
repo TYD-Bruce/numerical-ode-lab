@@ -207,6 +207,30 @@ describe("editable MathLive field controller", () => {
     }
   });
 
+  it("supports an empty optional field and restores its historical confirmation exactly", async () => {
+    const backend = mockBackend();
+    const handle = mountEditableMathField(connectedTarget(), {
+      fieldId: "exact-field",
+      fieldLabel: "Exact solution",
+      profile: "exact_solution",
+      equationPrefix: { visual: "y(t) =", accessible: "y of t equals" },
+      initialDraftLatex: "",
+      initialValidation: "gentle",
+      loadBackend: async () => backend,
+    });
+    await settle();
+    expect(handle.getState().state.kind).not.toBe("ready");
+
+    const confirmed = createMathExpressionFromLatex("e^{-t}", "exact_solution");
+    handle.loadExpression(confirmed);
+    expect(handle.getState().state.kind).toBe("ready");
+    const restored = handle.restoreState("t^{}", undefined, "gentle");
+    expect(restored).toMatchObject({
+      strict: false,
+      state: { kind: "incomplete", draftLatex: "t^{}", confirmed: undefined },
+    });
+  });
+
   it("does not mount a removed or superseded lazy field", async () => {
     let resolve!: (backend: EditableMathBackend) => void;
     const pending = new Promise<EditableMathBackend>((done) => { resolve = done; });

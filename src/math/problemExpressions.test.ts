@@ -62,6 +62,24 @@ describe("production problem expressions", () => {
     expect(snapshot.expression.latex).toContain("\\sin");
   });
 
+  it("copies optional exact and preset identity into the successful-run snapshot", () => {
+    const rhs = createMathExpressionFromLegacy("-y", "rhs");
+    const exact = createMathExpressionFromLegacy("exp(-t)", "exact_solution");
+    const snapshot = createSuccessfulExpressionSnapshot(rhs, "rhs", {
+      exactSolutionEnabled: true,
+      exactSolution: exact,
+      customizationSourcePresetId: "exponential_decay",
+    });
+
+    expect(snapshot).toMatchObject({
+      exactSolutionEnabled: true,
+      customizationSourcePresetId: "exponential_decay",
+    });
+    expect(snapshot.exactSolution?.displayText).toBe("e raised to the quantity negative t");
+    expect(snapshot.exactSolution).not.toBe(exact);
+    expect(Object.isFrozen(snapshot.exactSolution?.canonicalAst)).toBe(true);
+  });
+
   it("grounds Tutor context in the successful AST-generated equation text", () => {
     const expression = createMathExpressionFromLegacy("Math.exp(t)", "rhs");
     const snapshot = createSuccessfulExpressionSnapshot(expression, "rhs");

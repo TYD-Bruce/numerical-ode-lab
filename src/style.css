@@ -234,7 +234,8 @@ code {
   grid-column: 1 / -1;
 }
 
-.field input {
+.field input,
+.field select {
   border-radius: 10px;
   border: 1px solid var(--border);
   background: #0f152b;
@@ -243,7 +244,8 @@ code {
   font: inherit;
 }
 
-.field input:focus {
+.field input:focus,
+.field select:focus {
   outline: 2px solid rgba(108, 140, 255, 0.45);
   outline-offset: 1px;
 }
@@ -257,6 +259,87 @@ code {
 
 .actions {
   grid-column: 1 / -1;
+}
+
+.preset-panel {
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(15, 21, 43, 0.7);
+}
+
+.preset-select-row,
+.preset-confirmation-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 10px;
+}
+
+.preset-select-row .field {
+  flex: 1 1 240px;
+}
+
+.preset-confirmation {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(108, 140, 255, 0.12);
+}
+
+.preset-confirmation p,
+.preset-identity,
+.preset-guidance p,
+.unrun-edits-note {
+  margin: 6px 0;
+}
+
+.preset-identity,
+.unrun-edits-note {
+  color: var(--accent-2);
+  font-size: 0.9rem;
+}
+
+.preset-guidance {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.preset-warning {
+  color: #ffd18b;
+}
+
+.preset-math-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.preset-math-preview > div {
+  padding: 10px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+}
+
+.preset-math-preview span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.exact-solution-switch {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--text);
+}
+
+.exact-solution-switch input {
+  width: 1.1rem;
+  height: 1.1rem;
 }
 
 .btn {
