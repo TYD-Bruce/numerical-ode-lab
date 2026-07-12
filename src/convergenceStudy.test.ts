@@ -348,7 +348,7 @@ describe("convergence level measurement", () => {
   });
 });
 
-describe("consistency permission and Phase B scope", () => {
+describe("consistency permission and pure convergence scope", () => {
   it("treats warning permission as immutable input rather than state", () => {
     const warning = checkExactSolution({
       t0: 0,
@@ -358,18 +358,18 @@ describe("consistency permission and Phase B scope", () => {
       rhs: () => 0,
     });
     expect(() => validateConsistencyPermission(warning, false)).toThrow(
-      expect.objectContaining({ code: "exact_solution_blocked" })
+      expect.objectContaining({ code: "warning_confirmation_required" })
     );
     expect(() => validateConsistencyPermission(warning, true)).not.toThrow();
     expect(warning.status).toBe("warning");
   });
 
-  it("keeps Phase B modules pure and free of Phase C/D implementation", () => {
+  it("keeps the convergence modules pure and free of Phase D UI or Tutor integration", () => {
     const source = ["./exactSolution.ts", "./convergenceStudy.ts"]
       .map((path) => readFileSync(new URL(path, import.meta.url), "utf8"))
       .join("\n");
     expect(source).not.toMatch(/chart\.js|mathlive|Mathfield|document\.|window\.|innerHTML/);
-    expect(source).not.toMatch(/aiTutor|observedOrder|ObservedOrder|interpretation|Convergence Study drawer/);
+    expect(source).not.toMatch(/aiTutor|Convergence Study drawer/);
     expect(source).not.toMatch(/\bnew\s+Function\b|\beval\s*\(/);
   });
 });
