@@ -2,7 +2,7 @@
 
 This is the durable handoff for future contributors and Cursor agents. Use it with the current codebase; do not rely on prior chat history.
 
-**Status:** Human-Friendly Math Expressions implemented and verified on 2026-07-11. The Observed Convergence Order experiment is designed but not implemented.
+**Status:** Human-Friendly Math Expressions and the Version 1 Observed Convergence Order experiment were implemented and verified on 2026-07-11. The Convergence Study is ready for conservative Cursor review; no future extension is implied by this status.
 
 ## 1. Project identity
 
@@ -17,7 +17,7 @@ Numerical ODE Lab is an educational browser application for scalar fixed-step in
 | Charts | Chart.js 4 |
 | Mathematical editing/rendering | MathLive 0.110.0 |
 | LaTeX adapter | Compute Engine 0.58.0 raw MathJSON |
-| Tests | Vitest; 543 tests passing at Milestone 1 finalization |
+| Tests | Vitest; 701 tests passing across 35 files at Convergence Phase F finalization |
 | API | Vercel function plus local `server/dev.ts` |
 
 MathLive and Compute Engine are deferred from the landing-screen bundle. Opening a Step 2 mathematical field loads the editable/Compute Engine chunk and MathLive assets. Static formulas use the shared lazy read-only renderer.
@@ -66,7 +66,7 @@ MathLive draft LaTeX
 |---|---|---|
 | `rhs` | `t`, `y` | First-order single method and Compare |
 | `second_order_rhs` | `t`, `u` | Existing Leap-Frog acceleration field |
-| `exact_solution` | `t`, `t0`, `y0` | Pure code and tests only; no UI yet |
+| `exact_solution` | `t`, `t0`, `y0` | Optional first-order exact-solution field, presets, consistency checks, and convergence studies |
 
 `second_order_rhs` migrates the existing Leap-Frog expression path; it adds no new Leap-Frog capability. Compare continues to share one `rhs` expression.
 
@@ -99,6 +99,13 @@ The input adapters map raw visual e raised to x, raw `Exp(x)`, legacy `exp(x)`, 
 | `src/math/problemExpressions.ts` | AST-backed defaults, persisted field state, successful snapshots |
 | `src/math/ui/` | Lazy loader, editable fields, toolbar, errors, details, and read-only rendering |
 | `src/main.ts` | Three-step UI, mode state, strict Run integration, Step 3 snapshots |
+| `src/problemPresets.ts` | Six immutable AST-backed first-order presets and one-level undo/customization state |
+| `src/exactSolution.ts` | Nine-location numerical exact-solution consistency check |
+| `src/convergenceStudy.ts` | Pure preview, fingerprints, measurements, observed orders, interpretation, chart model, and coarse-to-fine runner |
+| `src/convergenceStudyState.ts` | Successful-run ownership, current/stale/absent state, and one-shot warning confirmation |
+| `src/convergenceStudyView.ts` | Default-collapsed drawer, preview, results table, chart lifecycle, and intent-only DOM rendering |
+| `src/convergenceTeaching.ts` | Pure beginner teaching and conclusion models |
+| `src/convergenceTutor.ts` | Current-only serializable convergence DTO for live and mock Tutor paths |
 
 ## 4. User-facing mathematical input
 
@@ -150,34 +157,46 @@ Generic multistep coefficients come from `src/polynomial.ts`; no per-order hard-
 ## 8. UI flow and state
 
 1. **Method:** choose one method or Compare two first-order methods. Leap-Frog remains separate.
-2. **Data:** edit numeric data and one visual right-hand-side field; choose p for AB/AM/BDF.
-3. **Output:** view final values, chart, method metadata, last values, and optional implicit diagnostics. Single-method results can open the AI Tutor.
+2. **Data:** edit numeric data and one visual right-hand-side field; choose p for AB/AM/BDF. First-order forms can load one of six exact-solution presets or enable an optional exact-solution field.
+3. **Output:** view final values, chart, method metadata, last values, and optional implicit diagnostics. Single first-order results can open the default-collapsed Convergence Study when an exact solution belongs to the successful run. Single-method results can open the AI Tutor.
 
 **All methods (keep my numbers)** preserves per-mode in-memory field state. Compare has one shared `rhs`; Leap-Frog retains independent `second_order_rhs` state. No localStorage or URL fingerprinting was added.
 
-## 9. Scope exclusions and next milestone
+### Convergence ownership and execution
 
-Not implemented:
+- A convergence study belongs to an immutable successful first-order snapshot containing actual method metadata, canonical RHS/exact meaning, interval/initial data, run step size, and preset/customization identity.
+- `ode-run-v1` and `convergence-study-v1` ordered fingerprints decide ownership. Step 2 drafts never mutate the existing Step 3 result. An identical successful rerun reuses matching state; a changed successful rerun receives fresh state.
+- Study base step size is independent from the original run step size. Editing it or the 3–6 refinement count marks a retained result stale; restoring the exact fingerprint makes that result current again.
+- Preflight reuses `validateFixedStepGrid`, retains the per-level 100,000-step cap, enforces multistep `N >= p`, and keeps a 250,000 aggregate defense-in-depth proxy.
+- The pure runner executes validated levels coarse to fine, aborts atomically, and never reuses or overwrites the original Step 3 solver result. It retains only aggregate per-level evidence, not multi-level point arrays.
+- Consistency warnings require fingerprint-specific confirmation. **Run anyway** is one-shot and is cleared after success or failure; hard blockers cannot be overridden.
+- Closing the drawer, switching its metric, opening teaching accordions, visiting Step 2, and using **Return to current output** preserve matching state without rerunning.
+- Tutor context is rebuilt per message. Only a current fingerprint-matching successful study becomes the serializable convergence DTO; stale results, pending warnings, failed attempts, ASTs, expressions, raw MathJSON/LaTeX, functions, and chart data are omitted.
+
+## 9. Scope exclusions and review gate
+
+Not implemented in Convergence Study Version 1:
 
 - systems of ODEs or adaptive stepping;
-- exact-solution switch/field or exact-solution presets;
-- Convergence Study drawer or calculations;
 - Compare/Leap-Frog convergence experiments;
+- numerical reference solutions or systems;
+- work-precision diagrams, RHS evaluation counts, exports, or complete error-time curves;
+- Web Workers, progress, or cancellation;
 - arbitrary JavaScript, arbitrary HTML, unrestricted Markdown, KaTeX, or MathJax;
 - Chinese UI.
 
-The Human-Friendly Math Expressions prerequisite is complete. The approved Convergence Study design may now enter implementation planning, but its numerical and UI work remains a separate milestone.
+Phases A-E are implemented in commits `574672c`, `b357202`, `8ee2f32`, `ab8976a`, and `f45b858`. Phase F contains only acceptance audit, factual documentation, release verification, and the Cursor review package. The next recommended action is a conservative Cursor audit; do not begin an excluded extension merely because Version 1 is release-ready.
 
 ## 10. Performance note
 
-The verified production build is approximately 235.96 kB minified / 79.10 kB gzip for the initial application, 1,143.45 kB / 308.64 kB gzip for the deferred editable/Compute Engine chunk, and 819.11 kB / 228.04 kB gzip for the deferred MathLive chunk. Font and MathLive CSS assets are emitted with hashed deployable paths. The two large lazy chunks trigger Vite size warnings. A small amount of Compute Engine-identifying code appears in both lazy artifacts, but the build inspection does not prove duplicate executable payload; investigate before attempting optimization.
+The verified Convergence build is approximately 298.03 kB minified / 96.48 kB gzip for the initial application, 1,143.55 kB / 308.67 kB gzip for the deferred editable/Compute Engine chunk, and 819.11 kB / 228.04 kB gzip for the deferred MathLive chunk. Application CSS is about 12.16 kB / 3.19 kB gzip; MathLive/editable CSS and 19 hashed font assets remain deferred/deployable. The two large lazy chunks trigger Vite size warnings. The Convergence Study runs synchronously on the main thread within existing caps; this is an accepted Version 1 performance tradeoff. No speculative chunk restructuring was attempted.
 
 ## 11. Contributor guidelines
 
 - Preserve the dependency direction: UI/adapters → project AST/validation/evaluator → numeric closures → solvers.
 - Do not reorder, sort, flatten, fold, or symbolically simplify AST arithmetic; grouping and child order are numerical behavior.
 - Do not restore dynamic execution as a compatibility fallback.
-- Keep `exact_solution` unexposed until the downstream milestone implements its approved UI and consistency checks.
+- Keep `exact_solution` restricted to the implemented first-order exact/convergence workflow; do not introduce a second expression language.
 - Run `npm run verify` after changes and extend focused tests for every expression-boundary change.
 
-*Last updated: 2026-07-11 after Human-Friendly Math Expressions Phase 6 verification.*
+*Last updated: 2026-07-11 after Convergence Study Phase F verification.*

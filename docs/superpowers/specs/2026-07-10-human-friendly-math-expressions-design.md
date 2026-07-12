@@ -10,6 +10,8 @@
 
 **Implementation record:** Phases 0–5 were delivered in commits `efb6447b815a5121da3c46b67f2c99de60b26e11` through `73780824d0897509c7aa3657fd5b6d403b8c0675`; Phase 6 verification and documentation are recorded by the finalization commit. The verified dependency versions are MathLive 0.110.0 and Compute Engine 0.58.0. The final suite contains 543 passing tests. The production build keeps the main application near 236 kB minified (79 kB gzip) and defers substantial editable/Compute Engine and MathLive chunks; this is a known performance tradeoff, not a correctness limitation.
 
+**Downstream integration note (2026-07-11):** The completed Observed Convergence Order workflow now exposes the already implemented `exact_solution` profile for optional first-order exact-solution input, presets, consistency checks, and convergence studies. Milestone 1 itself remains unchanged: the downstream feature reuses the same project-owned AST, adapters, validation, evaluator, and rendering boundary and introduces no second expression language.
+
 ## 1. Purpose
 
 Numerical ODE Lab will replace programmer-facing mathematical input such as `Math.exp(t)`, `Math.sin(t)`, and `y0 * Math.exp(-(t - t0))` with visual, textbook-style editing and display. Users will enter forms such as e raised to t, sin(t), y₀e raised to −(t−t₀), stacked fractions, roots, subscripts, exponents, and absolute values without writing JavaScript.

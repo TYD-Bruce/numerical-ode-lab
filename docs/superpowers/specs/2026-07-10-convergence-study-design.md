@@ -1,10 +1,20 @@
 # Observed Convergence Order Experiment Design
 
-**Status:** Approved for implementation planning
+**Status:** Implemented and verified
 
 **Date:** 2026-07-10
 
-**Scope:** Version 1, documentation only
+**Scope:** Version 1, implemented
+
+**Implementation date:** 2026-07-11
+
+### Implementation status
+
+Phases A-E were delivered in commits `574672c842a8739aa219fe6219518c2ea34d0025`, `b3572020be6c02de3b38a1b40e500a05c704c57f`, `8ee2f3200252ddadde8673699b6c3a3532828dd8`, `ab8976ad6e868da6aaeeae6e8a2801cf20907349`, and `f45b858ddece35db915d48596fb1aefd7ff5a409`. Phase F records the final acceptance audit, factual documentation, release verification, and review package. The verified suite contains 701 passing tests across 35 files.
+
+The current production build is approximately 298.03 kB minified / 96.48 kB gzip for the initial application, with MathLive at 819.11 kB / 228.04 kB gzip and the editable/Compute Engine chunk at 1,143.55 kB / 308.67 kB gzip. The study runs synchronously on the main thread within the existing per-level and aggregate protection limits. These are known Version 1 performance tradeoffs, not numerical-policy changes.
+
+Version 1 exclusions remain exactly those in Section 2, including Compare and Leap-Frog convergence, numerical reference solutions, systems, adaptive stepping, work-precision, RHS counts, exports, workers, progress/cancellation, and error-time curves. Conservative Cursor review is still pending; implemented-and-verified status does not imply those extensions are approved or delivered.
 
 ## 1. Purpose
 
@@ -22,7 +32,7 @@ The feature teaches the distinction between exact and numerical solutions, what 
 
 ### Prerequisite
 
-This design depends on [Human-Friendly Math Expressions](./2026-07-10-human-friendly-math-expressions-design.md). That prerequisite was implemented, tested, and reviewed on 2026-07-11, so Convergence Study implementation planning may begin. The prerequisite owns MathLive editing/rendering, MathJSON adaptation, the project-owned `MathAst`, variable profiles, canonical expression serialization, legacy import, and explicit numerical evaluation. This document states only the convergence integration contract and remains authoritative for convergence numerical rules.
+This design depends on [Human-Friendly Math Expressions](./2026-07-10-human-friendly-math-expressions-design.md). That prerequisite was implemented, tested, and reviewed on 2026-07-11. The completed Convergence Study reuses its MathLive editing/rendering, MathJSON adaptation, project-owned `MathAst`, `exact_solution` profile, canonical expression serialization, legacy import, and explicit numerical evaluation without introducing a second expression language. This document remains authoritative for convergence numerical rules.
 
 ## 2. Version 1 boundaries
 
