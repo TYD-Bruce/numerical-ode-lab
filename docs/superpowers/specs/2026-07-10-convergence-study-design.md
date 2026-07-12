@@ -1,6 +1,6 @@
 # Observed Convergence Order Experiment Design
 
-**Status:** Implemented and verified
+**Status:** Implemented, verified, and release ready
 
 **Date:** 2026-07-10
 
@@ -14,7 +14,7 @@ Phases A-E were delivered in commits `574672c842a8739aa219fe6219518c2ea34d0025`,
 
 The current production build is approximately 298.03 kB minified / 96.48 kB gzip for the initial application, with MathLive at 819.11 kB / 228.04 kB gzip and the editable/Compute Engine chunk at 1,143.55 kB / 308.67 kB gzip. The study runs synchronously on the main thread within the existing per-level and aggregate protection limits. These are known Version 1 performance tradeoffs, not numerical-policy changes.
 
-Version 1 exclusions remain exactly those in Section 2, including Compare and Leap-Frog convergence, numerical reference solutions, systems, adaptive stepping, work-precision, RHS counts, exports, workers, progress/cancellation, and error-time curves. Conservative Cursor review is still pending; implemented-and-verified status does not imply those extensions are approved or delivered.
+Version 1 exclusions remain exactly those in Section 2, including Compare and Leap-Frog convergence, numerical reference solutions, systems, adaptive stepping, work-precision, RHS counts, exports, workers, progress/cancellation, and error-time curves. Cursor final review completed on 2026-07-12 with the verdict **Safe to release Version 1**: P0 blockers none and P1 issues none. The final reviewed implementation commit is `9d7b2f71b1c8013c612f0df0663bb786cabab570`. Implemented-and-release-ready status does not imply that excluded extensions are approved or delivered. The deferred MathLive/Compute Engine chunk size and synchronous study execution remain known P2 tradeoffs.
 
 ## 1. Purpose
 

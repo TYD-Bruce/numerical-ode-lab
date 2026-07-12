@@ -2,7 +2,17 @@
 
 **Review date:** 2026-07-11
 
-**Milestone verdict:** Implemented and verified; ready for conservative Cursor review
+**Final review date:** 2026-07-12
+
+**Final Cursor verdict:** Safe to release Version 1
+
+**P0 blockers:** None
+
+**P1 issues:** None
+
+**Final reviewed implementation commit:** `9d7b2f71b1c8013c612f0df0663bb786cabab570`
+
+**Known P2 tradeoffs:** Deferred MathLive/Compute Engine chunk size and synchronous study execution
 
 **Implementation commits:** `574672c` -> `b357202` -> `8ee2f32` -> `ab8976a` -> `f45b858`
 
@@ -209,7 +219,7 @@ The landing screen uses the initial chunk. Step 2 mathematical editing loads the
 - Compare, Leap-Frog, numerical reference solutions, systems, adaptive methods, work-precision, exports, workers, RHS counts, and error-time curves are excluded.
 - The existing large deferred math chunks remain a performance tradeoff.
 
-## Targeted Cursor questions
+## Questions supplied for final Cursor review
 
 1. Is any numerical policy duplicated in `main.ts`, the view, or Tutor code?
 2. Can a stale or mismatched study appear current?
@@ -224,4 +234,4 @@ The landing screen uses the initial chunk. Step 2 mathematical editing loads the
 11. Are docs accurate and scope exclusions clear?
 12. Is the feature safe to release as Version 1?
 
-Cursor should report focused correctness, security, lifecycle, accessibility, performance-evidence, or documentation findings. It should not propose broad redesign or an excluded new feature.
+These targeted questions were supplied for the completed final Cursor review. The final verdict was **Safe to release Version 1**, with no P0 blockers and no P1 issues.

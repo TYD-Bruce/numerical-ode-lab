@@ -2,7 +2,7 @@
 
 This is the durable handoff for future contributors and Cursor agents. Use it with the current codebase; do not rely on prior chat history.
 
-**Status:** Human-Friendly Math Expressions and the Version 1 Observed Convergence Order experiment were implemented and verified on 2026-07-11. The Convergence Study is ready for conservative Cursor review; no future extension is implied by this status.
+**Status:** Human-Friendly Math Expressions and the Version 1 Observed Convergence Order experiment were implemented and verified on 2026-07-11. Cursor final review is complete with the verdict **Safe to release Version 1**. P0 blockers: none. P1 issues: none. The final reviewed implementation commit is `9d7b2f71b1c8013c612f0df0663bb786cabab570`; no future extension is implied by this status.
 
 ## 1. Project identity
 
@@ -173,7 +173,7 @@ Generic multistep coefficients come from `src/polynomial.ts`; no per-order hard-
 - Closing the drawer, switching its metric, opening teaching accordions, visiting Step 2, and using **Return to current output** preserve matching state without rerunning.
 - Tutor context is rebuilt per message. Only a current fingerprint-matching successful study becomes the serializable convergence DTO; stale results, pending warnings, failed attempts, ASTs, expressions, raw MathJSON/LaTeX, functions, and chart data are omitted.
 
-## 9. Scope exclusions and review gate
+## 9. Scope exclusions and release status
 
 Not implemented in Convergence Study Version 1:
 
@@ -185,7 +185,7 @@ Not implemented in Convergence Study Version 1:
 - arbitrary JavaScript, arbitrary HTML, unrestricted Markdown, KaTeX, or MathJax;
 - Chinese UI.
 
-Phases A-E are implemented in commits `574672c`, `b357202`, `8ee2f32`, `ab8976a`, and `f45b858`. Phase F contains only acceptance audit, factual documentation, release verification, and the Cursor review package. The next recommended action is a conservative Cursor audit; do not begin an excluded extension merely because Version 1 is release-ready.
+Phases A-E are implemented in commits `574672c`, `b357202`, `8ee2f32`, `ab8976a`, and `f45b858`. Phase F contains only acceptance audit, factual documentation, release verification, and the Cursor review package. Cursor final review completed with the verdict **Safe to release Version 1**, with no P0 blockers and no P1 issues. The final reviewed implementation commit is `9d7b2f71b1c8013c612f0df0663bb786cabab570`. Do not begin an excluded extension merely because Version 1 is release-ready.
 
 ## 10. Performance note
 
