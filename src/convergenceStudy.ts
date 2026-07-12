@@ -496,6 +496,29 @@ export interface ConvergenceStudyConfig extends ConvergenceStudyConfigFoundation
   readonly runFingerprint: string;
 }
 
+export function checkConvergenceStudyConsistency(
+  config: Pick<ConvergenceStudyConfig, "rhs" | "exactSolution" | "t0" | "tEnd" | "y0">
+): ExactSolutionCheckResult {
+  try {
+    const rhs = compileMathExpression(config.rhs, "rhs").evaluate;
+    const exact = compileMathExpression(config.exactSolution, "exact_solution").evaluate;
+    return checkExactSolution({
+      t0: config.t0,
+      tEnd: config.tEnd,
+      y0: config.y0,
+      exactSolution: exact,
+      rhs,
+    });
+  } catch (error) {
+    if (error instanceof ConvergenceStudyFailure) throw error;
+    const reason = error instanceof Error ? error.message : "the exact solution could not be evaluated";
+    throw new ConvergenceStudyFailure(
+      "exact_evaluation_failure",
+      `The numerical consistency check failed because ${reason}`
+    );
+  }
+}
+
 export interface ConvergenceStudyResult {
   readonly configFingerprint: string;
   readonly runFingerprint: string;
@@ -867,16 +890,10 @@ export function runConvergenceStudy(
     studyBaseStepSize: config.baseStepSize,
     refinementLevels: config.refinementLevels,
   });
+  const consistencyCheck = checkConvergenceStudyConsistency(config);
+  validateConsistencyPermission(consistencyCheck, config.allowConsistencyWarning);
   const rhs = compileMathExpression(config.rhs, "rhs").evaluate;
   const exact = compileMathExpression(config.exactSolution, "exact_solution").evaluate;
-  const consistencyCheck = checkExactSolution({
-    t0: config.t0,
-    tEnd: config.tEnd,
-    y0: config.y0,
-    exactSolution: exact,
-    rhs,
-  });
-  validateConsistencyPermission(consistencyCheck, config.allowConsistencyWarning);
 
   const measurements: Omit<
     ConvergenceLevelResult,

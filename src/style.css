@@ -749,3 +749,196 @@ th {
 tbody tr:nth-child(even) {
   background: rgba(255, 255, 255, 0.02);
 }
+
+.convergence-drawer {
+  margin: 0 0 16px;
+  border: 1px solid rgba(108, 140, 255, 0.32);
+  border-radius: 12px;
+  background: rgba(15, 21, 43, 0.68);
+  overflow: clip;
+}
+
+.convergence-drawer-summary {
+  padding: 14px 16px;
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.convergence-drawer-summary:focus-visible,
+.convergence-teaching-section summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -3px;
+}
+
+.convergence-drawer-content {
+  padding: 0 16px 18px;
+}
+
+.convergence-drawer-content > h3,
+.convergence-drawer-content > h4,
+.convergence-chart-section h3,
+.convergence-results-table h3,
+.convergence-teaching h3 {
+  margin: 14px 0 10px;
+}
+
+.convergence-guidance,
+.convergence-exact,
+.convergence-consistency,
+.convergence-conclusion {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.convergence-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.convergence-run-step,
+.convergence-total,
+.convergence-budget-note,
+.convergence-proof-note,
+.convergence-reference-note,
+.convergence-omission,
+.convergence-chart-direction {
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.convergence-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.convergence-error,
+.convergence-stale {
+  margin: 10px 0;
+  padding: 10px 12px;
+  border-radius: 9px;
+  border: 1px solid rgba(255, 139, 139, 0.28);
+  background: rgba(255, 139, 139, 0.1);
+  color: #ffd0d0;
+}
+
+.convergence-stale {
+  font-weight: 700;
+}
+
+.convergence-warning-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.convergence-table-scroll,
+.convergence-chart-scroll {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.convergence-table-scroll table {
+  min-width: 620px;
+}
+
+.convergence-results-table .convergence-table-scroll table {
+  min-width: 1120px;
+}
+
+.convergence-chart-section,
+.convergence-results-table,
+.convergence-teaching,
+.convergence-conclusion {
+  margin-top: 18px;
+}
+
+.convergence-chart-region {
+  position: relative;
+  min-width: 520px;
+  height: 320px;
+  padding: 8px;
+}
+
+.convergence-metric-toggle {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: 0 0 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.convergence-metric-toggle legend {
+  padding: 0 5px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.convergence-metric-toggle label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.convergence-conclusion .meta-dl {
+  margin-bottom: 10px;
+}
+
+.convergence-teaching-section {
+  border-top: 1px solid var(--border);
+}
+
+.convergence-teaching-section:last-child {
+  border-bottom: 1px solid var(--border);
+}
+
+.convergence-teaching-section summary {
+  padding: 11px 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.convergence-teaching-content {
+  padding: 0 10px 12px;
+}
+
+.convergence-teaching-formula {
+  margin: 8px 0;
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.18);
+  overflow-x: auto;
+}
+
+.convergence-current-example,
+.convergence-why {
+  margin: 8px 0 0;
+}
+
+.convergence-why {
+  color: var(--accent-2);
+}
+
+@media (max-width: 640px) {
+  .convergence-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .convergence-drawer-content {
+    padding-inline: 12px;
+  }
+}

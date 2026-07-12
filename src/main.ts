@@ -9,6 +9,8 @@ import {
   Legend,
   Filler,
   CategoryScale,
+  LogarithmicScale,
+  type ChartConfiguration,
 } from "chart.js";
 import type { MethodFamily, MethodConfig, SeriesPoint, SolverResult } from "./solvers";
 import { integrateFirstOrder, integrateSecondOrder } from "./solvers";
@@ -57,6 +59,38 @@ import {
   mountExpressionErrorSummary,
   type ExpressionErrorSummaryHandle,
 } from "./math/ui/expressionErrorSummary";
+import {
+  ConvergenceStudyFailure,
+  checkConvergenceStudyConsistency,
+  runConvergenceStudy,
+  validateConsistencyPermission,
+  type ConvergenceStudyConfig,
+} from "./convergenceStudy";
+import {
+  canRunConfirmedWarning,
+  cancelWarningConfirmation,
+  convergenceEligibility,
+  createSuccessfulFirstOrderRunSnapshot,
+  currentStudyFingerprint,
+  editConvergenceSetup,
+  finishWarningAttempt,
+  reconcileConvergenceUiState,
+  recordConvergenceFailure,
+  recordConvergenceSuccess,
+  requestWarningConfirmation,
+  setConvergenceConsistency,
+  setConvergenceDrawerOpen,
+  setConvergenceMetric,
+  setTeachingAccordion,
+  type ConvergenceUiState,
+  type SuccessfulFirstOrderRunSnapshot,
+} from "./convergenceStudyState";
+import {
+  mountConvergenceStudyView,
+  type ConvergenceChartFactory,
+  type ConvergenceStudyIntent,
+  type ConvergenceStudyViewHandle,
+} from "./convergenceStudyView";
 import "./style.css";
 
 Chart.register(
@@ -65,6 +99,7 @@ Chart.register(
   PointElement,
   LinearScale,
   CategoryScale,
+  LogarithmicScale,
   Title,
   Tooltip,
   Legend,
@@ -140,6 +175,9 @@ let comparePickError = "";
 let activeExpressionField: EditableMathFieldHandle | null = null;
 let activeExactExpressionField: EditableMathFieldHandle | null = null;
 let activeExpressionSummary: ExpressionErrorSummaryHandle | null = null;
+let lastFirstOrderRunSnapshot: SuccessfulFirstOrderRunSnapshot | null = null;
+const convergenceStates = new Map<string, ConvergenceUiState>();
+let activeConvergenceView: ConvergenceStudyViewHandle | null = null;
 
 const app = document.querySelector<HTMLDivElement>("#app")!;
 
@@ -236,6 +274,11 @@ function disposeExpressionUi(): void {
   activeExpressionSummary = null;
 }
 
+function disposeConvergenceUi(): void {
+  activeConvergenceView?.dispose();
+  activeConvergenceView = null;
+}
+
 function orderFieldHtml(cat: MethodCatalogEntry): string {
   if (!cat.hasOrderSelector) return "";
   const min = cat.orderMin ?? 1;
@@ -253,6 +296,7 @@ function orderFieldHtml(cat: MethodCatalogEntry): string {
 function render(): void {
   const meta = selectedMeta();
   disposeExpressionUi();
+  disposeConvergenceUi();
   app.innerHTML = "";
 
   const shell = document.createElement("div");
@@ -679,6 +723,139 @@ function requireFiniteField(value: number, label: string): void {
   if (!Number.isFinite(value)) throw new Error(`${label} must be finite.`);
 }
 
+const convergenceChartFactory: ConvergenceChartFactory = {
+  create: (canvas, configuration) =>
+    new Chart(canvas, configuration as unknown as ChartConfiguration),
+};
+
+function convergenceStateFor(
+  snapshot: SuccessfulFirstOrderRunSnapshot
+): ConvergenceUiState {
+  const state = convergenceStates.get(snapshot.runFingerprint);
+  const reconciled = reconcileConvergenceUiState(state, snapshot);
+  if (reconciled !== state) convergenceStates.set(snapshot.runFingerprint, reconciled);
+  return reconciled;
+}
+
+function storeConvergenceState(
+  snapshot: SuccessfulFirstOrderRunSnapshot,
+  state: ConvergenceUiState
+): void {
+  convergenceStates.set(snapshot.runFingerprint, state);
+}
+
+function convergenceConfig(
+  snapshot: SuccessfulFirstOrderRunSnapshot,
+  state: ConvergenceUiState,
+  allowConsistencyWarning: boolean
+): ConvergenceStudyConfig | undefined {
+  if (!state.preview || !snapshot.exactSolutionEnabled || !snapshot.exactSolution) {
+    return undefined;
+  }
+  return {
+    method: snapshot.method,
+    rhs: snapshot.rhs,
+    exactSolution: snapshot.exactSolution,
+    t0: snapshot.t0,
+    y0: snapshot.y0,
+    tEnd: snapshot.tEnd,
+    baseStepSize: Number(state.baseStepSizeDraft),
+    refinementLevels: Number(state.refinementLevelsDraft),
+    runFingerprint: snapshot.runFingerprint,
+    allowConsistencyWarning,
+  };
+}
+
+function controlledConvergenceFailure(error: unknown): ConvergenceStudyFailure {
+  if (error instanceof ConvergenceStudyFailure) return error;
+  return new ConvergenceStudyFailure(
+    "exact_evaluation_failure",
+    error instanceof Error
+      ? `The convergence study could not run because ${error.message}`
+      : "The convergence study could not run because an unexpected evaluation failure occurred."
+  );
+}
+
+function attemptConvergenceStudy(
+  snapshot: SuccessfulFirstOrderRunSnapshot,
+  allowConsistencyWarning: boolean
+): void {
+  let state = convergenceStateFor(snapshot);
+  const fingerprint = currentStudyFingerprint(state);
+  try {
+    if (!fingerprint) {
+      if (state.previewFailure) {
+        state = recordConvergenceFailure(state, state.previewFailure);
+        storeConvergenceState(snapshot, state);
+      }
+      return;
+    }
+    if (allowConsistencyWarning && !canRunConfirmedWarning(state, fingerprint)) {
+      throw new ConvergenceStudyFailure(
+        "warning_confirmation_required",
+        "Confirm the numerical consistency warning for the current study settings before running."
+      );
+    }
+    const config = convergenceConfig(snapshot, state, allowConsistencyWarning);
+    if (!config) return;
+    const consistencyCheck = checkConvergenceStudyConsistency(config);
+    state = setConvergenceConsistency(state, fingerprint, consistencyCheck);
+    storeConvergenceState(snapshot, state);
+    if (consistencyCheck.status === "warning" && !allowConsistencyWarning) {
+      storeConvergenceState(snapshot, requestWarningConfirmation(state, fingerprint));
+      return;
+    }
+    validateConsistencyPermission(consistencyCheck, allowConsistencyWarning);
+    const result = runConvergenceStudy(config);
+    storeConvergenceState(snapshot, recordConvergenceSuccess(state, result));
+  } catch (error) {
+    state = convergenceStateFor(snapshot);
+    storeConvergenceState(snapshot, recordConvergenceFailure(
+      state,
+      controlledConvergenceFailure(error)
+    ));
+  } finally {
+    if (allowConsistencyWarning) {
+      state = convergenceStateFor(snapshot);
+      storeConvergenceState(snapshot, finishWarningAttempt(state));
+    }
+  }
+}
+
+function handleConvergenceIntent(
+  snapshot: SuccessfulFirstOrderRunSnapshot,
+  intent: ConvergenceStudyIntent
+): void {
+  let state = convergenceStateFor(snapshot);
+  switch (intent.type) {
+    case "drawer":
+      state = setConvergenceDrawerOpen(state, intent.open);
+      break;
+    case "base_step":
+      state = editConvergenceSetup(state, snapshot, { baseStepSizeDraft: intent.value });
+      break;
+    case "levels":
+      state = editConvergenceSetup(state, snapshot, { refinementLevelsDraft: intent.value });
+      break;
+    case "metric":
+      state = setConvergenceMetric(state, intent.metric);
+      break;
+    case "accordion":
+      state = setTeachingAccordion(state, intent.id, intent.open);
+      break;
+    case "cancel_warning":
+      state = cancelWarningConfirmation(state);
+      break;
+    case "run":
+      attemptConvergenceStudy(snapshot, false);
+      return;
+    case "run_anyway":
+      attemptConvergenceStudy(snapshot, true);
+      return;
+  }
+  storeConvergenceState(snapshot, state);
+}
+
 function renderForm(meta: MethodCatalogEntry, sel: SelectedMethod): HTMLElement {
   const wrap = document.createElement("div");
   wrap.className = "form-wrap";
@@ -969,6 +1146,7 @@ function renderForm(meta: MethodCatalogEntry, sel: SelectedMethod): HTMLElement 
     lastResultExpression = null;
     lastCompare = null;
     lastProblemInputs = null;
+    lastFirstOrderRunSnapshot = null;
     session = { mode: "single" };
     render();
   });
@@ -1055,6 +1233,29 @@ function renderForm(meta: MethodCatalogEntry, sel: SelectedMethod): HTMLElement 
       lastCompare = null;
       lastResult = result;
       lastResultExpression = expressionSnapshot;
+      if (isSecond) {
+        lastFirstOrderRunSnapshot = null;
+      } else {
+        lastFirstOrderRunSnapshot = createSuccessfulFirstOrderRunSnapshot({
+          metadata: result.metadata,
+          rhs: expressionSnapshot.expression,
+          exactSolutionEnabled: expressionSnapshot.exactSolutionEnabled,
+          exactSolution: expressionSnapshot.exactSolution,
+          t0,
+          y0: Number(fd.get("y0")),
+          tEnd,
+          runStepSize: h,
+          presetId: expressionSnapshot.presetId,
+          customizationSourcePresetId: expressionSnapshot.customizationSourcePresetId,
+        });
+        storeConvergenceState(
+          lastFirstOrderRunSnapshot,
+          reconcileConvergenceUiState(
+            convergenceStates.get(lastFirstOrderRunSnapshot.runFingerprint),
+            lastFirstOrderRunSnapshot
+          )
+        );
+      }
       lastProblemInputs = isSecond
         ? {
             kind: "second_order",
@@ -1162,6 +1363,7 @@ function renderCompareForm(
     lastResult = null;
     lastResultExpression = null;
     lastProblemInputs = null;
+    lastFirstOrderRunSnapshot = null;
     session = { mode: "compare_pick", first: null };
     render();
   });
@@ -1214,6 +1416,7 @@ function renderCompareForm(
       lastResult = null;
       lastResultExpression = null;
       lastProblemInputs = null;
+      lastFirstOrderRunSnapshot = null;
       lastCompare = { a, b, resultA, resultB, expression: expressionSnapshot };
       resetTutorConversation();
       step = "results";
@@ -1234,6 +1437,7 @@ function goToMethodListKeepInputs(): void {
   lastResultExpression = null;
   lastCompare = null;
   lastProblemInputs = null;
+  lastFirstOrderRunSnapshot = null;
   session = { mode: "single" };
   render();
 }
@@ -1384,6 +1588,7 @@ function renderCompareResultsShell(
     lastResult = null;
     lastResultExpression = null;
     lastProblemInputs = null;
+    lastFirstOrderRunSnapshot = null;
     session = { mode: "compare_pick", first: null };
     render();
   });
@@ -1443,6 +1648,7 @@ function mountResults(
       </div>
     </section>
     ${metadataPanelHtml(result.metadata)}
+    ${meta.mode === "first" ? '<div data-convergence-study-host></div>' : ""}
     <section class="chart-section">
       <canvas id="plot" height="120"></canvas>
     </section>
@@ -1474,6 +1680,21 @@ function mountResults(
   const equationTarget = body.querySelector<HTMLElement>("[data-problem-equation]");
   if (equationTarget) renderReadonlyMath(equationTarget, expression.equation, { display: "block" });
   renderMethodFormulas(body, [meta]);
+
+  const convergenceHost = body.querySelector<HTMLElement>("[data-convergence-study-host]");
+  if (convergenceHost && lastFirstOrderRunSnapshot) {
+    const snapshot = lastFirstOrderRunSnapshot;
+    const eligibility = convergenceEligibility({ kind: "first_order", snapshot });
+    if (eligibility.showDrawer) {
+      convergenceStateFor(snapshot);
+      activeConvergenceView = mountConvergenceStudyView(convergenceHost, {
+        snapshot,
+        getState: () => convergenceStateFor(snapshot),
+        onIntent: (intent) => handleConvergenceIntent(snapshot, intent),
+        chartFactory: convergenceChartFactory,
+      });
+    }
+  }
 
   drawSingleChart(meta, series);
 }

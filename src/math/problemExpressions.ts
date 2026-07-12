@@ -87,7 +87,10 @@ function cloneAst(ast: MathAst): MathAst {
   }
 }
 
-function cloneExpression(expression: MathExpression, profile: MathVariableProfile): MathExpression {
+export function cloneMathExpression(
+  expression: MathExpression,
+  profile: MathVariableProfile
+): MathExpression {
   const cloned = createMathExpression(expression.latex, cloneAst(expression.canonicalAst), profile);
   return Object.freeze({
     ...cloned,
@@ -168,13 +171,13 @@ export function createSuccessfulExpressionSnapshot(
   profile: ProductionMathProfile,
   details: SuccessfulExpressionDetails = {}
 ): SuccessfulExpressionSnapshot {
-  const frozenExpression = cloneExpression(expression, profile);
+  const frozenExpression = cloneMathExpression(expression, profile);
   const firstOrder = profile === "rhs";
   const prefixLatex = firstOrder ? "y'" : "u''";
   const prefixText = firstOrder ? "y prime" : "u double prime";
   const equationDisplay = `${prefixText} equals ${frozenExpression.displayText}`;
   const exactSolution = details.exactSolution
-    ? cloneExpression(details.exactSolution, "exact_solution")
+    ? cloneMathExpression(details.exactSolution, "exact_solution")
     : undefined;
   return Object.freeze({
     profile,

@@ -9,6 +9,7 @@ describe("production expression migration boundary", () => {
   const main = source("./main.ts");
   const solvers = source("./solvers.ts");
   const productionExpression = source("./math/problemExpressions.ts");
+  const convergenceView = source("./convergenceStudyView.ts");
 
   it("contains no production dynamic expression compiler", () => {
     const productionSources = `${main}\n${solvers}\n${productionExpression}`;
@@ -29,8 +30,12 @@ describe("production expression migration boundary", () => {
     expect(solvers).not.toMatch(/from\s+["'].+math\//);
   });
 
-  it("adds exact-solution input without adding convergence controls", () => {
+  it("keeps exact-solution editing in Step 2 and convergence display read-only", () => {
     expect(main).toContain("I know the exact solution");
-    expect(main).not.toMatch(/Convergence Study|convergence drawer|observed order|refinement levels/i);
+    expect(main).toContain("exactSolution: expressionSnapshot.exactSolution");
+    expect(convergenceView).toContain("options.snapshot.exactSolution");
+    expect(convergenceView).toContain("renderMath(exactMath");
+    expect(convergenceView).not.toContain("mountExactSolutionField");
+    expect(convergenceView).not.toContain("editableMathField");
   });
 });
