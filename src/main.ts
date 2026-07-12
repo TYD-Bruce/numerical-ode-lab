@@ -24,6 +24,7 @@ import {
 import { escapeHtml, formatCoefficients } from "./mathDisplay";
 import type { ProblemInputs } from "./aiTutor";
 import { mountAiTutorPanel, resetTutorConversation } from "./aiTutorPanel";
+import { getTutorConvergenceStudy } from "./convergenceTutor";
 import { methodMathContent } from "./math/ui/methodMathContent";
 import { renderReadonlyMath } from "./math/ui/readonlyMath";
 import { validateFixedStepGrid } from "./grid";
@@ -1523,6 +1524,7 @@ function renderResultsShell(
   result: SolverResult,
   expression: SuccessfulExpressionSnapshot
 ): HTMLElement {
+  const tutorRunSnapshot = lastFirstOrderRunSnapshot;
   const wrap = document.createElement("div");
   wrap.className = "results-wrap";
   wrap.innerHTML = `
@@ -1552,6 +1554,14 @@ function renderResultsShell(
         meta,
         problem: lastProblemInputs,
         getChart: () => chart,
+        ...(tutorRunSnapshot
+          ? {
+              getConvergenceStudy: () =>
+                getTutorConvergenceStudy(
+                  convergenceStates.get(tutorRunSnapshot.runFingerprint)
+                ),
+            }
+          : {}),
       });
     }
   });

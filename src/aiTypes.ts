@@ -8,6 +8,52 @@ export interface ImplicitDiagnosticsContext {
   failedSteps: number;
 }
 
+export interface TutorObservedOrderAssessment {
+  value?: number;
+  status:
+    | "reliable"
+    | "below_resolution"
+    | "no_improvement"
+    | "negative"
+    | "near_zero"
+    | "unavailable";
+  message: string;
+  coarseLevel: number;
+  fineLevel: number;
+}
+
+export interface TutorConvergenceLevel {
+  level: number;
+  h: number;
+  finalTimeError: number;
+  maximumGlobalError: number;
+  finalObservedOrder?: TutorObservedOrderAssessment;
+  maximumObservedOrder?: TutorObservedOrderAssessment;
+}
+
+export interface TutorConvergenceStudy {
+  theoreticalOrder: number;
+  interpretation: {
+    kind:
+      | "consistent_with_theory"
+      | "approaching_theory"
+      | "not_yet_asymptotic"
+      | "refinement_not_improving"
+      | "order_unavailable";
+    title: string;
+    explanation: string;
+    primaryObservedOrder?: number;
+    evidencePairs: Array<[number, number]>;
+  };
+  levels: TutorConvergenceLevel[];
+  consistencyCheck: {
+    status: "passed" | "warning";
+    maximumNormalizedResidual?: number;
+    maximumResidualTime?: number;
+    statement: "This is a numerical consistency check, not a formal proof.";
+  };
+}
+
 export interface OdeLabContext {
   problem: {
     kind: "first_order" | "second_order";
@@ -45,6 +91,7 @@ export interface OdeLabContext {
     yMin?: number;
     yMax?: number;
   };
+  convergenceStudy?: TutorConvergenceStudy;
 }
 
 export interface ChartInstruction {

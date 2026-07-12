@@ -10,7 +10,12 @@ import {
   type ProblemInputs,
   type TutorMessage,
 } from "./aiTutor";
-import type { ChartInstruction } from "./aiTypes";
+import type {
+  ChartInstruction,
+  ChatRequest,
+  ChatResponse,
+  TutorConvergenceStudy,
+} from "./aiTypes";
 import { escapeHtml } from "./mathDisplay";
 import { renderTutorMessageContent } from "./math/ui/tutorMath";
 
@@ -20,6 +25,8 @@ export interface AiTutorPanelOptions {
   meta: MethodCatalogEntry | null;
   problem: ProblemInputs | null;
   getChart: () => Chart | null;
+  getConvergenceStudy?: () => TutorConvergenceStudy | undefined;
+  sendMessage?: (request: ChatRequest) => Promise<ChatResponse>;
   onChartInstruction?: (instruction: ChartInstruction) => void;
 }
 
@@ -174,8 +181,12 @@ export function mountAiTutorPanel(
     setLoading(true);
 
     try {
-      const context = buildOdeLabContext(result, problem);
-      const response = await sendChatMessage({
+      const context = buildOdeLabContext(
+        result,
+        problem,
+        options.getConvergenceStudy?.()
+      );
+      const response = await (options.sendMessage ?? sendChatMessage)({
         messages: conversation,
         context,
       });

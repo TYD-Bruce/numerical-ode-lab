@@ -15,4 +15,16 @@ describe("AI Tutor controlled mathematics prompt", () => {
     expect(SYSTEM_PROMPT).toContain("dollar-sign math");
     expect(SYSTEM_PROMPT).toContain("Math.exp(...)");
   });
+
+  it("grounds convergence explanations in supplied model evidence", () => {
+    expect(SYSTEM_PROMPT).toContain("only when convergenceStudy is supplied");
+    expect(SYSTEM_PROMPT).toContain("use only its supplied values");
+    expect(SYSTEM_PROMPT).toContain("maximum-global-error interpretation");
+    expect(SYSTEM_PROMPT).toContain("Final-time error");
+    expect(SYSTEM_PROMPT).toContain("Never recalculate or override");
+    expect(SYSTEM_PROMPT).toContain("fabricate a missing value");
+    expect(SYSTEM_PROMPT).toContain("not a formal proof");
+    expect(SYSTEM_PROMPT).toContain("Do not assert a specific cause");
+    expect(SYSTEM_PROMPT).toContain("reference line compares slope only");
+  });
 });

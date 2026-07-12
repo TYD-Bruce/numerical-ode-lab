@@ -4,6 +4,7 @@ import type {
   ChatRequest,
   ChatResponse,
   OdeLabContext,
+  TutorConvergenceStudy,
   TutorMessage,
 } from "./aiTypes";
 
@@ -70,7 +71,8 @@ function toSeriesRow(p: SeriesPoint): { t: number; y: number; v?: number } {
 
 export function buildOdeLabContext(
   result: SolverResult,
-  problem: ProblemInputs
+  problem: ProblemInputs,
+  convergenceStudy?: TutorConvergenceStudy
 ): OdeLabContext {
   const series = result.points;
   const last = series[series.length - 1]!;
@@ -113,6 +115,7 @@ export function buildOdeLabContext(
       notes: md.notes,
     },
     result: resultBlock,
+    ...(convergenceStudy ? { convergenceStudy } : {}),
   };
 }
 

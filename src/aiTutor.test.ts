@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { buildOdeLabContext, sanitizeTutorText, type ProblemInputs } from "./aiTutor";
+import type { TutorConvergenceStudy } from "./aiTypes";
 import { integrateFirstOrder } from "./solvers";
 
 const PROBLEM: ProblemInputs = {
@@ -46,5 +47,34 @@ describe("AI tutor controlled math text", () => {
   it("preserves controlled delimiters while retaining legacy notation cleanup", () => {
     expect(sanitizeTutorText("Order \\(p=\\alpha_j\\).\n\\[E=h^p\\]"))
       .toBe("Order \\(p=αⱼ\\).\n\\[E=h^p\\]");
+  });
+});
+
+describe("AI tutor convergence context", () => {
+  it("adds the supplied serializable DTO without changing existing run context", () => {
+    const result = integrateFirstOrder(
+      { family: "forward_euler" },
+      { t0: 0, y0: 1, tEnd: 0.2, h: 0.1, f: (_t, y) => -y }
+    );
+    const study: TutorConvergenceStudy = {
+      theoreticalOrder: 1,
+      interpretation: {
+        kind: "consistent_with_theory",
+        title: "Consistent with theory",
+        explanation: "Orders are stable.",
+        primaryObservedOrder: 0.99,
+        evidencePairs: [[0, 1]],
+      },
+      levels: [{ level: 0, h: 0.1, finalTimeError: 0.01, maximumGlobalError: 0.02 }],
+      consistencyCheck: {
+        status: "passed",
+        statement: "This is a numerical consistency check, not a formal proof.",
+      },
+    };
+
+    expect(buildOdeLabContext(result, PROBLEM).convergenceStudy).toBeUndefined();
+    const context = buildOdeLabContext(result, PROBLEM, study);
+    expect(context.convergenceStudy).toEqual(study);
+    expect(() => JSON.stringify(context)).not.toThrow();
   });
 });

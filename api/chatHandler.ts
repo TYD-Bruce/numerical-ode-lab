@@ -29,6 +29,16 @@ Implicit-solve rules:
 - Explain residual as the remaining algebraic mismatch in the implicit equation G(u) = 0.
 - Successful result context normally has failedSteps = 0 because failed implicit steps throw instead of returning partial results.
 
+Convergence Study grounding rules:
+- Explain a Convergence Study only when convergenceStudy is supplied, and use only its supplied values, statuses, interpretation, and evidence pairs.
+- Treat the maximum-global-error interpretation and primaryObservedOrder as the primary conclusion. Final-time error and its observed order are secondary evidence.
+- Never recalculate or override an observed order, fabricate a missing value, or replace an unavailable order with a guess.
+- Preserve distinctions among reliable, below_resolution, no_improvement, negative, near_zero, and unavailable assessments.
+- The exact-solution consistency check is a numerical consistency check, not a formal proof. Never describe it as proof.
+- Negative or non-improving evidence can have several possible causes. Do not assert a specific cause unless the supplied context proves it, and continue to distinguish nonlinear-solver failure from method stability.
+- For the log-log graph, smaller h moves to the right, both axes are logarithmic, and the theoretical reference line compares slope only; it does not supply a known error constant.
+- Prefer textbook notation in the controlled \( ... \) and \[ ... \] delimiters.
+
 Response format: Reply with exactly one JSON object (no markdown fences, no extra text) with:
 - "message": string (2–5 short paragraphs max; English plain text with optional controlled \\( ... \\) and \\[ ... \\] mathematical segments; no HTML, unrestricted Markdown, or dollar-sign math)
 - "chartInstruction": optional object with type one of "line_chart" | "error_table" | "zoom_range" | "none", plus optional title, xLabel, yLabel, tMin, tMax, includePoints, includeLine, tableRows
@@ -73,6 +83,63 @@ function ctxNumber(ctx: Record<string, unknown>, path: string[]): number | undef
   return typeof cur === "number" && Number.isFinite(cur) ? cur : undefined;
 }
 
+function ctxRecord(
+  ctx: Record<string, unknown>,
+  path: string[]
+): Record<string, unknown> | undefined {
+  let cur: unknown = ctx;
+  for (const key of path) {
+    if (!cur || typeof cur !== "object" || Array.isArray(cur)) return undefined;
+    cur = (cur as Record<string, unknown>)[key];
+  }
+  return cur && typeof cur === "object" && !Array.isArray(cur)
+    ? (cur as Record<string, unknown>)
+    : undefined;
+}
+
+function convergenceLevels(
+  convergence: Record<string, unknown>
+): Record<string, unknown>[] {
+  const levels = convergence.levels;
+  return Array.isArray(levels)
+    ? levels.filter(
+        (level): level is Record<string, unknown> =>
+          !!level && typeof level === "object" && !Array.isArray(level)
+      )
+    : [];
+}
+
+function finiteText(value: number | undefined): string {
+  return value === undefined ? "not supplied" : value.toPrecision(8);
+}
+
+function evidencePairsText(interpretation: Record<string, unknown> | undefined): string {
+  const pairs = interpretation?.evidencePairs;
+  if (!Array.isArray(pairs) || pairs.length === 0) return "none supplied";
+  return pairs
+    .filter(
+      (pair): pair is [number, number] =>
+        Array.isArray(pair) &&
+        pair.length === 2 &&
+        pair.every((value) => typeof value === "number" && Number.isFinite(value))
+    )
+    .map(([coarse, fine]) => `${coarse} to ${fine}`)
+    .join(", ") || "none supplied";
+}
+
+function latestOrderEvidence(
+  levels: Record<string, unknown>[],
+  key: "finalObservedOrder" | "maximumObservedOrder"
+): Record<string, unknown> | undefined {
+  for (let index = levels.length - 1; index >= 0; index -= 1) {
+    const value = levels[index]?.[key];
+    if (value && typeof value === "object" && !Array.isArray(value)) {
+      return value as Record<string, unknown>;
+    }
+  }
+  return undefined;
+}
+
 function buildMockResponse(
   context: Record<string, unknown>,
   userMessage: string
@@ -101,6 +168,47 @@ function buildMockResponse(
   const maxResidual = ctxNumber(context, ["method", "implicitDiagnostics", "maxResidual"]);
   const failedSteps = ctxNumber(context, ["method", "implicitDiagnostics", "failedSteps"]);
   const q = userMessage.toLowerCase();
+  const convergence = ctxRecord(context, ["convergenceStudy"]);
+  const interpretation = convergence
+    ? ctxRecord(convergence, ["interpretation"])
+    : undefined;
+  const levels = convergence ? convergenceLevels(convergence) : [];
+  const theoreticalOrder = convergence
+    ? ctxNumber(convergence, ["theoreticalOrder"])
+    : undefined;
+  const primaryObservedOrder = interpretation
+    ? ctxNumber(interpretation, ["primaryObservedOrder"])
+    : undefined;
+  const interpretationKind = interpretation
+    ? ctxString(interpretation, ["kind"])
+    : undefined;
+  const interpretationTitle = interpretation
+    ? ctxString(interpretation, ["title"])
+    : undefined;
+  const interpretationExplanation = interpretation
+    ? ctxString(interpretation, ["explanation"])
+    : undefined;
+  const consistency = convergence
+    ? ctxRecord(convergence, ["consistencyCheck"])
+    : undefined;
+  const asksConvergence =
+    q.includes("observed order") ||
+    q.includes("not exactly") ||
+    q.includes("non-integer") ||
+    q.includes("non integer") ||
+    q.includes("final-time") ||
+    q.includes("final time") ||
+    q.includes("maximum error") ||
+    q.includes("maximum global") ||
+    q.includes("two error") ||
+    q.includes("asymptotic") ||
+    q.includes("log-log") ||
+    q.includes("log log") ||
+    q.includes("consistency warning") ||
+    q.includes("consistency check") ||
+    q.includes("convergence study") ||
+    q.includes("refinement not improving") ||
+    q.includes("stopped improving");
 
   const orderLine =
     order !== undefined
@@ -124,7 +232,52 @@ function buildMockResponse(
     // implicit diagnostics; otherwise fall through to general method help.
     (asksStabilityVsNonlinear && !!nonlinearMethod);
 
-  if (asksImplicitDiagnostics) {
+  if (asksConvergence && !convergence) {
+    message = demoReply(
+      "Run a current Convergence Study first. I do not have current convergence evidence in this Tutor context, so I will not invent an observed order, error value, or interpretation."
+    );
+  } else if (convergence && (q.includes("consistency warning") || q.includes("consistency check"))) {
+    const status = consistency ? ctxString(consistency, ["status"]) : undefined;
+    const residual = consistency
+      ? ctxNumber(consistency, ["maximumNormalizedResidual"])
+      : undefined;
+    const residualTime = consistency
+      ? ctxNumber(consistency, ["maximumResidualTime"])
+      : undefined;
+    message = demoReply(
+      `The supplied consistency status is ${status ?? "not supplied"}. Its maximum normalized residual is ${finiteText(residual)}${residualTime === undefined ? "" : ` at t = ${finiteText(residualTime)}`}. This is a numerical consistency check, not a formal proof. A warning invites review or an explicit run-anyway choice; it does not prove the exact solution is wrong.`
+    );
+  } else if (convergence && (q.includes("log-log") || q.includes("log log") || (q.includes("graph") && q.includes("convergence")))) {
+    message = demoReply(
+      `In the convergence log-log graph, moving right means using a smaller step size h, and both axes are logarithmic. The measured-error slope is compared with theoretical order p = ${finiteText(theoreticalOrder)}. The theoretical reference line compares slope only; it does not claim a known theoretical error constant. The study's primary conclusion uses maximum global error, while final-time error is secondary.`
+    );
+  } else if (convergence && (q.includes("final-time") || q.includes("final time") || q.includes("two error") || (q.includes("maximum") && q.includes("error")))) {
+    const finest = levels.at(-1);
+    const levelH = finest ? ctxNumber(finest, ["h"]) : undefined;
+    const finalError = finest ? ctxNumber(finest, ["finalTimeError"]) : undefined;
+    const maximumError = finest ? ctxNumber(finest, ["maximumGlobalError"]) : undefined;
+    message = demoReply(
+      `At the finest supplied level, h = ${finiteText(levelH)}, final-time error is ${finiteText(finalError)}, and maximum global error is ${finiteText(maximumError)}. Final-time error measures only the endpoint; maximum global error takes the largest error over the whole numerical grid. Endpoint cancellation can make them differ, but these values alone do not prove cancellation occurred.`
+    );
+  } else if (convergence && (q.includes("stopped improving") || q.includes("refinement not improving"))) {
+    const latest = latestOrderEvidence(levels, "maximumObservedOrder");
+    const status = latest ? ctxString(latest, ["status"]) : undefined;
+    const detail = latest ? ctxString(latest, ["message"]) : undefined;
+    message = demoReply(
+      `The primary maximum-error interpretation is ${interpretationTitle ?? interpretationKind ?? "not supplied"}. The latest supplied maximum-error status is ${status ?? "not supplied"}${detail ? `: ${detail}` : "."} Possible explanations include instability, roundoff, startup error, an invalid exact solution, or a grid that is not yet in the asymptotic region; the supplied evidence does not prove one specific cause.`
+    );
+  } else if (convergence && q.includes("asymptotic")) {
+    message = demoReply(
+      `The supplied study classification is ${interpretationKind ?? "not supplied"}: ${interpretationTitle ?? "no title supplied"}. ${interpretationExplanation ?? "No additional explanation was supplied."}${primaryObservedOrder === undefined ? "" : ` The primary maximum-error observed order is ${finiteText(primaryObservedOrder)}.`} I am reporting the model's classification rather than recomputing it.`
+    );
+  } else if (convergence && (q.includes("observed order") || q.includes("not exactly") || q.includes("non-integer") || q.includes("non integer"))) {
+    const observed = primaryObservedOrder === undefined
+      ? "The primary observed order is unavailable, so I will not replace it with a guess."
+      : `The primary maximum-error observed order is ${finiteText(primaryObservedOrder)}, compared with theoretical order p = ${finiteText(theoreticalOrder)}.`;
+    message = demoReply(
+      `${observed} ${interpretationTitle ?? interpretationKind ?? "No interpretation title was supplied"}. ${interpretationExplanation ?? ""} Zero-based evidence level pairs: ${evidencePairsText(interpretation)}. A measured order need not be an integer because it comes from finite error ratios and may reflect pre-asymptotic behavior or roundoff; those are possibilities, not proven causes for this run.`
+    );
+  } else if (asksImplicitDiagnostics) {
     if (!nonlinearMethod) {
       message = demoReply(
         "The selected method did not expose an implicit nonlinear solve for this run, so the supplied context has no iteration or residual diagnostics. I will not infer or invent those values."
@@ -279,7 +432,7 @@ function buildMockResponse(
   return { message, chartInstruction };
 }
 
-function buildUserContextBlock(context: Record<string, unknown>): string {
+export function buildUserContextBlock(context: Record<string, unknown>): string {
   const trimmed = { ...context };
   const result = trimmed.result as Record<string, unknown> | undefined;
   if (result?.seriesFull && Array.isArray(result.seriesFull)) {

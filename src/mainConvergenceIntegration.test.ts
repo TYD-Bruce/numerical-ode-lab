@@ -43,6 +43,27 @@ describe("main convergence orchestration boundary", () => {
     expect(compare).not.toContain("data-convergence-study-host");
   });
 
+  it("reads current convergence Tutor evidence per question only for single first-order output", () => {
+    const singleShell = between("function renderResultsShell", "function renderCompareResultsShell");
+    expect(singleShell).toContain("getConvergenceStudy");
+    expect(singleShell).toContain("getTutorConvergenceStudy");
+    expect(singleShell).toContain("convergenceStates.get(tutorRunSnapshot.runFingerprint)");
+
+    const compareShell = between("function renderCompareResultsShell", "function mountResults");
+    expect(compareShell).not.toContain("getConvergenceStudy");
+    expect(compareShell).not.toContain("getTutorConvergenceStudy");
+  });
+
+  it("keeps the successful run snapshot when a later original Run attempt fails", () => {
+    const form = between("function renderForm", "function renderCompareForm");
+    const catchStart = form.lastIndexOf("} catch (e) {");
+    expect(catchStart).toBeGreaterThanOrEqual(0);
+    const failedRunHandler = form.slice(catchStart);
+    expect(failedRunHandler).not.toContain("lastFirstOrderRunSnapshot =");
+    expect(failedRunHandler).not.toContain("convergenceStates.delete");
+    expect(failedRunHandler).not.toContain("lastResult =");
+  });
+
   it("keeps the ordinary and convergence chart owners separate", () => {
     expect(source).toContain("let chart: Chart | null = null");
     expect(source).toContain("let activeConvergenceView: ConvergenceStudyViewHandle | null = null");
