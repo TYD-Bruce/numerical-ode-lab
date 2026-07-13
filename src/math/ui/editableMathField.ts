@@ -28,10 +28,30 @@ export interface EditableMathElement extends HTMLElement {
   focus(): void;
 }
 
+export interface MathVirtualKeyboardApi {
+  visible: boolean;
+  show(options?: { animate?: boolean }): void;
+  hide(options?: { animate?: boolean }): void;
+}
+
 export interface EditableMathBackend {
   initializeAfterMountEvent?: boolean;
   createMathfield(): EditableMathElement;
+  /** Toggle the MathLive virtual keyboard; returns false when unavailable. */
   showVirtualKeyboard(field: EditableMathElement): boolean;
+  /** Hide the virtual keyboard if present; safe when unavailable. */
+  hideVirtualKeyboard(): boolean;
+}
+
+function readMathVirtualKeyboard(): MathVirtualKeyboardApi | undefined {
+  try {
+    const keyboard = (window as Window & {
+      mathVirtualKeyboard?: MathVirtualKeyboardApi;
+    }).mathVirtualKeyboard;
+    return keyboard;
+  } catch {
+    return undefined;
+  }
 }
 
 export type EditableMathBackendLoader = () => Promise<EditableMathBackend>;
@@ -87,8 +107,20 @@ const loadDefaultEditableBackend: EditableMathBackendLoader = async () => {
     showVirtualKeyboard(field) {
       try {
         field.focus();
-        if (!window.mathVirtualKeyboard) return false;
-        window.mathVirtualKeyboard.show({ animate: true });
+        const keyboard = readMathVirtualKeyboard();
+        if (!keyboard) return false;
+        if (keyboard.visible) keyboard.hide({ animate: true });
+        else keyboard.show({ animate: true });
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    hideVirtualKeyboard() {
+      try {
+        const keyboard = readMathVirtualKeyboard();
+        if (!keyboard) return false;
+        if (keyboard.visible) keyboard.hide({ animate: true });
         return true;
       } catch {
         return false;
@@ -350,6 +382,11 @@ export function mountEditableMathField(
         nextField.removeEventListener("blur", onBlur);
         nextField.removeEventListener("paste", onPaste);
         nextField.removeEventListener("mount", initializeValue);
+        try {
+          backend.hideVirtualKeyboard();
+        } catch {
+          // Disposal must not throw when the optional keyboard API is unavailable.
+        }
       };
       wrapper.addEventListener("math-field-dispose", disposeListeners, { once: true });
     })

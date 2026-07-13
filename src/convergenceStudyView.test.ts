@@ -3,6 +3,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { createMathExpressionFromLegacy } from "./math/legacyAdapter";
 import type { ConvergenceStudyResult } from "./convergenceStudy";
+import { ConvergenceStudyFailure } from "./convergenceStudy";
 import {
   createConvergenceChartConfiguration,
   mountConvergenceStudyView,
@@ -13,6 +14,7 @@ import {
   createConvergenceUiState,
   createSuccessfulFirstOrderRunSnapshot,
   editConvergenceSetup,
+  recordConvergenceFailure,
   recordConvergenceSuccess,
   requestWarningConfirmation,
   setConvergenceConsistency,
@@ -260,6 +262,104 @@ describe("Convergence Study results", () => {
     expect(value.state.chartMetric).toBe("final_time");
     expect(value.intents.some((intent) => intent.type === "run")).toBe(false);
     expect(value.destroyed[0]).toHaveBeenCalledTimes(1);
+  });
+
+  it("shows Run before a study, hides it for a current result, and shows Rerun when stale", async () => {
+    const run = snapshot();
+    let state = setConvergenceDrawerOpen(createConvergenceUiState(run), true);
+    const value = harness(state, run);
+    const initial = value.host.querySelector<HTMLButtonElement>("[data-run-convergence]")!;
+    expect(initial.type).toBe("button");
+    expect(initial.textContent).toBe("Run convergence study");
+    expect(initial.hasAttribute("data-rerun-convergence")).toBe(false);
+
+    state = setConvergenceDrawerOpen(recordConvergenceSuccess(state, study(state)), true);
+    value.state = state;
+    value.view.update();
+    expect(value.host.querySelector("[data-run-convergence]")).toBeNull();
+    expect(value.host.textContent).toContain("What this experiment found");
+
+    state = editConvergenceSetup(state, run, { baseStepSizeDraft: "0.125" });
+    state = setConvergenceDrawerOpen(state, true);
+    value.state = state;
+    value.view.update();
+    const rerun = value.host.querySelector<HTMLButtonElement>("[data-run-convergence]")!;
+    expect(rerun.textContent).toBe("Rerun convergence study");
+    expect(rerun.dataset.rerunConvergence).toBe("");
+    expect(value.host.textContent).toContain("Stale result");
+
+    state = editConvergenceSetup(state, run, { baseStepSizeDraft: "0.25" });
+    state = setConvergenceDrawerOpen(state, true);
+    value.state = state;
+    value.view.update();
+    expect(value.host.querySelector("[data-run-convergence]")).toBeNull();
+  });
+
+  it("keeps warning controls and does not restore the initial Run label after a failed attempt", () => {
+    const run = snapshot();
+    let state = setConvergenceDrawerOpen(createConvergenceUiState(run), true);
+    state = recordConvergenceSuccess(state, study(state));
+    state = recordConvergenceFailure(
+      state,
+      new ConvergenceStudyFailure("level_integration_failure", "Level integration failed.")
+    );
+    state = setConvergenceDrawerOpen(state, true);
+    const failed = harness(state, run);
+    const retry = failed.host.querySelector<HTMLButtonElement>("[data-run-convergence]")!;
+    expect(retry.textContent).toBe("Rerun convergence study");
+    expect(failed.host.textContent).toContain("What this experiment found");
+    expect(failed.host.textContent).toContain("Level integration failed.");
+
+    const fingerprint = JSON.stringify(["convergence-study-v1", state.runFingerprint, "0.25", 3]);
+    let warningState = setConvergenceDrawerOpen(createConvergenceUiState(run), true);
+    const warning = {
+      ...CHECK,
+      status: "warning" as const,
+      maximumNormalizedResidual: 2e-4,
+      issues: [{
+        kind: "derivative_warning" as const,
+        message: "The derivative residual needs review.",
+        normalizedResidual: 2e-4,
+        time: 0.5,
+      }],
+    };
+    warningState = setConvergenceConsistency(warningState, fingerprint, warning);
+    warningState = requestWarningConfirmation(warningState, fingerprint);
+    const warningView = harness(warningState, run);
+    expect(warningView.host.querySelector("[data-run-convergence]")).toBeNull();
+    expect(warningView.host.querySelector("[data-cancel-convergence-warning]")).not.toBeNull();
+    expect(warningView.host.querySelector("[data-run-convergence-anyway]")).not.toBeNull();
+  });
+
+  it("updates accordion state without recreating the chart or submitting a form", async () => {
+    const run = snapshot();
+    let state = createConvergenceUiState(run);
+    state = setConvergenceDrawerOpen(recordConvergenceSuccess(state, study(state)), true);
+    const value = harness(state, run);
+    const form = document.createElement("form");
+    const submit = vi.fn((event: Event) => event.preventDefault());
+    form.addEventListener("submit", submit);
+    form.append(value.host);
+    document.body.append(form);
+
+    const warnings = value.host.querySelector<HTMLDetailsElement>("[data-teaching-id='warnings']")!;
+    const heading = warnings.querySelector("summary")!;
+    expect(heading.tagName).toBe("SUMMARY");
+    const chartCreates = value.chartFactory.create.mock.calls.length;
+    heading.focus();
+    warnings.open = true;
+    warnings.dispatchEvent(new Event("toggle"));
+    await vi.waitFor(() => expect(value.state.accordionOpen.warnings).toBe(true));
+    expect(submit).not.toHaveBeenCalled();
+    expect(value.chartFactory.create).toHaveBeenCalledTimes(chartCreates);
+    expect(document.activeElement).toBe(heading);
+    expect(value.host.querySelector<HTMLDetailsElement>("[data-teaching-id='warnings']")?.open).toBe(true);
+
+    warnings.open = false;
+    warnings.dispatchEvent(new Event("toggle"));
+    await vi.waitFor(() => expect(value.state.accordionOpen.warnings).toBe(false));
+    expect(value.chartFactory.create).toHaveBeenCalledTimes(chartCreates);
+    form.remove();
   });
 
   it("preserves accordion intent and destroys the chart on disposal", async () => {

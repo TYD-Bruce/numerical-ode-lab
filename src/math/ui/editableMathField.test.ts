@@ -11,6 +11,7 @@ import {
 interface MockBackend extends EditableMathBackend {
   field: EditableMathElement;
   showVirtualKeyboard: ReturnType<typeof vi.fn>;
+  hideVirtualKeyboard: ReturnType<typeof vi.fn>;
   insert: ReturnType<typeof vi.fn>;
   focus: ReturnType<typeof vi.fn>;
 }
@@ -36,11 +37,13 @@ function mockBackend(): MockBackend {
   });
   field.insert = insert;
   const showVirtualKeyboard = vi.fn(() => true);
+  const hideVirtualKeyboard = vi.fn(() => true);
   return {
     field,
     focus,
     insert,
     showVirtualKeyboard,
+    hideVirtualKeyboard,
     createMathfield: () => field,
   };
 }
@@ -167,9 +170,48 @@ describe("editable MathLive field controller", () => {
     second.dispose();
   });
 
+  it("toggles More symbols and hides the keyboard on disposal without throwing", async () => {
+    const keyboard = {
+      visible: false,
+      show: vi.fn(function show(this: { visible: boolean }, _options?: { animate?: boolean }) {
+        this.visible = true;
+      }),
+      hide: vi.fn(function hide(this: { visible: boolean }, _options?: { animate?: boolean }) {
+        this.visible = false;
+      }),
+    };
+    const backend = mockBackend();
+    backend.showVirtualKeyboard.mockImplementation((field) => {
+      field.focus();
+      if (keyboard.visible) keyboard.hide({ animate: true });
+      else keyboard.show({ animate: true });
+      return true;
+    });
+    backend.hideVirtualKeyboard.mockImplementation(() => {
+      if (keyboard.visible) keyboard.hide({ animate: true });
+      return true;
+    });
+    const handle = mountEditableMathField(connectedTarget(), options(backend));
+    await settle();
+    const draftBefore = handle.getState().state.draftLatex;
+    backend.field.dispatchEvent(new Event("focus"));
+    const more = handle.element.querySelector<HTMLButtonElement>(".expression-more-symbols")!;
+    more.click();
+    expect(keyboard.visible).toBe(true);
+    more.click();
+    expect(keyboard.visible).toBe(false);
+    expect(handle.getState().state.draftLatex).toBe(draftBefore);
+    handle.dispose();
+    expect(backend.hideVirtualKeyboard).toHaveBeenCalledTimes(1);
+    expect(keyboard.hide).toHaveBeenCalled();
+  });
+
   it("keeps desktop focus when the optional virtual keyboard is unavailable", async () => {
     const backend = mockBackend();
     backend.showVirtualKeyboard.mockImplementation(() => {
+      throw new Error("keyboard unavailable");
+    });
+    backend.hideVirtualKeyboard.mockImplementation(() => {
       throw new Error("keyboard unavailable");
     });
     const handle = mountEditableMathField(connectedTarget(), options(backend));
@@ -178,6 +220,7 @@ describe("editable MathLive field controller", () => {
     const more = handle.element.querySelector<HTMLButtonElement>(".expression-more-symbols")!;
     expect(() => more.click()).not.toThrow();
     expect(backend.focus).toHaveBeenCalled();
+    expect(() => handle.dispose()).not.toThrow();
   });
 
   it("supports strict restore and all three profiles without exposing application behavior", async () => {

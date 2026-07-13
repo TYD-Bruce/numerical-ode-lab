@@ -406,15 +406,20 @@ export function mountConvergenceStudyView(
   let chart: ConvergenceChartHandle | undefined;
   const renderMath = options.renderMath ?? renderReadonlyMath;
 
-  const send = (intent: ConvergenceStudyIntent, focusSelector?: string): void => {
+  const send = (
+    intent: ConvergenceStudyIntent,
+    sendOptions?: { readonly focusSelector?: string; readonly rerender?: boolean }
+  ): void => {
     const currentRevision = revision;
+    const shouldRerender = sendOptions?.rerender !== false;
+    const focusSelector = sendOptions?.focusSelector;
     void Promise.resolve(options.onIntent(intent))
       .catch(() => {
         // Main orchestration records controlled failures in state.
       })
       .finally(() => {
         if (disposed || currentRevision !== revision) return;
-        render();
+        if (shouldRerender) render();
         if (focusSelector) {
           const target = host.querySelector<HTMLInputElement>(focusSelector);
           target?.focus();
@@ -493,11 +498,11 @@ export function mountConvergenceStudyView(
     content.append(controls);
     baseInput.addEventListener("input", () => send(
       { type: "base_step", value: baseInput.value },
-      "[data-convergence-base-step]"
+      { focusSelector: "[data-convergence-base-step]" }
     ));
     levelsInput.addEventListener("input", () => send(
       { type: "levels", value: levelsInput.value },
-      "[data-convergence-levels]"
+      { focusSelector: "[data-convergence-levels]" }
     ));
 
     renderPreview(content, state);
@@ -525,12 +530,18 @@ export function mountConvergenceStudyView(
       actions.append(cancel, anyway);
       content.append(actions);
     } else {
-      const run = element("button", "btn primary", "Run convergence study");
-      run.type = "button";
-      run.dataset.runConvergence = "";
-      run.disabled = !state.preview;
-      run.addEventListener("click", () => send({ type: "run" }));
-      content.append(run);
+      const hasCurrentResult = state.resultStatus === "current" && Boolean(state.result);
+      const showRunAction = !hasCurrentResult || Boolean(state.lastAttemptError);
+      if (showRunAction) {
+        const label = state.result ? "Rerun convergence study" : "Run convergence study";
+        const run = element("button", "btn primary", label);
+        run.type = "button";
+        run.dataset.runConvergence = "";
+        if (state.result) run.dataset.rerunConvergence = "";
+        run.disabled = !state.preview;
+        run.addEventListener("click", () => send({ type: "run" }));
+        content.append(run);
+      }
     }
 
     if (state.result) {
@@ -557,7 +568,9 @@ export function mountConvergenceStudyView(
         details.addEventListener("toggle", () => {
           const id = details.dataset.teachingId as TeachingSectionId;
           if (details.open !== options.getState().accordionOpen[id]) {
-            send({ type: "accordion", id, open: details.open });
+            // Persist accordion state without replacing the drawer DOM so the
+            // page does not jump when a teaching section opens or closes.
+            send({ type: "accordion", id, open: details.open }, { rerender: false });
           }
         });
       });

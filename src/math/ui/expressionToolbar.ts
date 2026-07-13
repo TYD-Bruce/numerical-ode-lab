@@ -61,7 +61,7 @@ export function mountExpressionToolbar(
   more.type = "button";
   more.className = "expression-tool-button expression-more-symbols";
   more.textContent = "More symbols";
-  more.setAttribute("aria-label", "Open more mathematical symbols");
+  more.setAttribute("aria-label", "Show or hide more mathematical symbols");
   const preserveMoreFocus = (event: MouseEvent): void => event.preventDefault();
   const showMore = (): void => target.showMoreSymbols();
   more.addEventListener("mousedown", preserveMoreFocus);
