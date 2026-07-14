@@ -1,28 +1,28 @@
-# Numerical ODE Lab — Project Handoff
+# Numerical Analysis Lab — Project Handoff
 
-This is the durable handoff for future contributors and Cursor agents. Use it with the current codebase; do not rely on prior chat history.
+This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
-**Status:** Human-Friendly Math Expressions and the Version 1 Observed Convergence Order experiment were implemented and verified on 2026-07-11. Cursor final review is complete with the verdict **Safe to release Version 1**. P0 blockers: none. P1 issues: none. The final reviewed implementation commit is `9d7b2f71b1c8013c612f0df0663bb786cabab570`; no future extension is implied by this status.
+**Status (2026-07-14):** The Theme-Ready Platform Shell implementation is complete and locally release-verified. The release candidate passes 866 tests across 60 Vitest files, both TypeScript checks, the production build, local route/browser checks, and the mock Tutor API check. Vercel deployed-preview smoke checks remain pending until the reviewed commits are pushed. See [the final review](./reviews/2026-07-14-theme-ready-platform-shell-review.md).
 
-## 1. Project identity
+## 1. Product and public routes
 
-Numerical ODE Lab is an educational browser application for scalar fixed-step initial value problems. Its three-step flow is **Method → Data → Output**. Students can run one method, compare two first-order methods, inspect plots and method metadata, and ask a grounded AI Method Tutor about successful single-method runs.
+The product is **Numerical Analysis Lab**. The currently implemented numerical module is **Initial Value Problems Lab**, retaining the released Method -> Data -> Output ODE workflow.
 
-## 2. Technical stack
+| Route | Page | Status |
+|---|---|---|
+| `/` | Platform Home | Available |
+| `/ode` | Numerical ODE overview | Available |
+| `/ode/initial-value-problems` | Initial Value Problems Lab | Available |
+| `/linear-algebra` | Numerical Linear Algebra roadmap | In development |
+| `/pde` | Numerical PDE roadmap | Planned |
+| `/about` | Platform/project overview | Available |
+| any other page path | In-shell Not Found | Available |
 
-| Layer | Choice |
-|---|---|
-| Language | Strict TypeScript |
-| Frontend | Vite 5 |
-| Charts | Chart.js 4 |
-| Mathematical editing/rendering | MathLive 0.110.0 |
-| LaTeX adapter | Compute Engine 0.58.0 raw MathJSON |
-| Tests | Vitest; 701 tests passing across 35 files at Convergence Phase F finalization |
-| API | Vercel function plus local `server/dev.ts` |
+Linear Algebra and PDE are truthful roadmap pages with no runnable controls. The next milestone is **Interactive Term Glossary**; **Linear Systems Lab** is later.
 
-MathLive and Compute Engine are deferred from the landing-screen bundle. Opening a Step 2 mathematical field loads the editable/Compute Engine chunk and MathLive assets. Static formulas use the shared lazy read-only renderer.
+## 2. Verification baseline
 
-Useful commands:
+Final Phase 6 local verification used Node 22.23.1, npm 10.9.8, Vite 5.4.21, TypeScript 5.4, and Vitest 2.1.9.
 
 ```bash
 npm run test:run
@@ -35,172 +35,204 @@ npm run dev:api
 npm run preview
 ```
 
-## 3. Expression architecture
+`npm run verify` passed on 2026-07-14:
 
-The production expression flow is:
+- 60 test files passed;
+- 866 tests passed;
+- application typecheck passed;
+- API typecheck passed;
+- production build passed with only the accepted large deferred-chunk warning.
+
+Local browser checks covered Home, every public overview/page, the nested ODE route, direct preview requests, client Not Found, desktop/mobile navigation, mobile Tutor modal behavior, horizontal overflow, lazy asset loading, and console errors. The local mock API returned HTTP 200 with `demoMode: true`; malformed input returned HTTP 400. Vercel function/filesystem precedence still requires a deployed preview after push.
+
+## 3. Platform architecture
+
+`src/main.ts` is a thin platform bootstrap. `src/app/platformBootstrap.ts` composes exactly one:
+
+- project-owned History API router;
+- persistent App Shell;
+- in-memory `AppSessionStore`;
+- lightweight `PlatformTutorHost`;
+- route/module registry;
+- scroll/history lifecycle service;
+- minimal `beforeunload` listener.
+
+Static pages remain in `src/pages/`. The complete ODE Lab loads through the dynamic route boundary in `src/app/moduleRegistry.ts`. A generic Lab route adapter obtains or creates the opaque pure Lab session, mounts it, connects its Lab-owned Tutor binding to live Tutor session access, snapshots state on navigation, disconnects the Host before Lab disposal, and retains no hidden Lab DOM.
+
+The platform bootstrap and static pages do not statically import ODE implementation, solvers, Chart.js, Convergence, complete Tutor runtime, ODE Tutor grounding, MathLive, or Compute Engine.
+
+## 4. Session and meaningful-work architecture
+
+`AppSessionStore` owns three independent categories of pure in-memory state:
+
+- Lab sessions by module;
+- Tutor sessions by module;
+- route/Lab metadata.
+
+The ODE Lab owns and supplies its current `OdeSessionState` and `LabTutorBinding`. It does not import the Store or Tutor Host. Runtime objects such as DOM nodes, Chart instances, MathLive elements, abort controllers, closures, errors, and mounted handles never enter stored state.
+
+Meaningful-work metadata is continuously maintained. A pristine Beginner Starter, Tutor draft, panel open state, scrolling, metric selection, accordion state, and passive remount do not count as meaningful. Core ODE changes, progress beyond Method, successful output, successful Convergence analysis, and submitted user Tutor messages do. Activity timestamps update only for approved meaningful user actions.
+
+Home reads privacy-safe Resume summaries through an injected lightweight service. A summary can contain only module, route, Lab title, Method/Data/Output step, safe method label, current/stale analysis label, and numeric activity time. Equations, input values, numerical results, point arrays, errors, and Tutor text are excluded.
+
+Sessions and Resume cards are **current-tab memory only**. There is no localStorage, sessionStorage, IndexedDB, account, cross-tab state, or persistence. Refresh or tab/browser closure loses all sessions.
+
+The one platform `beforeunload` handler only checks `store.hasMeaningfulWork()`, calls `preventDefault()`, and sets `returnValue` to an empty string. It performs no DOM, MathLive, mounted-Lab snapshot, cloning, reconstruction, or asynchronous work. Internal navigation never shows a custom warning because sessions are preserved.
+
+## 5. Beginner Starter and New experiment
+
+The public first visit to `/ode/initial-value-problems` uses the authoritative Exponential Decay preset:
+
+- Forward Euler;
+- Method step;
+- `t0 = 0`, `y0 = 1`, `tEnd = 5`, `h = 0.2`;
+- RHS `-y`;
+- exact solution enabled with `e^(-t)`;
+- no output, comparison, Convergence result, or error.
+
+Starter/custom identity is derived from core state rather than a mutable dirty flag.
+
+Confirmed **New experiment** uses that same builder. The user chooses whether to clear Tutor items/draft or preserve them behind a typed “New experiment started” divider; desktop open preference remains intact. The reset zeros:
+
+- visible Lab scroll;
+- the per-Lab saved scroll value;
+- the namespaced current-history-entry scroll value.
+
+It also invalidates old restoration ownership so a later remount cannot restore the prior experiment position. Cancel and Escape make no changes. Other module sessions remain isolated.
+
+## 6. Scroll and history lifecycle
+
+Platform-owned metadata is merged under `history.state.numericalAnalysisLab`; unrelated state fields are preserved on every push/replace.
+
+- Each history entry has an entry ID and scroll value.
+- Back/Forward restores the destination entry.
+- Normal forward navigation starts at top.
+- Each complete Lab has a saved Lab scroll value for route/Resume return.
+- Resume navigation restores the Lab value without changing activity time.
+- Focus uses `preventScroll` before the generation-guarded restore.
+- Mobile Tutor scroll locking preserves and restores underlying Lab/document scroll.
+- New experiment performs the approved triple reset described above.
+
+No browser storage is involved.
+
+## 7. Tutor ownership and security
+
+Ownership is:
+
+```text
+Lab -> LabTutorBinding -> Platform Tutor Host
+AppSessionStore -> TutorSessionAccess -> Platform Tutor Host
+```
+
+The ODE Lab creates fresh grounding from its current successful output for every message. Failed runs retain prior successful grounding. Current/stale Convergence ownership and Compare-disabled behavior are preserved. The binding contains no conversation, panel DOM, Store, or Host reference.
+
+`PlatformTutorHost` owns placement, responsive open/close behavior, focus/scroll/inert handling, lazy-load generation, and request cancellation. The complete panel/networking runtime loads only on first open and always reads/writes through live `TutorSessionAccess`; there is no module-global conversation or stale session snapshot.
+
+User messages are stored before requests. Disconnect, disposal, or connection replacement aborts/invalidates pending work; stale completions cannot append, render, mutate another module, or apply chart instructions. An aborted request may retain the unmatched user message but stores no request handle or transient loading state.
+
+Tutor rendering remains controlled: user content is plain text; assistant math uses the existing non-executable renderer; arbitrary HTML is not trusted; chart instructions are schema-controlled. `/api/chat` remains server-owned, and no browser API key exists.
+
+Ordinary successful ODE Run still clears only that module's Tutor items and draft while preserving desktop-open preference. Failed Run, closing Tutor, route navigation, and remount do not clear the conversation. New experiment uses its separate clear/preserve choice.
+
+## 8. ODE, expression, and numerical contracts
+
+The mountable ODE app owns Method/Data/Output rendering and runtime handles. `getSession()` returns current pure state synchronously and reuses immutable solver-result snapshots rather than recopied point arrays. Full rerender and route disposal destroy Charts, Convergence views, expression handles, delayed generation work, virtual keyboard state, and owned listeners. Disposal is idempotent.
+
+The expression boundary remains:
 
 ```text
 MathLive draft LaTeX
-  -> raw-LaTeX incomplete-structure check
   -> Compute Engine raw MathJSON
-  -> strict MathJSON adapter
   -> project-owned closed MathAst
-  -> structural and variable-profile validation
-  -> deterministic math-ast-v1 serialization and projections
-  -> explicit numeric evaluator
-  -> existing solver function parameter
+  -> profile validation and deterministic serialization
+  -> explicit finite numeric evaluator
+  -> solver function parameter
 ```
 
-### Ownership and trust
+`MathAst` is numerical authority. LaTeX and raw MathJSON are adapter/display data. Production user expressions use neither `eval` nor `new Function`. Solvers accept numeric closures and do not import MathLive, MathJSON, LaTeX, DOM, or Tutor rendering.
 
-- `MathAst` is the authoritative mathematical meaning.
-- LaTeX restores/displays the field; raw MathJSON is an adapter value only. Neither enters application run state as numerical authority.
-- The controlled legacy tokenizer/parser imports approved text without executing it.
-- The evaluator uses exhaustive AST dispatch. Production user expressions use neither `eval` nor `new Function`.
-- Solvers receive numeric closures only and do not import MathLive, MathJSON, LaTeX, DOM, or Tutor rendering code.
-- Rendering and Tutor mathematics are display-only and cannot become solver input.
+Implemented methods and all fixed-grid, coefficient, Newton, diagnostic, exact-solution, failed-run ownership, comparison, and Convergence rules are unchanged. See `docs/NUMERICAL_CONTRACTS.md`; Phase 6 did not modify it because no numerical contract changed.
 
-### Variable profiles
+## 9. Lazy-loading and final bundle evidence
 
-| Profile | Variables | Production use |
-|---|---|---|
-| `rhs` | `t`, `y` | First-order single method and Compare |
-| `second_order_rhs` | `t`, `u` | Existing Leap-Frog acceleration field |
-| `exact_solution` | `t`, `t0`, `y0` | Optional first-order exact-solution field, presets, consistency checks, and convergence studies |
+The final root-base manifest records the entry with dynamic imports to the ODE route and Tutor panel. Local browser asset inventory observed:
 
-`second_order_rhs` migrates the existing Leap-Frog expression path; it adds no new Leap-Frog capability. Compare continues to share one `rhs` expression.
+- Home: entry JS and platform CSS only (plus external font CSS/favicon);
+- ODE navigation: ODE JS/CSS plus the shared ODE/Convergence chunk;
+- Tutor open: Tutor JS/CSS;
+- entry to Data/math editing: editable/Compute Engine JS/CSS, MathLive JS/CSS, and required fonts.
 
-### Exponential semantics
+| Artifact | Raw bytes | Gzip bytes |
+|---|---:|---:|
+| Initial entry JS | 38,606 | 12,087 |
+| Platform CSS | 8,256 | 1,935 |
+| ODE route JS | 241,359 | 80,152 |
+| ODE route CSS | 11,607 | 3,099 |
+| Shared ODE/Convergence/grounding JS | 60,347 | 18,055 |
+| Tutor JS | 11,490 | 4,384 |
+| Tutor CSS | 2,821 | 930 |
+| MathLive JS | 825,514 | 226,675 |
+| Editable/Compute Engine JS | 1,144,184 | 306,587 |
+| Editable math CSS | 1,756 | 675 |
+| MathLive font CSS | 8,027 | 4,230 |
+| MathLive static CSS | 18,262 | 7,087 |
+| 19 MathLive font files | 256,168 | 256,633 |
 
-The input adapters map raw visual e raised to x, raw `Exp(x)`, legacy `exp(x)`, and legacy `Math.exp(x)` to the project `exp` function node. That node evaluates with `Math.exp`. The core canonicalizer does not rewrite a directly constructed project `power(constant("e"), x)` node. General powers remain power nodes and evaluate with `Math.pow`; standalone e remains a constant.
+The shared `convergenceStudyState` chunk is imported by the ODE route, Tutor panel, and editable field chunk. It contains common numerical/method, expression, read-only math, and Convergence/grounding code. It is requested on ODE navigation, never by initial Home. Tutor open reuses it; its MathLive edge remains dynamic. No measured boundary defect justified `manualChunks`.
 
-### Drafts, validation, and snapshots
+For comparison, the pre-platform application entry was approximately 298,639 raw / 96,575 gzip; the Phase 4B entry was approximately 29,322 / 9,360. The final entry is 38,606 / 12,087 after the completed session, Resume, scroll, reset, and release contracts. These are measurements, not claims about network transfer under every hosting/cache configuration.
 
-- Draft LaTeX is separate from the last confirmed `MathExpression`.
-- Gentle input validation treats recognized unfinished structures neutrally.
-- Blur, Run, Expression details, and restoration use strict validation.
-- An invalid or incomplete visible draft cannot run by falling back to an older confirmed AST.
-- A successful run captures an immutable expression snapshot. Step 3 and Tutor context use that snapshot even if the user later edits Step 2.
-- A failed run does not replace the previous successful numerical result, equation snapshot, or Tutor context.
+## 10. Deployment contract
 
-### Important source files
+`vite.config.ts` uses `base: "/"` and retains the `/api` development proxy. Generated `index.html`, CSS font URLs, and nested route assets are root-origin safe.
 
-| File or directory | Role |
+`vercel.json` retains the Vite build/output/framework settings and adds one rewrite from `/(.*)` to `/index.html`. The intended Vercel contract relies on filesystem and function routes resolving before the fallback:
+
+- `/api/chat` reaches `api/chat.ts`;
+- `/assets/*` and fonts remain static files;
+- known/unknown non-file page paths reach the client router;
+- unknown routes render in-shell Not Found without redirecting to `/`.
+
+Contract tests prove the configuration and generated output structurally. A deployed Vercel preview must still verify direct nested refresh, API/static content types, unknown route behavior, absence of redirect/rewrite loops, and console/network health. Nothing has been pushed as part of Phase 6.
+
+## 11. Platform implementation commits
+
+| Commit | Purpose |
 |---|---|
-| `src/math/ast.ts` | Closed project AST |
-| `src/math/errors.ts` | Structured expression errors |
-| `src/math/validation.ts` | Runtime AST and profile validation |
-| `src/math/canonical.ts` | Structure-preserving normalization and `math-ast-v1` serialization |
-| `src/math/projection.ts` | Parsed-expression and accessible-text projections |
-| `src/math/evaluator.ts` | Explicit finite real-number evaluator/compiler |
-| `src/math/mathJsonAdapter.ts` | Strict raw MathJSON conversion |
-| `src/math/legacyAdapter.ts` | Controlled legacy tokenizer/parser |
-| `src/math/expression.ts` | Validated `MathExpression` construction |
-| `src/math/problemExpressions.ts` | AST-backed defaults, persisted field state, successful snapshots |
-| `src/math/ui/` | Lazy loader, editable fields, toolbar, errors, details, and read-only rendering |
-| `src/main.ts` | Three-step UI, mode state, strict Run integration, Step 3 snapshots |
-| `src/problemPresets.ts` | Six immutable AST-backed first-order presets and one-level undo/customization state |
-| `src/exactSolution.ts` | Nine-location numerical exact-solution consistency check |
-| `src/convergenceStudy.ts` | Pure preview, fingerprints, measurements, observed orders, interpretation, chart model, and coarse-to-fine runner |
-| `src/convergenceStudyState.ts` | Successful-run ownership, current/stale/absent state, and one-shot warning confirmation |
-| `src/convergenceStudyView.ts` | Default-collapsed drawer, preview, results table, chart lifecycle, and intent-only DOM rendering |
-| `src/convergenceTeaching.ts` | Pure beginner teaching and conclusion models |
-| `src/convergenceTutor.ts` | Current-only serializable convergence DTO for live and mock Tutor paths |
+| `9a7c5334b0bce5d0d98949ba32ab3f0ab8f8bd6c` | Clarify Platform Shell ownership |
+| `dc8dc08f5eb823b02062e064a18f16101d25f834` | Record implementation plan |
+| `e8f03f5e86da843418ff489bd273521ab2cfd865` | Router, static shell, and semantic tokens |
+| `525201d027296b05157685c3528d620b0e1c9763` | Platform and ODE pure session models |
+| `97714594f661d39cd4651a7e76058c09b46a299c` | Mountable Initial Value Problems route |
+| `cb80afcbe77e757f2940487015cb8c77f67fa048` | Shared Tutor Host |
+| `20ee014c487a63febbebaf781cf4b90e96b7aab0` | Atomic public platform entry switch |
+| `865f42bd4b19b85f36e3062b536e20d5de6bf3c3` | Resume and meaningful work |
+| `53eba14eaffb2eb083e7c9a523ee21872f120c6f` | Scroll and reset lifecycle |
+| `4b236ffa67fd7a4f75abad2afdd0153cd98ead06` | Root-base Vite and Vercel SPA deployment contracts |
+| current documentation commit | README, handoff, design implementation record, and final review |
 
-## 4. User-facing mathematical input
+## 12. Known limitations and contributor rules
 
-First-order and Compare forms show a fixed non-editable `y′ =` prefix; Leap-Frog shows `u″ =`. The field contains only the right-hand side. The compact toolbar inserts fraction, exponent, square root, exponential, trigonometric, natural-logarithm, absolute-value, and pi structures. **More symbols** opens MathLive's virtual keyboard.
+Known limitations:
 
-**Expression details** shows read-only LaTeX and deterministic parsed text for the current valid draft. Errors are specific, field-local, and summarized after a blocked Run. The Version 1 UI is English-only.
+- Vercel deployed-preview checks are pending until push.
+- Sessions are memory-only.
+- ODE support remains scalar and fixed-step.
+- Convergence is synchronous and limited to eligible first-order single-method output with an exact solution.
+- Tutor is unavailable for Compare output.
+- Deferred MathLive and editable/Compute Engine chunks remain large.
+- Linear Algebra and PDE are not runnable Labs.
+- Interactive Term Glossary is not yet implemented.
 
-Legacy compatibility intentionally accepts only the approved grammar and exact aliases such as `Math.exp`, `Math.sin`, and `Math.PI`. Arbitrary property traversal, assignments, statements, globals, and aliases such as `Math.random` are rejected. This is an intentional compatibility reduction from the former arbitrary JavaScript expression field.
+Contributor rules:
 
-## 5. Read-only mathematics and Tutor
+- Preserve UI/adapters -> project AST/validation/evaluator -> numeric closures -> solvers.
+- Do not reorder, sort, flatten, fold, or symbolically simplify AST arithmetic; grouping and child order can affect numerical behavior.
+- Do not restore dynamic code execution as compatibility.
+- Keep Lab, Tutor, Store, Host, and Router ownership directions intact.
+- Keep Home/static routes outside ODE, Tutor, MathLive, and Compute Engine runtime graphs.
+- Preserve namespaced history state and unrelated fields.
+- Keep `beforeunload` minimal and synchronous.
+- Run `npm run verify` after changes and add focused tests first.
 
-`src/math/ui/readonlyMath.ts` immediately renders meaningful plain text, then upgrades to a non-editable, non-tab-stop `MathSpanElement` after the shared cached MathLive import succeeds. Removal, stale-content races, import failure, and rendering failure retain the fallback.
-
-Assistant Tutor text supports only controlled `\(...\)` inline and `\[...\]` block segments. Text uses text nodes and explicit line breaks; arbitrary HTML and unrestricted Markdown remain inert. User messages are always plain text. Tutor formulas never pass through the numerical adapters or evaluator.
-
-## 6. Solver architecture
-
-The stable entry points remain:
-
-```ts
-interface MethodConfig {
-  family: MethodFamily;
-  order?: number;
-}
-
-integrateFirstOrder(config, params): SolverResult
-integrateSecondOrder(params): SolverResult
-```
-
-Expression evaluators are compiled before these calls. `src/solvers.ts` owns no expression parser or dynamic compiler.
-
-Implemented methods:
-
-- Forward Euler, Backward Euler, Taylor Method (Order 2), and Runge-Kutta 4.
-- Adams-Bashforth and Adams-Moulton for orders 1–8.
-- BDF for orders 1–6.
-- Leap-Frog for scalar second-order equations `u″ = a(t,u)`.
-
-Generic multistep coefficients come from `src/polynomial.ts`; no per-order hard-coded solver family exists. Multistep startup uses Runge-Kutta 4 with the same step size and requires at least p fixed steps so the order-p formula runs at least once. Implicit methods use the existing scalar Newton policy and diagnostics. See `docs/NUMERICAL_CONTRACTS.md`.
-
-## 7. Fixed-grid and metadata invariants
-
-- Every run uses a positive aligned integer step count and has a 100,000-step cap.
-- No final short step is introduced.
-- Numeric inputs and every evaluated derivative/acceleration must be finite.
-- `SolverResult.metadata` continues to carry display name, family, order, formula, coefficients, implicit/startup notes, and optional measured implicit diagnostics.
-- Human-friendly expression migration changed no method coefficient, time-stepping formula, grid rule, Newton policy, diagnostic, or solver signature.
-
-## 8. UI flow and state
-
-1. **Method:** choose one method or Compare two first-order methods. Leap-Frog remains separate.
-2. **Data:** edit numeric data and one visual right-hand-side field; choose p for AB/AM/BDF. First-order forms can load one of six exact-solution presets or enable an optional exact-solution field.
-3. **Output:** view final values, chart, method metadata, last values, and optional implicit diagnostics. Single first-order results can open the default-collapsed Convergence Study when an exact solution belongs to the successful run. Single-method results can open the AI Tutor.
-
-**All methods (keep my numbers)** preserves per-mode in-memory field state. Compare has one shared `rhs`; Leap-Frog retains independent `second_order_rhs` state. No localStorage or URL fingerprinting was added.
-
-### Convergence ownership and execution
-
-- A convergence study belongs to an immutable successful first-order snapshot containing actual method metadata, canonical RHS/exact meaning, interval/initial data, run step size, and preset/customization identity.
-- `ode-run-v1` and `convergence-study-v1` ordered fingerprints decide ownership. Step 2 drafts never mutate the existing Step 3 result. An identical successful rerun reuses matching state; a changed successful rerun receives fresh state.
-- Study base step size is independent from the original run step size. Editing it or the 3–6 refinement count marks a retained result stale; restoring the exact fingerprint makes that result current again.
-- Preflight reuses `validateFixedStepGrid`, retains the per-level 100,000-step cap, enforces multistep `N >= p`, and keeps a 250,000 aggregate defense-in-depth proxy.
-- The pure runner executes validated levels coarse to fine, aborts atomically, and never reuses or overwrites the original Step 3 solver result. It retains only aggregate per-level evidence, not multi-level point arrays.
-- Consistency warnings require fingerprint-specific confirmation. **Run anyway** is one-shot and is cleared after success or failure; hard blockers cannot be overridden.
-- Closing the drawer, switching its metric, opening teaching accordions, visiting Step 2, and using **Return to current output** preserve matching state without rerunning.
-- Tutor context is rebuilt per message. Only a current fingerprint-matching successful study becomes the serializable convergence DTO; stale results, pending warnings, failed attempts, ASTs, expressions, raw MathJSON/LaTeX, functions, and chart data are omitted.
-
-## 9. Scope exclusions and release status
-
-Not implemented in Convergence Study Version 1:
-
-- systems of ODEs or adaptive stepping;
-- Compare/Leap-Frog convergence experiments;
-- numerical reference solutions or systems;
-- work-precision diagrams, RHS evaluation counts, exports, or complete error-time curves;
-- Web Workers, progress, or cancellation;
-- arbitrary JavaScript, arbitrary HTML, unrestricted Markdown, KaTeX, or MathJax;
-- Chinese UI.
-
-Phases A-E are implemented in commits `574672c`, `b357202`, `8ee2f32`, `ab8976a`, and `f45b858`. Phase F contains only acceptance audit, factual documentation, release verification, and the Cursor review package. Cursor final review completed with the verdict **Safe to release Version 1**, with no P0 blockers and no P1 issues. The final reviewed implementation commit is `9d7b2f71b1c8013c612f0df0663bb786cabab570`. Do not begin an excluded extension merely because Version 1 is release-ready.
-
-## 10. Performance note
-
-The verified Convergence build is approximately 298.03 kB minified / 96.48 kB gzip for the initial application, 1,143.55 kB / 308.67 kB gzip for the deferred editable/Compute Engine chunk, and 819.11 kB / 228.04 kB gzip for the deferred MathLive chunk. Application CSS is about 12.16 kB / 3.19 kB gzip; MathLive/editable CSS and 19 hashed font assets remain deferred/deployable. The two large lazy chunks trigger Vite size warnings. The Convergence Study runs synchronously on the main thread within existing caps; this is an accepted Version 1 performance tradeoff. No speculative chunk restructuring was attempted.
-
-## 11. Approved platform roadmap
-
-The [Theme-Ready Platform Shell design](./superpowers/specs/2026-07-13-theme-ready-platform-shell-design.md) was approved on 2026-07-13; implementation has not started. The future sequence is **Platform Shell -> Interactive Term Glossary -> Linear Systems Lab**. The existing ODE Version 1 remains the current released product, so future routes, module overviews, and platform UI must not be described as already implemented.
-
-## 12. Contributor guidelines
-
-- Preserve the dependency direction: UI/adapters → project AST/validation/evaluator → numeric closures → solvers.
-- Do not reorder, sort, flatten, fold, or symbolically simplify AST arithmetic; grouping and child order are numerical behavior.
-- Do not restore dynamic execution as a compatibility fallback.
-- Keep `exact_solution` restricted to the implemented first-order exact/convergence workflow; do not introduce a second expression language.
-- Run `npm run verify` after changes and extend focused tests for every expression-boundary change.
-
-*Last updated: 2026-07-13 after approval of the Theme-Ready Platform Shell design; implementation has not started.*
+*Last updated: 2026-07-14 after local Phase 6 release verification. Deployed-preview checks remain pending.*

@@ -1,6 +1,6 @@
 # Theme-Ready Platform Shell Design
 
-**Status:** Approved; implementation not started
+**Status:** Implemented and locally verified; deployed-preview checks pending
 
 **Date:** 2026-07-13
 
@@ -8,7 +8,7 @@
 
 ## 1. Purpose and decision status
 
-The project will expand from the released single-domain Numerical ODE application into **Numerical Analysis Lab**, an interactive, AI-assisted platform for learning numerical analysis through computation, visualization, error analysis, and guided experiments.
+The project has expanded from the released single-domain Numerical ODE application into **Numerical Analysis Lab**, an interactive, AI-assisted platform for learning numerical analysis through computation, visualization, error analysis, and guided experiments.
 
 The long-term platform has three domains:
 
@@ -16,13 +16,17 @@ The long-term platform has three domains:
 - Numerical Linear Algebra
 - Numerical PDE
 
-The current application becomes the first complete Lab, **Initial Value Problems Lab**. This milestone supplies the platform shell around it: routes, navigation, overview pages, in-memory session lifecycle, a shared Tutor host, theme-ready visual primitives, and deployment contracts. It does not add a numerical domain or change a numerical result.
+The former application is now the first complete Lab, **Initial Value Problems Lab**. This milestone supplies the platform shell around it: routes, navigation, overview pages, in-memory session lifecycle, a shared Tutor host, theme-ready visual primitives, and deployment contracts. It does not add a numerical domain or change a numerical result.
 
-This design is approved. It records implementation contracts and is not an invitation to restart product discovery or reopen route, navigation, persistence, Tutor, or theme decisions.
+This design is approved and implemented. It records implementation contracts and is not an invitation to restart product discovery or reopen route, navigation, persistence, Tutor, or theme decisions.
 
-## 2. Repository baseline
+### Implementation record
 
-The implementation plan must begin from these observed 2026-07-13 repository facts:
+Implementation completed on 2026-07-14 through the reviewed sequence from `e8f03f5e86da843418ff489bd273521ab2cfd865` through `4b236ffa67fd7a4f75abad2afdd0153cd98ead06`, following the ownership clarification `9a7c5334b0bce5d0d98949ba32ab3f0ab8f8bd6c` and implementation plan `dc8dc08f5eb823b02062e064a18f16101d25f834`. Local verification passed 866 tests across 60 files, both TypeScript checks, the production build, route/browser checks, and the mock Tutor API check. The final review is recorded in `docs/reviews/2026-07-14-theme-ready-platform-shell-review.md`. Direct Vercel preview checks for function/filesystem rewrite precedence remain pending until the reviewed commits are pushed.
+
+## 2. Repository baseline at approval
+
+The implementation plan began from the following observed 2026-07-13 repository facts. They are historical migration inputs, not descriptions of the implemented release candidate:
 
 - `src/main.ts` is the root entry and currently owns the full Method -> Data -> Output ODE workflow, mutable UI state, Chart.js registration, form rendering, result rendering, Convergence Study mounting, and Tutor mounting.
 - `src/problemPresets.ts` already defines the Exponential Decay problem with `t0 = 0`, `y0 = 1`, `tEnd = 5`, `h = 0.2`, right-hand side `-y`, and exact solution `exp(-t)`. The Platform Shell migration should reuse this validated preset data rather than duplicate its expressions or numbers.
@@ -769,7 +773,7 @@ Platform Shell implementation is acceptable only when:
 
 This specification was reviewed against the approved brief. The review resolved the following risks in the document itself:
 
-- It labels the shell as approved but not implemented and keeps the released ODE Version 1 as the current product.
+- It records the implemented shell while preserving the released ODE Version 1 numerical behavior inside the Initial Value Problems Lab.
 - It distinguishes `/ode` as an overview from `/ode/initial-value-problems` as the complete Lab.
 - It keeps the router domain-agnostic and prevents domain modules from importing it.
 - It requires pure state remounting and explicitly rejects hidden DOM or custom-element caching.
@@ -785,4 +789,4 @@ This specification was reviewed against the approved brief. The review resolved 
 - It defines cleanup, Retry, rejected-import handling, and navigation generations to prevent stale async mounts.
 - It contains no unresolved placeholder markers and requires English-only product UI.
 
-Repository-grounded implementation planning requires review and approval after this design; implementation has not started.
+Repository-grounded implementation planning and phased review followed this design. The implementation is complete and locally verified; only the explicitly listed deployed-preview checks remain pending.
