@@ -54,9 +54,39 @@ describe("Initial Value Problems route", () => {
       navigate: vi.fn(),
     });
 
-    expect(firstTarget.querySelector("h1")?.textContent).toBe("Numerical ODE Lab");
-    expect(secondTarget.querySelector("h1")?.textContent).toBe("Numerical ODE Lab");
+    expect(firstTarget.querySelector("h1")?.textContent).toBe(
+      "Initial Value Problems Lab"
+    );
+    expect(secondTarget.querySelector("h1")?.textContent).toBe(
+      "Initial Value Problems Lab"
+    );
+    const breadcrumb = firstTarget.querySelector(".ode-breadcrumb");
+    const overviewLink = breadcrumb?.querySelector("a");
+    expect(overviewLink?.textContent).toBe("Numerical ODE");
+    expect(overviewLink?.getAttribute("href")).toBe("/ode");
+    expect(breadcrumb?.textContent).toContain("Initial Value Problems Lab");
+    expect(firstTarget.textContent).toContain(
+      "Explore fixed-step methods for first-order initial value problems"
+    );
+    expect(firstTarget.querySelector("[data-experiment-identity]")?.textContent).toContain(
+      "Beginner starter"
+    );
     expect(first.getSession().form.presetId).toBe("exponential_decay");
+    expect(first.getSession()).toMatchObject({
+      step: "choose",
+      selectedMethod: { family: "forward_euler" },
+      form: {
+        current: {
+          t0: "0",
+          y0: "1",
+          tEnd: "5",
+          runStepSize: "0.2",
+          exactSolutionEnabled: true,
+          rhs: { draftLatex: "-y" },
+          exactSolution: { draftLatex: "e^{-t}" },
+        },
+      },
+    });
     expect(first.getTutorBinding().moduleId).toBe("ode");
 
     first.dispose();
@@ -93,6 +123,9 @@ describe("Initial Value Problems route", () => {
     expect(target.querySelector<HTMLInputElement>('[name="h"]')?.value).toBe("0.1");
     expect(mounted.getSession().form.current.rhs.draftLatex).toBe("t-y");
     expect(target.textContent).toContain("Keep this pure error");
+    expect(target.querySelector("[data-experiment-identity]")?.textContent).toContain(
+      "Custom experiment"
+    );
     mounted.dispose();
   });
 

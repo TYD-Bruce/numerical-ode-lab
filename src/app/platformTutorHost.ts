@@ -70,7 +70,8 @@ export function createPlatformTutorHost(
     panel?.dispose();
     panel = undefined;
     restoreMobileEnvironment();
-    options.target.className = "platform-tutor-host";
+    options.target.classList.remove("platform-tutor-host-mobile");
+    options.target.classList.add("platform-tutor-host");
     options.target.replaceChildren();
     if (!connection || disposed) return;
     const button = document.createElement("button");

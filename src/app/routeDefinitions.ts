@@ -6,7 +6,6 @@ import { linearAlgebraOverviewPage } from "../pages/linearAlgebraOverviewPage";
 import { notFoundPage } from "../pages/notFoundPage";
 import { odeOverviewPage } from "../pages/odeOverviewPage";
 import { pdeOverviewPage } from "../pages/pdeOverviewPage";
-import { createPhaseOneModuleRegistry } from "./moduleRegistry";
 
 export type RouteKind = "page" | "lab";
 
@@ -56,9 +55,9 @@ export function normalizeApplicationLocation(
 export function createRouteDefinitions(
   options: CreateRouteDefinitionsOptions = {}
 ): RouteDefinition[] {
-  const moduleRegistry = createPhaseOneModuleRegistry(
-    options.initialValueProblemsLoader
-  );
+  const initialValueProblemsLoader =
+    options.initialValueProblemsLoader ??
+    (() => Promise.reject(new Error("The Initial Value Problems Lab is not registered.")));
 
   return [
     {
@@ -80,7 +79,7 @@ export function createRouteDefinitions(
       path: "/ode/initial-value-problems",
       title: "Initial Value Problems Lab | Numerical Analysis Lab",
       kind: "lab",
-      loader: createRouteLoader(moduleRegistry.loadInitialValueProblems),
+      loader: createRouteLoader(initialValueProblemsLoader),
     },
     {
       id: "linear-algebra-overview",

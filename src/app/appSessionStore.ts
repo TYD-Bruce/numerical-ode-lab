@@ -19,6 +19,7 @@ interface StoredLabSession {
 
 export interface AppSessionStore {
   getLab<T>(moduleId: LabModuleId): T | undefined;
+  getLabMetadata(moduleId: LabModuleId): LabSessionMetadata | undefined;
   setLab<T>(
     moduleId: LabModuleId,
     session: T,
@@ -163,6 +164,9 @@ export function createAppSessionStore(): AppSessionStore {
   const store: AppSessionStore = {
     getLab<T>(moduleId: LabModuleId): T | undefined {
       return labs[moduleId]?.session as T | undefined;
+    },
+    getLabMetadata(moduleId) {
+      return labs[moduleId]?.metadata;
     },
     setLab,
     getTutor(moduleId) {

@@ -37,6 +37,7 @@ describe("AppSessionStore", () => {
     const second = createAppSessionStore();
 
     expect(first.getLab("ode")).toBeUndefined();
+    expect(first.getLabMetadata("ode")).toBeUndefined();
     expect(first.getTutor("ode")).toEqual({
       items: [],
       draftMessage: "",

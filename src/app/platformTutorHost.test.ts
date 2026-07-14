@@ -19,6 +19,20 @@ function binding(moduleId: "ode" = "ode"): LabTutorBinding<unknown> {
 describe("Platform Tutor Host", () => {
   beforeEach(() => document.body.replaceChildren());
 
+  it("preserves the shell-owned placement class when it renders", () => {
+    const target = document.createElement("aside");
+    target.className = "platform-tutor-region";
+    document.body.append(target);
+    const store = createAppSessionStore();
+    const host = createPlatformTutorHost({ target });
+
+    host.connect(binding(), store.createTutorSessionAccess("ode"));
+
+    expect(target.classList).toContain("platform-tutor-region");
+    expect(target.classList).toContain("platform-tutor-host");
+    host.dispose();
+  });
+
   it("loads the complete panel only on first open and reuses the fulfilled attempt", async () => {
     const target = document.createElement("div");
     document.body.append(target);

@@ -1,4 +1,4 @@
-:root {
+.shell {
   color-scheme: dark;
   --bg: #0b1020;
   --panel: #121a33;
@@ -15,117 +15,12 @@
   line-height: 1.5;
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-}
-
-code {
+.shell code {
   font-family: "JetBrains Mono", ui-monospace, monospace;
   font-size: 0.92em;
   background: rgba(255, 255, 255, 0.06);
   padding: 0.1em 0.35em;
   border-radius: 4px;
-}
-
-#app {
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 32px 20px 64px;
-}
-
-.compatibility-tutor-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 20px;
-  align-items: start;
-}
-
-.compatibility-lab-region {
-  min-width: 0;
-}
-
-.compatibility-tutor-region {
-  width: min(340px, 30vw);
-  position: sticky;
-  top: 16px;
-}
-
-.compatibility-tutor-region:has(.platform-tutor-open) {
-  width: auto;
-}
-
-.platform-tutor-open,
-.platform-tutor-loading,
-.platform-tutor-failure {
-  position: sticky;
-  top: 16px;
-}
-
-.platform-tutor-failure {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 16px;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  background: var(--panel);
-}
-
-.ai-tutor-close {
-  margin-left: auto;
-}
-
-.ai-tutor-divider {
-  margin: 12px 0;
-  padding: 10px;
-  border-block: 1px solid var(--border);
-  color: var(--muted);
-}
-
-.ai-tutor-divider p {
-  margin: 4px 0 0;
-  font-size: 0.82rem;
-}
-
-@media (max-width: 760px) {
-  .compatibility-tutor-layout {
-    display: block;
-  }
-
-  .compatibility-tutor-region {
-    width: auto;
-    position: static;
-    margin-top: 16px;
-  }
-
-  .platform-tutor-host-mobile {
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-    width: 100%;
-    height: 100dvh;
-    padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom));
-    overflow: hidden;
-    background: var(--bg);
-  }
-
-  .platform-tutor-host-mobile .ai-tutor-panel {
-    position: static;
-    max-height: 100%;
-    height: 100%;
-  }
-
-  .platform-tutor-host-mobile .ai-messages {
-    max-height: none;
-    min-height: 0;
-  }
 }
 
 .shell {
@@ -138,6 +33,43 @@ code {
   margin: 0 0 8px;
   font-size: clamp(1.8rem, 4vw, 2.4rem);
   letter-spacing: -0.02em;
+}
+
+.ode-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.ode-breadcrumb a {
+  color: var(--accent);
+}
+
+.experiment-identity {
+  margin: 14px 0;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel);
+}
+
+.experiment-identity strong {
+  color: var(--accent-2);
+}
+
+.experiment-identity p {
+  margin: 4px 0 0;
+  color: var(--muted);
+}
+
+.experiment-identity.is-compact {
+  display: inline-flex;
+  margin-block: 8px 14px;
+  padding: 4px 10px;
+  border-radius: 999px;
 }
 
 .eyebrow {
@@ -483,180 +415,6 @@ code {
   min-width: 0;
 }
 
-.ai-tutor-panel {
-  position: sticky;
-  top: 16px;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 16px;
-  background: linear-gradient(165deg, #141c38 0%, #0f152b 100%);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  max-height: calc(100vh - 48px);
-}
-
-.ai-tutor-header h3 {
-  margin: 0 0 4px;
-  font-size: 1.05rem;
-}
-
-.ai-tutor-title-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.ai-demo-badge {
-  font-size: 0.68rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--accent-2);
-  border: 1px solid rgba(122, 226, 168, 0.35);
-  border-radius: 999px;
-  padding: 2px 8px;
-  line-height: 1.3;
-}
-
-.ai-tutor-sub {
-  margin: 0;
-  font-size: 0.82rem;
-  color: var(--muted);
-  line-height: 1.45;
-}
-
-.ai-tutor-disabled {
-  margin: 0;
-  font-size: 0.88rem;
-  color: var(--muted);
-  padding: 8px 0;
-}
-
-.ai-suggestions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.ai-suggest-btn {
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--muted);
-  border-radius: 999px;
-  padding: 4px 10px;
-  font-size: 0.72rem;
-  cursor: pointer;
-  font: inherit;
-  text-align: left;
-  line-height: 1.35;
-}
-
-.ai-suggest-btn:hover {
-  color: var(--text);
-  border-color: rgba(108, 140, 255, 0.45);
-}
-
-.ai-messages {
-  flex: 1;
-  min-height: 120px;
-  max-height: 280px;
-  overflow-y: auto;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 10px;
-  background: rgba(0, 0, 0, 0.2);
-}
-
-.ai-tutor-empty {
-  margin: 0;
-  font-size: 0.85rem;
-  color: var(--muted);
-}
-
-.ai-msg {
-  margin-bottom: 12px;
-}
-
-.ai-msg:last-child {
-  margin-bottom: 0;
-}
-
-.ai-msg-role {
-  display: block;
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--muted);
-  margin-bottom: 4px;
-}
-
-.ai-msg-body {
-  font-size: 0.88rem;
-  line-height: 1.5;
-}
-
-.ai-msg-user .ai-msg-body {
-  color: #c8d8ff;
-}
-
-.ai-msg-assistant .ai-msg-body {
-  color: var(--text);
-}
-
-.ai-math-inline {
-  display: inline-block;
-  max-width: 100%;
-  vertical-align: -0.12em;
-}
-
-.ai-math-block {
-  display: block;
-  margin: 8px 0;
-  overflow-x: auto;
-}
-
-.ai-error {
-  margin: 0;
-  color: var(--danger);
-  font-size: 0.85rem;
-}
-
-.ai-compose {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.ai-compose textarea {
-  width: 100%;
-  resize: vertical;
-  min-height: 56px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: #0b1020;
-  color: var(--text);
-  padding: 10px;
-  font: inherit;
-  font-size: 0.9rem;
-}
-
-.ai-compose-actions {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.ai-compose .ai-send {
-  margin-left: auto;
-}
-
-.ai-tutor-panel.ai-loading {
-  opacity: 0.92;
-}
-
 .sr-only {
   position: absolute;
   width: 1px;
@@ -814,20 +572,20 @@ code {
   border-radius: 12px;
 }
 
-table {
+.shell table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.88rem;
 }
 
-th,
-td {
+.shell th,
+.shell td {
   padding: 8px 10px;
   text-align: right;
   border-bottom: 1px solid var(--border);
 }
 
-th {
+.shell th {
   text-align: right;
   color: var(--muted);
   font-weight: 600;

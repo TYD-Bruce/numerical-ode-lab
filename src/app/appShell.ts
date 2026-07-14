@@ -23,6 +23,7 @@ let mobileMenuId = 0;
 export interface AppShell {
   root: HTMLElement;
   outlet: HTMLElement;
+  tutorRegion: HTMLElement;
   setActiveRoute(routeId: RouteId): void;
   renderLoading(): void;
   renderFailure(onRetry: () => Promise<void>): void;
@@ -102,10 +103,16 @@ export function createAppShell(target: HTMLElement): AppShell {
   outlet.className = "platform-route-outlet";
   outlet.tabIndex = -1;
 
-  const tutorRegion = document.createElement("div");
+  const tutorRegion = document.createElement("aside");
   tutorRegion.dataset.platformTutorHost = "true";
+  tutorRegion.className = "platform-tutor-region";
+  tutorRegion.setAttribute("aria-label", "Tutor tools");
 
-  root.append(header, mobileMenu, outlet, tutorRegion);
+  const workspace = document.createElement("div");
+  workspace.className = "platform-workspace";
+  workspace.append(outlet, tutorRegion);
+
+  root.append(header, mobileMenu, workspace);
   target.replaceChildren(root);
 
   const closeMobileMenu = (options: { restoreFocus?: boolean } = {}): void => {
@@ -140,6 +147,7 @@ export function createAppShell(target: HTMLElement): AppShell {
   return {
     root,
     outlet,
+    tutorRegion,
     setActiveRoute(routeId) {
       for (const link of root.querySelectorAll<HTMLElement>("[data-route-id]")) {
         link.removeAttribute("aria-current");

@@ -72,7 +72,7 @@ describe("navigation accessibility", () => {
     expect(isInterceptableNavigation(clickEvent(), anchor, location.origin)).toBe(true);
   });
 
-  it("prefetches the complete ODE placeholder once on hover or keyboard focus", async () => {
+  it("prefetches the complete ODE route once on hover or keyboard focus", async () => {
     history.replaceState({}, "", "/");
     const pending = new Promise<RouteModule>(() => undefined);
     let loadCount = 0;

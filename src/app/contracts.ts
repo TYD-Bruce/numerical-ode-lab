@@ -83,6 +83,22 @@ export interface LabLifecycleCallbacks<TSession> {
   applyConfirmedReset?(request: ConfirmedLabReset<TSession>): void;
 }
 
+export interface MountedLabRoute<TSession> extends MountedRoute {
+  getSession(): TSession;
+  getResumeSummary(): ResumeSummary | undefined;
+  getTutorBinding(): LabTutorBinding<unknown>;
+}
+
+export interface LabRouteModule<TSession> {
+  createBeginnerStarterSession(): TSession;
+  mount(options: {
+    target: HTMLElement;
+    session: TSession;
+    navigate: Navigate;
+    lifecycle?: LabLifecycleCallbacks<TSession>;
+  }): MountedLabRoute<TSession>;
+}
+
 export interface NavigateOptions {
   replace?: boolean;
   scroll?: "auto" | "top" | "preserve";

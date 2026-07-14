@@ -10,15 +10,19 @@ const routeSource = readFileSync(
 const styles = readFileSync(new URL("./style.css", import.meta.url), "utf8");
 
 describe("mountable ODE integration boundaries", () => {
-  it("keeps main.ts as a thin compatibility bootstrap", () => {
-    expect(mainSource.split(/\r?\n/).length).toBeLessThan(60);
-    expect(mainSource).toContain('from "./ode/initialValueProblemsRoute"');
-    expect(mainSource).toContain("createCurrentCompatibilitySession()");
-    expect(mainSource).toContain("mounted.dispose()");
+  it("keeps main.ts as a thin platform bootstrap", () => {
+    expect(mainSource.split(/\r?\n/).length).toBeLessThan(20);
+    expect(mainSource).toContain('from "./app/platformBootstrap"');
+    expect(mainSource).toContain("createPlatformBootstrap({ target })");
+    expect(mainSource).toContain("platform.dispose()");
     for (const forbidden of [
+      "initialValueProblemsRoute",
+      "createCurrentCompatibilitySession",
+      "odeApp",
       "chart.js",
       "integrateFirstOrder",
       "runConvergenceStudy",
+      "PlatformTutorHost",
       "mountEditableMathField",
       "function render",
     ]) {

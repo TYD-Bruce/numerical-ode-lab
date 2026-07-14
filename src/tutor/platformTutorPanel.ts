@@ -15,6 +15,7 @@ import {
   updateTutorDraft,
 } from "./moduleTutorSession";
 import { sendTutorMessage } from "./tutorClient";
+import "./tutor.css";
 
 export interface PlatformTutorPanelOptions {
   readonly binding: LabTutorBinding<unknown>;

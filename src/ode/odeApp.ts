@@ -95,6 +95,7 @@ import type {
 } from "../app/contracts";
 import {
   createReadonlySolverResult,
+  getExperimentIdentity,
   getConvergenceState,
   setConvergenceState,
   type OdeProblemInputs,
@@ -135,7 +136,7 @@ interface PersistedForm {
 }
 
 const DEFAULT_LEDE =
-  "Explore numerical methods for initial value problems, compare orders of accuracy, and visualize approximate solutions.";
+  "Explore fixed-step methods for first-order initial value problems, then study stability, error, and convergence.";
 
 const activeOdeMounts = new WeakMap<HTMLElement, object>();
 
@@ -385,7 +386,39 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
 
   function recordTrackedEdit(): void {
     presetFormState = updatePresetProblemFields(presetFormState, trackedFields());
+    refreshExperimentIdentityPresentation();
     emitSessionUpdate();
+  }
+
+  function experimentIdentityPresentation(): {
+    label: "Beginner starter" | "Custom experiment";
+    description: string;
+  } {
+    return getExperimentIdentity(createSessionSnapshot(false)) === "beginner-starter"
+      ? {
+        label: "Beginner starter",
+        description:
+          "This example is ready to run. Use it as-is, choose another preset, or enter your own problem.",
+      }
+      : {
+        label: "Custom experiment",
+        description: "You have changed the starter problem.",
+      };
+  }
+
+  function refreshExperimentIdentityPresentation(): void {
+    const status = app.querySelector<HTMLElement>("[data-experiment-identity]");
+    if (!status) return;
+    const presentation = experimentIdentityPresentation();
+    status.dataset.experimentIdentity = presentation.label === "Beginner starter"
+      ? "beginner-starter"
+      : "custom-experiment";
+    const label = status.querySelector<HTMLElement>("[data-experiment-label]");
+    const description = status.querySelector<HTMLElement>(
+      "[data-experiment-description]"
+    );
+    if (label) label.textContent = presentation.label;
+    if (description) description.textContent = presentation.description;
   }
 
   function readPersistedFromFormEl(form: HTMLFormElement): void {
@@ -449,19 +482,31 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     shell.className = "shell";
 
     const comparePicking = session.mode === "compare_pick";
-    let lede = DEFAULT_LEDE;
+    let workflowNote = "";
     if (comparePicking && session.mode === "compare_pick") {
-      lede =
+      workflowNote =
         session.first === null
           ? "Choose the first first-order method, then a second method. You will enter one shared model y′ = f(t, y)."
           : `First method: ${methodLabel(session.first)}. Choose a different second method.`;
     }
+    const experimentIdentity = experimentIdentityPresentation();
+    const compactExperimentIdentity = step === "results";
 
     shell.innerHTML = `
     <header class="hero">
+      <nav class="ode-breadcrumb" aria-label="Breadcrumb">
+        <a href="/ode">Numerical ODE</a>
+        <span aria-hidden="true">/</span>
+        <span>Initial Value Problems Lab</span>
+      </nav>
       <p class="eyebrow">AI-Assisted Educational Solver</p>
-      <h1>Numerical ODE Lab</h1>
-      <p class="lede">${lede}</p>
+      <h1 tabindex="-1" data-route-focus>Initial Value Problems Lab</h1>
+      <p class="lede">${DEFAULT_LEDE}</p>
+      ${workflowNote ? `<p class="ivp-note">${workflowNote}</p>` : ""}
+      <div class="experiment-identity${compactExperimentIdentity ? " is-compact" : ""}" data-experiment-identity="${experimentIdentity.label === "Beginner starter" ? "beginner-starter" : "custom-experiment"}">
+        <strong data-experiment-label>${experimentIdentity.label}</strong>
+        ${compactExperimentIdentity ? "" : `<p data-experiment-description>${experimentIdentity.description}</p>`}
+      </div>
       <p class="ivp-note">Enter the equation in familiar mathematical notation. First-order fields use t and y; Leap-Frog acceleration uses t and u.</p>
       ${comparePickError
         ? `<p class="compare-error" role="alert">${comparePickError}</p>`
