@@ -14,16 +14,22 @@ import {
   type NormalizedApplicationLocation,
   type RouteDefinition,
 } from "./routeDefinitions";
+import {
+  createScrollRestoration,
+  mergePlatformHistoryState,
+  type ScrollNavigation,
+  type ScrollRestoration,
+} from "./scrollRestoration";
 
-interface PlatformHistoryEnvelope {
-  [key: string]: unknown;
-}
+export { mergePlatformHistoryState } from "./scrollRestoration";
 
 interface PlatformRouterOptions {
   shell: AppShell;
   routes: readonly RouteDefinition[];
   window?: Window;
   document?: Document;
+  scrollRestoration?: ScrollRestoration;
+  onNavigationStart?: () => void;
 }
 
 interface FailedNavigation {
@@ -37,27 +43,6 @@ export interface PlatformRouter {
   prefetch(routeId: RouteId): void;
   retry(): Promise<void>;
   dispose(): void;
-}
-
-function recordValue(value: unknown): Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value)
-    ? { ...value }
-    : {};
-}
-
-export function mergePlatformHistoryState(
-  currentState: unknown,
-  platformUpdate: PlatformHistoryEnvelope = {}
-): Record<string, unknown> {
-  const current = recordValue(currentState);
-  const currentPlatform = recordValue(current.numericalAnalysisLab);
-  return {
-    ...current,
-    numericalAnalysisLab: {
-      ...currentPlatform,
-      ...platformUpdate,
-    },
-  };
 }
 
 export function isInterceptableNavigation(
@@ -98,9 +83,17 @@ export function createPlatformRouter({
   routes,
   window: suppliedWindow,
   document: suppliedDocument,
+  scrollRestoration: suppliedScrollRestoration,
+  onNavigationStart,
 }: PlatformRouterOptions): PlatformRouter {
   const browserWindow = suppliedWindow ?? window;
   const browserDocument = suppliedDocument ?? document;
+  const scrollRestoration =
+    suppliedScrollRestoration ??
+    createScrollRestoration({
+      window: browserWindow,
+      document: browserDocument,
+    });
   let navigationGeneration = 0;
   let currentMountedRoute: MountedRoute | undefined;
   let failedNavigation: FailedNavigation | undefined;
@@ -134,21 +127,35 @@ export function createPlatformRouter({
 
   const transition = async (
     location: NormalizedApplicationLocation,
-    historyMode: "push" | "replace" | "none"
+    navigation: ScrollNavigation,
+    scrollPolicy: NavigateOptions["scroll"] = "auto"
   ): Promise<void> => {
     const generation = ++navigationGeneration;
     failedNavigation = undefined;
+    let preservedScroll: number | undefined;
 
-    if (historyMode !== "none") {
-      const state = mergePlatformHistoryState(browserWindow.history.state);
-      if (historyMode === "replace") {
-        browserWindow.history.replaceState(state, "", location.href);
-      } else {
-        browserWindow.history.pushState(state, "", location.href);
-      }
+    if (currentMountedRoute) {
+      onNavigationStart?.();
+      preservedScroll = scrollRestoration.captureCurrentRoute({
+        updateHistory: navigation !== "pop",
+      });
+    }
+
+    if (navigation === "push") {
+      browserWindow.history.pushState(
+        scrollRestoration.createPushedState(browserWindow.history.state),
+        "",
+        location.href
+      );
+    } else if (navigation === "replace") {
+      const state = mergePlatformHistoryState(browserWindow.history.state, {
+        scrollY: 0,
+      });
+      browserWindow.history.replaceState(state, "", location.href);
     }
 
     const match = matchRoute(routes, location.pathname);
+    scrollRestoration.setCurrentRoute(undefined);
     disposeCurrentRoute();
     shell.setActiveRoute(match.definition.id);
     browserDocument.title = match.definition.title;
@@ -190,6 +197,10 @@ export function createPlatformRouter({
       return;
     }
     currentMountedRoute = localMountedRoute;
+    scrollRestoration.setCurrentRoute({
+      routeId: match.definition.id,
+      kind: match.definition.kind,
+    });
 
     if (localMountedRoute.ready) {
       try {
@@ -199,7 +210,10 @@ export function createPlatformRouter({
           disposeRoute(localMountedRoute);
           return;
         }
-        if (currentMountedRoute === localMountedRoute) currentMountedRoute = undefined;
+        if (currentMountedRoute === localMountedRoute) {
+          currentMountedRoute = undefined;
+          scrollRestoration.setCurrentRoute(undefined);
+        }
         disposeRoute(localMountedRoute);
         failedNavigation = { match, location };
         shell.renderFailure(retry);
@@ -214,6 +228,21 @@ export function createPlatformRouter({
 
     shell.navigationSucceeded();
     await focusCurrentRoute(generation);
+    if (disposed || generation !== navigationGeneration) return;
+    const scrollY = scrollRestoration.resolveRestoration({
+      routeId: match.definition.id,
+      kind: match.definition.kind,
+      navigation,
+      policy: scrollPolicy,
+      preservedScroll,
+    });
+    scrollRestoration.scheduleRestoration({
+      scrollY,
+      hash: location.hash,
+      allowHashTarget: navigation !== "pop",
+      isCurrent: () =>
+        !disposed && generation === navigationGeneration,
+    });
   };
 
   const currentLocation = (): NormalizedApplicationLocation =>
@@ -232,14 +261,14 @@ export function createPlatformRouter({
       destination.href,
       browserWindow.location.origin
     );
-    await transition(location, options.replace ? "replace" : "push");
+    await transition(location, options.replace ? "replace" : "push", options.scroll);
   };
 
   async function retry(): Promise<void> {
     if (disposed || !failedNavigation) return;
     const retryTarget = failedNavigation;
     retryTarget.match.definition.loader.evictRejected();
-    await transition(retryTarget.location, "none");
+    await transition(retryTarget.location, "retry");
   }
 
   const onPopState = (): void => {
@@ -252,7 +281,7 @@ export function createPlatformRouter({
         location.href
       );
     }
-    void transition(location, "none");
+    void transition(location, "pop");
   };
 
   const anchorFromEvent = (event: Event): HTMLAnchorElement | null => {
@@ -290,6 +319,7 @@ export function createPlatformRouter({
       shell.root.addEventListener("pointerover", prefetchFromEvent);
       shell.root.addEventListener("mouseover", prefetchFromEvent);
       shell.root.addEventListener("focusin", prefetchFromEvent);
+      scrollRestoration.start();
 
       const location = currentLocation();
       const browserHref = `${browserWindow.location.pathname}${browserWindow.location.search}${browserWindow.location.hash}`;
@@ -300,7 +330,7 @@ export function createPlatformRouter({
           location.href
         );
       }
-      void transition(location, "none");
+      void transition(location, "initial");
     },
     navigate,
     prefetch,
@@ -314,7 +344,10 @@ export function createPlatformRouter({
       shell.root.removeEventListener("pointerover", prefetchFromEvent);
       shell.root.removeEventListener("mouseover", prefetchFromEvent);
       shell.root.removeEventListener("focusin", prefetchFromEvent);
+      onNavigationStart?.();
+      if (currentMountedRoute) scrollRestoration.captureCurrentRoute();
       disposeCurrentRoute();
+      scrollRestoration.dispose();
       shell.dispose();
     },
   };

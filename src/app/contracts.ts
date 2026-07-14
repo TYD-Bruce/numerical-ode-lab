@@ -79,6 +79,8 @@ export interface LabTutorBinding<TContext> {
 export interface ConfirmedLabReset<TSession> {
   readonly session: TSession;
   readonly metadata: LabSessionMetadata;
+  readonly clearTutorConversation: boolean;
+  readonly at: number;
 }
 
 export interface LabLifecycleCallbacks<TSession> {

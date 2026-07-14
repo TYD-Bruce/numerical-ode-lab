@@ -95,6 +95,7 @@ import type {
 } from "../app/contracts";
 import {
   computeOdeLabMeaningful,
+  createBeginnerStarterSession,
   createOdeResumeSummary,
   createReadonlySolverResult,
   getExperimentIdentity,
@@ -148,7 +149,7 @@ export interface MountOdeAppOptions {
   readonly navigate?: (path: string) => void;
   readonly lifecycle?: Pick<
     LabLifecycleCallbacks<OdeSessionState>,
-    "updateSession" | "recordMeaningfulInteraction"
+    "updateSession" | "recordMeaningfulInteraction" | "applyConfirmedReset"
   >;
   readonly now?: () => number;
   readonly loadEditableMathField?: () => Promise<
@@ -207,6 +208,30 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
   let convergenceStates = options.initialSession.convergenceByFingerprint;
   let activeConvergenceView: ConvergenceStudyViewHandle | null = null;
   let lastMeaningfulInteraction: number | undefined;
+  let activeResetDialog: HTMLElement | null = null;
+  let resetTrigger: HTMLElement | null = null;
+  let resetBackground: Array<{
+    readonly element: HTMLElement;
+    readonly wasInert: boolean;
+  }> = [];
+
+  function restorePureSession(next: OdeSessionState): void {
+    step = next.step;
+    session = next.workflow;
+    selected = next.selectedMethod;
+    lastResult = next.output.single?.result ?? null;
+    lastResultExpression = next.output.single?.expression ?? null;
+    lastCompare = next.output.comparison
+      ? { ...next.output.comparison }
+      : null;
+    presetFormState = next.form;
+    secondOrderForm = next.secondOrderForm;
+    lastProblemInputs = next.output.single?.problemInputs ?? null;
+    comparePickError = next.comparePickError;
+    lastFirstOrderRunSnapshot = next.output.single?.firstOrderRun ?? null;
+    convergenceStates = next.convergenceByFingerprint;
+    lastMeaningfulInteraction = undefined;
+  }
 
   function applyTutorChartInstruction(instruction: ChartInstruction): void {
     if (!chart || instruction.type === "none") return;
@@ -457,6 +482,136 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     chart = null;
   }
 
+  function closeResetDialog(returnFocus: boolean): void {
+    const dialog = activeResetDialog;
+    if (!dialog) return;
+    activeResetDialog = null;
+    dialog.remove();
+    for (const item of resetBackground) {
+      if (!item.wasInert) item.element.removeAttribute("inert");
+    }
+    resetBackground = [];
+    if (returnFocus && resetTrigger?.isConnected) {
+      try {
+        resetTrigger.focus({ preventScroll: true });
+      } catch {
+        resetTrigger.focus();
+      }
+    }
+    resetTrigger = null;
+  }
+
+  function confirmNewExperiment(clearTutorConversation: boolean): void {
+    const freshSession = createBeginnerStarterSession();
+    const at = (options.now ?? Date.now)();
+    const metadata: LabSessionMetadata = {
+      labMeaningful: false,
+      tutorMeaningful: false,
+      meaningful: false,
+      resumeSummary: createOdeResumeSummary(freshSession, 0),
+    };
+    options.lifecycle?.applyConfirmedReset?.({
+      session: freshSession,
+      metadata,
+      clearTutorConversation,
+      at,
+    });
+    restorePureSession(freshSession);
+    render();
+    const focusGeneration = uiGeneration;
+    queueMicrotask(() => {
+      if (!isCurrentGeneration(focusGeneration)) return;
+      const heading = app.querySelector<HTMLElement>("[data-route-focus]");
+      try {
+        heading?.focus({ preventScroll: true });
+      } catch {
+        heading?.focus();
+      }
+    });
+  }
+
+  function openResetDialog(trigger: HTMLElement): void {
+    if (disposed || activeResetDialog) return;
+    resetTrigger = trigger;
+    const backdrop = document.createElement("div");
+    backdrop.className = "new-experiment-backdrop";
+    backdrop.dataset.newExperimentDialog = "";
+    backdrop.setAttribute("role", "dialog");
+    backdrop.setAttribute("aria-modal", "true");
+    backdrop.setAttribute("aria-labelledby", "new-experiment-title");
+    const dialog = document.createElement("section");
+    dialog.className = "new-experiment-dialog";
+    const title = document.createElement("h2");
+    title.id = "new-experiment-title";
+    title.textContent = "Reset the current experiment?";
+    const explanation = document.createElement("p");
+    explanation.textContent =
+      "Drafts, results, and analysis for this experiment will be cleared.";
+    const label = document.createElement("label");
+    label.className = "new-experiment-checkbox";
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = true;
+    checkbox.dataset.clearTutor = "";
+    label.append(
+      checkbox,
+      document.createTextNode("Also clear this module's Tutor conversation")
+    );
+    const actions = document.createElement("div");
+    actions.className = "new-experiment-actions";
+    const cancel = document.createElement("button");
+    cancel.type = "button";
+    cancel.className = "btn ghost";
+    cancel.dataset.resetCancel = "";
+    cancel.textContent = "Cancel";
+    const confirm = document.createElement("button");
+    confirm.type = "button";
+    confirm.className = "btn danger";
+    confirm.dataset.resetConfirm = "";
+    confirm.textContent = "New experiment";
+    actions.append(cancel, confirm);
+    dialog.append(title, explanation, label, actions);
+    backdrop.append(dialog);
+    activeResetDialog = backdrop;
+    resetBackground = [...document.body.children]
+      .filter((element): element is HTMLElement => element instanceof HTMLElement)
+      .map((element) => ({
+        element,
+        wasInert: element.hasAttribute("inert"),
+      }));
+    for (const item of resetBackground) item.element.setAttribute("inert", "");
+    document.body.append(backdrop);
+
+    cancel.addEventListener("click", () => closeResetDialog(true));
+    confirm.addEventListener("click", () => {
+      const clearTutorConversation = checkbox.checked;
+      closeResetDialog(false);
+      confirmNewExperiment(clearTutorConversation);
+    });
+    backdrop.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeResetDialog(true);
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const focusable = [...backdrop.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), input:not([disabled]), [href], [tabindex]:not([tabindex="-1"])'
+      )];
+      const first = focusable[0];
+      const last = focusable.at(-1);
+      if (!first || !last) return;
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+    cancel.focus();
+  }
+
   function isCurrentGeneration(generation: number, owner?: Element): boolean {
     return (
       !disposed &&
@@ -511,7 +666,10 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
         <span>Initial Value Problems Lab</span>
       </nav>
       <p class="eyebrow">AI-Assisted Educational Solver</p>
-      <h1 tabindex="-1" data-route-focus>Initial Value Problems Lab</h1>
+      <div class="lab-title-actions">
+        <h1 tabindex="-1" data-route-focus>Initial Value Problems Lab</h1>
+        <button type="button" class="btn ghost new-experiment-trigger" data-new-experiment>New experiment</button>
+      </div>
       <p class="lede">${DEFAULT_LEDE}</p>
       ${workflowNote ? `<p class="ivp-note">${workflowNote}</p>` : ""}
       <div class="experiment-identity${compactExperimentIdentity ? " is-compact" : ""}" data-experiment-identity="${experimentIdentity.label === "Beginner starter" ? "beginner-starter" : "custom-experiment"}">
@@ -532,6 +690,12 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       </div>
     </header>
   `;
+
+    shell
+      .querySelector<HTMLButtonElement>("[data-new-experiment]")
+      ?.addEventListener("click", (event) => {
+        openResetDialog(event.currentTarget as HTMLElement);
+      });
 
     const main = document.createElement("main");
     main.className = "panel";
@@ -2287,6 +2451,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       if (disposed) return;
       disposed = true;
       uiGeneration += 1;
+      closeResetDialog(false);
       disposeExpressionUi();
       disposeConvergenceUi();
       disposePrimaryChart();

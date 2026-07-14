@@ -3,15 +3,19 @@ import type {
   LabRouteModule,
   LabSessionMetadata,
   RouteModule,
+  RouteId,
 } from "./contracts";
 import type { AppSessionStore } from "./appSessionStore";
 import type { PlatformTutorHost } from "./platformTutorHost";
+import type { ScrollRestoration } from "./scrollRestoration";
 
 export function createCompleteLabRoute<TSession>(options: {
   readonly moduleId: LabModuleId;
   readonly labModule: LabRouteModule<TSession>;
   readonly store: AppSessionStore;
   readonly tutorHost: PlatformTutorHost;
+  readonly routeId: RouteId;
+  readonly scrollRestoration: ScrollRestoration;
 }): RouteModule {
   const route: RouteModule = {
     mount({ target, navigate }) {
@@ -55,12 +59,21 @@ export function createCompleteLabRoute<TSession>(options: {
           },
           applyConfirmedReset(request) {
             if (disposed) return;
-            latestMetadata = request.metadata;
-            options.store.resetLab(
+            options.tutorHost.invalidateCurrentRequest();
+            options.store.resetLabForNewExperiment(
               options.moduleId,
               request.session,
-              request.metadata
+              request.metadata,
+              {
+                clearTutorConversation: request.clearTutorConversation,
+                at: request.at,
+                routeId: options.routeId,
+              }
             );
+            latestMetadata =
+              options.store.getLabMetadata(options.moduleId) ?? request.metadata;
+            options.scrollRestoration.resetCurrentRoute(options.routeId);
+            options.tutorHost.refresh();
           },
         },
       });

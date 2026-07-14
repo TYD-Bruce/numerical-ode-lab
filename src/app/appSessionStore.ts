@@ -8,6 +8,8 @@ import type {
   TutorSessionAccess,
 } from "./contracts";
 import {
+  appendNewExperimentDivider,
+  clearTutorConversation,
   createEmptyModuleTutorSession,
   hasUserTutorMessage,
 } from "../tutor/moduleTutorSession";
@@ -38,6 +40,16 @@ export interface AppSessionStore {
     moduleId: LabModuleId,
     session: T,
     metadata: LabSessionMetadata
+  ): void;
+  resetLabForNewExperiment<T>(
+    moduleId: LabModuleId,
+    session: T,
+    metadata: LabSessionMetadata,
+    options: {
+      readonly clearTutorConversation: boolean;
+      readonly at: number;
+      readonly routeId?: RouteId;
+    }
   ): void;
   hasMeaningfulWork(): boolean;
   getResumeSummaries(limit?: number): readonly ResumeSummary[];
@@ -190,6 +202,7 @@ export function createAppSessionStore(
   };
   let routeSessions: Partial<Record<RouteId, RouteSessionMetadata>> = {};
   const listeners = new Set<() => void>();
+  let dividerSequence = 0;
 
   const notify = () => {
     for (const listener of [...listeners]) listener();
@@ -330,6 +343,67 @@ export function createAppSessionStore(
       notify();
     },
     resetLab: setLab,
+    resetLabForNewExperiment(moduleId, session, metadata, resetOptions) {
+      assertPureValue(session);
+      assertPureValue(metadata);
+      const frozenSession = freezePureValue(session);
+      const resumeCandidate = metadata.resumeSummary
+        ? freezePureValue({ ...metadata.resumeSummary })
+        : undefined;
+      const currentTutor = tutors[moduleId];
+      dividerSequence += 1;
+      const nextTutor = resetOptions.clearTutorConversation
+        ? clearTutorConversation(currentTutor)
+        : appendNewExperimentDivider(currentTutor, {
+            id: `new-experiment-${resetOptions.at}-${dividerSequence}`,
+            body:
+              "Earlier messages refer to the previous experiment. New answers use the current experiment.",
+          });
+      const tutorMeaningful = hasUserTutorMessage(nextTutor);
+      const meaningful = metadata.labMeaningful || tutorMeaningful;
+      const timestamp = meaningful && tutorMeaningful
+        ? latestTimestamp(undefined, resetOptions.at)
+        : undefined;
+      const resumeSummary =
+        meaningful && resumeCandidate && timestamp !== undefined
+          ? freezePureValue({
+              ...resumeCandidate,
+              lastMeaningfulInteraction: timestamp,
+            })
+          : undefined;
+      labs = {
+        ...labs,
+        [moduleId]: Object.freeze({
+          session: frozenSession,
+          labMeaningful: metadata.labMeaningful,
+          ...(resumeCandidate ? { resumeCandidate } : {}),
+        }),
+      };
+      tutors = { ...tutors, [moduleId]: freezePureValue(nextTutor) };
+      labMetadata = {
+        ...labMetadata,
+        [moduleId]: freezePureValue({
+          labMeaningful: metadata.labMeaningful,
+          tutorMeaningful,
+          meaningful,
+          ...(resumeSummary ? { resumeSummary } : {}),
+          ...(timestamp === undefined
+            ? {}
+            : { lastMeaningfulInteraction: timestamp }),
+        }),
+      };
+      if (resetOptions.routeId) {
+        const currentRoute = routeSessions[resetOptions.routeId];
+        routeSessions = {
+          ...routeSessions,
+          [resetOptions.routeId]: freezePureValue({
+            ...currentRoute,
+            scrollPosition: 0,
+          }),
+        };
+      }
+      notify();
+    },
     hasMeaningfulWork() {
       return Object.values(labMetadata).some((metadata) => metadata?.meaningful);
     },

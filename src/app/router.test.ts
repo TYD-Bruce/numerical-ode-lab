@@ -11,6 +11,11 @@ import {
 } from "./routeDefinitions";
 import { createRouteLoader } from "./routeLoader";
 import { createPlatformRouter } from "./router";
+import { createAppSessionStore } from "./appSessionStore";
+import {
+  createScrollRestoration,
+  type ScrollRestoration,
+} from "./scrollRestoration";
 
 function moduleWithText(text: string, onDispose = vi.fn()): RouteModule {
   return {
@@ -267,6 +272,137 @@ describe("platform router", () => {
     expect(staleDispose).toHaveBeenCalledTimes(1);
     expect(currentDispose).not.toHaveBeenCalled();
     expect(shell.outlet.textContent).toContain("Current");
+    router.dispose();
+  });
+
+  it("closes mobile presentation and captures scroll before route disposal", async () => {
+    const events: string[] = [];
+    const disposeHome = vi.fn(() => {
+      events.push("dispose");
+    });
+    const home = moduleWithText("Home", disposeHome);
+    const scroll: ScrollRestoration = {
+      start: vi.fn(),
+      setCurrentRoute: vi.fn(),
+      captureCurrentRoute: vi.fn(() => {
+        events.push("capture");
+        return 420;
+      }),
+      createPushedState: vi.fn(() => ({})),
+      resolveRestoration: vi.fn(() => 0),
+      scheduleRestoration: vi.fn(),
+      resetCurrentRoute: vi.fn(),
+      dispose: vi.fn(),
+    };
+    const host = document.createElement("div");
+    document.body.append(host);
+    const shell = createAppShell(host);
+    const router = createPlatformRouter({
+      shell,
+      routes: testRoutes({ home: async () => home }),
+      scrollRestoration: scroll,
+      onNavigationStart: () => events.push("mobile-close"),
+    });
+    router.start();
+    await settle();
+    await router.navigate("/about");
+    expect(events.slice(0, 3)).toEqual(["mobile-close", "capture", "dispose"]);
+    router.dispose();
+  });
+
+  it("focuses with preventScroll before scheduling the guarded restoration", async () => {
+    const events: string[] = [];
+    let focusHeading: ReturnType<typeof vi.fn> | undefined;
+    const page: RouteModule = {
+      mount({ target }) {
+        const heading = document.createElement("h1");
+        heading.tabIndex = -1;
+        heading.textContent = "Ordered page";
+        const nativeFocus = heading.focus.bind(heading);
+        focusHeading = vi.fn((options?: FocusOptions) => {
+          events.push("focus");
+          nativeFocus(options);
+        });
+        heading.focus = focusHeading;
+        target.replaceChildren(heading);
+        return { dispose: vi.fn() };
+      },
+    };
+    const scroll: ScrollRestoration = {
+      start: vi.fn(),
+      setCurrentRoute: vi.fn(),
+      captureCurrentRoute: vi.fn(() => 0),
+      createPushedState: vi.fn(() => ({})),
+      resolveRestoration: vi.fn(() => 250),
+      scheduleRestoration: vi.fn(() => events.push("restore")),
+      resetCurrentRoute: vi.fn(),
+      dispose: vi.fn(),
+    };
+    const host = document.createElement("div");
+    document.body.append(host);
+    const shell = createAppShell(host);
+    const router = createPlatformRouter({
+      shell,
+      routes: testRoutes({ about: async () => page }),
+      scrollRestoration: scroll,
+    });
+    await router.navigate("/about");
+    expect(events).toEqual(["focus", "restore"]);
+    expect(focusHeading).toHaveBeenCalledWith({ preventScroll: true });
+    router.dispose();
+  });
+
+  it("restores distinct ODE, Home, and About history-entry positions", async () => {
+    history.replaceState({}, "", "/ode/initial-value-problems");
+    let scrollY = 0;
+    const writes: number[] = [];
+    const store = createAppSessionStore();
+    const scroll = createScrollRestoration({
+      store,
+      readScrollY: () => scrollY,
+      writeScrollY: (value) => writes.push(value),
+      requestFrame: (callback) => {
+        callback(0);
+        return 1;
+      },
+      createEntryId: (() => {
+        let id = 0;
+        return () => `entry-${++id}`;
+      })(),
+    });
+    const host = document.createElement("div");
+    document.body.append(host);
+    const shell = createAppShell(host);
+    const router = createPlatformRouter({
+      shell,
+      routes: testRoutes({
+        "ode-initial-value-problems": async () => moduleWithText("ODE Lab"),
+      }),
+      scrollRestoration: scroll,
+    });
+    router.start();
+    await vi.waitFor(() => expect(shell.outlet.textContent).toContain("ODE Lab"));
+
+    scrollY = 900;
+    window.dispatchEvent(new Event("scroll"));
+    await router.navigate("/");
+    scrollY = 300;
+    window.dispatchEvent(new Event("scroll"));
+    await router.navigate("/about");
+    scrollY = 150;
+    window.dispatchEvent(new Event("scroll"));
+
+    history.back();
+    await vi.waitFor(() => expect(location.pathname).toBe("/"));
+    await vi.waitFor(() => expect(writes.at(-1)).toBe(300));
+    history.back();
+    await vi.waitFor(() =>
+      expect(location.pathname).toBe("/ode/initial-value-problems")
+    );
+    await vi.waitFor(() => expect(writes.at(-1)).toBe(900));
+    history.forward();
+    await vi.waitFor(() => expect(location.pathname).toBe("/"));
+    await vi.waitFor(() => expect(writes.at(-1)).toBe(300));
     router.dispose();
   });
 });

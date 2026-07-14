@@ -562,6 +562,63 @@ describe("mounted ODE lifecycle", () => {
     expect(disposers.every((dispose) => dispose.mock.calls.length === 1)).toBe(true);
   });
 
+  it("New experiment destroys result and Convergence runtime before restoring the starter", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const mounted = mountOdeApp({
+      target,
+      initialSession: outputSession(),
+      lifecycle: {
+        updateSession: vi.fn(),
+        applyConfirmedReset: vi.fn(),
+      },
+    });
+    await Promise.resolve();
+    target.querySelector<HTMLButtonElement>("[data-new-experiment]")!.click();
+    document
+      .querySelector<HTMLButtonElement>("[data-reset-confirm]")!
+      .click();
+    await Promise.resolve();
+
+    expect(destroyChart).toHaveBeenCalledTimes(1);
+    expect(disposeConvergence).toHaveBeenCalledTimes(1);
+    expect(mounted.getSession()).toEqual(createBeginnerStarterSession());
+    mounted.dispose();
+  });
+
+  it("New experiment disposes mounted expression fields", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const disposers: Array<ReturnType<typeof vi.fn>> = [];
+    const mountEditableMathField = vi.fn(() => {
+      const dispose = vi.fn();
+      disposers.push(dispose);
+      return editableHandle(dispose);
+    });
+    const target = document.createElement("div");
+    document.body.append(target);
+    const mounted = mountOdeApp({
+      target,
+      initialSession: configuredSession(),
+      loadEditableMathField: async () => ({ mountEditableMathField }),
+      lifecycle: {
+        updateSession: vi.fn(),
+        applyConfirmedReset: vi.fn(),
+      },
+    });
+    await Promise.resolve();
+    await Promise.resolve();
+    target.querySelector<HTMLButtonElement>("[data-new-experiment]")!.click();
+    document
+      .querySelector<HTMLButtonElement>("[data-reset-confirm]")!
+      .click();
+    await Promise.resolve();
+
+    expect(disposers).toHaveLength(2);
+    expect(disposers.every((dispose) => dispose.mock.calls.length === 1)).toBe(true);
+    mounted.dispose();
+  });
+
   it("preserves the ordinary successful-Run Tutor reset behavior", async () => {
     const { mountOdeApp } = await import("./odeApp");
     const mountEditableMathField = vi.fn(

@@ -9,12 +9,17 @@ import {
 } from "./platformTutorHost";
 import { createRouteDefinitions } from "./routeDefinitions";
 import { createPlatformRouter, type PlatformRouter } from "./router";
+import {
+  createScrollRestoration,
+  type ScrollRestoration,
+} from "./scrollRestoration";
 
 export interface PlatformBootstrap {
   readonly store: AppSessionStore;
   readonly shell: AppShell;
   readonly tutorHost: PlatformTutorHost;
   readonly router: PlatformRouter;
+  readonly scrollRestoration: ScrollRestoration;
   readonly navigate: Navigate;
   dispose(): void;
 }
@@ -33,9 +38,11 @@ export function createPlatformBootstrap(options: {
       target: shell.tutorRegion,
       labTarget: shell.outlet,
     });
+  const scrollRestoration = createScrollRestoration({ store });
   const registry = createPlatformModuleRegistry({
     store,
     tutorHost,
+    scrollRestoration,
     initialValueProblemsLoader: options.initialValueProblemsLoader,
   });
   const router = createPlatformRouter({
@@ -44,6 +51,8 @@ export function createPlatformBootstrap(options: {
       initialValueProblemsLoader: registry.loadInitialValueProblems,
       homeSessionSource: store,
     }),
+    scrollRestoration,
+    onNavigationStart: () => tutorHost.closeMobileForNavigation(),
   });
   let disposed = false;
   const handleBeforeUnload = createBeforeUnloadHandler(store);
@@ -55,6 +64,7 @@ export function createPlatformBootstrap(options: {
     shell,
     tutorHost,
     router,
+    scrollRestoration,
     navigate: router.navigate,
     dispose(): void {
       if (disposed) return;

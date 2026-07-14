@@ -104,4 +104,19 @@ describe("public route bundle ownership", () => {
       'from "@cortex-js/compute-engine"'
     );
   });
+
+  it("keeps scroll platform-only and New experiment inside the ODE boundary", () => {
+    const scroll = source("app/scrollRestoration.ts");
+    expect(scroll).not.toMatch(
+      /odeApp|initialValueProblemsRoute|Chart|MathLive|localStorage|sessionStorage/
+    );
+    const odeApp = source("ode/odeApp.ts");
+    expect(odeApp).toContain("data-new-experiment");
+    expect(odeApp).not.toMatch(
+      /AppSessionStore|createPlatformRouter|window\.history|history\.(?:pushState|replaceState)/
+    );
+    expect(source("app/appSessionStore.ts")).not.toMatch(
+      /odeApp|odeSession|initialValueProblemsRoute/
+    );
+  });
 });

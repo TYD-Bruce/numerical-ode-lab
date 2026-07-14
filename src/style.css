@@ -35,6 +35,64 @@
   letter-spacing: -0.02em;
 }
 
+.lab-title-actions {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.new-experiment-trigger {
+  flex: 0 0 auto;
+}
+
+.new-experiment-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: color-mix(in srgb, var(--color-page-background, var(--bg)) 78%, transparent);
+}
+
+.new-experiment-dialog {
+  width: min(100%, 520px);
+  padding: 22px;
+  border: 1px solid var(--color-border, var(--border));
+  border-radius: var(--radius-lg, 16px);
+  background: var(--color-surface-raised, var(--panel));
+  color: var(--color-text-primary, var(--text));
+  box-shadow: var(--shadow-card, 0 18px 50px color-mix(in srgb, var(--bg) 65%, transparent));
+}
+
+.new-experiment-dialog h2 {
+  margin-top: 0;
+}
+
+.new-experiment-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-block: 18px;
+}
+
+.new-experiment-checkbox input {
+  margin-top: 0.25em;
+}
+
+.new-experiment-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn.danger {
+  border-color: var(--color-danger, var(--danger));
+  color: var(--color-danger, var(--danger));
+}
+
 .ode-breadcrumb {
   display: flex;
   flex-wrap: wrap;
@@ -780,6 +838,20 @@ tbody tr:nth-child(even) {
 }
 
 @media (max-width: 640px) {
+  .lab-title-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .new-experiment-actions {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+
+  .new-experiment-actions .btn {
+    width: 100%;
+  }
+
   .convergence-controls {
     grid-template-columns: 1fr;
   }

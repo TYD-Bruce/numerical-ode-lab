@@ -6,6 +6,7 @@ import type { LabTutorBinding } from "./app/contracts";
 import type { ChatRequest } from "./aiTypes";
 import type { OdeTutorSource } from "./ode/odeTutorBinding";
 import { createReadonlySolverResult } from "./ode/odeSession";
+import { createBeginnerStarterSession, createOdeResumeSummary } from "./ode/odeSession";
 import { mountPlatformTutorPanel } from "./tutor/platformTutorPanel";
 import { appendTutorMessage } from "./tutor/moduleTutorSession";
 import { appendNewExperimentDivider } from "./tutor/moduleTutorSession";
@@ -181,4 +182,62 @@ describe("shared Tutor panel", () => {
     expect(request?.messages).toEqual([{ role: "user", content: "New question" }]);
     mounted.dispose();
   });
+
+  it.each([
+    [true, 0],
+    [false, 2],
+  ] as const)(
+    "invalidates an old-context response when reset clear=%s",
+    async (clearTutorConversation, expectedItems) => {
+      const host = document.createElement("div");
+      document.body.append(host);
+      const store = createAppSessionStore();
+      let resolve!: (value: { message: string }) => void;
+      const response = new Promise<{ message: string }>((done) => {
+        resolve = done;
+      });
+      const mounted = mountPlatformTutorPanel(host, {
+        binding: {
+          moduleId: "ode",
+          promptProfile: "ode",
+          suggestedQuestions: [],
+          getContext: source,
+        },
+        sessionAccess: store.createTutorSessionAccess("ode"),
+        onClose: vi.fn(),
+        isCurrent: () => true,
+        sendMessage: () => response,
+      });
+      const input = host.querySelector<HTMLTextAreaElement>("#platform-tutor-input")!;
+      input.value = "Question tied to old experiment";
+      host.querySelector<HTMLFormElement>(".ai-compose")!.dispatchEvent(
+        new Event("submit", { bubbles: true, cancelable: true })
+      );
+      expect(store.getTutor("ode").items).toHaveLength(1);
+
+      mounted.cancelPending?.();
+      const starter = createBeginnerStarterSession();
+      store.resetLabForNewExperiment("ode", starter, {
+        labMeaningful: false,
+        tutorMeaningful: false,
+        meaningful: false,
+        resumeSummary: createOdeResumeSummary(starter, 0),
+      }, {
+        clearTutorConversation,
+        at: 800,
+      });
+      mounted.refresh?.();
+      resolve({ message: "Stale answer" });
+      await response;
+      await Promise.resolve();
+
+      expect(store.getTutor("ode").items).toHaveLength(expectedItems);
+      expect(
+        store.getTutor("ode").items.some(
+          (item) => item.kind === "message" && item.role === "assistant"
+        )
+      ).toBe(false);
+      mounted.dispose();
+    }
+  );
 });

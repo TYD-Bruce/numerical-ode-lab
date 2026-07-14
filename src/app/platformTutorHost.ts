@@ -18,6 +18,8 @@ export interface PlatformTutorHost {
   open(trigger: HTMLElement): Promise<void>;
   close(options?: { restoreFocus?: boolean }): void;
   closeMobileForNavigation(): void;
+  invalidateCurrentRequest(): void;
+  refresh(): void;
   dispose(): void;
 }
 
@@ -48,6 +50,23 @@ export function createPlatformTutorHost(
   let savedScrollY = 0;
   let previousBodyOverflow = "";
 
+  const readDocumentScrollY = (): number => {
+    const value = document.scrollingElement?.scrollTop ?? window.scrollY;
+    return Number.isFinite(value) && value >= 0 ? value : 0;
+  };
+
+  const restoreDocumentScroll = (value: number): void => {
+    if (window.navigator.userAgent.toLowerCase().includes("jsdom")) {
+      if (document.scrollingElement) document.scrollingElement.scrollTop = value;
+      return;
+    }
+    try {
+      window.scrollTo({ top: value, left: 0, behavior: "auto" });
+    } catch {
+      // Environments without scrolling still receive the DOM cleanup.
+    }
+  };
+
   const loadPanel = options.loadPanel ?? (() => import("../tutor/platformTutorPanel"));
   const isMobile = options.isMobile ?? (() => window.matchMedia?.("(max-width: 760px)").matches ?? false);
 
@@ -57,13 +76,7 @@ export function createPlatformTutorHost(
     options.target.classList.remove("platform-tutor-host-mobile");
     options.labTarget?.removeAttribute("inert");
     document.body.style.overflow = previousBodyOverflow;
-    if (savedScrollY !== 0) {
-      try {
-        window.scrollTo({ top: savedScrollY, left: 0, behavior: "auto" });
-      } catch {
-        // Environments without scrolling still receive the DOM cleanup.
-      }
-    }
+    restoreDocumentScroll(savedScrollY);
   };
 
   const renderClosed = (): void => {
@@ -138,7 +151,7 @@ export function createPlatformTutorHost(
   const enableMobileEnvironment = (): void => {
     if (mobileOpen) return;
     mobileOpen = true;
-    savedScrollY = window.scrollY;
+    savedScrollY = readDocumentScrollY();
     previousBodyOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     options.labTarget?.setAttribute("inert", "");
@@ -271,6 +284,12 @@ export function createPlatformTutorHost(
     },
     closeMobileForNavigation(): void {
       if (mobileOpen) host.close({ restoreFocus: false });
+    },
+    invalidateCurrentRequest(): void {
+      panel?.cancelPending?.();
+    },
+    refresh(): void {
+      panel?.refresh?.();
     },
     dispose(): void {
       if (disposed) return;

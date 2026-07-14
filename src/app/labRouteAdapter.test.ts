@@ -11,6 +11,10 @@ import type {
 import { createAppSessionStore } from "./appSessionStore";
 import { createCompleteLabRoute } from "./labRouteAdapter";
 import type { PlatformTutorHost } from "./platformTutorHost";
+import {
+  createScrollRestoration,
+  type ScrollRestoration,
+} from "./scrollRestoration";
 
 const binding: LabTutorBinding<unknown> = {
   moduleId: "ode",
@@ -45,6 +49,8 @@ function host(): PlatformTutorHost {
     open: vi.fn(async () => undefined),
     close: vi.fn(),
     closeMobileForNavigation: vi.fn(),
+    invalidateCurrentRequest: vi.fn(),
+    refresh: vi.fn(),
     dispose: vi.fn(),
   };
 }
@@ -73,6 +79,8 @@ describe("complete Lab meaningful metadata", () => {
       labModule: module,
       store,
       tutorHost: host(),
+      routeId: "ode-initial-value-problems",
+      scrollRestoration: createScrollRestoration({ store }),
     });
     const target = document.createElement("div");
     const mounted = route.mount({
@@ -95,5 +103,73 @@ describe("complete Lab meaningful metadata", () => {
     expect(store.getLabMetadata("ode")?.lastMeaningfulInteraction).toBe(125);
     mounted.dispose();
     expect(store.getLabMetadata("ode")?.lastMeaningfulInteraction).toBe(125);
+  });
+
+  it("invalidates Tutor work and applies Store plus triple-scroll reset atomically", () => {
+    let lifecycle: LabLifecycleCallbacks<{ value: string }> | undefined;
+    const module: LabRouteModule<{ value: string }> = {
+      createBeginnerStarterSession: () => ({ value: "starter" }),
+      mount(options) {
+        lifecycle = options.lifecycle;
+        return {
+          getSession: () => ({ value: "starter" }),
+          getResumeSummary: () => summary(),
+          getTutorBinding: () => binding,
+          dispose: vi.fn(),
+        };
+      },
+    };
+    const store = createAppSessionStore();
+    const tutorHost = host();
+    const resetScroll = vi.fn();
+    const scrollRestoration: ScrollRestoration = {
+      start: vi.fn(),
+      setCurrentRoute: vi.fn(),
+      captureCurrentRoute: vi.fn(() => 0),
+      createPushedState: vi.fn(() => ({})),
+      resolveRestoration: vi.fn(() => 0),
+      scheduleRestoration: vi.fn(),
+      resetCurrentRoute: resetScroll,
+      dispose: vi.fn(),
+    };
+    const route = createCompleteLabRoute({
+      moduleId: "ode",
+      routeId: "ode-initial-value-problems",
+      labModule: module,
+      store,
+      tutorHost,
+      scrollRestoration,
+    });
+    const mounted = route.mount({
+      target: document.createElement("div"),
+      navigate: vi.fn(),
+      location: {
+        pathname: "/ode/initial-value-problems",
+        search: "",
+        hash: "",
+      },
+    });
+
+    lifecycle?.applyConfirmedReset?.({
+      session: { value: "fresh" },
+      metadata: {
+        labMeaningful: false,
+        tutorMeaningful: false,
+        meaningful: false,
+        resumeSummary: {
+          ...summary(),
+          stepLabel: "Method",
+        },
+      },
+      clearTutorConversation: true,
+      at: 400,
+    });
+
+    expect(tutorHost.invalidateCurrentRequest).toHaveBeenCalledOnce();
+    expect(resetScroll).toHaveBeenCalledWith("ode-initial-value-problems");
+    expect(tutorHost.refresh).toHaveBeenCalledOnce();
+    expect(store.getLab("ode")).toEqual({ value: "fresh" });
+    expect(store.getLabMetadata("ode")?.meaningful).toBe(false);
+    mounted.dispose();
   });
 });

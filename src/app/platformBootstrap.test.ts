@@ -31,6 +31,7 @@ function testLabModule(options: {
       let current = session;
       options.mountedSessions?.push(session);
       const heading = document.createElement("h1");
+      heading.tabIndex = -1;
       heading.dataset.routeFocus = "true";
       heading.textContent = "Initial Value Problems Lab";
       const value = document.createElement("p");
@@ -84,6 +85,8 @@ function tutorHostSpy(events: string[] = []): PlatformTutorHost {
     open: vi.fn(async () => undefined),
     close: vi.fn(),
     closeMobileForNavigation: vi.fn(() => events.push("host-mobile-close")),
+    invalidateCurrentRequest: vi.fn(() => events.push("host-invalidate")),
+    refresh: vi.fn(() => events.push("host-refresh")),
     dispose: vi.fn(() => events.push("host-dispose")),
   };
 }
@@ -183,14 +186,25 @@ describe("public platform bootstrap", () => {
   });
 
   it("preserves the pure Lab session across internal navigation", async () => {
+    Object.defineProperty(document, "scrollingElement", {
+      configurable: true,
+      value: document.documentElement,
+    });
     const mountedSessions: TestLabSession[] = [];
     const app = await bootAt(
       "/ode/initial-value-problems",
       testLabModule({ mountedSessions })
     );
+    await vi.waitFor(() =>
+      expect(document.activeElement).toBe(app.shell.outlet.querySelector("h1"))
+    );
+    await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
     app.shell.outlet.querySelector<HTMLButtonElement>("[data-test-lab-edit]")!.click();
+    document.documentElement.scrollTop = 725;
+    window.dispatchEvent(new Event("scroll"));
     const activity = app.store.getLabMetadata("ode")?.lastMeaningfulInteraction;
     await app.navigate("/");
+    await vi.waitFor(() => expect(document.documentElement.scrollTop).toBe(0));
     expect(app.shell.outlet.textContent).toContain("Continue your experiment");
     const resume = app.shell.outlet.querySelector<HTMLAnchorElement>(
       '[data-resume-module="ode"] a'
@@ -200,6 +214,7 @@ describe("public platform bootstrap", () => {
     await vi.waitFor(() =>
       expect(app.shell.outlet.textContent).toContain("edited-session")
     );
+    await vi.waitFor(() => expect(document.documentElement.scrollTop).toBe(725));
 
     expect(mountedSessions).toEqual([
       { value: "beginner-starter" },
@@ -210,6 +225,22 @@ describe("public platform bootstrap", () => {
       activity
     );
     app.dispose();
+  });
+
+  it("owns manual browser scroll restoration for the bootstrap lifetime", async () => {
+    Object.defineProperty(history, "scrollRestoration", {
+      configurable: true,
+      writable: true,
+      value: "auto",
+    });
+    const app = await bootAt("/");
+    expect(history.scrollRestoration).toBe("manual");
+    expect(history.state.numericalAnalysisLab).toMatchObject({
+      entryId: expect.any(String),
+      scrollY: 0,
+    });
+    app.dispose();
+    expect(history.scrollRestoration).toBe("auto");
   });
 
   it("preserves Tutor state and disposes Host before the Lab", async () => {

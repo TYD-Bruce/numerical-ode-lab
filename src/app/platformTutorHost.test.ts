@@ -156,6 +156,11 @@ describe("Platform Tutor Host", () => {
     const lab = document.createElement("main");
     document.body.append(lab, target);
     const store = createAppSessionStore();
+    Object.defineProperty(document, "scrollingElement", {
+      configurable: true,
+      value: document.documentElement,
+    });
+    document.documentElement.scrollTop = 320;
     const host = createPlatformTutorHost({
       target,
       labTarget: lab,
@@ -174,9 +179,11 @@ describe("Platform Tutor Host", () => {
     expect(lab.hasAttribute("inert")).toBe(true);
     expect(document.body.style.overflow).toBe("hidden");
     expect(target.querySelector("[role=dialog]")?.getAttribute("aria-modal")).toBe("true");
+    document.documentElement.scrollTop = 0;
     host.closeMobileForNavigation();
     expect(lab.hasAttribute("inert")).toBe(false);
     expect(document.body.style.overflow).toBe("");
     expect(store.getTutor("ode").desktopOpen).toBe(false);
+    expect(document.documentElement.scrollTop).toBe(320);
   });
 });
