@@ -19,7 +19,11 @@ export function createCompleteLabRoute<TSession>(options: {
         options.store.getLab<TSession>(options.moduleId) ??
         options.labModule.createBeginnerStarterSession();
       let latestMetadata: LabSessionMetadata =
-        options.store.getLabMetadata(options.moduleId) ?? { meaningful: false };
+        options.store.getLabMetadata(options.moduleId) ?? {
+          labMeaningful: false,
+          tutorMeaningful: false,
+          meaningful: false,
+        };
       let disposed = false;
       const mountedLab = options.labModule.mount({
         target,
@@ -28,13 +32,24 @@ export function createCompleteLabRoute<TSession>(options: {
         lifecycle: {
           updateSession(session, metadata) {
             if (disposed) return;
-            latestMetadata = metadata;
-            options.store.setLab(options.moduleId, session, metadata);
+            latestMetadata = {
+              ...metadata,
+              tutorMeaningful: latestMetadata.tutorMeaningful,
+              meaningful:
+                metadata.labMeaningful || latestMetadata.tutorMeaningful,
+              ...(metadata.lastMeaningfulInteraction === undefined &&
+              latestMetadata.lastMeaningfulInteraction !== undefined
+                ? {
+                  lastMeaningfulInteraction:
+                      latestMetadata.lastMeaningfulInteraction,
+                }
+                : {}),
+            };
+            options.store.setLab(options.moduleId, session, latestMetadata);
           },
           recordMeaningfulInteraction(at) {
             latestMetadata = {
               ...latestMetadata,
-              meaningful: true,
               lastMeaningfulInteraction: at,
             };
           },
@@ -68,6 +83,10 @@ export function createCompleteLabRoute<TSession>(options: {
           disposed = true;
           options.tutorHost.closeMobileForNavigation();
           try {
+            const resumeSummary = mountedLab.getResumeSummary();
+            if (resumeSummary) {
+              latestMetadata = { ...latestMetadata, resumeSummary };
+            }
             options.store.setLab(
               options.moduleId,
               mountedLab.getSession(),

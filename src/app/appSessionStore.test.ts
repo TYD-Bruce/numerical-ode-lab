@@ -16,7 +16,11 @@ import {
 import { assertPureValue, createAppSessionStore } from "./appSessionStore";
 import type { LabSessionMetadata, ResumeSummary } from "./contracts";
 
-const metadata = (meaningful = false): LabSessionMetadata => ({ meaningful });
+const metadata = (meaningful = false): LabSessionMetadata => ({
+  labMeaningful: meaningful,
+  tutorMeaningful: false,
+  meaningful,
+});
 
 function summary(
   moduleId: ResumeSummary["moduleId"],
@@ -114,16 +118,22 @@ describe("AppSessionStore", () => {
   it("reports maintained meaningful work and sorted safe Resume summaries", () => {
     const store = createAppSessionStore();
     store.setLab("ode", { value: 1 }, {
+      labMeaningful: true,
+      tutorMeaningful: false,
       meaningful: true,
       resumeSummary: summary("ode", 100),
       lastMeaningfulInteraction: 100,
     });
     store.setLab("linear_algebra", { value: 2 }, {
+      labMeaningful: true,
+      tutorMeaningful: false,
       meaningful: true,
       resumeSummary: summary("linear_algebra", 300),
       lastMeaningfulInteraction: 300,
     });
     store.setLab("pde", { value: 3 }, {
+      labMeaningful: false,
+      tutorMeaningful: false,
       meaningful: false,
       resumeSummary: summary("pde", 500),
       lastMeaningfulInteraction: 500,

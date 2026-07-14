@@ -1,7 +1,4 @@
-import type {
-  ModuleTutorSession,
-  ResumeSummary,
-} from "../app/contracts";
+import type { ResumeSummary } from "../app/contracts";
 import {
   getConvergenceState,
   removeConvergenceState,
@@ -31,7 +28,6 @@ import type {
   SolverMetadata,
   SolverResult,
 } from "../solvers";
-import { hasUserTutorMessage } from "../tutor/moduleTutorSession";
 
 export {
   getConvergenceState,
@@ -390,16 +386,14 @@ export function hasSuccessfulConvergenceAnalysis(
 }
 
 export function computeOdeLabMeaningful(
-  session: OdeSessionState,
-  tutorSession: ModuleTutorSession
+  session: OdeSessionState
 ): boolean {
   return (
     hasCoreStarterChanges(session) ||
     hasUnexecutedCoreDraft(session) ||
     session.step !== "choose" ||
     hasSuccessfulOutput(session) ||
-    hasSuccessfulConvergenceAnalysis(session) ||
-    hasUserTutorMessage(tutorSession)
+    hasSuccessfulConvergenceAnalysis(session)
   );
 }
 

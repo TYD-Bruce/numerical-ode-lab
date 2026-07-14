@@ -13,10 +13,6 @@ import {
   setConvergenceMetric,
 } from "../convergenceStudyState";
 import {
-  appendTutorMessage,
-  createEmptyModuleTutorSession,
-} from "../tutor/moduleTutorSession";
-import {
   computeOdeLabMeaningful,
   createBeginnerStarterSession,
   createOdeResumeSummary,
@@ -118,7 +114,11 @@ describe("pure ODE session compatibility and Convergence records", () => {
   it("round-trips a complete successful session through the pure store boundary", () => {
     const store = createAppSessionStore();
     const session = withSuccessfulOutput();
-    store.setLab("ode", session, { meaningful: true });
+    store.setLab("ode", session, {
+      labMeaningful: true,
+      tutorMeaningful: false,
+      meaningful: true,
+    });
 
     const restored = store.getLab<OdeSessionState>("ode");
     expect(restored).toBe(session);
@@ -183,16 +183,13 @@ describe("meaningful work and safe Resume selectors", () => {
     expect(hasUnexecutedCoreDraft(edited)).toBe(true);
   });
 
-  it("counts step advance, output, analysis, and a user Tutor item as meaningful", () => {
+  it("counts step advance, output, and analysis as Lab-meaningful", () => {
     const starter = createBeginnerStarterSession();
-    const emptyTutor = createEmptyModuleTutorSession();
-    expect(computeOdeLabMeaningful(starter, emptyTutor)).toBe(false);
-    expect(
-      computeOdeLabMeaningful({ ...starter, step: "configure" }, emptyTutor)
-    ).toBe(true);
+    expect(computeOdeLabMeaningful(starter)).toBe(false);
+    expect(computeOdeLabMeaningful({ ...starter, step: "configure" })).toBe(true);
 
     const successful = withSuccessfulOutput();
-    expect(computeOdeLabMeaningful(successful, emptyTutor)).toBe(true);
+    expect(computeOdeLabMeaningful(successful)).toBe(true);
 
     const run = successful.output.single!.firstOrderRun!;
     const convergence = {
@@ -205,12 +202,7 @@ describe("meaningful work and safe Resume selectors", () => {
       convergenceByFingerprint: setConvergenceState({}, run.runFingerprint, convergence),
     };
     expect(hasSuccessfulConvergenceAnalysis(analyzed)).toBe(true);
-    expect(computeOdeLabMeaningful(analyzed, emptyTutor)).toBe(true);
-
-    const assistantOnly = appendTutorMessage(emptyTutor, "assistant", "Welcome");
-    expect(computeOdeLabMeaningful(starter, assistantOnly)).toBe(false);
-    const user = appendTutorMessage(assistantOnly, "user", "Explain this run");
-    expect(computeOdeLabMeaningful(starter, user)).toBe(true);
+    expect(computeOdeLabMeaningful(analyzed)).toBe(true);
   });
 
   it("creates a compact Resume DTO with no equations, inputs, results, or Tutor text", () => {
@@ -231,6 +223,54 @@ describe("meaningful work and safe Resume selectors", () => {
     for (const prohibited of ["-y", "exp(-t)", "equationDisplay", "points", "Tutor"]) {
       expect(serialized).not.toContain(prohibited);
     }
+  });
+
+  it("uses approved step and current/stale analysis labels only", () => {
+    const starter = createBeginnerStarterSession();
+    expect(createOdeResumeSummary(starter, 1)).toMatchObject({
+      stepLabel: "Method",
+      methodLabel: "Forward Euler",
+    });
+    expect(
+      createOdeResumeSummary({ ...starter, step: "configure" }, 2)
+    ).toMatchObject({ stepLabel: "Data" });
+
+    const successful = withSuccessfulOutput();
+    const run = successful.output.single!.firstOrderRun!;
+    const base = createConvergenceUiState(run);
+    const current = {
+      ...base,
+      result: { configFingerprint: "stored" },
+      resultStatus: "current" as const,
+    } as unknown as typeof base;
+    const stale = {
+      ...current,
+      resultStatus: "stale" as const,
+    } as typeof base;
+    const currentSummary = createOdeResumeSummary(
+      {
+        ...successful,
+        convergenceByFingerprint: setConvergenceState(
+          {},
+          run.runFingerprint,
+          current
+        ),
+      },
+      3
+    );
+    const staleSummary = createOdeResumeSummary(
+      {
+        ...successful,
+        convergenceByFingerprint: setConvergenceState(
+          {},
+          run.runFingerprint,
+          stale
+        ),
+      },
+      4
+    );
+    expect(currentSummary.analysisLabel).toBe("Analysis available");
+    expect(staleSummary.analysisLabel).toBe("Analysis stale");
   });
 });
 

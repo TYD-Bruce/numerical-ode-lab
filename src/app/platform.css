@@ -259,6 +259,42 @@ a {
   gap: var(--space-6);
 }
 
+.platform-resume-section {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.platform-resume-section h2 {
+  margin: 0;
+}
+
+.platform-resume-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.platform-resume-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.platform-resume-card h3,
+.platform-resume-card p {
+  margin: 0;
+}
+
+.platform-resume-details,
+.platform-resume-analysis {
+  color: var(--color-text-secondary);
+}
+
+.platform-resume-card .platform-action {
+  margin-top: auto;
+}
+
 .platform-card {
   min-width: 0;
   padding: var(--space-6);
@@ -376,7 +412,8 @@ code {
     display: inline-flex;
   }
 
-  .platform-card-grid {
+  .platform-card-grid,
+  .platform-resume-grid {
     grid-template-columns: 1fr;
   }
 

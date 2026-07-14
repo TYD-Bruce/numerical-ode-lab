@@ -1,5 +1,6 @@
 import type { LabRouteModule, Navigate } from "./contracts";
 import { createAppSessionStore, type AppSessionStore } from "./appSessionStore";
+import { createBeforeUnloadHandler } from "./beforeUnload";
 import { createAppShell, type AppShell } from "./appShell";
 import { createPlatformModuleRegistry } from "./moduleRegistry";
 import {
@@ -41,9 +42,12 @@ export function createPlatformBootstrap(options: {
     shell,
     routes: createRouteDefinitions({
       initialValueProblemsLoader: registry.loadInitialValueProblems,
+      homeSessionSource: store,
     }),
   });
   let disposed = false;
+  const handleBeforeUnload = createBeforeUnloadHandler(store);
+  window.addEventListener("beforeunload", handleBeforeUnload);
   router.start();
 
   return Object.freeze({
@@ -55,6 +59,7 @@ export function createPlatformBootstrap(options: {
     dispose(): void {
       if (disposed) return;
       disposed = true;
+      window.removeEventListener("beforeunload", handleBeforeUnload);
       router.dispose();
       tutorHost.disconnect();
       tutorHost.dispose();

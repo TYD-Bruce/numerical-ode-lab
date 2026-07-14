@@ -84,6 +84,12 @@ describe("public route bundle ownership", () => {
     );
     const odeRoute = source("ode/initialValueProblemsRoute.ts");
     expect(odeRoute).not.toMatch(/platformTutorPanel|tutorClient|aiTutorPanel/);
+    expect(source("pages/homePage.ts")).not.toMatch(
+      /OdeSessionState|odeSession|initialValueProblemsRoute|AppSessionStore/
+    );
+    expect(source("app/beforeUnload.ts")).not.toMatch(
+      /getSession|odeApp|initialValueProblemsRoute|querySelector|MathLive/
+    );
   });
 
   it("retains MathLive and editable/Compute Engine dynamic imports", () => {

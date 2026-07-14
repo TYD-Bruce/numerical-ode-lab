@@ -14,7 +14,8 @@ import {
 
 interface StoredLabSession {
   readonly session: unknown;
-  readonly metadata: LabSessionMetadata;
+  readonly labMeaningful: boolean;
+  readonly resumeCandidate?: ResumeSummary;
 }
 
 export interface AppSessionStore {
@@ -129,8 +130,59 @@ function sameRouteMetadata(
   );
 }
 
-export function createAppSessionStore(): AppSessionStore {
+function userMessageCount(session: ModuleTutorSession): number {
+  return session.items.filter(
+    (item) => item.kind === "message" && item.role === "user"
+  ).length;
+}
+
+function sameResumeSummary(
+  a: ResumeSummary | undefined,
+  b: ResumeSummary | undefined
+): boolean {
+  return (
+    a === b ||
+    (a?.moduleId === b?.moduleId &&
+      a?.route === b?.route &&
+      a?.labTitle === b?.labTitle &&
+      a?.stepLabel === b?.stepLabel &&
+      a?.methodLabel === b?.methodLabel &&
+      a?.analysisLabel === b?.analysisLabel &&
+      a?.lastMeaningfulInteraction === b?.lastMeaningfulInteraction)
+  );
+}
+
+function sameLabMetadata(
+  a: LabSessionMetadata | undefined,
+  b: LabSessionMetadata
+): boolean {
+  return (
+    a?.labMeaningful === b.labMeaningful &&
+    a?.tutorMeaningful === b.tutorMeaningful &&
+    a?.meaningful === b.meaningful &&
+    a?.lastMeaningfulInteraction === b.lastMeaningfulInteraction &&
+    sameResumeSummary(a?.resumeSummary, b.resumeSummary)
+  );
+}
+
+function latestTimestamp(
+  current: number | undefined,
+  proposed: number | undefined
+): number | undefined {
+  const validCurrent =
+    Number.isFinite(current) && current! >= 0 ? current : undefined;
+  const validProposed =
+    Number.isFinite(proposed) && proposed! >= 0 ? proposed : undefined;
+  if (validCurrent === undefined) return validProposed;
+  if (validProposed === undefined) return validCurrent;
+  return Math.max(validCurrent, validProposed);
+}
+
+export function createAppSessionStore(
+  options: { readonly now?: () => number } = {}
+): AppSessionStore {
   let labs: Partial<Record<LabModuleId, StoredLabSession>> = {};
+  let labMetadata: Partial<Record<LabModuleId, LabSessionMetadata>> = {};
   let tutors: Record<LabModuleId, ModuleTutorSession> = {
     ode: createEmptyModuleTutorSession(),
     linear_algebra: createEmptyModuleTutorSession(),
@@ -143,6 +195,44 @@ export function createAppSessionStore(): AppSessionStore {
     for (const listener of [...listeners]) listener();
   };
 
+  const updateMaintainedMetadata = (
+    moduleId: LabModuleId,
+    contribution: {
+      readonly labMeaningful: boolean;
+      readonly resumeCandidate?: ResumeSummary;
+      readonly proposedTimestamp?: number;
+    },
+    tutorMeaningful: boolean
+  ): boolean => {
+    const current = labMetadata[moduleId];
+    const lastMeaningfulInteraction = latestTimestamp(
+      current?.lastMeaningfulInteraction,
+      contribution.proposedTimestamp
+    );
+    const meaningful = contribution.labMeaningful || tutorMeaningful;
+    const resumeSummary =
+      meaningful &&
+      contribution.resumeCandidate &&
+      lastMeaningfulInteraction !== undefined
+        ? freezePureValue({
+            ...contribution.resumeCandidate,
+            lastMeaningfulInteraction,
+          })
+        : undefined;
+    const next = freezePureValue({
+      labMeaningful: contribution.labMeaningful,
+      tutorMeaningful,
+      meaningful,
+      ...(resumeSummary ? { resumeSummary } : {}),
+      ...(lastMeaningfulInteraction === undefined
+        ? {}
+        : { lastMeaningfulInteraction }),
+    });
+    if (sameLabMetadata(current, next)) return false;
+    labMetadata = { ...labMetadata, [moduleId]: next };
+    return true;
+  };
+
   const setLab = <T>(
     moduleId: LabModuleId,
     session: T,
@@ -151,14 +241,40 @@ export function createAppSessionStore(): AppSessionStore {
     assertPureValue(session);
     assertPureValue(metadata);
     const frozenSession = freezePureValue(session);
-    const frozenMetadata = freezePureValue({ ...metadata });
     const current = labs[moduleId];
-    if (current?.session === frozenSession && current.metadata === frozenMetadata) return;
-    labs = {
-      ...labs,
-      [moduleId]: Object.freeze({ session: frozenSession, metadata: frozenMetadata }),
-    };
-    notify();
+    const incomingCandidate = metadata.resumeSummary
+      ? freezePureValue({ ...metadata.resumeSummary })
+      : undefined;
+    const resumeCandidate = sameResumeSummary(
+      current?.resumeCandidate,
+      incomingCandidate
+    )
+      ? current?.resumeCandidate
+      : incomingCandidate;
+    const labChanged =
+      current?.session !== frozenSession ||
+      current?.labMeaningful !== metadata.labMeaningful ||
+      current?.resumeCandidate !== resumeCandidate;
+    if (labChanged) {
+      labs = {
+        ...labs,
+        [moduleId]: Object.freeze({
+          session: frozenSession,
+          labMeaningful: metadata.labMeaningful,
+          ...(resumeCandidate ? { resumeCandidate } : {}),
+        }),
+      };
+    }
+    const metadataChanged = updateMaintainedMetadata(
+      moduleId,
+      {
+        labMeaningful: metadata.labMeaningful,
+        resumeCandidate,
+        proposedTimestamp: metadata.lastMeaningfulInteraction,
+      },
+      hasUserTutorMessage(tutors[moduleId])
+    );
+    if (labChanged || metadataChanged) notify();
   };
 
   const store: AppSessionStore = {
@@ -166,7 +282,7 @@ export function createAppSessionStore(): AppSessionStore {
       return labs[moduleId]?.session as T | undefined;
     },
     getLabMetadata(moduleId) {
-      return labs[moduleId]?.metadata;
+      return labMetadata[moduleId];
     },
     setLab,
     getTutor(moduleId) {
@@ -179,6 +295,18 @@ export function createAppSessionStore(): AppSessionStore {
       assertPureValue(next);
       const frozen = freezePureValue(next);
       tutors = { ...tutors, [moduleId]: frozen };
+      const storedLab = labs[moduleId];
+      updateMaintainedMetadata(
+        moduleId,
+        {
+          labMeaningful: storedLab?.labMeaningful ?? false,
+          resumeCandidate: storedLab?.resumeCandidate,
+          ...(userMessageCount(frozen) > userMessageCount(current)
+            ? { proposedTimestamp: (options.now ?? Date.now)() }
+            : {}),
+        },
+        hasUserTutorMessage(frozen)
+      );
       notify();
     },
     createTutorSessionAccess(moduleId) {
@@ -203,19 +331,21 @@ export function createAppSessionStore(): AppSessionStore {
     },
     resetLab: setLab,
     hasMeaningfulWork() {
-      return (
-        Object.values(labs).some((stored) => stored?.metadata.meaningful) ||
-        Object.values(tutors).some(hasUserTutorMessage)
-      );
+      return Object.values(labMetadata).some((metadata) => metadata?.meaningful);
     },
     getResumeSummaries(limit = 3) {
-      const summaries = Object.values(labs)
+      const summaries = Object.values(labMetadata)
         .filter(
-          (stored): stored is StoredLabSession =>
-            stored?.metadata.meaningful === true &&
-            stored.metadata.resumeSummary !== undefined
+          (metadata): metadata is LabSessionMetadata & {
+            readonly resumeSummary: ResumeSummary;
+            readonly lastMeaningfulInteraction: number;
+          } =>
+            metadata?.meaningful === true &&
+            metadata.resumeSummary !== undefined &&
+            Number.isFinite(metadata.lastMeaningfulInteraction) &&
+            metadata.lastMeaningfulInteraction! >= 0
         )
-        .map((stored) => stored.metadata.resumeSummary!)
+        .map((metadata) => metadata.resumeSummary)
         .sort(
           (a, b) => b.lastMeaningfulInteraction - a.lastMeaningfulInteraction
         )

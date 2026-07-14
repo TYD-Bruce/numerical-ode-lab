@@ -1,11 +1,16 @@
 // @vitest-environment jsdom
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { assertPureValue } from "../app/appSessionStore";
+import { assertPureValue, createAppSessionStore } from "../app/appSessionStore";
 import type { SolverResult } from "../solvers";
 import type { EditableMathFieldHandle } from "../math/ui/editableMathField";
 import { createSuccessfulExpressionSnapshot } from "../math/problemExpressions";
 import { updatePresetProblemFields } from "../problemPresets";
+import {
+  appendTutorMessage,
+  clearTutorConversation,
+  setTutorDesktopOpen,
+} from "../tutor/moduleTutorSession";
 import { createReadonlySolverResult, createBeginnerStarterSession } from "./odeSession";
 import {
   createConvergenceUiState,
@@ -27,6 +32,7 @@ const mountConvergence = vi.fn(
         chartMetric: string;
         accordionOpen: Record<string, boolean>;
       };
+      onIntent?(intent: { type: "metric"; metric: "max_global" }): void;
     }
   ) => ({ dispose: disposeConvergence })
 );
@@ -158,7 +164,16 @@ describe("mounted ODE lifecycle", () => {
     const target = document.createElement("div");
     document.body.append(target);
     const initial = outputSession();
-    const mounted = mountOdeApp({ target, initialSession: initial });
+    const recordMeaningfulInteraction = vi.fn();
+    const mounted = mountOdeApp({
+      target,
+      initialSession: initial,
+      lifecycle: {
+        updateSession: vi.fn(),
+        recordMeaningfulInteraction,
+      },
+      now: () => 900,
+    });
     await Promise.resolve();
 
     expect(target.textContent).toContain("Forward Euler · results");
@@ -176,6 +191,11 @@ describe("mounted ODE lifecycle", () => {
     expect(mounted.getSession().output.single?.result.points).toBe(
       mounted.getSession().output.single?.result.points
     );
+    mountConvergence.mock.calls[0]?.[1].onIntent?.({
+      type: "metric",
+      metric: "max_global",
+    });
+    expect(recordMeaningfulInteraction).not.toHaveBeenCalled();
     const tutorContext = mounted.getTutorBinding().getContext() as {
       enabled: boolean;
       result: { points: ReadonlyArray<{ t: number; y: number }> };
@@ -235,7 +255,16 @@ describe("mounted ODE lifecycle", () => {
     const { mountOdeApp } = await import("./odeApp");
     const target = document.createElement("div");
     document.body.append(target);
-    const mounted = mountOdeApp({ target, initialSession: outputSession() });
+    const recordMeaningfulInteraction = vi.fn();
+    const mounted = mountOdeApp({
+      target,
+      initialSession: outputSession(),
+      lifecycle: {
+        updateSession: vi.fn(),
+        recordMeaningfulInteraction,
+      },
+      now: () => 800,
+    });
     await Promise.resolve();
     const points = mounted.getSession().output.single!.result.points;
 
@@ -246,6 +275,7 @@ describe("mounted ODE lifecycle", () => {
     await Promise.resolve();
 
     expect(target.querySelector<HTMLElement>("#form-error")?.hidden).toBe(false);
+    expect(recordMeaningfulInteraction).not.toHaveBeenCalled();
     expect(mounted.getSession().output.single?.result.points).toBe(points);
     expect(
       (mounted.getTutorBinding().getContext() as {
@@ -284,10 +314,12 @@ describe("mounted ODE lifecycle", () => {
     const target = document.createElement("div");
     document.body.append(target);
     const updates = vi.fn();
+    const recordMeaningfulInteraction = vi.fn();
     const mounted = mountOdeApp({
       target,
       initialSession: createBeginnerStarterSession(),
-      lifecycle: { updateSession: updates },
+      lifecycle: { updateSession: updates, recordMeaningfulInteraction },
+      now: () => 321,
     });
     const rk4 = [...target.querySelectorAll<HTMLButtonElement>(".card")].find(
       (button) => button.querySelector("h2")?.textContent === "Runge-Kutta 4"
@@ -297,9 +329,108 @@ describe("mounted ODE lifecycle", () => {
     expect(updates).toHaveBeenCalled();
     const latest = updates.mock.calls.at(-1)?.[0];
     expect(latest.selectedMethod).toEqual({ family: "rk4" });
+    expect(recordMeaningfulInteraction).toHaveBeenCalledOnce();
+    expect(recordMeaningfulInteraction).toHaveBeenCalledWith(321);
+    expect(updates.mock.calls.at(-1)?.[1]).toMatchObject({
+      labMeaningful: true,
+      lastMeaningfulInteraction: 321,
+      resumeSummary: {
+        stepLabel: "Data",
+        methodLabel: "Runge-Kutta 4",
+      },
+    });
     expect(JSON.stringify(latest)).not.toContain("HTML");
     expect(latest.convergenceByFingerprint).not.toBeInstanceOf(Map);
     expect(() => assertPureValue(latest)).not.toThrow();
+    mounted.dispose();
+  });
+
+  it("records a successful Run once, clears Tutor work, and keeps Output meaningful", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const initial = configuredSession();
+    const store = createAppSessionStore({ now: () => 100 });
+    store.updateTutor("ode", (current) =>
+      setTutorDesktopOpen(
+        appendTutorMessage(current, "user", "Explain the next run"),
+        true
+      )
+    );
+    const mountEditableMathField = vi.fn(
+      (
+        _target: HTMLElement,
+        fieldOptions: {
+          profile: "rhs" | "exact_solution" | "second_order_rhs";
+        }
+      ) => {
+        const expression =
+          fieldOptions.profile === "exact_solution"
+            ? initial.form.current.exactSolution.confirmed!
+            : initial.form.current.rhs.confirmed;
+        const snapshot = {
+          state: {
+            kind: "ready" as const,
+            draftLatex: expression.latex,
+            confirmed: expression,
+          },
+          strict: true,
+        };
+        return {
+          ...editableHandle(),
+          getState: vi.fn(() => snapshot),
+          validateStrict: vi.fn(() => snapshot),
+          getIssue: vi.fn(() => undefined),
+        };
+      }
+    );
+    const recordMeaningfulInteraction = vi.fn();
+    const mounted = mountOdeApp({
+      target,
+      initialSession: initial,
+      now: () => 500,
+      lifecycle: {
+        recordMeaningfulInteraction,
+        updateSession(session, metadata) {
+          store.setLab("ode", session, metadata);
+        },
+      },
+      loadEditableMathField: async () => ({ mountEditableMathField }),
+    });
+    const unsubscribeReset = mounted
+      .getTutorBinding()
+      .subscribeConversationReset?.(() => {
+        store.updateTutor("ode", clearTutorConversation);
+      });
+    await Promise.resolve();
+    await Promise.resolve();
+
+    target
+      .querySelector<HTMLFormElement>("#ode-form")!
+      .dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+    await vi.waitFor(() =>
+      expect(target.querySelector("#results-body")).not.toBeNull()
+    );
+
+    expect(store.getTutor("ode")).toEqual({
+      items: [],
+      draftMessage: "",
+      desktopOpen: true,
+    });
+    expect(store.getLabMetadata("ode")).toMatchObject({
+      labMeaningful: true,
+      tutorMeaningful: false,
+      meaningful: true,
+      lastMeaningfulInteraction: 500,
+      resumeSummary: {
+        stepLabel: "Output",
+        methodLabel: "Forward Euler",
+        lastMeaningfulInteraction: 500,
+      },
+    });
+    expect(recordMeaningfulInteraction).toHaveBeenCalledOnce();
+    expect(recordMeaningfulInteraction).toHaveBeenCalledWith(500);
+    unsubscribeReset?.();
     mounted.dispose();
   });
 

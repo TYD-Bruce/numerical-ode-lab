@@ -1,7 +1,7 @@
-import type { RouteId, RouteModule } from "./contracts";
+import type { HomeSessionSource, RouteId, RouteModule } from "./contracts";
 import { createRouteLoader, type RouteLoader } from "./routeLoader";
 import { aboutPage } from "../pages/aboutPage";
-import { homePage } from "../pages/homePage";
+import { createHomePage } from "../pages/homePage";
 import { linearAlgebraOverviewPage } from "../pages/linearAlgebraOverviewPage";
 import { notFoundPage } from "../pages/notFoundPage";
 import { odeOverviewPage } from "../pages/odeOverviewPage";
@@ -31,6 +31,7 @@ export interface NormalizedApplicationLocation {
 
 interface CreateRouteDefinitionsOptions {
   initialValueProblemsLoader?: () => Promise<RouteModule>;
+  homeSessionSource?: HomeSessionSource;
 }
 
 export function normalizePathname(pathname: string): string {
@@ -65,7 +66,9 @@ export function createRouteDefinitions(
       path: "/",
       title: "Numerical Analysis Lab",
       kind: "page",
-      loader: createRouteLoader(() => Promise.resolve(homePage)),
+      loader: createRouteLoader(() =>
+        Promise.resolve(createHomePage(options.homeSessionSource))
+      ),
     },
     {
       id: "ode-overview",

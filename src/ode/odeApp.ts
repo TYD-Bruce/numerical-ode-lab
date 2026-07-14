@@ -94,6 +94,8 @@ import type {
   ResumeSummary,
 } from "../app/contracts";
 import {
+  computeOdeLabMeaningful,
+  createOdeResumeSummary,
   createReadonlySolverResult,
   getExperimentIdentity,
   getConvergenceState,
@@ -146,8 +148,9 @@ export interface MountOdeAppOptions {
   readonly navigate?: (path: string) => void;
   readonly lifecycle?: Pick<
     LabLifecycleCallbacks<OdeSessionState>,
-    "updateSession"
+    "updateSession" | "recordMeaningfulInteraction"
   >;
+  readonly now?: () => number;
   readonly loadEditableMathField?: () => Promise<
     Pick<
       typeof import("../math/ui/editableMathField"),
@@ -203,6 +206,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     options.initialSession.output.single?.firstOrderRun ?? null;
   let convergenceStates = options.initialSession.convergenceByFingerprint;
   let activeConvergenceView: ConvergenceStudyViewHandle | null = null;
+  let lastMeaningfulInteraction: number | undefined;
 
   function applyTutorChartInstruction(instruction: ChartInstruction): void {
     if (!chart || instruction.type === "none") return;
@@ -384,9 +388,16 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     persisted.h = fields.runStepSize;
   }
 
-  function recordTrackedEdit(): void {
+  function markMeaningfulInteraction(): void {
+    const at = (options.now ?? Date.now)();
+    lastMeaningfulInteraction = at;
+    options.lifecycle?.recordMeaningfulInteraction?.(at);
+  }
+
+  function recordTrackedEdit(meaningfulInteraction = true): void {
     presetFormState = updatePresetProblemFields(presetFormState, trackedFields());
     refreshExperimentIdentityPresentation();
+    if (meaningfulInteraction) markMeaningfulInteraction();
     emitSessionUpdate();
   }
 
@@ -581,6 +592,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       bar.querySelector("[data-cancel-compare]")!.addEventListener("click", () => {
         session = { mode: "single" };
         comparePickError = "";
+        markMeaningfulInteraction();
         render();
       });
       wrap.append(bar);
@@ -597,6 +609,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     bar.querySelector("[data-compare]")!.addEventListener("click", () => {
       session = { mode: "compare_pick", first: null };
       comparePickError = "";
+      markMeaningfulInteraction();
       render();
     });
     wrap.append(bar);
@@ -636,6 +649,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
             order: cat.orderDefault,
           };
           step = "configure";
+          markMeaningfulInteraction();
           render();
         })
       );
@@ -657,6 +671,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
           if (session.first === null) {
             comparePickError = "";
             session = { mode: "compare_pick", first: pick };
+            markMeaningfulInteraction();
             render();
             return;
           }
@@ -673,6 +688,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
           comparePickError = "";
           session = { mode: "compare", a: session.first, b: pick };
           step = "configure";
+          markMeaningfulInteraction();
           render();
         })
       );
@@ -760,7 +776,10 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
           );
         }
         if (profile === "rhs") recordTrackedEdit();
-        else emitSessionUpdate();
+        else {
+          markMeaningfulInteraction();
+          emitSessionUpdate();
+        }
         activeExpressionSummary?.render([]);
         onStateChanged?.();
       },
@@ -947,13 +966,15 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
 
   function storeConvergenceState(
     snapshot: SuccessfulFirstOrderRunSnapshot,
-    state: ConvergenceUiState
+    state: ConvergenceUiState,
+    meaningfulInteraction = false
   ): void {
     convergenceStates = setConvergenceState(
       convergenceStates,
       snapshot.runFingerprint,
       state
     );
+    if (meaningfulInteraction) markMeaningfulInteraction();
     emitSessionUpdate();
   }
 
@@ -1020,7 +1041,11 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       }
       validateConsistencyPermission(consistencyCheck, allowConsistencyWarning);
       const result = runConvergenceStudy(config);
-      storeConvergenceState(snapshot, recordConvergenceSuccess(state, result));
+      storeConvergenceState(
+        snapshot,
+        recordConvergenceSuccess(state, result),
+        true
+      );
     } catch (error) {
       state = convergenceStateFor(snapshot);
       storeConvergenceState(snapshot, recordConvergenceFailure(
@@ -1241,13 +1266,13 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
         refreshUnrunNotice();
       });
 
-    const syncTrackedFormFields = (): void => {
+    const syncTrackedFormFields = (meaningfulInteraction = true): void => {
       if (isSecond) return;
       const form = wrap.querySelector<HTMLFormElement>("#ode-form")!;
       persistFromFirstOrderFd(new FormData(form));
       persisted.exactSolutionEnabled =
         wrap.querySelector<HTMLInputElement>("[data-exact-solution-toggle]")!.checked;
-      recordTrackedEdit();
+      recordTrackedEdit(meaningfulInteraction);
     };
 
     const applyPresetStateToUi = async (): Promise<void> => {
@@ -1280,6 +1305,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       activeExpressionSummary?.render([]);
       refreshPresetPresentation();
       refreshUnrunNotice();
+      recordTrackedEdit(false);
     };
 
     if (!isSecond) {
@@ -1288,7 +1314,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       const select = wrap.querySelector<HTMLSelectElement>("[data-preset-select]")!;
       select.addEventListener("change", () => {
         if (!select.value) return;
-        syncTrackedFormFields();
+        syncTrackedFormFields(false);
         pendingPresetId = select.value as ProblemPresetId;
         if (isPresetFormDirty(presetFormState)) {
           confirmation.hidden = false;
@@ -1297,6 +1323,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
         }
         presetFormState = loadProblemPreset(presetFormState, pendingPresetId);
         pendingPresetId = undefined;
+        markMeaningfulInteraction();
         void applyPresetStateToUi();
       });
       wrap.querySelector("[data-cancel-preset]")!.addEventListener("click", () => {
@@ -1309,10 +1336,12 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
         presetFormState = loadProblemPreset(presetFormState, pendingPresetId);
         pendingPresetId = undefined;
         confirmation.hidden = true;
+        markMeaningfulInteraction();
         void applyPresetStateToUi();
       });
       wrap.querySelector("[data-undo-preset]")!.addEventListener("click", () => {
         presetFormState = undoProblemPreset(presetFormState);
+        markMeaningfulInteraction();
         void applyPresetStateToUi();
       });
       const exactToggle = wrap.querySelector<HTMLInputElement>("[data-exact-solution-toggle]")!;
@@ -1346,6 +1375,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
             new FormData(wrap.querySelector<HTMLFormElement>("#ode-form")!)
           );
           refreshUnrunNotice();
+          markMeaningfulInteraction();
           emitSessionUpdate();
         });
       }
@@ -1358,7 +1388,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       if (!isSecond) {
         persisted.exactSolutionEnabled =
           wrap.querySelector<HTMLInputElement>("[data-exact-solution-toggle]")!.checked;
-        recordTrackedEdit();
+        recordTrackedEdit(false);
       }
       step = "results";
       render();
@@ -1375,6 +1405,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       lastProblemInputs = null;
       lastFirstOrderRunSnapshot = null;
       session = { mode: "single" };
+      markMeaningfulInteraction();
       render();
     });
 
@@ -1410,7 +1441,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
           persistFromFirstOrderFd(fd);
           persisted.exactSolutionEnabled =
             wrap.querySelector<HTMLInputElement>("[data-exact-solution-toggle]")!.checked;
-          recordTrackedEdit();
+          recordTrackedEdit(false);
           const mountedExactField = await exactExpressionField;
           if (!isCurrentGeneration(formGeneration, wrap)) return;
           if (persisted.exactSolutionEnabled && !mountedExactField) {
@@ -1508,6 +1539,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
             h,
             y0: Number(fd.get("y0")),
           };
+        markMeaningfulInteraction();
         tutorBindingControl.requestConversationReset();
         step = "results";
         render();
@@ -1611,7 +1643,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     wrap.querySelector("[data-return-output]")?.addEventListener("click", () => {
       const form = wrap.querySelector<HTMLFormElement>("#ode-form")!;
       persistFromFirstOrderFd(new FormData(form));
-      recordTrackedEdit();
+      recordTrackedEdit(false);
       step = "results";
       render();
     });
@@ -1620,7 +1652,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       const form = wrap.querySelector<HTMLFormElement>("#ode-form");
       if (form) {
         persistFromFirstOrderFd(new FormData(form));
-        recordTrackedEdit();
+        recordTrackedEdit(false);
       }
       step = "choose";
       lastCompare = null;
@@ -1629,6 +1661,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       lastProblemInputs = null;
       lastFirstOrderRunSnapshot = null;
       session = { mode: "compare_pick", first: null };
+      markMeaningfulInteraction();
       render();
     });
 
@@ -1641,7 +1674,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       try {
         const fd = new FormData(form);
         persistFromFirstOrderFd(fd);
-        recordTrackedEdit();
+        recordTrackedEdit(false);
         const t0 = Number(fd.get("t0"));
         const tEnd = Number(fd.get("tEnd"));
         const h = Number(fd.get("h"));
@@ -1690,6 +1723,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
           resultB: createReadonlySolverResult(resultB),
           expression: expressionSnapshot,
         };
+        markMeaningfulInteraction();
         tutorBindingControl.requestConversationReset();
         step = "results";
         render();
@@ -1711,6 +1745,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     lastProblemInputs = null;
     lastFirstOrderRunSnapshot = null;
     session = { mode: "single" };
+    markMeaningfulInteraction();
     render();
   }
 
@@ -2217,11 +2252,18 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
   function emitSessionUpdate(): void {
     if (disposed || !options.lifecycle) return;
     const snapshot = createSessionSnapshot(false);
+    const labMeaningful = computeOdeLabMeaningful(snapshot);
     const metadata: LabSessionMetadata = {
-      meaningful:
-        snapshot.step !== "choose" ||
-        snapshot.output.single !== undefined ||
-        snapshot.output.comparison !== undefined,
+      labMeaningful,
+      tutorMeaningful: false,
+      meaningful: labMeaningful,
+      resumeSummary: createOdeResumeSummary(
+        snapshot,
+        lastMeaningfulInteraction ?? 0
+      ),
+      ...(lastMeaningfulInteraction === undefined
+        ? {}
+        : { lastMeaningfulInteraction }),
     };
     options.lifecycle.updateSession(snapshot, metadata);
   }
@@ -2233,8 +2275,10 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       return createSessionSnapshot(!disposed);
     },
     getResumeSummary(): ResumeSummary | undefined {
-      // Phase 5A will supply maintained activity metadata; do not invent a timestamp here.
-      return undefined;
+      return createOdeResumeSummary(
+        createSessionSnapshot(!disposed),
+        lastMeaningfulInteraction ?? 0
+      );
     },
     getTutorBinding(): LabTutorBinding<unknown> {
       return tutorBindingControl.binding;

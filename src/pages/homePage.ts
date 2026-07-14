@@ -1,4 +1,8 @@
-import type { RouteModule } from "../app/contracts";
+import type {
+  HomeSessionSource,
+  ResumeSummary,
+  RouteModule,
+} from "../app/contracts";
 import {
   appendPageHeading,
   createRouteLink,
@@ -22,89 +26,170 @@ function moduleCard(options: {
   return card;
 }
 
-export const homePage: RouteModule = {
-  mount({ target }) {
-    return mountStaticPage(target, (page) => {
-      appendPageHeading(
-        page,
-        "Numerical Analysis Lab",
-        "An interactive, AI-assisted platform for learning numerical analysis through computation, visualization, error analysis, and guided experiments."
-      );
+function resumeCard(summary: ResumeSummary): HTMLElement {
+  const card = document.createElement("article");
+  card.className = "platform-card platform-resume-card";
+  card.dataset.resumeModule = summary.moduleId;
+  const details = summary.methodLabel
+    ? `${summary.stepLabel} · ${summary.methodLabel}`
+    : summary.stepLabel;
+  card.append(
+    createTextElement("h3", summary.labTitle),
+    createTextElement("p", details, "platform-resume-details")
+  );
+  if (summary.analysisLabel) {
+    card.append(
+      createTextElement(
+        "p",
+        summary.analysisLabel,
+        "platform-resume-analysis"
+      )
+    );
+  }
+  card.append(
+    createRouteLink("Resume Lab", summary.route, {
+      className: "platform-action",
+      prefetchCompleteLab: summary.moduleId === "ode",
+    })
+  );
+  return card;
+}
 
-      const cycle = document.createElement("section");
-      cycle.className = "platform-learning-cycle";
-      cycle.setAttribute("aria-labelledby", "learning-cycle-title");
-      const cycleHeading = createTextElement("h2", "A practical learning cycle");
-      cycleHeading.id = "learning-cycle-title";
-      cycle.append(
-        cycleHeading,
-        createTextElement("p", "Understand → Compute → Visualize → Analyze")
-      );
+function newestUniqueSummaries(
+  source: HomeSessionSource
+): readonly ResumeSummary[] {
+  const seen = new Set<ResumeSummary["moduleId"]>();
+  return [...source.getResumeSummaries(3)]
+    .sort(
+      (a, b) => b.lastMeaningfulInteraction - a.lastMeaningfulInteraction
+    )
+    .filter((summary) => {
+      if (seen.has(summary.moduleId)) return false;
+      seen.add(summary.moduleId);
+      return true;
+    })
+    .slice(0, 3);
+}
 
-      const modules = document.createElement("section");
-      modules.setAttribute("aria-labelledby", "module-heading");
-      const modulesHeading = createTextElement("h2", "Explore the modules");
-      modulesHeading.id = "module-heading";
-      const cards = document.createElement("div");
-      cards.className = "platform-card-grid";
-      cards.append(
-        moduleCard({
-          title: "Numerical ODE",
-          status: createStatus("Available", "available"),
-          description:
-            "Experiment with fixed-step methods for initial value problems and analyze numerical error.",
-          action: createRouteLink("Open Lab", "/ode/initial-value-problems", {
-            className: "platform-action",
-            prefetchCompleteLab: true,
+export function createHomePage(sessionSource?: HomeSessionSource): RouteModule {
+  return {
+    mount({ target }) {
+      const mounted = mountStaticPage(target, (page) => {
+        appendPageHeading(
+          page,
+          "Numerical Analysis Lab",
+          "An interactive, AI-assisted platform for learning numerical analysis through computation, visualization, error analysis, and guided experiments."
+        );
+
+        const cycle = document.createElement("section");
+        cycle.className = "platform-learning-cycle";
+        cycle.setAttribute("aria-labelledby", "learning-cycle-title");
+        const cycleHeading = createTextElement("h2", "A practical learning cycle");
+        cycleHeading.id = "learning-cycle-title";
+        cycle.append(
+          cycleHeading,
+          createTextElement("p", "Understand → Compute → Visualize → Analyze")
+        );
+
+        const modules = document.createElement("section");
+        modules.setAttribute("aria-labelledby", "module-heading");
+        const modulesHeading = createTextElement("h2", "Explore the modules");
+        modulesHeading.id = "module-heading";
+        const cards = document.createElement("div");
+        cards.className = "platform-card-grid";
+        cards.append(
+          moduleCard({
+            title: "Numerical ODE",
+            status: createStatus("Available", "available"),
+            description:
+              "Experiment with fixed-step methods for initial value problems and analyze numerical error.",
+            action: createRouteLink("Open Lab", "/ode/initial-value-problems", {
+              className: "platform-action",
+              prefetchCompleteLab: true,
+            }),
           }),
-        }),
-        moduleCard({
-          title: "Numerical Linear Algebra",
-          status: createStatus("In development", "development"),
-          description:
-            "Build intuition for the matrix computations that support numerical models.",
-          action: createRouteLink("View roadmap", "/linear-algebra", {
-            className: "platform-action platform-action-secondary",
+          moduleCard({
+            title: "Numerical Linear Algebra",
+            status: createStatus("In development", "development"),
+            description:
+              "Build intuition for the matrix computations that support numerical models.",
+            action: createRouteLink("View roadmap", "/linear-algebra", {
+              className: "platform-action platform-action-secondary",
+            }),
           }),
-        }),
-        moduleCard({
-          title: "Numerical PDE",
-          status: createStatus("Planned", "planned"),
-          description:
-            "Connect discretization, stability, and refinement to spatially varying systems.",
-          action: createRouteLink("View roadmap", "/pde", {
-            className: "platform-action platform-action-secondary",
-          }),
-        })
-      );
-      modules.append(modulesHeading, cards);
+          moduleCard({
+            title: "Numerical PDE",
+            status: createStatus("Planned", "planned"),
+            description:
+              "Connect discretization, stability, and refinement to spatially varying systems.",
+            action: createRouteLink("View roadmap", "/pde", {
+              className: "platform-action platform-action-secondary",
+            }),
+          })
+        );
+        modules.append(modulesHeading, cards);
 
-      const path = document.createElement("section");
-      path.className = "platform-reading-section";
-      const pathHeading = createTextElement("h2", "Recommended Learning Path");
-      const list = document.createElement("ol");
-      const first = createTextElement("li", "Initial Value Problems");
-      const second = document.createElement("li");
-      second.append(
-        document.createTextNode("Linear Systems "),
-        createStatus("Future Lab", "development")
-      );
-      const third = document.createElement("li");
-      third.append(
-        document.createTextNode("Heat and Poisson Equations "),
-        createStatus("Future Labs", "planned")
-      );
-      list.append(first, second, third);
-      path.append(
-        pathHeading,
-        createTextElement(
-          "p",
-          "This sequence is recommended, not required. Start wherever your questions are strongest."
-        ),
-        list
-      );
+        const path = document.createElement("section");
+        path.className = "platform-reading-section";
+        const pathHeading = createTextElement("h2", "Recommended Learning Path");
+        const list = document.createElement("ol");
+        const first = createTextElement("li", "Initial Value Problems");
+        const second = document.createElement("li");
+        second.append(
+          document.createTextNode("Linear Systems "),
+          createStatus("Future Lab", "development")
+        );
+        const third = document.createElement("li");
+        third.append(
+          document.createTextNode("Heat and Poisson Equations "),
+          createStatus("Future Labs", "planned")
+        );
+        list.append(first, second, third);
+        path.append(
+          pathHeading,
+          createTextElement(
+            "p",
+            "This sequence is recommended, not required. Start wherever your questions are strongest."
+          ),
+          list
+        );
 
-      page.append(cycle, modules, path);
-    });
-  },
-};
+        page.append(cycle, modules, path);
+      });
+
+      const page = target.querySelector<HTMLElement>(".platform-page")!;
+      let resumeSection: HTMLElement | undefined;
+      const renderResume = (): void => {
+        resumeSection?.remove();
+        resumeSection = undefined;
+        if (!sessionSource) return;
+        const summaries = newestUniqueSummaries(sessionSource);
+        if (summaries.length === 0) return;
+        const section = document.createElement("section");
+        section.className = "platform-resume-section";
+        section.setAttribute("aria-labelledby", "resume-heading");
+        const heading = createTextElement("h2", "Continue your experiment");
+        heading.id = "resume-heading";
+        const cards = document.createElement("div");
+        cards.className = "platform-resume-grid";
+        cards.append(...summaries.map(resumeCard));
+        section.append(heading, cards);
+        page.insertBefore(section, page.children[1] ?? null);
+        resumeSection = section;
+      };
+      renderResume();
+      const unsubscribe = sessionSource?.subscribe(renderResume);
+      let disposed = false;
+      return {
+        dispose(): void {
+          if (disposed) return;
+          disposed = true;
+          unsubscribe?.();
+          mounted.dispose();
+        },
+      };
+    },
+  };
+}
+
+export const homePage: RouteModule = createHomePage();

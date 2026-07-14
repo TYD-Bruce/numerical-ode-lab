@@ -43,12 +43,30 @@ function testLabModule(options: {
       edit.addEventListener("click", () => {
         current = { value: "edited-session" };
         value.textContent = current.value;
-        lifecycle?.updateSession(current, { meaningful: true });
+        lifecycle?.recordMeaningfulInteraction?.(100);
+        lifecycle?.updateSession(current, {
+          labMeaningful: true,
+          tutorMeaningful: false,
+          meaningful: true,
+          resumeSummary: {
+            moduleId: "ode",
+            route: "/ode/initial-value-problems",
+            labTitle: "Initial Value Problems Lab",
+            stepLabel: "Data",
+            lastMeaningfulInteraction: 0,
+          },
+        });
       });
       target.replaceChildren(heading, value, edit);
       return {
         getSession: () => current,
-        getResumeSummary: () => undefined,
+        getResumeSummary: () => ({
+          moduleId: "ode",
+          route: "/ode/initial-value-problems",
+          labTitle: "Initial Value Problems Lab",
+          stepLabel: current.value === "edited-session" ? "Data" : "Method",
+          lastMeaningfulInteraction: 0,
+        }),
         getTutorBinding: () => TEST_BINDING,
         dispose: () => {
           options.events?.push("lab-dispose");
@@ -171,14 +189,26 @@ describe("public platform bootstrap", () => {
       testLabModule({ mountedSessions })
     );
     app.shell.outlet.querySelector<HTMLButtonElement>("[data-test-lab-edit]")!.click();
+    const activity = app.store.getLabMetadata("ode")?.lastMeaningfulInteraction;
     await app.navigate("/");
-    await app.navigate("/ode/initial-value-problems");
+    expect(app.shell.outlet.textContent).toContain("Continue your experiment");
+    const resume = app.shell.outlet.querySelector<HTMLAnchorElement>(
+      '[data-resume-module="ode"] a'
+    )!;
+    expect(resume.textContent).toBe("Resume Lab");
+    resume.click();
+    await vi.waitFor(() =>
+      expect(app.shell.outlet.textContent).toContain("edited-session")
+    );
 
     expect(mountedSessions).toEqual([
       { value: "beginner-starter" },
       { value: "edited-session" },
     ]);
     expect(app.shell.outlet.textContent).toContain("edited-session");
+    expect(app.store.getLabMetadata("ode")?.lastMeaningfulInteraction).toBe(
+      activity
+    );
     app.dispose();
   });
 
@@ -215,6 +245,19 @@ describe("public platform bootstrap", () => {
 
   it("keeps saved sessions through a failed Lab import and recovers with Retry", async () => {
     const store = createAppSessionStore();
+    store.setLab("ode", { value: "saved-session" }, {
+      labMeaningful: true,
+      tutorMeaningful: false,
+      meaningful: true,
+      lastMeaningfulInteraction: 75,
+      resumeSummary: {
+        moduleId: "ode",
+        route: "/ode/initial-value-problems",
+        labTitle: "Initial Value Problems Lab",
+        stepLabel: "Data",
+        lastMeaningfulInteraction: 75,
+      },
+    });
     store.updateTutor("ode", (current) =>
       appendTutorMessage(current, "user", "Saved before failure")
     );
@@ -233,9 +276,15 @@ describe("public platform bootstrap", () => {
     });
     await vi.waitFor(() => expect(app.shell.outlet.textContent).toContain("could not load"));
     expect(store.getTutor("ode").items).toHaveLength(1);
+    const activity = store.getLabMetadata("ode")?.lastMeaningfulInteraction;
+    expect(store.hasMeaningfulWork()).toBe(true);
+    expect(store.getResumeSummaries()).toHaveLength(1);
     await app.router.retry();
-    expect(app.shell.outlet.textContent).toContain("beginner-starter");
+    expect(app.shell.outlet.textContent).toContain("saved-session");
     expect(store.getTutor("ode").items).toHaveLength(1);
+    expect(store.getLabMetadata("ode")?.lastMeaningfulInteraction).toBe(
+      activity
+    );
     app.dispose();
   });
 

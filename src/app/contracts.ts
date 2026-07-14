@@ -20,9 +20,16 @@ export interface ResumeSummary {
 }
 
 export interface LabSessionMetadata {
+  readonly labMeaningful: boolean;
+  readonly tutorMeaningful: boolean;
   readonly meaningful: boolean;
   readonly resumeSummary?: ResumeSummary;
   readonly lastMeaningfulInteraction?: number;
+}
+
+export interface HomeSessionSource {
+  getResumeSummaries(limit?: number): readonly ResumeSummary[];
+  subscribe(listener: () => void): () => void;
 }
 
 export interface RouteSessionMetadata {
