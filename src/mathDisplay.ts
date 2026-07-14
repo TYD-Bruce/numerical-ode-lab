@@ -9,8 +9,8 @@ export function escapeHtml(s: string): string {
 }
 
 export function formatCoefficients(
-  alpha?: number[],
-  beta?: number[]
+  alpha?: readonly number[],
+  beta?: readonly number[]
 ): string {
   const parts: string[] = [];
   if (beta?.length) {

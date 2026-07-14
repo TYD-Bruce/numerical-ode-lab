@@ -12,12 +12,14 @@ import {
 import { displayNameFor } from "../methodCatalog";
 import { serializeMathAst } from "../math/canonical";
 import {
+  createEmptyExactExpressionState,
   createDefaultMathExpressionState,
   type PersistedMathExpressionState,
   type PersistedOptionalMathExpressionState,
   type SuccessfulExpressionSnapshot,
 } from "../math/problemExpressions";
 import {
+  createPresetFormState,
   createPresetFormStateFromPreset,
   trackedProblemFieldsEqual,
   type PresetFormState,
@@ -188,6 +190,35 @@ export function createBeginnerStarterSession(): OdeSessionState {
     workflow: Object.freeze({ mode: "single" as const }),
     selectedMethod: Object.freeze({ family: "forward_euler" as const }),
     form: createPresetFormStateFromPreset("exponential_decay"),
+    secondOrderForm: Object.freeze({
+      expression: createDefaultMathExpressionState("second_order_rhs"),
+      u0: "1",
+      v0: "0",
+      methodOrderDraft: "2",
+    }),
+    comparePickError: "",
+    output: Object.freeze({}),
+    convergenceByFingerprint: Object.freeze({}),
+  });
+}
+
+export function createCurrentCompatibilitySession(): OdeSessionState {
+  const rhs = createDefaultMathExpressionState("rhs");
+  const exactSolution = createEmptyExactExpressionState();
+  return Object.freeze({
+    version: 1 as const,
+    step: "choose" as const,
+    workflow: Object.freeze({ mode: "single" as const }),
+    selectedMethod: null,
+    form: createPresetFormState({
+      rhs,
+      exactSolutionEnabled: false,
+      exactSolution,
+      t0: "0",
+      y0: "1",
+      tEnd: "5",
+      runStepSize: "0.05",
+    }),
     secondOrderForm: Object.freeze({
       expression: createDefaultMathExpressionState("second_order_rhs"),
       u0: "1",

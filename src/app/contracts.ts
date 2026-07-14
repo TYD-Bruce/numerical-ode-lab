@@ -57,6 +57,30 @@ export interface TutorSessionAccess {
   ): void;
 }
 
+export type TutorPromptProfile = "ode" | "linear_algebra" | "pde";
+
+export interface LabTutorBinding<TContext> {
+  readonly moduleId: LabModuleId;
+  readonly promptProfile: TutorPromptProfile;
+  readonly suggestedQuestions: readonly string[];
+  getContext(): TContext | undefined;
+  prepareForOpen?(): void;
+}
+
+export interface ConfirmedLabReset<TSession> {
+  readonly session: TSession;
+  readonly metadata: LabSessionMetadata;
+}
+
+export interface LabLifecycleCallbacks<TSession> {
+  updateSession(
+    session: TSession,
+    metadata: LabSessionMetadata
+  ): void;
+  recordMeaningfulInteraction?(at: number): void;
+  applyConfirmedReset?(request: ConfirmedLabReset<TSession>): void;
+}
+
 export interface NavigateOptions {
   replace?: boolean;
   scroll?: "auto" | "top" | "preserve";
