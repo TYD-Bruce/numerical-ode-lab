@@ -11,7 +11,7 @@ const styles = readFileSync(new URL("./style.css", import.meta.url), "utf8");
 
 describe("mountable ODE integration boundaries", () => {
   it("keeps main.ts as a thin compatibility bootstrap", () => {
-    expect(mainSource.split(/\r?\n/).length).toBeLessThan(30);
+    expect(mainSource.split(/\r?\n/).length).toBeLessThan(60);
     expect(mainSource).toContain('from "./ode/initialValueProblemsRoute"');
     expect(mainSource).toContain("createCurrentCompatibilitySession()");
     expect(mainSource).toContain("mounted.dispose()");
@@ -19,7 +19,6 @@ describe("mountable ODE integration boundaries", () => {
       "chart.js",
       "integrateFirstOrder",
       "runConvergenceStudy",
-      "mountAiTutorPanel",
       "mountEditableMathField",
       "function render",
     ]) {
@@ -40,7 +39,7 @@ describe("mountable ODE integration boundaries", () => {
     expect(appSource).not.toContain('from "mathlive"');
     expect(appSource).not.toContain("new Map<string, ConvergenceUiState>");
     expect(appSource).toContain("setConvergenceState(");
-    expect(appSource).toContain("resetTutorConversation();");
+    expect(appSource).toContain("requestConversationReset();");
   });
 
   it("contains chart and table overflow without widening the page", () => {

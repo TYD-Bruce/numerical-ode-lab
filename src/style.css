@@ -40,6 +40,94 @@ code {
   padding: 32px 20px 64px;
 }
 
+.compatibility-tutor-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 20px;
+  align-items: start;
+}
+
+.compatibility-lab-region {
+  min-width: 0;
+}
+
+.compatibility-tutor-region {
+  width: min(340px, 30vw);
+  position: sticky;
+  top: 16px;
+}
+
+.compatibility-tutor-region:has(.platform-tutor-open) {
+  width: auto;
+}
+
+.platform-tutor-open,
+.platform-tutor-loading,
+.platform-tutor-failure {
+  position: sticky;
+  top: 16px;
+}
+
+.platform-tutor-failure {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--panel);
+}
+
+.ai-tutor-close {
+  margin-left: auto;
+}
+
+.ai-tutor-divider {
+  margin: 12px 0;
+  padding: 10px;
+  border-block: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.ai-tutor-divider p {
+  margin: 4px 0 0;
+  font-size: 0.82rem;
+}
+
+@media (max-width: 760px) {
+  .compatibility-tutor-layout {
+    display: block;
+  }
+
+  .compatibility-tutor-region {
+    width: auto;
+    position: static;
+    margin-top: 16px;
+  }
+
+  .platform-tutor-host-mobile {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    width: 100%;
+    height: 100dvh;
+    padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom));
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  .platform-tutor-host-mobile .ai-tutor-panel {
+    position: static;
+    max-height: 100%;
+    height: 100%;
+  }
+
+  .platform-tutor-host-mobile .ai-messages {
+    max-height: none;
+    min-height: 0;
+  }
+}
+
 .shell {
   display: flex;
   flex-direction: column;

@@ -67,3 +67,13 @@ export function appendNewExperimentDivider(
 export function hasUserTutorMessage(session: ModuleTutorSession): boolean {
   return session.items.some((item) => item.kind === "message" && item.role === "user");
 }
+
+export function messagesForTutorRequest(
+  session: ModuleTutorSession
+): Array<{ role: "user" | "assistant"; content: string }> {
+  return session.items.flatMap((item) =>
+    item.kind === "message"
+      ? [{ role: item.role, content: item.content }]
+      : []
+  );
+}

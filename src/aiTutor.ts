@@ -6,32 +6,17 @@ import type {
   OdeLabContext,
   TutorConvergenceStudy,
   TutorMessage,
+  OdeTutorProblemInputs,
 } from "./aiTypes";
+import { sendTutorMessage } from "./tutor/tutorClient";
+import { ODE_TUTOR_SUGGESTED_QUESTIONS } from "./ode/odeTutorBinding";
 
 const SERIES_FULL_THRESHOLD = 80;
 const SERIES_PREVIEW_COUNT = 20;
 
-export const SUGGESTED_QUESTIONS = [
-  "Explain this method step by step.",
-  "What does each variable mean?",
-  "Why is the order of accuracy p?",
-  "Explain the coefficients.",
-  "Explain the implicit solve diagnostics.",
-  "How should I interpret the graph?",
-  "What would happen if I used a smaller h?",
-  "Create a table summary of the result.",
-] as const;
+export const SUGGESTED_QUESTIONS = ODE_TUTOR_SUGGESTED_QUESTIONS;
 
-export interface ProblemInputs {
-  kind: "first_order" | "second_order";
-  equationDisplay: string;
-  t0: number;
-  tEnd: number;
-  h: number;
-  y0?: number;
-  u0?: number;
-  v0?: number;
-}
+export type ProblemInputs = OdeTutorProblemInputs;
 
 function sampleSeries(points: SeriesPoint[], max: number): SeriesPoint[] {
   if (points.length <= max) return points;
@@ -120,29 +105,10 @@ export function buildOdeLabContext(
 }
 
 export async function sendChatMessage(
-  request: ChatRequest
+  request: ChatRequest,
+  signal?: AbortSignal
 ): Promise<ChatResponse> {
-  const res = await fetch("/api/chat", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(request),
-  });
-
-  const data = (await res.json()) as ChatResponse & { error?: string };
-
-  if (!res.ok) {
-    throw new Error(
-      typeof data.error === "string"
-        ? data.error
-        : `Chat request failed (${res.status})`
-    );
-  }
-
-  if (typeof data.message !== "string") {
-    throw new Error("Invalid response from tutor API.");
-  }
-
-  return data;
+  return sendTutorMessage(request, signal);
 }
 
 /** Normalize a few legacy notation spellings while preserving controlled math delimiters. */

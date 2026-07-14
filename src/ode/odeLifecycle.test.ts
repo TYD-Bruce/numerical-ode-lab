@@ -17,8 +17,6 @@ import {
 } from "../convergenceStudyState";
 
 const destroyChart = vi.fn();
-const mountTutor = vi.fn();
-const resetTutor = vi.fn();
 const disposeConvergence = vi.fn();
 const mountConvergence = vi.fn(
   (
@@ -52,11 +50,6 @@ vi.mock("chart.js", () => {
     Filler: {},
   };
 });
-
-vi.mock("../aiTutorPanel", () => ({
-  mountAiTutorPanel: mountTutor,
-  resetTutorConversation: resetTutor,
-}));
 
 vi.mock("../convergenceStudyView", () => ({
   mountConvergenceStudyView: mountConvergence,
@@ -156,8 +149,6 @@ describe("mounted ODE lifecycle", () => {
   beforeEach(() => {
     document.body.innerHTML = "";
     destroyChart.mockClear();
-    mountTutor.mockClear();
-    resetTutor.mockClear();
     disposeConvergence.mockClear();
     mountConvergence.mockClear();
   });
@@ -171,11 +162,6 @@ describe("mounted ODE lifecycle", () => {
     await Promise.resolve();
 
     expect(target.textContent).toContain("Forward Euler · results");
-    expect(mountTutor).toHaveBeenCalledWith(
-      expect.any(HTMLElement),
-      expect.objectContaining({ enabled: true })
-    );
-    expect(resetTutor).not.toHaveBeenCalled();
     expect(mountConvergence).toHaveBeenCalledTimes(1);
     expect(mountConvergence.mock.calls[0]?.[1].getState().drawerOpen).toBe(true);
     expect(mountConvergence.mock.calls[0]?.[1].getState().chartMetric).toBe(
@@ -191,9 +177,11 @@ describe("mounted ODE lifecycle", () => {
       mounted.getSession().output.single?.result.points
     );
     const tutorContext = mounted.getTutorBinding().getContext() as {
-      result: { finalT: number; finalY: number };
+      enabled: boolean;
+      result: { points: ReadonlyArray<{ t: number; y: number }> };
     };
-    expect(tutorContext.result).toMatchObject({ finalT: 0.2, finalY: 0.8 });
+    expect(tutorContext.enabled).toBe(true);
+    expect(tutorContext.result.points.at(-1)).toMatchObject({ t: 0.2, y: 0.8 });
     mounted.dispose();
     mounted.dispose();
     expect(target.childElementCount).toBe(0);
@@ -237,10 +225,7 @@ describe("mounted ODE lifecycle", () => {
     await Promise.resolve();
 
     expect(target.textContent).toContain("Forward Euler vs Runge-Kutta 4");
-    expect(mountTutor).toHaveBeenCalledWith(
-      expect.any(HTMLElement),
-      expect.objectContaining({ enabled: false })
-    );
+    expect(mounted.getTutorBinding().getContext()).toEqual({ enabled: false });
     expect(mounted.getSession().output.single).toBeUndefined();
     expect(mounted.getSession().output.comparison?.resultB).toBe(second);
     mounted.dispose();
@@ -262,6 +247,11 @@ describe("mounted ODE lifecycle", () => {
 
     expect(target.querySelector<HTMLElement>("#form-error")?.hidden).toBe(false);
     expect(mounted.getSession().output.single?.result.points).toBe(points);
+    expect(
+      (mounted.getTutorBinding().getContext() as {
+        result: { points: readonly unknown[] };
+      }).result.points
+    ).toBe(points);
     target.querySelector<HTMLButtonElement>("[data-return-output]")!.click();
     await Promise.resolve();
     const saved = mounted.getSession();
@@ -285,7 +275,6 @@ describe("mounted ODE lifecycle", () => {
     await Promise.resolve();
 
     expect(target.querySelector("#results-body")).toBeNull();
-    expect(mountTutor).not.toHaveBeenCalled();
     expect(destroyChart).not.toHaveBeenCalled();
     mounted.dispose();
   });
@@ -478,6 +467,8 @@ describe("mounted ODE lifecycle", () => {
     await Promise.resolve();
     await Promise.resolve();
 
+    const resetTutor = vi.fn();
+    mounted.getTutorBinding().subscribeConversationReset?.(resetTutor);
     target
       .querySelector<HTMLFormElement>("#ode-form")!
       .dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));

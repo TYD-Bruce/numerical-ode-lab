@@ -65,6 +65,8 @@ export interface LabTutorBinding<TContext> {
   readonly suggestedQuestions: readonly string[];
   getContext(): TContext | undefined;
   prepareForOpen?(): void;
+  applyChartInstruction?(instruction: unknown): void;
+  subscribeConversationReset?(listener: () => void): () => void;
 }
 
 export interface ConfirmedLabReset<TSession> {

@@ -22,9 +22,7 @@ import {
   type MethodCatalogEntry,
 } from "../methodCatalog";
 import { escapeHtml, formatCoefficients } from "../mathDisplay";
-import { buildOdeLabContext, SUGGESTED_QUESTIONS, type ProblemInputs } from "../aiTutor";
-import { mountAiTutorPanel, resetTutorConversation } from "../aiTutorPanel";
-import { getTutorConvergenceStudy } from "../convergenceTutor";
+import type { ChartInstruction } from "../aiTypes";
 import { methodMathContent } from "../math/ui/methodMathContent";
 import { renderReadonlyMath } from "../math/ui/readonlyMath";
 import { validateFixedStepGrid } from "../grid";
@@ -104,6 +102,7 @@ import {
   type OdeSelectedMethod,
   type ReadonlySolverResult,
 } from "./odeSession";
+import { createOdeTutorBinding } from "./odeTutorBinding";
 import "../style.css";
 
 Chart.register(
@@ -203,6 +202,60 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     options.initialSession.output.single?.firstOrderRun ?? null;
   let convergenceStates = options.initialSession.convergenceByFingerprint;
   let activeConvergenceView: ConvergenceStudyViewHandle | null = null;
+
+  function applyTutorChartInstruction(instruction: ChartInstruction): void {
+    if (!chart || instruction.type === "none") return;
+    if (instruction.type === "zoom_range") {
+      chart.options.scales = chart.options.scales ?? {};
+      const x = (chart.options.scales as { x?: { min?: number; max?: number } }).x ?? {};
+      if (instruction.tMin !== undefined) x.min = instruction.tMin;
+      if (instruction.tMax !== undefined) x.max = instruction.tMax;
+      (chart.options.scales as { x: typeof x }).x = x;
+      if (instruction.title) {
+        chart.options.plugins = chart.options.plugins ?? {};
+        const title = (chart.options.plugins as { title?: { text?: string } }).title ?? {};
+        title.text = instruction.title;
+        (chart.options.plugins as { title: typeof title }).title = title;
+      }
+      chart.update();
+      return;
+    }
+    if (instruction.type === "line_chart") {
+      for (const dataset of chart.data.datasets) {
+        if (instruction.includePoints !== undefined && dataset.type === "line") {
+          dataset.pointRadius = instruction.includePoints ? 3 : 0;
+        }
+      }
+      chart.update();
+    }
+  }
+
+  const tutorBindingControl = createOdeTutorBinding({
+    getSource: () => {
+      if (!lastResult || !lastProblemInputs || session.mode === "compare") {
+        return { enabled: false };
+      }
+      const convergenceState = lastFirstOrderRunSnapshot
+        ? getConvergenceState(
+          convergenceStates,
+          lastFirstOrderRunSnapshot.runFingerprint
+        )
+        : undefined;
+      return {
+        enabled: true,
+        result: lastResult,
+        problem: lastProblemInputs,
+        ...(convergenceState ? { convergenceState } : {}),
+      };
+    },
+    prepareForOpen: () => {
+      const keyboard = (window as unknown as {
+        mathVirtualKeyboard?: { hide?: (options?: { animate?: boolean }) => void };
+      }).mathVirtualKeyboard;
+      keyboard?.hide?.({ animate: false });
+    },
+    applyChartInstruction: applyTutorChartInstruction,
+  });
 
   function replaceTrackedField(update: Partial<TrackedProblemFields>): void {
     presetFormState = updatePresetProblemFields(presetFormState, {
@@ -1410,7 +1463,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
             h,
             y0: Number(fd.get("y0")),
           };
-        resetTutorConversation();
+        tutorBindingControl.requestConversationReset();
         step = "results";
         render();
       } catch (e) {
@@ -1592,7 +1645,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
           resultB: createReadonlySolverResult(resultB),
           expression: expressionSnapshot,
         };
-        resetTutorConversation();
+        tutorBindingControl.requestConversationReset();
         step = "results";
         render();
       } catch (e) {
@@ -1695,7 +1748,6 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     expression: SuccessfulExpressionSnapshot
   ): HTMLElement {
     const generation = uiGeneration;
-    const tutorRunSnapshot = lastFirstOrderRunSnapshot;
     const wrap = document.createElement("div");
     wrap.className = "results-wrap";
     wrap.innerHTML = `
@@ -1703,10 +1755,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       <button type="button" class="btn ghost" data-back>← Edit inputs</button>
       <button type="button" class="btn ghost" data-methods>All methods (keep my numbers)</button>
     </div>
-    <div class="results-layout">
-      <div class="results-main" id="results-body"></div>
-      <div id="ai-tutor-host"></div>
-    </div>
+    <div class="results-main" id="results-body"></div>
   `;
     wrap.querySelector("[data-back]")!.addEventListener("click", () => {
       step = "configure";
@@ -1718,27 +1767,6 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     queueMicrotask(() => {
       if (!isCurrentGeneration(generation, wrap)) return;
       mountResults(meta, result, expression);
-      const tutorHost = wrap.querySelector<HTMLDivElement>("#ai-tutor-host");
-      if (tutorHost) {
-        mountAiTutorPanel(tutorHost, {
-          enabled: true,
-          result: result as unknown as SolverResult,
-          meta,
-          problem: lastProblemInputs,
-          getChart: () => chart,
-          ...(tutorRunSnapshot
-            ? {
-              getConvergenceStudy: () =>
-                getTutorConvergenceStudy(
-                  getConvergenceState(
-                    convergenceStates,
-                    tutorRunSnapshot.runFingerprint
-                  )
-                ),
-            }
-            : {}),
-        });
-      }
     });
     return wrap;
   }
@@ -1759,10 +1787,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       <button type="button" class="btn ghost" data-pair>Change method pair</button>
       <button type="button" class="btn ghost" data-methods>All methods (keep my numbers)</button>
     </div>
-    <div class="results-layout">
-      <div class="results-main" id="results-body"></div>
-      <div id="ai-tutor-host"></div>
-    </div>
+    <div class="results-main" id="results-body"></div>
   `;
     wrap.querySelector("[data-back]")!.addEventListener("click", () => {
       step = "configure";
@@ -1784,16 +1809,6 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     queueMicrotask(() => {
       if (!isCurrentGeneration(generation, wrap)) return;
       mountCompareResults(metaA, metaB, resultA, resultB, expression);
-      const tutorHost = wrap.querySelector<HTMLDivElement>("#ai-tutor-host");
-      if (tutorHost) {
-        mountAiTutorPanel(tutorHost, {
-          enabled: false,
-          result: null,
-          meta: null,
-          problem: null,
-          getChart: () => chart,
-        });
-      }
     });
     return wrap;
   }
@@ -2166,30 +2181,6 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     options.lifecycle.updateSession(snapshot, metadata);
   }
 
-  // Phase 3 keeps the released embedded panel and module-global conversation.
-  // This Lab-owned binding exposes fresh ODE context for the Phase 4A Host migration.
-  const tutorBinding: LabTutorBinding<unknown> = Object.freeze({
-    moduleId: "ode" as const,
-    promptProfile: "ode" as const,
-    suggestedQuestions: SUGGESTED_QUESTIONS,
-    getContext(): unknown | undefined {
-      if (!lastResult || !lastProblemInputs) return undefined;
-      const convergenceStudy = lastFirstOrderRunSnapshot
-        ? getTutorConvergenceStudy(
-          getConvergenceState(
-            convergenceStates,
-            lastFirstOrderRunSnapshot.runFingerprint
-          )
-        )
-        : undefined;
-      return buildOdeLabContext(
-        lastResult as unknown as SolverResult,
-        lastProblemInputs as ProblemInputs,
-        convergenceStudy
-      );
-    },
-  });
-
   render();
 
   return Object.freeze({
@@ -2201,7 +2192,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       return undefined;
     },
     getTutorBinding(): LabTutorBinding<unknown> {
-      return tutorBinding;
+      return tutorBindingControl.binding;
     },
     dispose(): void {
       if (disposed) return;
@@ -2210,6 +2201,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       disposeExpressionUi();
       disposeConvergenceUi();
       disposePrimaryChart();
+      tutorBindingControl.dispose();
       if (activeOdeMounts.get(app) === mountToken) {
         activeOdeMounts.delete(app);
         app.replaceChildren();

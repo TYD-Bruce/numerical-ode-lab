@@ -1,8 +1,11 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { buildOdeLabContext, sanitizeTutorText, type ProblemInputs } from "./aiTutor";
 import type { TutorConvergenceStudy } from "./aiTypes";
 import { integrateFirstOrder } from "./solvers";
+import { sendTutorMessage } from "./tutor/tutorClient";
+
+afterEach(() => vi.unstubAllGlobals());
 
 const PROBLEM: ProblemInputs = {
   kind: "first_order",
@@ -76,5 +79,33 @@ describe("AI tutor convergence context", () => {
     const context = buildOdeLabContext(result, PROBLEM, study);
     expect(context.convergenceStudy).toEqual(study);
     expect(() => JSON.stringify(context)).not.toThrow();
+  });
+});
+
+describe("Tutor client request cancellation", () => {
+  it("passes the owned AbortSignal to the absolute API request", async () => {
+    const controller = new AbortController();
+    const fetchMock = vi.fn(async () => ({
+      ok: true,
+      json: async () => ({ message: "Answer" }),
+    }));
+    vi.stubGlobal("fetch", fetchMock);
+    const result = integrateFirstOrder(
+      { family: "forward_euler" },
+      { t0: 0, y0: 1, tEnd: 0.2, h: 0.1, f: (_t, y) => -y }
+    );
+
+    await sendTutorMessage(
+      {
+        messages: [{ role: "user", content: "Explain" }],
+        context: buildOdeLabContext(result, PROBLEM),
+      },
+      controller.signal
+    );
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/chat",
+      expect.objectContaining({ signal: controller.signal })
+    );
   });
 });

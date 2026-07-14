@@ -30,11 +30,6 @@ vi.mock("chart.js", () => {
   };
 });
 
-vi.mock("../aiTutorPanel", () => ({
-  mountAiTutorPanel: vi.fn(),
-  resetTutorConversation: vi.fn(),
-}));
-
 describe("Initial Value Problems route", () => {
   beforeEach(() => {
     document.body.innerHTML = "";

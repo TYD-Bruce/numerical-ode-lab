@@ -94,6 +94,17 @@ export interface OdeLabContext {
   convergenceStudy?: TutorConvergenceStudy;
 }
 
+export interface OdeTutorProblemInputs {
+  kind: "first_order" | "second_order";
+  equationDisplay: string;
+  t0: number;
+  tEnd: number;
+  h: number;
+  y0?: number;
+  u0?: number;
+  v0?: number;
+}
+
 export interface ChartInstruction {
   type: "line_chart" | "error_table" | "zoom_range" | "none";
   title?: string;
