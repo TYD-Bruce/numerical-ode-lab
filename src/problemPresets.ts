@@ -242,6 +242,18 @@ function fieldsFromPreset(preset: ProblemPreset): TrackedProblemFields {
   };
 }
 
+export function createPresetFormStateFromPreset(
+  id: ProblemPresetId
+): PresetFormState {
+  const fields = fieldsFromPreset(problemPresetById(id));
+  return {
+    current: cloneFields(fields),
+    baseline: cloneFields(fields),
+    presetId: id,
+    customizationSourcePresetId: undefined,
+  };
+}
+
 export function loadProblemPreset(
   state: PresetFormState,
   id: ProblemPresetId

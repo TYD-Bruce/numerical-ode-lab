@@ -6,6 +6,7 @@ import {
   type ConvergenceMetric,
   type ConvergencePreview,
   type ConvergenceStudyResult,
+  type ConvergenceStudyFailureCode,
   type FirstOrderMethodFamily,
 } from "./convergenceStudy";
 import type { ExactSolutionCheckResult } from "./exactSolution";
@@ -72,7 +73,7 @@ export interface ConvergenceUiState {
   readonly baseStepSizeDraft: string;
   readonly refinementLevelsDraft: string;
   readonly preview?: ConvergencePreview;
-  readonly previewFailure?: ConvergenceStudyFailure;
+  readonly previewFailure?: ConvergenceFailureRecord;
   readonly result?: ConvergenceStudyResult;
   readonly resultStatus: "absent" | "current" | "stale";
   readonly chartMetric: ConvergenceMetric;
@@ -82,7 +83,56 @@ export interface ConvergenceUiState {
   readonly pendingWarningConfirmation?: {
     readonly studyFingerprint: string;
   };
-  readonly lastAttemptError?: ConvergenceStudyFailure;
+  readonly lastAttemptError?: ConvergenceFailureRecord;
+}
+
+export interface ConvergenceFailureRecord {
+  readonly code: ConvergenceStudyFailureCode;
+  readonly message: string;
+  readonly level?: number;
+  readonly stepSize?: number;
+}
+
+export type ConvergenceStateRecord = Readonly<
+  Record<string, ConvergenceUiState>
+>;
+
+export function toConvergenceFailureRecord(
+  failure: ConvergenceStudyFailure | ConvergenceFailureRecord
+): ConvergenceFailureRecord {
+  if (Object.isFrozen(failure) && !(failure instanceof Error)) return failure;
+  return Object.freeze({
+    code: failure.code,
+    message: failure.message,
+    ...(failure.level === undefined ? {} : { level: failure.level }),
+    ...(failure.stepSize === undefined ? {} : { stepSize: failure.stepSize }),
+  });
+}
+
+export function getConvergenceState(
+  record: ConvergenceStateRecord,
+  fingerprint: string
+): ConvergenceUiState | undefined {
+  return record[fingerprint];
+}
+
+export function setConvergenceState(
+  record: ConvergenceStateRecord,
+  fingerprint: string,
+  state: ConvergenceUiState
+): ConvergenceStateRecord {
+  if (record[fingerprint] === state) return record;
+  return Object.freeze({ ...record, [fingerprint]: state });
+}
+
+export function removeConvergenceState(
+  record: ConvergenceStateRecord,
+  fingerprint: string
+): ConvergenceStateRecord {
+  if (!(fingerprint in record)) return record;
+  const next = { ...record };
+  delete next[fingerprint];
+  return Object.freeze(next);
 }
 
 function emptyAccordions(): Record<TeachingSectionId, boolean> {
@@ -177,7 +227,7 @@ function previewFor(
     };
   } catch (error) {
     return error instanceof Error && "code" in error
-      ? { previewFailure: error as ConvergenceStudyFailure }
+      ? { previewFailure: toConvergenceFailureRecord(error as ConvergenceStudyFailure) }
       : {};
   }
 }
@@ -336,12 +386,12 @@ export function recordConvergenceSuccess(
 
 export function recordConvergenceFailure(
   state: ConvergenceUiState,
-  failure: ConvergenceStudyFailure
+  failure: ConvergenceStudyFailure | ConvergenceFailureRecord
 ): ConvergenceUiState {
   return {
     ...state,
     resultStatus: resultStatusFor(state.result, currentStudyFingerprint(state)),
-    lastAttemptError: failure,
+    lastAttemptError: toConvergenceFailureRecord(failure),
   };
 }
 

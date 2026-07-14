@@ -7,6 +7,56 @@ export type RouteId =
   | "about"
   | "not-found";
 
+export type LabModuleId = "ode" | "linear_algebra" | "pde";
+
+export interface ResumeSummary {
+  readonly moduleId: LabModuleId;
+  readonly route: string;
+  readonly labTitle: string;
+  readonly stepLabel: "Method" | "Data" | "Output";
+  readonly methodLabel?: string;
+  readonly analysisLabel?: "Analysis available" | "Analysis stale";
+  readonly lastMeaningfulInteraction: number;
+}
+
+export interface LabSessionMetadata {
+  readonly meaningful: boolean;
+  readonly resumeSummary?: ResumeSummary;
+  readonly lastMeaningfulInteraction?: number;
+}
+
+export interface RouteSessionMetadata {
+  readonly scrollPosition?: number;
+  readonly lastMeaningfulInteraction?: number;
+}
+
+export type TutorTranscriptItem =
+  | {
+      readonly kind: "message";
+      readonly role: "user" | "assistant";
+      readonly content: string;
+    }
+  | {
+      readonly kind: "divider";
+      readonly id: string;
+      readonly title: "New experiment started";
+      readonly body: string;
+    };
+
+export interface ModuleTutorSession {
+  readonly items: readonly TutorTranscriptItem[];
+  readonly draftMessage: string;
+  readonly desktopOpen: boolean;
+}
+
+export interface TutorSessionAccess {
+  readonly moduleId: LabModuleId;
+  getSession(): ModuleTutorSession;
+  updateSession(
+    update: (current: ModuleTutorSession) => ModuleTutorSession
+  ): void;
+}
+
 export interface NavigateOptions {
   replace?: boolean;
   scroll?: "auto" | "top" | "preserve";

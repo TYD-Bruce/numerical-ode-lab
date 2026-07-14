@@ -13,14 +13,18 @@ import {
   currentStudyFingerprint,
   editConvergenceSetup,
   finishWarningAttempt,
+  getConvergenceState,
   reconcileConvergenceUiState,
   recordConvergenceFailure,
   recordConvergenceSuccess,
+  removeConvergenceState,
   requestWarningConfirmation,
   setConvergenceConsistency,
+  setConvergenceState,
   setConvergenceDrawerOpen,
   setConvergenceMetric,
   setTeachingAccordion,
+  toConvergenceFailureRecord,
   type ConvergenceUiState,
   type SuccessfulFirstOrderRunSnapshot,
 } from "./convergenceStudyState";
@@ -183,7 +187,13 @@ describe("convergence UI state", () => {
     const failed = recordConvergenceFailure(stale, failure);
     expect(failed.result).toBe(successful.result);
     expect(failed.resultStatus).toBe("stale");
-    expect(failed.lastAttemptError).toBe(failure);
+    expect(failed.lastAttemptError).toEqual({
+      code: "level_integration_failure",
+      message: "Refinement level 2 failed.",
+      level: 1,
+      stepSize: 0.0625,
+    });
+    expect(failed.lastAttemptError).not.toBeInstanceOf(Error);
   });
 
   it("rejects a result belonging to another run or study fingerprint", () => {
@@ -206,5 +216,49 @@ describe("convergence UI state", () => {
     expect(state.drawerOpen).toBe(true);
     expect(state.chartMetric).toBe("final_time");
     expect(state.accordionOpen.warnings).toBe(true);
+  });
+
+  it("stores preview and run failures as pure records while preserving messages", () => {
+    const run = snapshot();
+    const invalid = editConvergenceSetup(createConvergenceUiState(run), run, {
+      refinementLevelsDraft: "2.5",
+    });
+    expect(invalid.previewFailure).toEqual({
+      code: "invalid_refinement_levels",
+      message: "Refinement levels must be an integer from 3 through 6.",
+    });
+    expect(invalid.previewFailure).not.toBeInstanceOf(Error);
+
+    const runtimeFailure = new ConvergenceStudyFailure(
+      "level_integration_failure",
+      "Refinement level 3 failed.",
+      { level: 2, stepSize: 0.03125 }
+    );
+    const record = toConvergenceFailureRecord(runtimeFailure);
+    expect(record).toEqual({
+      code: "level_integration_failure",
+      message: "Refinement level 3 failed.",
+      level: 2,
+      stepSize: 0.03125,
+    });
+    expect(Object.isFrozen(record)).toBe(true);
+    expect(JSON.parse(JSON.stringify(record))).toEqual(record);
+  });
+
+  it("updates fingerprint records immutably without using Map", () => {
+    const firstState = createConvergenceUiState(snapshot());
+    const secondState = setConvergenceDrawerOpen(firstState, true);
+    const empty = {};
+    const first = setConvergenceState(empty, "run-1", firstState);
+    const second = setConvergenceState(first, "run-1", secondState);
+    const removed = removeConvergenceState(second, "run-1");
+
+    expect(empty).toEqual({});
+    expect(getConvergenceState(first, "run-1")).toBe(firstState);
+    expect(getConvergenceState(second, "run-1")).toBe(secondState);
+    expect(getConvergenceState(first, "run-1")?.drawerOpen).toBe(false);
+    expect(getConvergenceState(removed, "run-1")).toBeUndefined();
+    expect(Object.isFrozen(first)).toBe(true);
+    expect(Object.isFrozen(second)).toBe(true);
   });
 });
