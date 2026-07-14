@@ -191,7 +191,11 @@ Phases A-E are implemented in commits `574672c`, `b357202`, `8ee2f32`, `ab8976a`
 
 The verified Convergence build is approximately 298.03 kB minified / 96.48 kB gzip for the initial application, 1,143.55 kB / 308.67 kB gzip for the deferred editable/Compute Engine chunk, and 819.11 kB / 228.04 kB gzip for the deferred MathLive chunk. Application CSS is about 12.16 kB / 3.19 kB gzip; MathLive/editable CSS and 19 hashed font assets remain deferred/deployable. The two large lazy chunks trigger Vite size warnings. The Convergence Study runs synchronously on the main thread within existing caps; this is an accepted Version 1 performance tradeoff. No speculative chunk restructuring was attempted.
 
-## 11. Contributor guidelines
+## 11. Approved platform roadmap
+
+The [Theme-Ready Platform Shell design](./superpowers/specs/2026-07-13-theme-ready-platform-shell-design.md) was approved on 2026-07-13; implementation has not started. The future sequence is **Platform Shell -> Interactive Term Glossary -> Linear Systems Lab**. The existing ODE Version 1 remains the current released product, so future routes, module overviews, and platform UI must not be described as already implemented.
+
+## 12. Contributor guidelines
 
 - Preserve the dependency direction: UI/adapters → project AST/validation/evaluator → numeric closures → solvers.
 - Do not reorder, sort, flatten, fold, or symbolically simplify AST arithmetic; grouping and child order are numerical behavior.
@@ -199,4 +203,4 @@ The verified Convergence build is approximately 298.03 kB minified / 96.48 kB gz
 - Keep `exact_solution` restricted to the implemented first-order exact/convergence workflow; do not introduce a second expression language.
 - Run `npm run verify` after changes and extend focused tests for every expression-boundary change.
 
-*Last updated: 2026-07-11 after Convergence Study Phase F verification.*
+*Last updated: 2026-07-13 after approval of the Theme-Ready Platform Shell design; implementation has not started.*
