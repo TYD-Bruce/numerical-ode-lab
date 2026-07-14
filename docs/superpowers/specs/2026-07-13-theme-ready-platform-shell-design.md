@@ -105,7 +105,7 @@ Desktop navigation is a top bar with:
 - PDE, linking to `/pde`
 - About, linking to `/about`
 
-ODE is active for `/ode` and its available Lab subtree. Linear Algebra and PDE use the same subtree rule. Overview is active only on `/`; About is active only on `/about`; Not Found has no false module active state. Active links use visual treatment and `aria-current="page"` where applicable.
+An exact route match may use `aria-current="page"`: Overview on `/`, ODE on `/ode`, Linear Algebra on `/linear-algebra`, PDE on `/pde`, and About on `/about`. When `/ode/initial-value-problems` is current, the `/ode` navigation item may retain a module-active visual state and may use an appropriate current-location/current-section semantic such as `aria-current="location"`, but it must not claim `aria-current="page"`. Future module subroutes follow the same rule. Not Found has no false module active state.
 
 On mobile the same destinations appear in a collapsible menu. The trigger has an accessible name, visible focus, and accurate `aria-expanded` and control association. The menu closes after successful navigation, Escape, or an explicit close action. It must not create horizontal viewport overflow.
 
@@ -278,7 +278,7 @@ router and app shell
   -> domain UI and numerical code
 ```
 
-Domain modules do not import the global router, History API, shell, or another domain. They receive navigation, Tutor binding, targets, and other platform services through narrow interfaces. The router never imports ODE methods, equations, convergence types, matrix concepts, or PDE grids.
+Domain modules do not import the global router, History API, shell, or another domain. They receive navigation, mount targets, and other platform services through narrow interfaces. Each complete Lab owns and exposes its module-specific Tutor binding; the platform-owned Tutor Host consumes that binding. The router never imports ODE methods, equations, convergence types, matrix concepts, or PDE grids.
 
 The current ODE internals may remain relatively large during the first extraction. Platform Shell is an adapter-and-lifecycle migration, not a broad architectural rewrite.
 
@@ -307,7 +307,7 @@ Retry starts a new navigation generation and a fresh import attempt for the fail
 
 ## 12. Route-level loading and intent prefetch
 
-Every route definition owns a loader. Home and the shell remain lightweight. The complete ODE implementation is dynamically imported only for `/ode/initial-value-problems`. Its route chunk may load ODE session/form logic, solvers, Chart.js, Convergence Study, AI Tutor, and the existing deferred MathLive/Compute Engine boundaries. Overview pages do not import complete numerical Labs.
+Every route definition owns a loader. Home and the shell remain lightweight. The complete ODE implementation is dynamically imported only for `/ode/initial-value-problems`. Its route chunk may load ODE session/form logic, solvers, Chart.js, Convergence Study, and the existing deferred MathLive/Compute Engine boundaries. The complete Tutor implementation—including networking, prompt profiles, rendering, and ODE grounding—must remain behind this complete-Lab route boundary or a later Tutor-open boundary initiated from the loaded Lab. The lightweight shell may own Tutor placement and session selection, but Home, overview, About, Not Found, loading, and failure routes do not eagerly import the complete ODE Tutor implementation.
 
 Future Linear Algebra and PDE Labs must become their own route chunks rather than growing the ODE chunk or creating separate Vite applications.
 
@@ -328,6 +328,13 @@ The loading state is a lightweight skeleton or panel with no fake numerical valu
 The shell needs a stable complete-Lab interface without learning domain details. The conceptual contract is:
 
 ```ts
+interface MountedLabRoute<TSession> {
+  getSession(): TSession;
+  getResumeSummary(): ResumeSummary | undefined;
+  getTutorBinding(): LabTutorBinding<unknown>;
+  dispose(): void;
+}
+
 interface LabRouteModule<TSession> {
   createBeginnerStarterSession(): TSession;
 
@@ -335,17 +342,11 @@ interface LabRouteModule<TSession> {
     target: HTMLElement;
     session: TSession;
     navigate: (path: string) => void;
-    tutorBinding: LabTutorBinding<unknown>;
-  }): {
-    getSession(): TSession;
-    getResumeSummary(): ResumeSummary | undefined;
-    getScrollPosition(): number;
-    dispose(): void;
-  };
+  }): MountedLabRoute<TSession>;
 }
 ```
 
-Exact TypeScript names may be refined during implementation planning. The behavioral boundary may not be weakened: the shell can create or retrieve a pure session, mount the Lab, request the latest pure session and safe Resume metadata, capture numeric scroll position, and dispose it.
+Exact TypeScript names may be refined during implementation planning. The behavioral boundary may not be weakened: the shell can create or retrieve a pure session, mount the Lab, request the latest pure session and safe Resume metadata, obtain the Lab-owned Tutor binding for the shared Tutor Host, capture numeric scroll position through the route/session lifecycle, and dispose the mounted Lab. Ownership flows **Lab -> Tutor binding -> Platform Tutor Host**; the shell never constructs or passes a module-specific binding into `mount()`.
 
 `TSession` is serializable/pure application state in spirit even though Version 1 does not persist it. It may include discriminated domain records and numerical result arrays, but it contains no DOM nodes, custom elements, Chart instances, event listeners, functions, AbortControllers, virtual keyboard references, or mounted component handles.
 
@@ -429,7 +430,7 @@ Leaving a complete Lab follows this order:
 8. Hide the MathLive virtual keyboard.
 9. Remove route, form, document, and media-query listeners owned by the Lab.
 10. Abort or invalidate route-owned asynchronous UI work where supported.
-11. Dispose the active Tutor binding and host presentation without clearing its pure session.
+11. Disconnect the Tutor Host consumer; the mounted Lab disposes resources owned by its Tutor binding without clearing the pure Tutor session.
 12. Clear the route outlet before the next route mounts.
 
 Returning follows this order:
@@ -437,7 +438,7 @@ Returning follows this order:
 1. Load or reuse the route-module promise.
 2. Obtain the saved pure Lab session, or create the authoritative Beginner Starter on first entry.
 3. Mount fresh Lab DOM and runtime objects from that state.
-4. Bind the ODE Tutor session to the shared Tutor Host.
+4. Obtain the mounted Lab's `getTutorBinding()` result and let the platform-owned Tutor Host consume it with the ODE Tutor session selected from the App Session Store.
 5. Wait until the mounted layout is ready and the navigation generation is still current.
 6. Restore the appropriate saved numeric scroll position.
 
@@ -458,7 +459,7 @@ Opening or closing Tutor snapshots and preserves the main content scroll. A mobi
 
 ## 18. Shared Tutor architecture
 
-The platform owns one Tutor rendering, networking, accessibility, and responsive-layout component, while each complete Lab supplies a typed binding and an independent session.
+The Platform Shell owns the shared Tutor Host's placement, responsive panel lifecycle, and module-session selection. Each complete Lab owns and provides its typed `LabTutorBinding`; the host consumes that binding. The complete Tutor implementation owns networking, prompt-profile execution, message rendering, and domain grounding and remains behind the complete-Lab lazy boundary or a later Tutor-open lazy boundary.
 
 ```ts
 type LabContext =
@@ -476,9 +477,9 @@ interface LabTutorBinding<TContext> {
 
 The union stays discriminated. It does not become one object with many optional ODE, matrix, and PDE properties. In Milestone 1 only the ODE binding is operational; future types are contracts, not implemented grounding.
 
-`getContext()` runs for each sent message so answers use the current successful experiment and current Convergence state. The migration preserves the existing ODE Tutor API behavior, mock/live behavior, safe text/math rendering, structured chart instructions, and grounding rules. Moving the host must not make Tutor math executable or loosen the existing content boundary.
+`getContext()` runs for each sent message so answers use the current successful experiment and current Convergence state. The migration preserves the existing ODE Tutor API behavior, mock/live behavior, safe text/math rendering, structured chart instructions, and grounding rules. Moving placement and session selection into the host must not move the complete ODE Tutor implementation into the eager shell, make Tutor math executable, or loosen the existing content boundary.
 
-No Tutor appears on Home, any overview, About, Not Found, or a loading/failure page.
+No Tutor appears on Home, any overview, About, Not Found, or a loading/failure page, and those routes do not eagerly import the complete Tutor implementation. Module-isolated Tutor sessions remain pure entries in the App Session Store even when no Tutor code is loaded.
 
 ### Module Tutor sessions
 
@@ -511,7 +512,9 @@ On confirmation, the action:
 - replaces only this Lab's state with `createBeginnerStarterSession()`;
 - clears Lab drafts, successful results, analyses, and stale/current analysis ownership;
 - returns to Method;
-- resets Lab scroll to the top; and
+- scrolls the visible Lab to zero;
+- resets the per-Lab saved scroll value to zero;
+- replaces the current history entry's saved scroll value for the old experiment with zero; and
 - leaves other module Lab and Tutor sessions unchanged.
 
 If Tutor clearing is enabled, it clears this module's messages and input draft while preserving the desktop open/closed preference where appropriate.
@@ -524,7 +527,7 @@ If Tutor clearing is disabled, messages and draft remain and a non-editable divi
 
 The divider is typed presentation data, not an assistant or user message, and is not submitted as user content. Every subsequent answer obtains fresh context from the new experiment.
 
-Cancelling confirmation changes nothing. Confirming from a pristine starter is allowed but must not accidentally make the new pristine session meaningful.
+Cancelling confirmation changes nothing. Confirming from a pristine starter is allowed but must not accidentally make the new pristine session meaningful. A later remount or Back/Forward restoration for that reset history entry must observe the zero values and must not restore the prior experiment's scroll position.
 
 ## 20. Theme-ready visual layer
 
@@ -608,7 +611,7 @@ Tests should follow existing Vitest/jsdom patterns where practical and add focus
 - exact route matching and trailing-slash normalization;
 - clean URL push/replace navigation;
 - `popstate` without duplicate history entries;
-- active links and `aria-current`;
+- exact-route `aria-current="page"` and parent-module active state without a false current-page claim;
 - every page title;
 - safe Not Found path rendering;
 - loading presentation;
@@ -640,12 +643,14 @@ Tests should follow existing Vitest/jsdom patterns where practical and add focus
 - Lab scroll capture and platform return restoration;
 - per-history-entry Back/Forward restoration;
 - overview top positioning;
-- stale scroll callback rejection; and
+- stale scroll callback rejection;
+- New experiment clearing visible, per-Lab, and current-history-entry scroll values so the old position cannot return; and
 - Tutor open/close preserving main scroll.
 
 ### Tutor Host
 
-- host mounts only for a complete Lab;
+- host mounts only for a complete Lab and consumes the binding returned by that Lab;
+- the shell never creates or injects a module-specific Tutor binding;
 - module-isolated messages, drafts, and desktop preference;
 - fresh ODE context for each message;
 - desktop restoration;
@@ -667,7 +672,7 @@ Tests should follow existing Vitest/jsdom patterns where practical and add focus
 
 ### Lazy loading and prefetch
 
-- Home and overview imports do not load the complete ODE module or Chart.js;
+- Home, overview, About, Not Found, loading, and failure imports do not load the complete ODE module, Chart.js, or complete ODE Tutor implementation;
 - hover and keyboard focus prefetch only implemented complete Labs;
 - one cached promise is shared by prefetch and navigation;
 - hover exit does not cancel a started import;
@@ -714,7 +719,7 @@ Before acceptance, verify:
 22. A delayed Lab import shows the lightweight route loading state.
 23. A simulated chunk failure shows Retry and preserves Lab/Tutor sessions.
 24. Hover and keyboard focus prefetch the ODE Lab once; incomplete modules do not prefetch.
-25. New experiment confirms, resets to the authoritative starter, and scrolls to top.
+25. New experiment confirms, resets to the authoritative starter, zeros the visible, per-Lab, and current-history-entry scroll values, and cannot restore the old experiment's position on remount.
 26. Tutor clear and preserve options both behave as specified, including the divider.
 27. `beforeunload` warns only for meaningful in-memory work and never for internal navigation.
 28. Desktop navigation active states, focus, and available width are correct.
@@ -752,7 +757,7 @@ Platform Shell implementation is acceptable only when:
 - Route loading, Retry, stale-load prevention, Not Found, titles, and Back/Forward behavior are tested.
 - Meaningful ODE and Tutor work survives internal navigation in pure in-memory state, with accurate Resume and unload behavior.
 - Complete Lab remounts use fresh DOM/runtime objects and the full disposal contract is verified.
-- The shared Tutor Host appears only in the complete Lab and keeps module sessions isolated.
+- The shared Tutor Host appears only in the complete Lab, consumes its Lab-owned binding, keeps module sessions isolated, and does not pull the complete Tutor implementation into eager shell routes.
 - Beginner Starter and New experiment use one authoritative builder.
 - Navigation and Tutor layouts work on desktop, mobile, keyboard, and touch without viewport overflow.
 - Components use semantic theme tokens without final fantasy branding.
@@ -768,7 +773,10 @@ This specification was reviewed against the approved brief. The review resolved 
 - It distinguishes `/ode` as an overview from `/ode/initial-value-problems` as the complete Lab.
 - It keeps the router domain-agnostic and prevents domain modules from importing it.
 - It requires pure state remounting and explicitly rejects hidden DOM or custom-element caching.
-- It separates Lab and Tutor sessions by module and prevents mobile Tutor auto-open on route changes.
+- It fixes ownership as Lab -> Tutor binding -> Platform Tutor Host, while keeping Lab and Tutor sessions separate by module and preventing mobile Tutor auto-open on route changes.
+- It keeps complete Tutor networking, prompt profiles, rendering, and ODE grounding behind a complete-Lab or later Tutor-open lazy boundary.
+- It restricts `aria-current="page"` to exact routes and prevents a parent module link from falsely claiming the current subroute.
+- It clears visible, per-Lab, and current-history-entry scroll state on New experiment so an old experiment position cannot return.
 - It defines memory-only persistence and contains no localStorage assumption.
 - It gives unfinished modules roadmap actions only, with no fake runnable controls.
 - It provides semantic theme readiness without committing final fantasy art, typography, or animation.
