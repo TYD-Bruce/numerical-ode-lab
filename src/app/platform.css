@@ -213,6 +213,14 @@ a {
   max-width: var(--content-width-reading);
 }
 
+.platform-home-hero {
+  max-width: none;
+}
+
+.platform-home-hero p {
+  max-width: var(--content-width-reading);
+}
+
 .platform-page-heading h1,
 .platform-page h2,
 .platform-page h3,
@@ -374,6 +382,13 @@ a {
 code {
   overflow-wrap: anywhere;
   color: var(--color-text-primary);
+}
+
+@media (min-width: 56.25rem) {
+  .platform-home-hero h1 {
+    width: fit-content;
+    white-space: nowrap;
+  }
 }
 
 @media (max-width: 48rem) {

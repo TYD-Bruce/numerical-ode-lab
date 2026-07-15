@@ -80,6 +80,9 @@ export function createHomePage(sessionSource?: HomeSessionSource): RouteModule {
           "Numerical Analysis Lab",
           "An interactive, AI-assisted platform for learning numerical analysis through computation, visualization, error analysis, and guided experiments."
         );
+        page
+          .querySelector<HTMLElement>(".platform-page-heading")
+          ?.classList.add("platform-home-hero");
 
         const cycle = document.createElement("section");
         cycle.className = "platform-learning-cycle";

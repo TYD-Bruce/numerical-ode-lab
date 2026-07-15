@@ -26,6 +26,9 @@ describe("static platform pages", () => {
   it("presents truthful Home modules and a non-mandatory learning path", () => {
     const target = mount(homePage);
     expect(target.textContent).toContain("Numerical Analysis Lab");
+    expect(target.querySelector(".platform-home-hero h1")?.textContent).toBe(
+      "Numerical Analysis Lab"
+    );
     expect(target.textContent).toContain("Understand → Compute → Visualize → Analyze");
     expect(target.textContent).toContain("An interactive, AI-assisted platform");
     expect(target.textContent).toContain("Available");
