@@ -4,8 +4,13 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
   max-height: calc(100vh - 48px);
+  max-height: calc(100dvh - 48px);
   padding: 16px;
+  overflow: hidden;
   border: 1px solid var(--color-border);
   border-radius: 14px;
   background: linear-gradient(
@@ -13,6 +18,21 @@
     var(--color-surface-raised),
     var(--color-surface-inset)
   );
+}
+
+.ai-tutor-panel > * {
+  min-width: 0;
+}
+
+.ai-tutor-content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  min-height: 0;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .ai-tutor-header h3 {
@@ -64,8 +84,10 @@
 
 .ai-suggestions {
   display: flex;
+  flex: none;
   flex-wrap: wrap;
   gap: 6px;
+  max-width: 100%;
 }
 
 .ai-suggest-btn {
@@ -87,11 +109,15 @@
 }
 
 .ai-messages {
-  flex: 1;
-  min-height: 120px;
+  flex: 1 1 120px;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  max-width: 100%;
   max-height: 280px;
   padding: 10px;
   overflow-y: auto;
+  overscroll-behavior: contain;
   border: 1px solid var(--color-border);
   border-radius: 10px;
   background: var(--color-surface-inset);
@@ -163,13 +189,20 @@
 
 .ai-compose {
   display: flex;
+  flex: none;
   flex-direction: column;
   gap: 8px;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
 }
 
 .ai-compose textarea {
+  box-sizing: border-box;
   width: 100%;
+  max-width: 100%;
   min-height: 56px;
+  max-height: 9rem;
   padding: 10px;
   resize: vertical;
   border: 1px solid var(--color-border);
@@ -185,6 +218,9 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 8px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
 }
 
 .ai-compose .ai-send {

@@ -113,7 +113,7 @@ export function mountPlatformTutorPanel(
         </div>
         <p class="ai-tutor-sub">Ask about the method, variables, coefficients, stability, accuracy, or graph behavior.</p>
       </header>
-      <div data-tutor-content></div>
+      <div class="ai-tutor-content" data-tutor-content></div>
     </aside>`;
 
   const content = target.querySelector<HTMLElement>("[data-tutor-content]")!;
@@ -141,6 +141,8 @@ export function mountPlatformTutorPanel(
     });
     const messages = document.createElement("div");
     messages.className = "ai-messages";
+    messages.setAttribute("role", "log");
+    messages.setAttribute("aria-label", "Tutor conversation");
     messages.setAttribute("aria-live", "polite");
     const error = document.createElement("p");
     error.className = "ai-error";

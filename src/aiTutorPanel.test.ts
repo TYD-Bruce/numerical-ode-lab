@@ -56,6 +56,38 @@ async function submit(host: HTMLElement, value: string): Promise<void> {
 describe("shared Tutor panel", () => {
   beforeEach(() => document.body.replaceChildren());
 
+  it("keeps the transcript and complete composer inside one panel", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+    const store = createAppSessionStore();
+    const mounted = mountPlatformTutorPanel(host, {
+      binding: {
+        moduleId: "ode",
+        promptProfile: "ode",
+        suggestedQuestions: ["Explain this result."],
+        getContext: source,
+      },
+      sessionAccess: store.createTutorSessionAccess("ode"),
+      onClose: vi.fn(),
+      isCurrent: () => true,
+    });
+
+    const panel = host.querySelector<HTMLElement>(".ai-tutor-panel")!;
+    const content = panel.querySelector<HTMLElement>(".ai-tutor-content")!;
+    const transcript = content.querySelector<HTMLElement>(".ai-messages")!;
+    const composer = content.querySelector<HTMLFormElement>(".ai-compose")!;
+    const actions = composer.querySelector<HTMLElement>(".ai-compose-actions")!;
+
+    expect(host.querySelectorAll(".ai-tutor-panel")).toHaveLength(1);
+    expect(transcript.getAttribute("role")).toBe("log");
+    expect(transcript.getAttribute("aria-label")).toBe("Tutor conversation");
+    expect(panel.contains(composer)).toBe(true);
+    expect(panel.contains(actions)).toBe(true);
+    expect(actions.textContent).toContain("Clear chat");
+    expect(actions.textContent).toContain("Send");
+    mounted.dispose();
+  });
+
   it("reads fresh binding context and live transcript for every message", async () => {
     const host = document.createElement("div");
     document.body.append(host);

@@ -6,6 +6,7 @@ import type { LabTutorBinding } from "./contracts";
 import { createPlatformTutorHost } from "./platformTutorHost";
 import { appendTutorMessage, updateTutorDraft } from "../tutor/moduleTutorSession";
 import { createOdeTutorBinding } from "../ode/odeTutorBinding";
+import { mountPlatformTutorPanel } from "../tutor/platformTutorPanel";
 
 function binding(moduleId: "ode" = "ode"): LabTutorBinding<unknown> {
   return {
@@ -50,6 +51,31 @@ describe("Platform Tutor Host", () => {
 
     expect(loadPanel).toHaveBeenCalledOnce();
     expect(mount).toHaveBeenCalledTimes(2);
+  });
+
+  it("keeps one contained composer after repeated open and close", async () => {
+    const target = document.createElement("div");
+    document.body.append(target);
+    const store = createAppSessionStore();
+    const host = createPlatformTutorHost({
+      target,
+      isMobile: () => false,
+      loadPanel: async () => ({ mountPlatformTutorPanel }),
+    });
+    host.connect(binding(), store.createTutorSessionAccess("ode"));
+
+    await host.open(target.querySelector<HTMLElement>("[data-tutor-open]")!);
+    const firstPanel = target.querySelector<HTMLElement>(".ai-tutor-panel")!;
+    expect(firstPanel.querySelector(".ai-tutor-content > .ai-compose")).not.toBeNull();
+    expect(target.querySelectorAll(".ai-tutor-panel")).toHaveLength(1);
+
+    host.close();
+    await host.open(target.querySelector<HTMLElement>("[data-tutor-open]")!);
+    const secondPanel = target.querySelector<HTMLElement>(".ai-tutor-panel")!;
+    expect(secondPanel).not.toBe(firstPanel);
+    expect(secondPanel.querySelector(".ai-tutor-content > .ai-compose")).not.toBeNull();
+    expect(target.querySelectorAll(".ai-tutor-panel")).toHaveLength(1);
+    host.dispose();
   });
 
   it("uses live session access and preserves transcript/draft across disconnect", async () => {
