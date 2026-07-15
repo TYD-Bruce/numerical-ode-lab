@@ -1,7 +1,7 @@
 # Theme-Ready Platform Shell Final Review
 
 **Review date:** 2026-07-14  
-**Release verdict:** **SAFE TO RELEASE AFTER LISTED DEPLOYMENT CHECKS**
+**Release verdict:** **SAFE TO RELEASE**
 
 ## 1. Scope reviewed
 
@@ -112,7 +112,7 @@ Legacy ODE workspace styling was not broadly redesigned.
 
 `vercel.json` retains `npm run build`, `dist`, and `vite`, and adds one rewrite from `/(.*)` to `/index.html`. No redirect, API rewrite, asset rewrite, guessed header, or duplicate build setting was added.
 
-The intended deployed contract is filesystem/function-first: `/api/chat` remains the Vercel Function, emitted files remain files, and non-file page routes reach the client router. Contract tests prove the configuration shape but deliberately do not emulate Vercel precedence. A deployed preview is still required.
+The deployed contract is filesystem/function-first: `/api/chat` remains the Vercel Function, emitted files remain files, and non-file page routes reach the client router. Contract tests prove the configuration shape, and the non-production Vercel Preview confirmed the real target-platform precedence and response types.
 
 ## 13. Automated verification
 
@@ -185,23 +185,27 @@ With `AI_TUTOR_MOCK=true`, local `POST /api/chat` returned HTTP 200, `applicatio
 
 Vite preview proves local production assets, chunk timing, client rendering, and its own direct-route fallback. It does not prove Vercel Function/static precedence.
 
-## 17. Deployed-preview status and required checklist
+## 17. Deployed-preview verification
 
-No Vercel preview was created because the repository workflow requires a push and this phase explicitly prohibits pushing. These checks are **PENDING DEPLOYED PREVIEW**:
+The non-production Vercel Preview for commit `2232595cbea57504a9ba2c3e1c949e3d621bd347` was verified on 2026-07-14 at:
 
-1. Open `/ode/initial-value-problems` directly and refresh it.
-2. Confirm `POST /api/chat` returns Function JSON, not `index.html`.
-3. Request one emitted JavaScript file, one CSS file, and one MathLive font; confirm correct content and content types.
-4. Open an unknown non-file path and confirm the in-shell Not Found page.
-5. Confirm no redirect to `/`, rewrite loop, or unexpected redirect.
-6. Confirm browser Network shows Home without ODE/Tutor/math chunks, then the expected chunks at ODE navigation, Tutor open, and math editing.
-7. Confirm no console errors or unhandled rejections.
+`https://numerical-ode-lab-w-aq5e8owap-bruce-tian.vercel.app`
 
-Production promotion should wait for all seven checks to pass.
+All seven target-platform checks passed:
+
+1. `/ode/initial-value-problems` loaded directly and after refresh.
+2. A valid mock Tutor request reached `POST /api/chat` and Vercel recorded HTTP 200. A malformed `{}` request returned HTTP 400, `application/json; charset=utf-8`, and `{ "error": "messages array is required." }`; it did not return `index.html`.
+3. `/assets/index-M_RdSebz.js` returned HTTP 200 and `application/javascript; charset=utf-8`; `/assets/index-DUWX-pL6.css` returned HTTP 200 and `text/css; charset=utf-8`; `/assets/KaTeX_Main-Regular-B22Nviop.woff2` returned HTTP 200 and `font/woff2`. None returned HTML or redirected.
+4. An unknown non-file path rendered the in-shell Page Not Found route.
+5. Direct app routes had no redirect to `/`, rewrite loop, or unexpected redirect after Vercel Authentication.
+6. Clean-cache Home loaded only platform entry assets. ODE intent loaded the ODE/shared chunks once; first Tutor open added Tutor JS/CSS; MathLive and editable/Compute Engine remained deferred until the Data/editing boundary.
+7. Browser console inspection found no errors, warnings, or unhandled rejections.
+
+The Preview was protected by Vercel Authentication. A temporary Automation Bypass secret was created solely for raw response sampling, was never written to the repository or evidence, and was removed immediately afterward. A request using the revoked value again received the expected HTTP 302 Vercel Authentication redirect, confirming revocation. Production `main` was not pushed during verification.
 
 ## 18. Manual acceptance matrix
 
-`PASS` below means the item has direct local browser/API evidence, focused automated evidence, or both. The four target-platform checks remain explicitly pending.
+`PASS` below means the item has direct local browser/API evidence, deployed Vercel Preview evidence, focused automated evidence, or a combination of them.
 
 ### Platform and ODE
 
@@ -285,10 +289,10 @@ Production promotion should wait for all seven checks to pass.
 | 61 | ODE route loads numerical chunk | PASS | Manifest + browser inventory |
 | 62 | Tutor open loads Tutor chunk | PASS | Manifest + browser inventory |
 | 63 | MathLive/Compute Engine remain deferred | PASS | Manifest/source/browser evidence |
-| 64 | Direct nested refresh on Vercel | PENDING DEPLOYED PREVIEW | Local preview passed; target pending |
-| 65 | `/api/chat` protected from fallback | PENDING DEPLOYED PREVIEW | Contract + local mock passed; target pending |
-| 66 | Static assets protected from fallback | PENDING DEPLOYED PREVIEW | Root assets local; target precedence pending |
-| 67 | Unknown deployed route reaches Not Found | PENDING DEPLOYED PREVIEW | Local preview passed; target pending |
+| 64 | Direct nested refresh on Vercel | PASS | Authenticated Preview direct load + refresh |
+| 65 | `/api/chat` protected from fallback | PASS | Preview HTTP 200 valid mock; HTTP 400 JSON malformed input |
+| 66 | Static assets protected from fallback | PASS | Preview JS/CSS/WOFF2 HTTP 200 with correct MIME types |
+| 67 | Unknown deployed route reaches Not Found | PASS | Authenticated Preview client Not Found |
 | 68 | No console errors/unhandled rejections | PASS | Local console clean + async tests |
 
 ## 19. Numerical regression findings
@@ -322,7 +326,6 @@ No package or lockfile, dependency, numerical contract, solver, ODE behavior, Tu
 Known limitations:
 
 - sessions and Resume are current-tab memory only;
-- Vercel deployed-preview checks are pending;
 - ODE is scalar and fixed-step;
 - Convergence is synchronous and limited to eligible first-order single-method exact-solution runs;
 - Tutor is unavailable for Compare output;
@@ -332,7 +335,7 @@ Known limitations:
 
 ## 23. Remaining risks
 
-The only release-gating risk is unobserved target-platform behavior: Vercel function/filesystem precedence and content types must match the structurally verified configuration. The bounded section 17 checklist mitigates that risk before production promotion.
+No open release-gating risk remains. Vercel function/filesystem precedence, API validation behavior, and sampled static content types match the structurally verified configuration.
 
 Accepted non-gating risks are the large deferred math chunks and synchronous bounded Convergence execution. The manifest and browser inventory show these costs are outside Home and remain behind user intent. There is no evidence that manual chunking would improve correctness or the approved boundaries.
 
@@ -340,6 +343,6 @@ Future work must preserve Store/Host/Lab ownership, minimal unload behavior, nam
 
 ## 24. Release verdict
 
-**SAFE TO RELEASE AFTER LISTED DEPLOYMENT CHECKS**
+**SAFE TO RELEASE**
 
-The implementation meets the approved design locally, the complete automated suite is green, the production build and lazy boundaries are measured, local browser/API checks pass, scope is contained, and no numerical contract changed. Release should proceed only after the Vercel preview checklist in section 17 passes. If any listed check fails, stop promotion and fix the concrete deployment defect without broadening product scope.
+The implementation meets the approved design, the complete automated suite is green, the production build and lazy boundaries are measured, local browser/API checks pass, the Vercel Preview release gates pass, scope is contained, and no numerical contract changed. The release candidate is safe to promote after the normal final pre-push log, status, and `npm.cmd run verify` confirmation.

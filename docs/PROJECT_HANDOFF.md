@@ -2,7 +2,7 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
-**Status (2026-07-14):** The Theme-Ready Platform Shell implementation is complete and locally release-verified. The release candidate passes 866 tests across 60 Vitest files, both TypeScript checks, the production build, local route/browser checks, and the mock Tutor API check. Vercel deployed-preview smoke checks remain pending until the reviewed commits are pushed. See [the final review](./reviews/2026-07-14-theme-ready-platform-shell-review.md).
+**Status (2026-07-14):** The Theme-Ready Platform Shell implementation is complete, locally release-verified, and Vercel Preview-verified. The release candidate passes 866 tests across 60 Vitest files, both TypeScript checks, the production build, local route/browser checks, the mock Tutor API check, and the deployed function/filesystem release gates. The final verdict is **SAFE TO RELEASE**. See [the final review](./reviews/2026-07-14-theme-ready-platform-shell-review.md).
 
 ## 1. Product and public routes
 
@@ -43,7 +43,9 @@ npm run preview
 - API typecheck passed;
 - production build passed with only the accepted large deferred-chunk warning.
 
-Local browser checks covered Home, every public overview/page, the nested ODE route, direct preview requests, client Not Found, desktop/mobile navigation, mobile Tutor modal behavior, horizontal overflow, lazy asset loading, and console errors. The local mock API returned HTTP 200 with `demoMode: true`; malformed input returned HTTP 400. Vercel function/filesystem precedence still requires a deployed preview after push.
+Local browser checks covered Home, every public overview/page, the nested ODE route, direct preview requests, client Not Found, desktop/mobile navigation, mobile Tutor modal behavior, horizontal overflow, lazy asset loading, and console errors. The local mock API returned HTTP 200 with `demoMode: true`; malformed input returned HTTP 400.
+
+The non-production Vercel Preview for commit `2232595cbea57504a9ba2c3e1c949e3d621bd347` was verified at `https://numerical-ode-lab-w-aq5e8owap-bruce-tian.vercel.app` on 2026-07-14. Direct nested routes and refresh, client Not Found, runtime chunk boundaries, mock Tutor, session lifecycle, New experiment flows, mobile overflow, and a clean console passed. Using a temporary Automation Bypass secret, malformed `POST /api/chat` returned HTTP 400 with `application/json; charset=utf-8` and `{ "error": "messages array is required." }`, not `index.html`. The sampled entry JavaScript, platform CSS, and WOFF2 font returned HTTP 200 with `application/javascript`, `text/css`, and `font/woff2` respectively. The temporary secret was removed immediately after sampling and its revocation was confirmed by the restored Vercel Authentication redirect.
 
 ## 3. Platform architecture
 
@@ -193,7 +195,7 @@ For comparison, the pre-platform application entry was approximately 298,639 raw
 - known/unknown non-file page paths reach the client router;
 - unknown routes render in-shell Not Found without redirecting to `/`.
 
-Contract tests prove the configuration and generated output structurally. A deployed Vercel preview must still verify direct nested refresh, API/static content types, unknown route behavior, absence of redirect/rewrite loops, and console/network health. Nothing has been pushed as part of Phase 6.
+Contract tests prove the configuration and generated output structurally. The non-production Vercel Preview subsequently proved direct nested refresh, API/static precedence and content types, unknown-route handling, absence of redirect/rewrite loops, runtime chunk timing, and console/network health. Production `main` has not been pushed.
 
 ## 11. Platform implementation commits
 
@@ -209,13 +211,13 @@ Contract tests prove the configuration and generated output structurally. A depl
 | `865f42bd4b19b85f36e3062b536e20d5de6bf3c3` | Resume and meaningful work |
 | `53eba14eaffb2eb083e7c9a523ee21872f120c6f` | Scroll and reset lifecycle |
 | `4b236ffa67fd7a4f75abad2afdd0153cd98ead06` | Root-base Vite and Vercel SPA deployment contracts |
-| current documentation commit | README, handoff, design implementation record, and final review |
+| `2232595cbea57504a9ba2c3e1c949e3d621bd347` | README, handoff, design implementation record, and final review |
+| `0390c941ae44834b9fc162284b9096968011c1d2` | Keep the Platform Home title inline at desktop widths |
 
 ## 12. Known limitations and contributor rules
 
 Known limitations:
 
-- Vercel deployed-preview checks are pending until push.
 - Sessions are memory-only.
 - ODE support remains scalar and fixed-step.
 - Convergence is synchronous and limited to eligible first-order single-method output with an exact solution.
@@ -235,4 +237,4 @@ Contributor rules:
 - Keep `beforeunload` minimal and synchronous.
 - Run `npm run verify` after changes and add focused tests first.
 
-*Last updated: 2026-07-14 after local Phase 6 release verification. Deployed-preview checks remain pending.*
+*Last updated: 2026-07-14 after Vercel Preview release-gate verification. Verdict: SAFE TO RELEASE.*

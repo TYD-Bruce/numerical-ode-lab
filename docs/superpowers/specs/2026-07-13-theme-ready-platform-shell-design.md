@@ -1,6 +1,6 @@
 # Theme-Ready Platform Shell Design
 
-**Status:** Implemented and locally verified; deployed-preview checks pending
+**Status:** Implemented, Vercel Preview-verified, and safe to release
 
 **Date:** 2026-07-13
 
@@ -22,7 +22,7 @@ This design is approved and implemented. It records implementation contracts and
 
 ### Implementation record
 
-Implementation completed on 2026-07-14 through the reviewed sequence from `e8f03f5e86da843418ff489bd273521ab2cfd865` through `4b236ffa67fd7a4f75abad2afdd0153cd98ead06`, following the ownership clarification `9a7c5334b0bce5d0d98949ba32ab3f0ab8f8bd6c` and implementation plan `dc8dc08f5eb823b02062e064a18f16101d25f834`. Local verification passed 866 tests across 60 files, both TypeScript checks, the production build, route/browser checks, and the mock Tutor API check. The final review is recorded in `docs/reviews/2026-07-14-theme-ready-platform-shell-review.md`. Direct Vercel preview checks for function/filesystem rewrite precedence remain pending until the reviewed commits are pushed.
+Implementation completed on 2026-07-14 through the reviewed sequence from `e8f03f5e86da843418ff489bd273521ab2cfd865` through `4b236ffa67fd7a4f75abad2afdd0153cd98ead06`, followed by release documentation `2232595cbea57504a9ba2c3e1c949e3d621bd347` and the desktop Home-title correction `0390c941ae44834b9fc162284b9096968011c1d2`. The work follows ownership clarification `9a7c5334b0bce5d0d98949ba32ab3f0ab8f8bd6c` and implementation plan `dc8dc08f5eb823b02062e064a18f16101d25f834`. Local verification passed 866 tests across 60 files, both TypeScript checks, the production build, route/browser checks, and the mock Tutor API check. The non-production Vercel Preview for commit `2232595cbea57504a9ba2c3e1c949e3d621bd347` then passed direct routing, function/static precedence, content-type, lazy-boundary, functional, responsive, and console checks. Malformed `POST /api/chat` returned HTTP 400 JSON rather than the SPA document; sampled JavaScript, CSS, and WOFF2 assets returned HTTP 200 with their correct MIME types. The final review is recorded in `docs/reviews/2026-07-14-theme-ready-platform-shell-review.md` with verdict **SAFE TO RELEASE**.
 
 ## 2. Repository baseline at approval
 
@@ -789,4 +789,4 @@ This specification was reviewed against the approved brief. The review resolved 
 - It defines cleanup, Retry, rejected-import handling, and navigation generations to prevent stale async mounts.
 - It contains no unresolved placeholder markers and requires English-only product UI.
 
-Repository-grounded implementation planning and phased review followed this design. The implementation is complete and locally verified; only the explicitly listed deployed-preview checks remain pending.
+Repository-grounded implementation planning and phased review followed this design. The implementation is complete, locally verified, Vercel Preview-verified, and safe to release.
