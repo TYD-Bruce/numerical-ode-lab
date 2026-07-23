@@ -18,7 +18,13 @@ The product is **Numerical Analysis Lab**. The currently implemented numerical m
 | `/about` | Platform/project overview | Available |
 | any other page path | In-shell Not Found | Available |
 
-Linear Algebra and PDE are truthful roadmap pages with no runnable controls. The next milestone is **Interactive Term Glossary**; **Linear Systems Lab** is later.
+Linear Algebra and PDE are truthful roadmap pages with no runnable controls.
+The current next milestone is **Content-Agnostic Interactive Glossary
+Framework**; **Linear Systems Lab** is later. The
+[authoritative Glossary design](./superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md)
+is approved and committed, but implementation has not started. Production has
+no Glossary terms, binding, registry, Host behavior, or definition surface.
+Repository-grounded implementation planning is next.
 
 ## 2. Verification baseline
 
@@ -224,7 +230,8 @@ Known limitations:
 - Tutor is unavailable for Compare output.
 - Deferred MathLive and editable/Compute Engine chunks remain large.
 - Linear Algebra and PDE are not runnable Labs.
-- Interactive Term Glossary is not yet implemented.
+- Content-Agnostic Interactive Glossary Framework implementation has not
+  started; production contains no Glossary terms or runtime behavior.
 
 Contributor rules:
 
@@ -237,4 +244,6 @@ Contributor rules:
 - Keep `beforeunload` minimal and synchronous.
 - Run `npm run verify` after changes and add focused tests first.
 
-*Last updated: 2026-07-14 after Vercel Preview release-gate verification. Verdict: SAFE TO RELEASE.*
+*Last updated: 2026-07-22 for the approved Content-Agnostic Interactive
+Glossary Framework design status. The Platform Shell release verdict remains
+SAFE TO RELEASE.*

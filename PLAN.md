@@ -2,8 +2,7 @@
 
 ## Status
 
-Repository guidance is documented on local `main` and awaits maintainer review.
-Product behavior is unchanged.
+Approved design documented; implementation not started.
 
 ## Current released baseline
 
@@ -24,11 +23,9 @@ loading while keeping formal mathematical content separate.
 
 ## Authoritative design
 
-Pending documentation task:
+[Content-Agnostic Interactive Glossary Framework Design](docs/superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md)
 
-`docs/superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md`
-
-The design is not yet part of the committed repository.
+Status: **Approved design; implementation not started.**
 
 ## Authoritative implementation plan
 
@@ -36,22 +33,20 @@ Not created yet. Repository-grounded planning follows design approval.
 
 ## Approved delivery sequence
 
-1. Add Codex project guidance on local `main`.
-2. Review the committed guidance.
-3. Document the content-agnostic Glossary Framework design on local `main`.
-4. Create the repository-grounded implementation plan on local `main`.
-5. Build Glossary model and scope lifecycle.
-6. Add shared Glossary surfaces.
-7. Add the development Glossary Playground.
-8. Wait for private course notes and teaching materials.
-9. Build the notation and definition foundation.
-10. Add the reviewed ODE vertical slice.
-11. Push only when explicitly requested by the maintainer.
+1. Add and review Codex project guidance on local `main`. Complete.
+2. Document the Content-Agnostic Interactive Glossary Framework design on
+   local `main`. Complete in the commit containing this plan.
+3. Create the repository-grounded implementation plan on local `main`.
+4. Build Glossary model and scope lifecycle.
+5. Add shared Glossary surfaces.
+6. Add the development Glossary Playground.
+7. Complete the separate notation and definition foundation.
+8. Add the reviewed ODE vertical slice.
+9. Push only when explicitly requested by the maintainer.
 
 ## Current next action
 
-Review the Codex project-guidance commit, then document the content-agnostic
-Glossary Framework design directly on local `main`.
+Create the repository-grounded implementation plan.
 
 ## Current production behavior
 
@@ -75,13 +70,13 @@ Glossary Framework design directly on local `main`.
 
 Repository-grounded implementation planning may begin only after:
 
-1. this guidance commit is reviewed;
-2. the content-agnostic design exists in the committed repository;
-3. the design is reviewed and approved without unresolved ownership, lifecycle,
-   accessibility, content-scope, or lazy-loading conflicts;
-4. `PLAN.md`, the Glossary handoff, and README Changelog accurately record the
-   design-only state;
-5. local `main` is clean and no production Glossary content is present.
+1. this design-documentation commit is reviewed;
+2. `PLAN.md`, the Glossary handoff, README Changelog, architecture map, and
+   project handoff agree that the design is approved and implementation has not
+   started;
+3. no unresolved ownership, lifecycle, accessibility, content-scope, or
+   lazy-loading conflict remains;
+4. local `main` is clean and no production Glossary content is present.
 
 ## Update rule
 

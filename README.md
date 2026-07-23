@@ -120,9 +120,26 @@ Key locations:
 - Numerical Linear Algebra is in development; Numerical PDE is planned.
 - The final semantic theme is not a theme switch or final fantasy brand treatment.
 
-The next milestone is **Interactive Term Glossary**. A **Linear Systems Lab** is a later milestone.
+The next milestone is the **Content-Agnostic Interactive Glossary Framework**.
+Its design is approved; implementation has not started. A **Linear Systems
+Lab** is a later milestone.
+
+## Project documentation
+
+See [`docs/INDEX.md`](docs/INDEX.md) for the current architecture, active plan,
+design specifications, implementation plans, reviews, and feature handoffs.
 
 ## Changelog
+
+### 2026-07-22 — Interactive Glossary framework design started
+
+- Documented the approved Content-Agnostic Interactive Glossary Framework
+  design.
+- No canonical numerical notation or production Glossary terms have been
+  released.
+- Formal content will be reviewed from private course materials before ODE
+  rollout.
+- Detailed status: [`docs/glossary/HANDOFF.md`](docs/glossary/HANDOFF.md)
 
 ### 2026-07-22 — Codex project guidance added
 

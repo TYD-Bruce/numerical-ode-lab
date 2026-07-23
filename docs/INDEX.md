@@ -15,7 +15,7 @@
 ## Current active milestone
 
 [PLAN.md](../PLAN.md) points to the Content-Agnostic Interactive Glossary
-Framework and records its current documentation gate.
+Framework. Its approved design is documented; implementation has not started.
 
 ## Product and feature specifications
 
@@ -24,7 +24,7 @@ Framework and records its current documentation gate.
 | [Theme-Ready Platform Shell Design](superpowers/specs/2026-07-13-theme-ready-platform-shell-design.md) | Implemented, Vercel Preview-verified, safe to release |
 | [Human-Friendly Math Expressions Design](superpowers/specs/2026-07-10-human-friendly-math-expressions-design.md) | Implemented and verified |
 | [Observed Convergence Order Experiment Design](superpowers/specs/2026-07-10-convergence-study-design.md) | Implemented, verified, release ready |
-| `superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md` | Pending documentation task; no link until committed |
+| [Content-Agnostic Interactive Glossary Framework Design](superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md) | Approved design; implementation not started |
 
 ## Implementation plans
 
@@ -47,8 +47,8 @@ Framework and records its current documentation gate.
   release baseline.
 - [Numerical notation research handoff](research/HANDOFF.md) — non-canonical
   evidence-research continuation state.
-- `glossary/HANDOFF.md` — pending; created with the approved Glossary design
-  documentation.
+- [Content-Agnostic Interactive Glossary Framework handoff](glossary/HANDOFF.md)
+  — approved design state and implementation-planning continuation.
 
 ## Historical documents
 
@@ -58,6 +58,10 @@ that have since changed. Check the relevant final review,
 [ARCHITECTURE.md](../ARCHITECTURE.md), current source, and
 [PROJECT_HANDOFF.md](PROJECT_HANDOFF.md) before treating a historical statement
 as current behavior.
+
+Earlier Platform Shell and notation-research records may use **Interactive Term
+Glossary** as an earlier working name. The unambiguous current milestone name is
+**Content-Agnostic Interactive Glossary Framework**.
 
 ## Private references
 

@@ -276,17 +276,22 @@ Deployment contracts are tested in `src/app/viteBase.contract.test.ts` and
 
 ## Planned Glossary extension point
 
-The content-agnostic Interactive Glossary Framework is planned, not
-implemented. The approved conceptual extension is:
+The
+[Content-Agnostic Interactive Glossary Framework Design](docs/superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md)
+is approved. Implementation has not started.
 
-- optional `getGlossaryBinding()` on a complete-Lab handle;
-- one stable Lab-owned Glossary binding per mount;
-- one lightweight, inert platform Glossary Host;
-- lazy definition-surface loading;
-- no production term or canonical notation until reviewed content work.
+The design introduces a planned extension involving:
 
-No current source file exposes `getGlossaryBinding()`, creates a Glossary Host,
-or publishes a production Glossary entry.
+- an optional conceptual `getGlossaryBinding()` on a complete-Lab handle;
+- a lightweight, inert conceptual `PlatformGlossaryHost`;
+- Lab-owned binding lifetime and final disposal;
+- platform-owned definition presentation and lazy surface loading.
+
+These names describe the approved design, not existing source APIs. No current
+source file or runtime API implements `getGlossaryBinding()`,
+`PlatformGlossaryHost`, a production Glossary binding, a production term
+registry, or production Glossary Host behavior. No production term or
+canonical Glossary notation exists.
 
 ## Architecture invariants
 
