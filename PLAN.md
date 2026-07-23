@@ -2,15 +2,17 @@
 
 ## Status
 
-Approved Glossary design documented; implementation not started. A temporary,
-maintainer-authorized Project Identity Migration gate is prepared locally
-before Glossary implementation planning continues.
+Approved Glossary design documented; implementation not started. The bounded
+Project Identity Migration is externally complete; only the local
+workspace-directory rename and reopening check remain before Glossary
+implementation planning continues.
 
 ## Current released baseline
 
 The Theme-Ready Platform Shell and Initial Value Problems Lab are implemented,
-locally verified, and Vercel Preview-verified. The release state is recorded in
-`docs/PROJECT_HANDOFF.md` and the Platform Shell final review.
+locally verified, Preview-verified, and Production-verified at
+`https://numerical-t-lab.vercel.app/`. The release state is recorded in
+`docs/PROJECT_HANDOFF.md` and the Numerical T-Lab rename review.
 
 ## Active milestone
 
@@ -30,9 +32,13 @@ are recorded by:
 - [Numerical T-Lab Rename Migration Plan](docs/superpowers/plans/2026-07-22-numerical-t-lab-rename-migration-plan.md)
 - [Project Rename Handoff](docs/project-rename/HANDOFF.md)
 
-No GitHub repository, Git remote, Vercel project, production domain, or local
-directory has been renamed. Target availability and all external actions
-remain pending maintainer authorization after a conservative audit.
+The public and private GitHub repositories, local remote URLs, existing Vercel
+project, Git integration, and canonical Production domain now use
+`numerical-t-lab`. Repository IDs, visibility, Vercel Project ID, deployment
+settings, and the `main` Production branch were preserved. The former
+Production domain remains a verified alias. The local directory still uses its
+legacy basename and is intentionally deferred until all old-path processes are
+closed.
 
 ## Why this milestone
 
@@ -66,15 +72,17 @@ Not created yet. Repository-grounded planning follows design approval.
 
 ## Current next action
 
-Perform a conservative Cursor audit of the Numerical T-Lab identity migration
-commit. After that audit and separately authorized external checkpoints
-complete, return to creating the repository-grounded Glossary implementation
-plan.
+Close every process that owns the legacy workspace path, rename the local
+directory basename to `numerical-t-lab`, reopen Cursor/Codex from the new path,
+and confirm branch, HEAD, status, remotes, and a focused local smoke test. Then
+return to creating the repository-grounded Glossary implementation plan.
 
 ## Current production behavior
 
 - The Platform Shell is implemented and available.
 - Initial Value Problems Lab is the complete numerical Lab.
+- Production is verified at `https://numerical-t-lab.vercel.app/`.
+- The former Production address remains available as a verified alias.
 - Production contains no Glossary terms.
 - Production contains no Glossary Host behavior.
 - Canonical notation and production definitions are intentionally deferred.
@@ -93,9 +101,8 @@ plan.
 
 Repository-grounded implementation planning may begin only after:
 
-1. the Numerical T-Lab identity migration commit passes conservative
-   review and its external checkpoints are either completed or explicitly
-   deferred;
+1. the completed Numerical T-Lab external migration is recorded and the local
+   workspace is reopened successfully under the canonical basename;
 2. the Glossary design-documentation commit is reviewed;
 3. `PLAN.md`, the Glossary handoff, README Changelog, architecture map, and
    project handoff agree that the design is approved and implementation has not

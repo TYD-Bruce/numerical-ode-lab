@@ -2,7 +2,12 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
-**Status (2026-07-14):** The Theme-Ready Platform Shell implementation is complete, locally release-verified, and Vercel Preview-verified. The release candidate passes 866 tests across 60 Vitest files, both TypeScript checks, the production build, local route/browser checks, the mock Tutor API check, and the deployed function/filesystem release gates. The final verdict is **SAFE TO RELEASE**. See [the final review](./reviews/2026-07-14-theme-ready-platform-shell-review.md).
+**Status (2026-07-23):** Numerical T-Lab is locally verified and
+Production-verified at `https://numerical-t-lab.vercel.app/`. The GitHub
+repositories, Git remotes, existing Vercel project, Git integration, and
+canonical domain use the Numerical T-Lab identity. The local workspace
+directory still uses its legacy basename and is the final migration gate. See
+[the rename review](./reviews/2026-07-22-numerical-t-lab-rename-review.md).
 
 ## 1. Product and public routes
 
@@ -52,6 +57,17 @@ npm run preview
 Local browser checks covered Home, every public overview/page, the nested ODE route, direct preview requests, client Not Found, desktop/mobile navigation, mobile Tutor modal behavior, horizontal overflow, lazy asset loading, and console errors. The local mock API returned HTTP 200 with `demoMode: true`; malformed input returned HTTP 400.
 
 The non-production Vercel Preview for commit `2232595cbea57504a9ba2c3e1c949e3d621bd347` was verified at `https://numerical-ode-lab-w-aq5e8owap-bruce-tian.vercel.app` on 2026-07-14. Direct nested routes and refresh, client Not Found, runtime chunk boundaries, mock Tutor, session lifecycle, New experiment flows, mobile overflow, and a clean console passed. Using a temporary Automation Bypass secret, malformed `POST /api/chat` returned HTTP 400 with `application/json; charset=utf-8` and `{ "error": "messages array is required." }`, not `index.html`. The sampled entry JavaScript, platform CSS, and WOFF2 font returned HTTP 200 with `application/javascript`, `text/css`, and `font/woff2` respectively. The temporary secret was removed immediately after sampling and its revocation was confirmed by the restored Vercel Authentication redirect.
+
+The Numerical T-Lab migration Preview
+`dpl_9eRKmCZahUxEa34X9H2rUffCZzEr` and Production deployment
+`dpl_GwW9hjgJgX86MEB6Co4Eqrxg8utp` both used exact reviewed commit
+`ead244ecefb82475414c73e15293184d99e1b78a`. Route, title, identity,
+responsive layout, Tutor, lazy-loading, asset, API, and console checks passed.
+Production raw sampling confirmed malformed `/api/chat` returns HTTP 400 JSON
+and representative JavaScript, CSS, and WOFF2 assets have the expected content
+types. `numerical-t-lab.vercel.app` is the verified canonical domain. The
+former `numerical-ode-lab-wai.vercel.app` address remains a verified alias
+serving the same Production deployment without redirecting the browser.
 
 ## 3. Platform architecture
 
@@ -201,7 +217,11 @@ For comparison, the pre-platform application entry was approximately 298,639 raw
 - known/unknown non-file page paths reach the client router;
 - unknown routes render in-shell Not Found without redirecting to `/`.
 
-Contract tests prove the configuration and generated output structurally. The non-production Vercel Preview subsequently proved direct nested refresh, API/static precedence and content types, unknown-route handling, absence of redirect/rewrite loops, runtime chunk timing, and console/network health. Production `main` has not been pushed.
+Contract tests prove the configuration and generated output structurally. The
+Numerical T-Lab Preview and Production deployments subsequently proved direct
+nested refresh, API/static precedence, unknown-route handling, absence of
+redirect/rewrite loops, runtime chunk timing, and console health. Production
+raw sampling confirmed API JSON and JavaScript, CSS, and font content types.
 
 ## 11. Platform implementation commits
 
@@ -244,6 +264,7 @@ Contributor rules:
 - Keep `beforeunload` minimal and synchronous.
 - Run `npm run verify` after changes and add focused tests first.
 
-*Last updated: 2026-07-22 for the Numerical T-Lab identity and approved
-Content-Agnostic Interactive Glossary Framework design status. The Platform
-Shell release verdict remains SAFE TO RELEASE.*
+*Last updated: 2026-07-23 for the completed Numerical T-Lab external migration
+and Production verification. The local workspace-directory rename remains
+pending; the approved Content-Agnostic Interactive Glossary Framework has not
+started implementation.*
