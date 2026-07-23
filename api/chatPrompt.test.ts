@@ -4,8 +4,9 @@ import { SYSTEM_PROMPT } from "./chatHandler";
 describe("AI Tutor controlled mathematics prompt", () => {
   it("uses the canonical product and module identity", () => {
     expect(SYSTEM_PROMPT).toContain(
-      "the Initial Value Problems Lab in Numerical Analysis Lab",
+      "the Initial Value Problems Lab in Numerical T-Lab",
     );
+    expect(SYSTEM_PROMPT).not.toContain("Numerical Analysis Lab");
     expect(SYSTEM_PROMPT).not.toContain("Numerical ODE Lab");
   });
 

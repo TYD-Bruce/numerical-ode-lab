@@ -13,7 +13,7 @@ export const notFoundPage: RouteModule = {
       appendPageHeading(
         page,
         "Page Not Found",
-        "That address does not match a page in the Numerical Analysis Lab."
+        "That address does not match a page in Numerical T-Lab."
       );
       const requested = document.createElement("p");
       requested.append(document.createTextNode("Requested path: "));

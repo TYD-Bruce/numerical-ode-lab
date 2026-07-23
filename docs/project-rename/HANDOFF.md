@@ -1,77 +1,103 @@
-# Project Identity Migration Handoff
+# Numerical T-Lab Identity Migration Handoff
 
 ## Status
 
-Commit 1 internal preparation is ready for conservative audit. External
-migration has not started.
+Internal Numerical T-Lab identity preparation is locally verified and ready
+for a conservative audit. External migration has not started.
 
-The product display name remains **Numerical Analysis Lab**. The canonical
-slug is `numerical-analysis-lab`.
+The product is **Numerical T-Lab**.
 
-## Starting state
+- Brand pillars: **Theory · Tools · Teaching**
+- Descriptor: **An Interactive Numerical Analysis Laboratory**
+- Learner workflow: **Understand → Compute → Visualize → Analyze**
+- Canonical slug: `numerical-t-lab`
+
+The official public meaning of `T` is Theory, Tools, and Teaching.
+
+## Starting state and divergence
 
 - Branch: local maintainer-owned `main`
-- Starting HEAD: `76730409945d291f8fcbc734a9eb5a18bb4c25ff`
+- Starting HEAD for this iteration:
+  `6da5e4451b18191f75b403b162b31ffcc57c844a`
 - Starting worktree: clean
-- `origin/main`: four commits behind local `main`
-- `vercel/main`: four commits behind local `main`
-- Current public remote URL:
+- `origin/main`: five commits behind local `main`
+- `vercel/main`: five commits behind local `main`
+- Current public remote:
   `https://github.com/TYD-Bruce/numerical-ode-lab.git`
-- Current deployment remote URL:
+- Current deployment remote:
   `https://github.com/TYD-Bruce/numerical-ode-lab-w_ai.git`
-- Local directory: `D:\numerical-ode-lab`
+- Current local directory: `D:\numerical-ode-lab`
 
-No remote was contacted during preparation.
+The starting HEAD contained the earlier generic
+`Numerical Analysis Lab`/`numerical-analysis-lab` migration proposal. The
+maintainer authorized this new commit to supersede that proposal without
+resetting or amending history. The completed identity commit will leave local
+`main` six commits ahead of both locally recorded remote tracking branches.
+No remote was contacted.
 
 ## Current and target identity
 
-| Identity | Current | Target |
+| Identity | Current external or starting repository state | Target |
 |---|---|---|
-| Display name | Numerical Analysis Lab | Numerical Analysis Lab |
-| npm package | `numerical-ode-lab` | `numerical-analysis-lab` |
-| Public repository | `TYD-Bruce/numerical-ode-lab` | `TYD-Bruce/numerical-analysis-lab` |
-| Private deployment repository | `TYD-Bruce/numerical-ode-lab-w_ai` | `TYD-Bruce/numerical-analysis-lab-deploy` |
-| Vercel project | Not locally discoverable | `numerical-analysis-lab` |
-| Production address | Current recorded `numerical-ode-lab-wai.vercel.app` | Preferred `numerical-analysis-lab.vercel.app`; unverified |
-| Local directory | `D:\numerical-ode-lab` | `D:\numerical-analysis-lab` |
+| Display name | Numerical Analysis Lab | Numerical T-Lab |
+| npm package | `numerical-analysis-lab` | `numerical-t-lab` |
+| Public repository | `TYD-Bruce/numerical-ode-lab` | `TYD-Bruce/numerical-t-lab` |
+| Private deployment repository | `TYD-Bruce/numerical-ode-lab-w_ai` | `TYD-Bruce/numerical-t-lab-deploy` |
+| Vercel project | Not locally discoverable | `numerical-t-lab` |
+| Production address | Current recorded `numerical-ode-lab-wai.vercel.app` | Preferred `numerical-t-lab.vercel.app`; unverified |
+| Local directory | `D:\numerical-ode-lab` | `D:\numerical-t-lab` |
 
 Target repository names, Vercel project name, and preferred domain have not
-been checked for availability.
+been checked for availability. The current production address was not
+re-verified during this local task.
 
 ## Publication safety
 
-- `.env.local` was tracked at the start.
-- Its current content and reachable revisions contain only non-sensitive
-  local/default configuration.
+- `.env.local` is untracked, present locally, and ignored.
+- Its current content and reachable tracked revisions contain only
+  placeholders or non-sensitive local/default configuration.
 - `.env.example` covers the required configuration.
-- No current or historical live credential was detected in `.env.local`.
-- The four unpushed commits contain no detected live credential, private
-  absolute path or endpoint, private-reference hash, or substantial private
-  quotation.
-- Ignored private reference contents were not inspected.
-- `.env.local` is removed from tracking while its ignored local copy is
-  preserved.
+- No current or historical live credential was detected.
+- The five local-only starting commits contain no detected credential, private
+  endpoint, private absolute path, private-reference hash, or substantial
+  private quotation.
+- Ignored private-reference contents were not inspected.
+- `.vercel/` remains ignored.
 
 No secret value is recorded in this handoff.
 
-## Commit 1 scope
+## Internal identity scope
 
-Internal preparation changes:
+The identity commit updates:
 
-- npm package and root lockfile identity;
-- fallback/bootstrap HTML title;
-- active Tutor product/module wording only;
-- Initial Value Problems Lab development-log prefixes;
-- focused identity tests;
-- `.vercel/` ignore rule;
-- future clone and directory commands;
-- honest current-versus-pending deployment wording;
-- migration plan, documentation index, and temporary `PLAN.md` gate.
+- npm package and root lockfile names;
+- fallback/generated HTML title;
+- Home identity hierarchy;
+- App Shell product identity;
+- every current route title;
+- concise About pillar explanations;
+- Not Found product wording;
+- ODE Tutor product/module wording only;
+- focused behavioral and build-contract tests;
+- current operating, goals, architecture, plan, index, public README, and
+  current-state handoffs/spec identity;
+- the Numerical T-Lab migration plan.
 
-No dependency, numerical, route, session, Store, lifecycle, lazy-loading,
-Glossary, Vite, or Vercel configuration change is included.
+The Home hierarchy is:
 
-## Preserved ODE identifiers
+```text
+Numerical T-Lab
+Theory · Tools · Teaching
+An Interactive Numerical Analysis Laboratory
+```
+
+The learner workflow remains separately visible:
+
+```text
+Understand → Compute → Visualize → Analyze
+```
+
+## Preserved ODE and internal identifiers
 
 - `/ode`
 - `/ode/initial-value-problems`
@@ -80,48 +106,75 @@ Glossary, Vite, or Vercel configuration change is included.
 - `Initial Value Problems Lab`
 - `Numerical ODE`
 - `history.state.numericalAnalysisLab`
+- related internal history-entry identity
 - `[ode-lab-api]` in `server/dev.ts`
+- correct “complete ODE Lab” and numerical-analysis terminology
 
-## Historical evidence preservation
+No numerical, route, session, Tutor-scope, dependency, Glossary, Vite, or
+Vercel behavior changes.
 
-Former names and URLs remain where they are point-in-time evidence:
+## Local verification
 
-- old verified Preview evidence in the project handoff and final Platform
-  Shell review;
-- historical feature designs and implementation plans;
+- Focused Home, App Shell, route-title, About, Tutor-prompt, bootstrap, and
+  unload tests: 8 files and 65 tests passed.
+- Application and API TypeScript checks passed.
+- Production build passed with 73 transformed modules and only the existing
+  accepted deferred-chunk size warning.
+- Full `npm.cmd run verify`: 60 files and 870 tests passed, followed by both
+  TypeScript checks and the production build.
+- Generated `index.html` uses `Numerical T-Lab`.
+- Generated route titles use `Numerical T-Lab`.
+- Generated active chunks contain no former product title or old
+  coefficient-validation product prefix.
+- Source verification confirms the coefficient-validation prefix is
+  `[Initial Value Problems Lab]`.
+- No browser, remote, deployment, Vercel, domain, or availability check was
+  performed.
+
+## Historical evidence deliberately preserved
+
+- old verified Preview URLs in `docs/PROJECT_HANDOFF.md`;
+- the 2026-07-14 Theme-Ready Platform Shell review;
+- the 2026-07-13 Platform Shell implementation plan and design;
+- the 2026-07-10 Convergence and Human-Friendly Math Expressions designs;
 - Git history, reflogs, and `FETCH_HEAD`;
-- ignored `dist`;
+- ignored/generated `dist`;
 - generated `node_modules/.package-lock.json`.
 
-Do not rewrite those records solely to replace an old identity.
+The superseded generic rename plan is replaced because it was current migration
+guidance, not released evidence. Its chronology remains in Git history.
 
 ## External checkpoints pending
 
-1. Conservative Cursor audit of Commit 1.
+1. Conservative Cursor audit of the Numerical T-Lab identity commit.
 2. Confirm GitHub target-name availability and capture current settings.
-3. Rename public repository and update `origin`.
-4. Rename private deployment repository and update `vercel`.
-5. Inspect, rename, or reconnect the existing Vercel project safely.
-6. Verify a reviewed Preview before production.
-7. Verify the preferred production domain before claiming it.
-8. Record observed old-domain transition behavior.
-9. Create Commit 2 with completion evidence.
-10. Rename the local directory and reopen Cursor/Codex last.
+3. Rename the public repository and update `origin`.
+4. Rename the private deployment repository and update `vercel`.
+5. Capture, rename, or safely reconnect the existing Vercel project.
+6. Verify a Preview from the exact reviewed commit.
+7. Assign `numerical-t-lab.vercel.app` only if availability is observed.
+8. Verify production routes, API, assets, titles, layout, chunks, and console.
+9. Record observed old-domain behavior without assuming redirects.
+10. Create a separate external-completion documentation commit.
+11. Rename the local directory and reopen Cursor/Codex last.
 
-Every external action requires a new explicit maintainer authorization.
+Every external action requires new explicit maintainer authorization.
 
 ## Rollback points
 
-- Revert Commit 1 with a new commit before external work if audit fails.
-- Rename an exact GitHub repository back and restore its remote URL if needed.
-- Keep the old Vercel domain, project identity, settings, and deployment until
-  the new deployment passes.
+- Revert the Numerical T-Lab identity commit with a new commit if audit fails.
+- Rename an exact GitHub repository back and restore its prior remote URL if
+  needed.
+- Keep the old Vercel project identity, settings, address, and last known-good
+  deployment until the new deployment passes.
+- Do not retire the old address until observed transition behavior is
+  documented and reviewed.
 - Rename the local directory back after closing applications if reopening
   fails.
-- Never reset, amend, rewrite history, or depend on unverified redirects.
+- Never reset, amend, rewrite history, or depend on an unverified redirect.
 
 ## Exact next gate
 
-Run a conservative Cursor audit of Commit 1. Stop after the audit; do not
-contact remotes, change external platforms, rename the local directory, or
-begin Glossary implementation.
+Run a conservative Cursor audit of the committed Numerical T-Lab identity
+migration. Stop after the audit; do not contact remotes, change external
+platforms, rename the local directory, or begin Glossary implementation.

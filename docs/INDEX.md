@@ -1,4 +1,4 @@
-# Numerical Analysis Lab Documentation Index
+# Numerical T-Lab Documentation Index
 
 ## Start here
 
@@ -33,7 +33,7 @@ Glossary implementation planning resumes. No external rename has occurred.
 | Document | Status |
 |---|---|
 | [Theme-Ready Platform Shell Implementation Plan](superpowers/plans/2026-07-13-theme-ready-platform-shell-implementation-plan.md) | Implemented historical plan; check the final review and architecture map for current state |
-| [Project Rename Migration Plan](superpowers/plans/2026-07-22-project-rename-migration-plan.md) | Internal preparation committed locally; external GitHub, Vercel, domain, remote, and directory checkpoints pending |
+| [Numerical T-Lab Rename Migration Plan](superpowers/plans/2026-07-22-numerical-t-lab-rename-migration-plan.md) | Internal identity preparation committed locally; external GitHub, Vercel, domain, remote, and directory checkpoints pending |
 | Content-Agnostic Interactive Glossary Framework implementation plan | Not created; repository-grounded planning follows design approval |
 
 ## Reviews and release evidence
@@ -52,7 +52,7 @@ Glossary implementation planning resumes. No external rename has occurred.
   evidence-research continuation state.
 - [Content-Agnostic Interactive Glossary Framework handoff](glossary/HANDOFF.md)
   — approved design state and implementation-planning continuation.
-- [Project Rename handoff](project-rename/HANDOFF.md) — canonical identity
+- [Project Rename handoff](project-rename/HANDOFF.md) — Numerical T-Lab identity
   preparation and pending external migration checkpoints.
 
 ## Historical documents

@@ -17,7 +17,7 @@ describe("Vite root-base deployment contract", () => {
     const config = await resolveConfig({}, "build");
     expect(config.base).toBe("/");
 
-    outputDirectory = await mkdtemp(join(tmpdir(), "numerical-analysis-lab-vite-base-"));
+    outputDirectory = await mkdtemp(join(tmpdir(), "numerical-t-lab-vite-base-"));
     await build({
       configFile: resolve(process.cwd(), "vite.config.ts"),
       logLevel: "silent",
@@ -58,7 +58,8 @@ describe("Vite root-base deployment contract", () => {
   });
 
   it("uses the canonical product title in generated HTML", () => {
-    expect(indexHtml).toContain("<title>Numerical Analysis Lab</title>");
+    expect(indexHtml).toContain("<title>Numerical T-Lab</title>");
+    expect(indexHtml).not.toContain("<title>Numerical Analysis Lab</title>");
     expect(indexHtml).not.toContain("<title>Numerical ODE Lab</title>");
   });
 

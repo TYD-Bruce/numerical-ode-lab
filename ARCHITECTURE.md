@@ -1,8 +1,8 @@
-# Numerical Analysis Lab Architecture
+# Numerical T-Lab Architecture
 
 ## System overview
 
-Numerical Analysis Lab is a Vite/TypeScript single-page application with a
+Numerical T-Lab is a Vite/TypeScript single-page application with a
 project-owned History API router. The platform shell and static pages are
 lightweight. The complete Initial Value Problems Lab loads through a dynamic
 route boundary, and the complete Tutor runtime loads on first Tutor open.

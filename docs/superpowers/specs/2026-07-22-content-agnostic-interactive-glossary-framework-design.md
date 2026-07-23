@@ -4,11 +4,11 @@
 
 **Date:** 2026-07-22
 
-**Scope:** Numerical Analysis Lab, Milestone 2A
+**Scope:** Numerical T-Lab, Milestone 2A
 
 ## 1. Purpose and decision status
 
-Numerical Analysis Lab will add one Content-Agnostic Interactive Glossary
+Numerical T-Lab will add one Content-Agnostic Interactive Glossary
 Framework shared across future Numerical ODE, Numerical Linear Algebra, and
 Numerical PDE Labs. The first implementation milestone establishes stable
 runtime contracts, registries, scope-level deduplication, accessible term

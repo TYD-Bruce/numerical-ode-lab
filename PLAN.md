@@ -22,11 +22,12 @@ Glossary implementation.
 
 ## Temporary Project Identity Migration gate
 
-The canonical target slug is `numerical-analysis-lab`. Internal package,
-fallback-title, Tutor identity wording, migration documentation, and
-publication-safety preparation are recorded by:
+The canonical product is **Numerical T-Lab** with target slug
+`numerical-t-lab`. Active product UI, internal package, route titles, Tutor
+identity wording, migration documentation, and publication-safety preparation
+are recorded by:
 
-- [Project Rename Migration Plan](docs/superpowers/plans/2026-07-22-project-rename-migration-plan.md)
+- [Numerical T-Lab Rename Migration Plan](docs/superpowers/plans/2026-07-22-numerical-t-lab-rename-migration-plan.md)
 - [Project Rename Handoff](docs/project-rename/HANDOFF.md)
 
 No GitHub repository, Git remote, Vercel project, production domain, or local
@@ -65,10 +66,10 @@ Not created yet. Repository-grounded planning follows design approval.
 
 ## Current next action
 
-Perform a conservative Cursor audit of the Project Identity Migration
-preparation commit. After that audit and separately authorized external
-checkpoints complete, return to creating the repository-grounded Glossary
-implementation plan.
+Perform a conservative Cursor audit of the Numerical T-Lab identity migration
+commit. After that audit and separately authorized external checkpoints
+complete, return to creating the repository-grounded Glossary implementation
+plan.
 
 ## Current production behavior
 
@@ -92,7 +93,7 @@ implementation plan.
 
 Repository-grounded implementation planning may begin only after:
 
-1. the Project Identity Migration preparation commit passes conservative
+1. the Numerical T-Lab identity migration commit passes conservative
    review and its external checkpoints are either completed or explicitly
    deferred;
 2. the Glossary design-documentation commit is reviewed;

@@ -77,12 +77,20 @@ export function createHomePage(sessionSource?: HomeSessionSource): RouteModule {
       const mounted = mountStaticPage(target, (page) => {
         appendPageHeading(
           page,
-          "Numerical Analysis Lab",
-          "An interactive, AI-assisted platform for learning numerical analysis through computation, visualization, error analysis, and guided experiments."
+          "Numerical T-Lab",
+          "An Interactive Numerical Analysis Laboratory"
         );
-        page
-          .querySelector<HTMLElement>(".platform-page-heading")
-          ?.classList.add("platform-home-hero");
+        const hero = page.querySelector<HTMLElement>(".platform-page-heading")!;
+        hero.classList.add("platform-home-hero");
+        const descriptor = hero.querySelector("p")!;
+        descriptor.classList.add("platform-product-descriptor");
+        descriptor.before(
+          createTextElement(
+            "p",
+            "Theory · Tools · Teaching",
+            "platform-brand-pillars"
+          )
+        );
 
         const cycle = document.createElement("section");
         cycle.className = "platform-learning-cycle";

@@ -25,12 +25,18 @@ describe("static platform pages", () => {
 
   it("presents truthful Home modules and a non-mandatory learning path", () => {
     const target = mount(homePage);
-    expect(target.textContent).toContain("Numerical Analysis Lab");
+    expect(target.textContent).toContain("Numerical T-Lab");
     expect(target.querySelector(".platform-home-hero h1")?.textContent).toBe(
-      "Numerical Analysis Lab"
+      "Numerical T-Lab"
     );
+    expect(
+      target.querySelector(".platform-brand-pillars")?.textContent
+    ).toBe("Theory · Tools · Teaching");
+    expect(
+      target.querySelector(".platform-product-descriptor")?.textContent
+    ).toBe("An Interactive Numerical Analysis Laboratory");
     expect(target.textContent).toContain("Understand → Compute → Visualize → Analyze");
-    expect(target.textContent).toContain("An interactive, AI-assisted platform");
+    expect(target.textContent).not.toMatch(/Numerical Analysis Lab(?!oratory)/);
     expect(target.textContent).toContain("Available");
     expect(target.textContent).toContain("In development");
     expect(target.textContent).toContain("Planned");
@@ -95,6 +101,12 @@ describe("static platform pages", () => {
     expect(target.textContent).toContain("currently implemented");
     expect(target.textContent).toContain("Initial Value Problems");
     expect(target.textContent).toContain("AI-assisted");
+    expect(target.textContent).toContain("Theory · Tools · Teaching");
+    expect(target.textContent).toContain("The T represents three public pillars");
+    expect(target.textContent).toContain("Theory");
+    expect(target.textContent).toContain("Tools");
+    expect(target.textContent).toContain("Teaching");
+    expect(target.textContent).not.toContain("Tian");
     expect(target.textContent).toContain("planned");
   });
 

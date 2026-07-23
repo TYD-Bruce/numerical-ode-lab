@@ -1,12 +1,18 @@
 # AGENTS.md
 
-This file is the repository operating contract for Codex and other coding agents working on **Numerical Analysis Lab**. It defines the reading order, truth hierarchy, engineering invariants, Git workflow, verification rules, documentation duties, and current milestone guardrails.
+This file is the repository operating contract for Codex and other coding agents working on **Numerical T-Lab**. It defines the reading order, truth hierarchy, engineering invariants, Git workflow, verification rules, documentation duties, and current milestone guardrails.
 
 It is intentionally detailed, but it is still a map—not a substitute for approved feature specifications, repository-grounded implementation plans, numerical contracts, feature HANDOFF files, or release reviews.
 
 ## 1. Project identity
 
-**Product:** Numerical Analysis Lab
+**Product:** Numerical T-Lab
+
+**Descriptor:** An Interactive Numerical Analysis Laboratory
+
+**Brand pillars:**
+
+> Theory · Tools · Teaching
 
 **Learning cycle:**
 

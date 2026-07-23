@@ -110,17 +110,17 @@ describe("public platform bootstrap", () => {
   });
 
   it.each([
-    ["/", "Numerical Analysis Lab", "Numerical Analysis Lab"],
-    ["/ode", "Numerical ODE", "Numerical ODE | Numerical Analysis Lab"],
+    ["/", "Numerical T-Lab", "Numerical T-Lab"],
+    ["/ode", "Numerical ODE", "Numerical ODE | Numerical T-Lab"],
     [
       "/ode/initial-value-problems",
       "Initial Value Problems Lab",
-      "Initial Value Problems Lab | Numerical Analysis Lab",
+      "Initial Value Problems Lab | Numerical T-Lab",
     ],
-    ["/linear-algebra", "Numerical Linear Algebra", "Numerical Linear Algebra | Numerical Analysis Lab"],
-    ["/pde", "Numerical PDE", "Numerical PDE | Numerical Analysis Lab"],
-    ["/about", "About", "About | Numerical Analysis Lab"],
-    ["/unknown-path", "Page Not Found", "Page Not Found | Numerical Analysis Lab"],
+    ["/linear-algebra", "Numerical Linear Algebra", "Numerical Linear Algebra | Numerical T-Lab"],
+    ["/pde", "Numerical PDE", "Numerical PDE | Numerical T-Lab"],
+    ["/about", "About", "About | Numerical T-Lab"],
+    ["/unknown-path", "Page Not Found", "Page Not Found | Numerical T-Lab"],
   ])("boots %s inside the persistent shell", async (path, heading, title) => {
     const app = await bootAt(path);
     expect(app.shell.root.querySelector(".platform-header")).not.toBeNull();

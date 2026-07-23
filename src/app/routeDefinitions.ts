@@ -64,7 +64,7 @@ export function createRouteDefinitions(
     {
       id: "home",
       path: "/",
-      title: "Numerical Analysis Lab",
+      title: "Numerical T-Lab",
       kind: "page",
       loader: createRouteLoader(() =>
         Promise.resolve(createHomePage(options.homeSessionSource))
@@ -73,42 +73,42 @@ export function createRouteDefinitions(
     {
       id: "ode-overview",
       path: "/ode",
-      title: "Numerical ODE | Numerical Analysis Lab",
+      title: "Numerical ODE | Numerical T-Lab",
       kind: "page",
       loader: createRouteLoader(() => Promise.resolve(odeOverviewPage)),
     },
     {
       id: "ode-initial-value-problems",
       path: "/ode/initial-value-problems",
-      title: "Initial Value Problems Lab | Numerical Analysis Lab",
+      title: "Initial Value Problems Lab | Numerical T-Lab",
       kind: "lab",
       loader: createRouteLoader(initialValueProblemsLoader),
     },
     {
       id: "linear-algebra-overview",
       path: "/linear-algebra",
-      title: "Numerical Linear Algebra | Numerical Analysis Lab",
+      title: "Numerical Linear Algebra | Numerical T-Lab",
       kind: "page",
       loader: createRouteLoader(() => Promise.resolve(linearAlgebraOverviewPage)),
     },
     {
       id: "pde-overview",
       path: "/pde",
-      title: "Numerical PDE | Numerical Analysis Lab",
+      title: "Numerical PDE | Numerical T-Lab",
       kind: "page",
       loader: createRouteLoader(() => Promise.resolve(pdeOverviewPage)),
     },
     {
       id: "about",
       path: "/about",
-      title: "About | Numerical Analysis Lab",
+      title: "About | Numerical T-Lab",
       kind: "page",
       loader: createRouteLoader(() => Promise.resolve(aboutPage)),
     },
     {
       id: "not-found",
       path: null,
-      title: "Page Not Found | Numerical Analysis Lab",
+      title: "Page Not Found | Numerical T-Lab",
       kind: "page",
       loader: createRouteLoader(() => Promise.resolve(notFoundPage)),
     },

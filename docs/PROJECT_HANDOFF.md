@@ -1,4 +1,4 @@
-# Numerical Analysis Lab — Project Handoff
+# Numerical T-Lab — Project Handoff
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
@@ -6,7 +6,7 @@ This is the durable handoff for future contributors. Use it with the current cod
 
 ## 1. Product and public routes
 
-The product is **Numerical Analysis Lab**. The currently implemented numerical module is **Initial Value Problems Lab**, retaining the released Method -> Data -> Output ODE workflow.
+The product is **Numerical T-Lab**. The currently implemented numerical module is **Initial Value Problems Lab**, retaining the released Method -> Data -> Output ODE workflow.
 
 | Route | Page | Status |
 |---|---|---|
@@ -244,6 +244,6 @@ Contributor rules:
 - Keep `beforeunload` minimal and synchronous.
 - Run `npm run verify` after changes and add focused tests first.
 
-*Last updated: 2026-07-22 for the approved Content-Agnostic Interactive
-Glossary Framework design status. The Platform Shell release verdict remains
-SAFE TO RELEASE.*
+*Last updated: 2026-07-22 for the Numerical T-Lab identity and approved
+Content-Agnostic Interactive Glossary Framework design status. The Platform
+Shell release verdict remains SAFE TO RELEASE.*

@@ -1,8 +1,8 @@
-# Numerical Analysis Lab Goals
+# Numerical T-Lab Goals
 
 ## Product north star
 
-Numerical Analysis Lab is an interactive, AI-assisted educational platform for
+Numerical T-Lab is an interactive, AI-assisted educational platform for
 learning numerical analysis through:
 
 ```text
@@ -14,6 +14,15 @@ Understand
 
 The platform should make numerical behavior observable, explainable, and safe
 to explore.
+
+**Descriptor:** An Interactive Numerical Analysis Laboratory
+
+**Brand pillars:** Theory · Tools · Teaching
+
+The pillars express the product philosophy: Theory explains why methods work,
+Tools make numerical behavior computable and observable, and Teaching provides
+guided, beginner-oriented interpretation. The learning cycle above remains the
+learner workflow.
 
 ## Target learner
 

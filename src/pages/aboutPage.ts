@@ -12,7 +12,40 @@ export const aboutPage: RouteModule = {
       appendPageHeading(
         page,
         "About",
-        "Numerical Analysis Lab is an educational, AI-assisted environment for learning through guided computational experiments."
+        "Numerical T-Lab is an interactive, AI-assisted environment for learning numerical analysis through guided computational experiments."
+      );
+
+      const pillars = document.createElement("section");
+      const pillarList = document.createElement("ul");
+      const theory = document.createElement("li");
+      theory.append(
+        createTextElement("strong", "Theory"),
+        document.createTextNode(
+          " — explains why numerical methods work, including their assumptions, limitations, stability, and error behavior."
+        )
+      );
+      const tools = document.createElement("li");
+      tools.append(
+        createTextElement("strong", "Tools"),
+        document.createTextNode(
+          " — provides computation, numerical solvers, visualizations, comparisons, and experiments."
+        )
+      );
+      const teaching = document.createElement("li");
+      teaching.append(
+        createTextElement("strong", "Teaching"),
+        document.createTextNode(
+          " — provides guided workflows, the Interactive Glossary, AI Tutor, and beginner-oriented interpretation."
+        )
+      );
+      pillarList.append(theory, tools, teaching);
+      pillars.append(
+        createTextElement("h2", "Theory · Tools · Teaching"),
+        createTextElement(
+          "p",
+          "The T represents three public pillars that shape the learning experience."
+        ),
+        pillarList
       );
 
       const current = document.createElement("section");
@@ -33,7 +66,7 @@ export const aboutPage: RouteModule = {
         )
       );
 
-      page.append(current, future);
+      page.append(pillars, current, future);
     });
   },
 };

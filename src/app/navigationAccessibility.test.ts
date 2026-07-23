@@ -89,7 +89,7 @@ describe("navigation accessibility", () => {
       }),
     });
     router.start();
-    await expect.poll(() => shell.outlet.textContent).toContain("Numerical Analysis Lab");
+    await expect.poll(() => shell.outlet.textContent).toContain("Numerical T-Lab");
 
     const openLab = shell.outlet.querySelector<HTMLAnchorElement>(
       'a[href="/ode/initial-value-problems"]'
@@ -116,7 +116,7 @@ describe("navigation accessibility", () => {
       routes: createRouteDefinitions(),
     });
     router.start();
-    await expect.poll(() => shell.outlet.textContent).toContain("Numerical Analysis Lab");
+    await expect.poll(() => shell.outlet.textContent).toContain("Numerical T-Lab");
 
     const trigger = shell.root.querySelector<HTMLButtonElement>("[data-mobile-menu-trigger]")!;
     trigger.click();
@@ -127,7 +127,7 @@ describe("navigation accessibility", () => {
     odeLink.dispatchEvent(event);
 
     expect(event.defaultPrevented).toBe(true);
-    await expect.poll(() => document.title).toBe("Numerical ODE | Numerical Analysis Lab");
+    await expect.poll(() => document.title).toBe("Numerical ODE | Numerical T-Lab");
     expect(location.pathname).toBe("/ode");
     expect(trigger.getAttribute("aria-expanded")).toBe("false");
     expect(shell.root.querySelector<HTMLElement>("[data-mobile-menu]")?.hidden).toBe(true);

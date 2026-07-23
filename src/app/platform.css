@@ -221,6 +221,20 @@ a {
   max-width: var(--content-width-reading);
 }
 
+.platform-home-hero .platform-brand-pillars {
+  margin-block: 0 var(--space-3);
+  color: var(--color-accent-primary);
+  font-size: 0.92rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+}
+
+.platform-home-hero .platform-product-descriptor {
+  margin-block: 0;
+  color: var(--color-text-secondary);
+  font-size: 1.1rem;
+}
+
 .platform-page-heading h1,
 .platform-page h2,
 .platform-page h3,
