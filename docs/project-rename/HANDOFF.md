@@ -26,7 +26,8 @@ The official public meaning of `T` is Theory, Tools, and Teaching.
   `https://github.com/TYD-Bruce/numerical-ode-lab.git`
 - Current deployment remote:
   `https://github.com/TYD-Bruce/numerical-ode-lab-w_ai.git`
-- Current local directory: `D:\numerical-ode-lab`
+- Current local directory basename: `numerical-ode-lab`
+  (machine-local absolute path intentionally omitted from public docs)
 
 The starting HEAD contained the earlier generic
 `Numerical Analysis Lab`/`numerical-analysis-lab` migration proposal. The
@@ -37,15 +38,19 @@ No remote was contacted.
 
 ## Current and target identity
 
-| Identity | Current external or starting repository state | Target |
+Active product UI, package name, titles, and Tutor wording already use
+**Numerical T-Lab** / `numerical-t-lab`. The “Legacy or starting” column below
+is pre-commit / still-external evidence only.
+
+| Identity | Legacy or starting evidence | Target |
 |---|---|---|
-| Display name | Numerical Analysis Lab | Numerical T-Lab |
-| npm package | `numerical-analysis-lab` | `numerical-t-lab` |
+| Display name | Numerical Analysis Lab | Numerical T-Lab (already active in product UI) |
+| npm package | `numerical-analysis-lab` at starting HEAD | `numerical-t-lab` (already local) |
 | Public repository | `TYD-Bruce/numerical-ode-lab` | `TYD-Bruce/numerical-t-lab` |
 | Private deployment repository | `TYD-Bruce/numerical-ode-lab-w_ai` | `TYD-Bruce/numerical-t-lab-deploy` |
 | Vercel project | Not locally discoverable | `numerical-t-lab` |
 | Production address | Current recorded `numerical-ode-lab-wai.vercel.app` | Preferred `numerical-t-lab.vercel.app`; unverified |
-| Local directory | `D:\numerical-ode-lab` | `D:\numerical-t-lab` |
+| Local directory basename | `numerical-ode-lab` | `numerical-t-lab` |
 
 Target repository names, Vercel project name, and preferred domain have not
 been checked for availability. The current production address was not
@@ -59,8 +64,9 @@ re-verified during this local task.
 - `.env.example` covers the required configuration.
 - No current or historical live credential was detected.
 - The five local-only starting commits contain no detected credential, private
-  endpoint, private absolute path, private-reference hash, or substantial
-  private quotation.
+  endpoint, private-reference hash, or substantial private quotation.
+- Public migration docs record local directory basenames only, not
+  machine-local absolute paths.
 - Ignored private-reference contents were not inspected.
 - `.vercel/` remains ignored.
 

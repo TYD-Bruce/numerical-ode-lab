@@ -36,7 +36,8 @@ This identity iteration began from:
 - `vercel/main`: five commits behind local `main`;
 - `origin`: `https://github.com/TYD-Bruce/numerical-ode-lab.git`;
 - `vercel`: `https://github.com/TYD-Bruce/numerical-ode-lab-w_ai.git`;
-- local directory: `D:\numerical-ode-lab`.
+- local directory basename: `numerical-ode-lab`
+  (machine-local absolute path intentionally omitted from public docs).
 
 The starting HEAD was the local-only generic identity-preparation commit. The
 maintainer explicitly authorized superseding that proposal with Numerical
@@ -46,19 +47,23 @@ tracking branches. No remote was contacted to refresh those references.
 
 ## 3. Current and target identity matrix
 
-| Identity | Current or pre-brand repository evidence | Canonical target |
+Active product UI, package name, titles, and Tutor wording already use
+**Numerical T-Lab** / `numerical-t-lab`. The left column is legacy / starting
+or still-external evidence only.
+
+| Identity | Legacy, starting, or still-external evidence | Canonical target |
 |---|---|---|
-| Product display name | Numerical Analysis Lab | Numerical T-Lab |
+| Product display name | Numerical Analysis Lab | Numerical T-Lab (already active in product UI) |
 | Brand pillars | Not previously defined | Theory · Tools · Teaching |
 | Descriptor | Generic platform description | An Interactive Numerical Analysis Laboratory |
 | Learner workflow | Understand → Compute → Visualize → Analyze | Preserve unchanged |
 | Slug | Local proposal used `numerical-analysis-lab`; external identity remains legacy | `numerical-t-lab` |
-| npm package | `numerical-analysis-lab` at starting HEAD | `numerical-t-lab` |
+| npm package | `numerical-analysis-lab` at starting HEAD | `numerical-t-lab` (already local) |
 | Public repository | `TYD-Bruce/numerical-ode-lab` | `TYD-Bruce/numerical-t-lab` |
 | Private deployment repository | `TYD-Bruce/numerical-ode-lab-w_ai` | `TYD-Bruce/numerical-t-lab-deploy` |
 | Vercel project | Not discoverable from local repository state | `numerical-t-lab` |
 | Production address | `numerical-ode-lab-wai.vercel.app` is the current recorded address | Preferred `numerical-t-lab.vercel.app`; availability and deployment unverified |
-| Local directory | `D:\numerical-ode-lab` | `D:\numerical-t-lab` |
+| Local directory basename | `numerical-ode-lab` | `numerical-t-lab` |
 | Git remote names | `origin`, `vercel` | Preserve names; update URLs later |
 
 The target repository names, Vercel project name, and preferred domain have
@@ -132,8 +137,10 @@ Before identity changes:
 - `.env.example` covered the required configuration;
 - no current or historical live credential was detected;
 - the five commits ahead of both locally recorded remote branches were checked
-  for credentials, private endpoints, private absolute paths,
-  private-reference hashes, and substantial private quotations;
+  for credentials, private endpoints, private-reference hashes, and substantial
+  private quotations;
+- public migration docs record local directory basenames only, not
+  machine-local absolute paths;
 - ignored private-reference contents were not inspected.
 
 No secret value is recorded in this plan.
@@ -243,8 +250,10 @@ The local directory rename is last:
    and canonical remote URLs.
 2. Stop local servers.
 3. Close terminals, Cursor, and Codex sessions using the old directory.
-4. Rename `D:\numerical-ode-lab` to `D:\numerical-t-lab`.
-5. Reopen `D:\numerical-t-lab` as the workspace in Cursor.
+4. Rename the local workspace directory from basename `numerical-ode-lab` to
+   `numerical-t-lab` (do not record the machine-local absolute path in public
+   docs).
+5. Reopen the renamed workspace directory in Cursor.
 6. Reopen a terminal at the new path and confirm branch, HEAD, status, and
    remotes.
 7. Reopen the Codex task from the new working directory.
