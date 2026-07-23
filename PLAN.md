@@ -3,7 +3,8 @@
 ## Status
 
 Project Identity Migration complete. The Content-Agnostic Interactive Glossary
-Framework design is approved and committed; implementation has not started.
+Framework design is approved and committed. Its repository-grounded
+implementation plan is created; implementation has not started.
 
 ## Current released baseline
 
@@ -55,7 +56,10 @@ Status: **Approved design; implementation not started.**
 
 ## Authoritative implementation plan
 
-Not created yet. Repository-grounded planning follows design approval.
+[Content-Agnostic Interactive Glossary Framework Implementation Plan](docs/superpowers/plans/2026-07-23-content-agnostic-interactive-glossary-framework-implementation-plan.md)
+
+Status: **Repository-grounded plan created; conservative review pending.
+Implementation not started.**
 
 ## Approved delivery sequence
 
@@ -63,6 +67,7 @@ Not created yet. Repository-grounded planning follows design approval.
 2. Document the Content-Agnostic Interactive Glossary Framework design on
    local `main`. Complete in the commit containing this plan.
 3. Create the repository-grounded implementation plan on local `main`.
+   Complete; conservative review pending.
 4. Build Glossary model and scope lifecycle.
 5. Add shared Glossary surfaces.
 6. Add the development Glossary Playground.
@@ -72,9 +77,9 @@ Not created yet. Repository-grounded planning follows design approval.
 
 ## Current next action
 
-Create and review the repository-grounded Content-Agnostic Interactive
-Glossary Framework implementation plan. Do not begin framework implementation
-before that plan is approved.
+Run a conservative review of the repository-grounded Content-Agnostic
+Interactive Glossary Framework implementation plan. Do not begin framework
+implementation before the plan and any review fixes are approved.
 
 ## Current production behavior
 
@@ -98,9 +103,10 @@ before that plan is approved.
 
 ## Review gate
 
-Repository-grounded implementation planning is the active gate. The plan must
-map the approved design to current source, tests, lifecycle, and lazy-loading
-boundaries and must be reviewed before implementation begins. Production
+Conservative review of the repository-grounded implementation plan is the
+active gate. The plan maps the approved design to current source, tests,
+lifecycle, accessibility, responsive behavior, and lazy-loading boundaries.
+It must be audited and approved before implementation begins. Production
 Glossary terms and runtime behavior remain absent.
 
 ## Update rule

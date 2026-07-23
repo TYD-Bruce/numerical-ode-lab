@@ -2,21 +2,61 @@
 
 ## Status
 
-Approved design documented; implementation not started.
+Approved design and repository-grounded implementation plan documented;
+implementation not started.
 
 The active milestone is **Content-Agnostic Interactive Glossary Framework**.
 Production contains no Glossary terms, term annotations, registry, binding,
 Host behavior, definition surface, Tutor handoff, queue, or Playground route.
 No canonical numerical notation is defined by this feature.
 
-## Current branch and HEAD
+The repository-grounded planning iteration is complete. The exact plan is:
+
+`docs/superpowers/plans/2026-07-23-content-agnostic-interactive-glossary-framework-implementation-plan.md`
+
+## Planning baseline
 
 - Workflow: maintainer-owned local `main`
-- Starting HEAD for this design iteration:
-  `fb3e78691de521155f4723ef2922000180c5ad90`
-- The authoritative design and this handoff are recorded by the commit named
-  `Document the interactive glossary framework`.
-- Nothing is pushed by this iteration.
+- Starting HEAD for this planning iteration:
+  `b48ed12618c5dcd3dc01936feea8e945ad3767a0`
+- Starting worktree: clean, including untracked files
+- The plan and status updates are recorded by the local documentation commit
+  named `Plan glossary framework implementation`.
+- Nothing is pushed by this planning iteration.
+
+## Repository-grounded planning completed
+
+The implementation plan inspected and mapped:
+
+- `src/main.ts` and `createPlatformBootstrap()`;
+- `createPlatformModuleRegistry()` and the ODE dynamic route boundary;
+- `MountedLabRoute<TSession>` and `createCompleteLabRoute()`;
+- `mountOdeApp()`, the Initial Value Problems route adapter, rerender
+  generations, and Lab-owned disposal;
+- `LabTutorBinding`, `TutorSessionAccess`, `PlatformTutorHost`, and the lazy
+  Tutor panel;
+- Router navigation-start, route disposal, scroll capture, focus, stale-load,
+  and Retry behavior;
+- `AppSessionStore` pure-state rejection rules;
+- App Shell regions, About page construction, route definitions, and the
+  confirmed absence of development-route injection;
+- current Tutor and New experiment modal/focus/inert/scroll ownership;
+- semantic CSS tokens, the 760 px Tutor modal threshold, current modal layer,
+  and responsive rules;
+- readonly formula fallback and deferred MathLive loading;
+- jsdom helpers, lifecycle tests, source-graph tests, and temporary Vite
+  manifest tests.
+
+The plan resolves the two most important repository constraints:
+
+- development routes must be added through a new explicit injection seam
+  because no current seam exists;
+- Glossary cannot use ordinary Tutor `close()` for presentation arbitration
+  because panel disposal aborts pending work, so the surface commit must add a
+  non-destructive Tutor presentation-suspension path and shared mobile
+  inert/scroll coordination.
+
+No binding design conflict was found.
 
 ## Approved scope
 
@@ -114,8 +154,8 @@ defined by the framework design.
 - The real Tutor queue is recorded for later work, not implemented in
   Milestone 2A.
 
-All interface names in the design are conceptual until repository-grounded
-planning maps them to existing source files. No current runtime API implements
+The repository-grounded plan maps the design’s conceptual interfaces to exact
+future source files. They remain proposed: no current runtime API implements
 them.
 
 ## Planned implementation commits
@@ -127,67 +167,39 @@ them.
 Each commit requires focused tests and the ownership, privacy, lazy-loading,
 and no-production-content gates in the design.
 
-## Files changed this iteration
+The repository-grounded plan supplies exact files, APIs, state machines,
+tests-first order, browser checks, production-exclusion proof, risks, rollback
+points, and stop/review gates for all three commits.
 
-- `docs/superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md`
+## Files changed in the planning iteration
+
+- `docs/superpowers/plans/2026-07-23-content-agnostic-interactive-glossary-framework-implementation-plan.md`
 - `docs/glossary/HANDOFF.md`
 - `PLAN.md`
-- `ARCHITECTURE.md`
 - `docs/INDEX.md`
-- `docs/PROJECT_HANDOFF.md`
-- `README.md`
 
-No production, test, package, lockfile, API, Vite, Vercel, numerical, ODE, or
-Tutor file changes.
+No source, test, CSS, configuration, package, lockfile, generated output, API,
+Vite, Vercel, numerical, ODE, Tutor, deployment, or README change is part of
+this planning iteration.
 
-## Verification performed
+## Planning-iteration verification scope
 
-- `npm.cmd run verify`: passed
-  - 60 Vitest files passed
-  - 868 tests passed
-  - application TypeScript check passed
-  - API TypeScript check passed
-  - production Vite build passed
-- `git diff --check`: passed before staging
-- Documentation consistency search: inspected every match for the canonical
-  milestone name, earlier working name, design status, implementation status,
-  Glossary Host, and `getGlossaryBinding`
-- Current-state documents use **Content-Agnostic Interactive Glossary
-  Framework** and **Approved design; implementation not started**
-- Earlier **Interactive Term Glossary** occurrences are confined to
-  point-in-time historical records and are labeled in `docs/INDEX.md` as an
-  earlier working name
-- Relative documentation link check: all checked links resolve
-- README documentation pointer, design link, and Glossary handoff link:
-  confirmed
-- Architecture check: conceptual Glossary APIs are explicitly designed but not
-  implemented
-- File-scope check: documentation only; no source, test, package, lockfile,
-  API, Vite, Vercel, numerical, ODE, Tutor, or runtime file changed
-- Privacy check: no private reference file, private text, screenshot, hash,
-  secret, or local absolute path added
-- Content check: no production Glossary term, formal definition, canonical
-  notation, or implementation claim added
-- Placeholder check: no unfinished markers appear in changed documentation
+This iteration changes documentation only. It does not run implementation
+tests or claim runtime/browser/bundle evidence. Documentation verification
+must confirm:
+
+- the new plan and all relative links resolve;
+- only the plan, `PLAN.md`, `docs/INDEX.md`, and this handoff changed;
+- current architecture is not described as already implementing Glossary;
+- no production term, notation, definition, fixture, API, or private-reference
+  material was added;
+- no source, test, CSS, configuration, package, lockfile, generated output,
+  deployment file, remote, or external platform changed.
 
 ## Exact next action
 
-After maintainer review of this design commit, create a repository-grounded
-implementation plan. The plan must inspect current platform contracts,
-lifecycles, lazy-loading tests, responsive Tutor coordination, and bundle
-boundaries before proposing exact source edits.
+Run a conservative Cursor audit of the repository-grounded implementation
+plan. Apply only reviewed documentation fixes, then obtain maintainer approval
+before Commit 1.
 
-No framework implementation begins from this documentation task.
-
-## Questions or risks for implementation planning
-
-No product decision is reopened. Repository-grounded planning must resolve:
-
-- exact placement of content-agnostic contracts in the current app type graph;
-- how the generic Lab adapter adds optional Glossary coordination without
-  weakening Tutor disconnect ordering;
-- the smallest inert Host coordinator that preserves the Home bundle boundary;
-- development-route injection compatible with the current route definitions;
-- ownership of shared inert/scroll-lock coordination between Tutor and
-  Glossary;
-- focused tests and manifest evidence for every lazy/development-only boundary.
+No framework implementation begins from this planning task.
