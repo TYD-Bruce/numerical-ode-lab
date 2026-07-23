@@ -98,14 +98,30 @@ describe("static platform pages", () => {
 
   it("distinguishes the released ODE product from the future platform on About", () => {
     const target = mount(aboutPage, "/about");
+    const teachingPillar = Array.from(target.querySelectorAll("li")).find(
+      (item) => item.querySelector("strong")?.textContent === "Teaching"
+    );
+    const teachingCopy = teachingPillar?.textContent ?? "";
+    const currentTeachingCopy = teachingCopy.split("today.")[0];
+
+    expect(target.textContent).toContain("Numerical T-Lab");
     expect(target.textContent).toContain("currently implemented");
     expect(target.textContent).toContain("Initial Value Problems");
     expect(target.textContent).toContain("AI-assisted");
-    expect(target.textContent).toContain("Theory · Tools · Teaching");
+    expect(target.querySelector("h2")?.textContent).toBe(
+      "Theory · Tools · Teaching"
+    );
     expect(target.textContent).toContain("The T represents three public pillars");
     expect(target.textContent).toContain("Theory");
     expect(target.textContent).toContain("Tools");
     expect(target.textContent).toContain("Teaching");
+    expect(currentTeachingCopy).toContain("guided workflows");
+    expect(currentTeachingCopy).toContain("AI Tutor");
+    expect(currentTeachingCopy).not.toContain("Interactive Glossary");
+    expect(teachingCopy).toContain(
+      "approved Interactive Glossary framework"
+    );
+    expect(teachingCopy).toContain("planned");
     expect(target.textContent).not.toContain("Tian");
     expect(target.textContent).toContain("planned");
   });

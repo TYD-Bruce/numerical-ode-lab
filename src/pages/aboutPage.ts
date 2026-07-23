@@ -35,7 +35,7 @@ export const aboutPage: RouteModule = {
       teaching.append(
         createTextElement("strong", "Teaching"),
         document.createTextNode(
-          " — provides guided workflows, the Interactive Glossary, AI Tutor, and beginner-oriented interpretation."
+          " — provides guided workflows, the AI Tutor, and beginner-oriented interpretation today. The approved Interactive Glossary framework is planned as the next shared learning capability."
         )
       );
       pillarList.append(theory, tools, teaching);

@@ -5,8 +5,9 @@ This is the durable handoff for future contributors. Use it with the current cod
 **Status (2026-07-23):** Numerical T-Lab is locally verified and
 Production-verified at `https://numerical-t-lab.vercel.app/`. The GitHub
 repositories, Git remotes, existing Vercel project, Git integration, and
-canonical domain use the Numerical T-Lab identity. The local workspace
-directory still uses its legacy basename and is the final migration gate. See
+canonical domain use the Numerical T-Lab identity. The local workspace rename
+and reopen are complete at `D:\numerical-t-lab`; Project Identity Migration is
+complete. See
 [the rename review](./reviews/2026-07-22-numerical-t-lab-rename-review.md).
 
 ## 1. Product and public routes
@@ -34,6 +35,15 @@ Repository-grounded implementation planning is next.
 ## 2. Verification baseline
 
 Final Phase 6 local verification used Node 22.23.1, npm 10.9.8, Vite 5.4.21, TypeScript 5.4, and Vitest 2.1.9.
+
+At the final local reopen checkpoint, Cursor/Codex opened the canonical
+`D:\numerical-t-lab` workspace. Git remained valid on branch `main`; HEAD
+remained `521d8eba2aad3ad361c289e3e4b1e8e2e7ce6f30` across the physical
+folder rename; the worktree remained clean; and `origin` and `vercel` retained
+the canonical Numerical T-Lab repository URLs. The local typecheck, API
+typecheck, build, and verification evidence recorded below remains applicable,
+and the migration-closeout commit reruns those automated gates from the
+canonical path.
 
 ```bash
 npm run test:run
@@ -264,7 +274,8 @@ Contributor rules:
 - Keep `beforeunload` minimal and synchronous.
 - Run `npm run verify` after changes and add focused tests first.
 
-*Last updated: 2026-07-23 for the completed Numerical T-Lab external migration
-and Production verification. The local workspace-directory rename remains
-pending; the approved Content-Agnostic Interactive Glossary Framework has not
-started implementation.*
+*Last updated: 2026-07-23 for the completed Numerical T-Lab Project Identity
+Migration and Production verification. No migration action remains pending.
+The approved Content-Agnostic Interactive Glossary Framework has not started
+implementation; repository-grounded implementation planning is the exact next
+gate.*

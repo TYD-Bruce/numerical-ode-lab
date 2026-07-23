@@ -16,11 +16,11 @@
 
 [PLAN.md](../PLAN.md) points to the Content-Agnostic Interactive Glossary
 Framework. Its approved design is documented; implementation has not started.
-The temporary, bounded Project Identity Migration gate has completed its
-external checkpoints. The GitHub repositories, remotes, existing Vercel
-project, Git integration, Preview, Production deployment, and canonical domain
-are migrated and verified. The local workspace-directory rename remains the
-final gate before Glossary implementation planning resumes.
+The bounded Project Identity Migration is complete. The GitHub repositories,
+remotes, existing Vercel project, Git integration, Preview, Production
+deployment, canonical domain, and local workspace at `D:\numerical-t-lab` are
+migrated and verified. Repository-grounded Glossary implementation planning is
+the active gate.
 
 ## Product and feature specifications
 
@@ -36,7 +36,7 @@ final gate before Glossary implementation planning resumes.
 | Document | Status |
 |---|---|
 | [Theme-Ready Platform Shell Implementation Plan](superpowers/plans/2026-07-13-theme-ready-platform-shell-implementation-plan.md) | Implemented historical plan; check the final review and architecture map for current state |
-| [Numerical T-Lab Rename Migration Plan](superpowers/plans/2026-07-22-numerical-t-lab-rename-migration-plan.md) | External migration completed and verified; local workspace-directory rename pending |
+| [Numerical T-Lab Rename Migration Plan](superpowers/plans/2026-07-22-numerical-t-lab-rename-migration-plan.md) | Project Identity Migration completed and verified |
 | Content-Agnostic Interactive Glossary Framework implementation plan | Not created; repository-grounded planning follows design approval |
 
 ## Reviews and release evidence
@@ -44,7 +44,7 @@ final gate before Glossary implementation planning resumes.
 | Document | Verdict or status |
 |---|---|
 | [Theme-Ready Platform Shell Final Review](reviews/2026-07-14-theme-ready-platform-shell-review.md) | Safe to release |
-| [Numerical T-Lab Rename Review](reviews/2026-07-22-numerical-t-lab-rename-review.md) | External migration verified; local workspace-directory rename pending |
+| [Numerical T-Lab Rename Review](reviews/2026-07-22-numerical-t-lab-rename-review.md) | Project Identity Migration completed and verified |
 | [Human-Friendly Math Expressions Review](reviews/2026-07-10-human-friendly-math-expressions-review.md) | Safe to release Version 1 |
 | [Observed Convergence Order Experiment Review](reviews/2026-07-10-convergence-study-review.md) | Safe to release Version 1 |
 
@@ -56,8 +56,8 @@ final gate before Glossary implementation planning resumes.
   evidence-research continuation state.
 - [Content-Agnostic Interactive Glossary Framework handoff](glossary/HANDOFF.md)
   — approved design state and implementation-planning continuation.
-- [Project Rename handoff](project-rename/HANDOFF.md) — completed external
-  migration evidence and the pending local workspace-directory gate.
+- [Project Rename handoff](project-rename/HANDOFF.md) — completed Project
+  Identity Migration evidence, including the canonical local workspace reopen.
 
 ## Historical documents
 

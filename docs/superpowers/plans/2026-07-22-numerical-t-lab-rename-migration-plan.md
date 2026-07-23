@@ -1,7 +1,6 @@
 # Numerical T-Lab Rename Migration Plan
 
-**Status:** Internal identity and external platform migration complete and
-verified; local workspace-directory rename pending
+**Status:** Project Identity Migration complete and verified
 
 **Date:** 2026-07-22
 
@@ -63,7 +62,7 @@ or still-external evidence only.
 | Private deployment repository | `TYD-Bruce/numerical-ode-lab-w_ai` | `TYD-Bruce/numerical-t-lab-deploy` (complete) |
 | Vercel project | `numerical-ode-lab-w_ai` | `numerical-t-lab` (complete; Project ID preserved) |
 | Production address | `numerical-ode-lab-wai.vercel.app` | `numerical-t-lab.vercel.app` (verified); old address retained as an alias |
-| Local directory basename | `numerical-ode-lab` | `numerical-t-lab` |
+| Local directory basename | `numerical-ode-lab` | `numerical-t-lab` (complete at `D:\numerical-t-lab`) |
 | Git remote names | `origin`, `vercel` | Preserve names; update URLs later |
 
 Target availability was checked through authenticated GitHub and Vercel
@@ -244,7 +243,7 @@ No claim about Vercel rename behavior is made until it is observed.
 
 ## 13. Local-directory and workspace reopening sequence
 
-The local directory rename is last:
+The local directory rename was scheduled last:
 
 1. Require clean `main`, expected completion commit, verified external state,
    and canonical remote URLs.
@@ -262,6 +261,12 @@ The local directory rename is last:
 
 Do not rename the directory while an editor, server, terminal, or agent still
 owns the old path.
+
+Completion evidence: the workspace was renamed to `D:\numerical-t-lab` and
+Cursor/Codex reopened from that canonical path. Git remained valid; branch
+remained `main`; HEAD remained
+`521d8eba2aad3ad361c289e3e4b1e8e2e7ce6f30` during the physical rename; the
+worktree remained clean; and both canonical remotes remained unchanged.
 
 ## 14. Test and browser verification matrix
 
@@ -299,8 +304,7 @@ search. No unrelated numerical or full-data workflow is required.
 
 ## 16. Risks, blockers, and pending checks
 
-- The local workspace directory still uses its legacy basename. Close every
-  process holding the old path before renaming it.
+- No Project Identity Migration blocker or action remains pending.
 - The former Production address remains an intentional alias. Retirement was
   not authorized and must be a separate reviewed action.
 - The public repository description and deployment-repository homepage were
@@ -317,17 +321,18 @@ search. No unrelated numerical or full-data workflow is required.
 3. Existing Vercel project rename and Git-integration verification: complete.
 4. Exact-HEAD Preview and Production verification: complete.
 5. Canonical domain assignment and old-domain observation: complete.
-6. External-completion documentation commit and final smoke test: current
-   completion boundary.
-7. Rename the local directory last and reopen Cursor/Codex at the new path.
-8. Return to the repository-grounded Glossary implementation plan.
+6. External-completion documentation commit and final smoke test: complete.
+7. Local directory rename and Cursor/Codex reopen at the canonical path:
+   complete.
+8. Create and review the repository-grounded Glossary implementation plan:
+   exact next gate.
 
 ## 18. Exact next gate
 
-Close all old-path processes, rename the local directory basename to
-`numerical-t-lab`, reopen Cursor/Codex from the canonical path, and verify
-branch, HEAD, clean status, remotes, and a focused local smoke test. Do not
-begin Glossary implementation until that gate is complete.
+Create and review the repository-grounded Content-Agnostic Interactive
+Glossary Framework implementation plan. The design is approved and committed;
+implementation has not started. Do not begin implementation in this migration
+closeout.
 
 ## 19. External completion record
 
@@ -378,5 +383,17 @@ The authorized migration used reviewed HEAD
   evidence is in
   [the rename review](../../reviews/2026-07-22-numerical-t-lab-rename-review.md).
 
-The local directory basename remains `numerical-ode-lab` and must be renamed
-only after all processes using the old path are closed.
+### Local workspace completion
+
+- Canonical local workspace: `D:\numerical-t-lab`.
+- Cursor/Codex reopened from the canonical path.
+- Git remained valid after the filesystem rename.
+- Branch remained `main`.
+- HEAD remained `521d8eba2aad3ad361c289e3e4b1e8e2e7ce6f30`
+  during the physical folder rename.
+- The worktree remained clean.
+- `origin` and `vercel` retained their canonical Numerical T-Lab URLs.
+- No migration action remains pending.
+
+Former paths, repository names, and URLs retained in starting-state,
+rollback, and deployment sections are intentional historical evidence.

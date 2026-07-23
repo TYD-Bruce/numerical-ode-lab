@@ -2,10 +2,8 @@
 
 ## Status
 
-Approved Glossary design documented; implementation not started. The bounded
-Project Identity Migration is externally complete; only the local
-workspace-directory rename and reopening check remain before Glossary
-implementation planning continues.
+Project Identity Migration complete. The Content-Agnostic Interactive Glossary
+Framework design is approved and committed; implementation has not started.
 
 ## Current released baseline
 
@@ -22,9 +20,9 @@ This remains the active product milestone. The identity migration is a bounded
 repository and deployment-identity checkpoint; it does not start or alter
 Glossary implementation.
 
-## Temporary Project Identity Migration gate
+## Completed Project Identity Migration
 
-The canonical product is **Numerical T-Lab** with target slug
+The canonical product is **Numerical T-Lab** with slug
 `numerical-t-lab`. Active product UI, internal package, route titles, Tutor
 identity wording, migration documentation, and publication-safety preparation
 are recorded by:
@@ -36,9 +34,11 @@ The public and private GitHub repositories, local remote URLs, existing Vercel
 project, Git integration, and canonical Production domain now use
 `numerical-t-lab`. Repository IDs, visibility, Vercel Project ID, deployment
 settings, and the `main` Production branch were preserved. The former
-Production domain remains a verified alias. The local directory still uses its
-legacy basename and is intentionally deferred until all old-path processes are
-closed.
+Production domain remains a verified alias. The local directory rename is
+complete at `D:\numerical-t-lab`; Cursor/Codex reopened from that canonical
+path with valid Git state, branch `main`, unchanged rename-checkpoint HEAD,
+`521d8eba2aad3ad361c289e3e4b1e8e2e7ce6f30`, a clean worktree, and the
+canonical remotes. No identity-migration action remains pending.
 
 ## Why this milestone
 
@@ -72,10 +72,9 @@ Not created yet. Repository-grounded planning follows design approval.
 
 ## Current next action
 
-Close every process that owns the legacy workspace path, rename the local
-directory basename to `numerical-t-lab`, reopen Cursor/Codex from the new path,
-and confirm branch, HEAD, status, remotes, and a focused local smoke test. Then
-return to creating the repository-grounded Glossary implementation plan.
+Create and review the repository-grounded Content-Agnostic Interactive
+Glossary Framework implementation plan. Do not begin framework implementation
+before that plan is approved.
 
 ## Current production behavior
 
@@ -99,17 +98,10 @@ return to creating the repository-grounded Glossary implementation plan.
 
 ## Review gate
 
-Repository-grounded implementation planning may begin only after:
-
-1. the completed Numerical T-Lab external migration is recorded and the local
-   workspace is reopened successfully under the canonical basename;
-2. the Glossary design-documentation commit is reviewed;
-3. `PLAN.md`, the Glossary handoff, README Changelog, architecture map, and
-   project handoff agree that the design is approved and implementation has not
-   started;
-4. no unresolved ownership, lifecycle, accessibility, content-scope, or
-   lazy-loading conflict remains;
-5. local `main` is clean and no production Glossary content is present.
+Repository-grounded implementation planning is the active gate. The plan must
+map the approved design to current source, tests, lifecycle, and lazy-loading
+boundaries and must be reviewed before implementation begins. Production
+Glossary terms and runtime behavior remain absent.
 
 ## Update rule
 

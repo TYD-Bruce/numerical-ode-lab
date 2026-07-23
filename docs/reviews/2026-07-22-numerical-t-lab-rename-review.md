@@ -2,10 +2,11 @@
 
 **Review date:** 2026-07-23
 
-**Verdict:** External migration verified. The GitHub repositories, local
-remotes, existing Vercel project, Git integration, Preview deployment,
-Production deployment, and canonical Production domain use the Numerical
-T-Lab identity. The local workspace-directory rename remains pending.
+**Verdict:** Project Identity Migration verified and complete. The GitHub
+repositories, local remotes, existing Vercel project, Git integration, Preview
+deployment, Production deployment, and canonical Production domain use the
+Numerical T-Lab identity. The local workspace rename and canonical
+Cursor/Codex reopen are complete.
 
 ## Reviewed commit
 
@@ -123,7 +124,7 @@ showed that the old address kept its URL and served the same current Numerical
 T-Lab Production deployment, so its observed behavior is an alias, not a
 redirect. It was not removed.
 
-## Rollback and remaining gate
+## Rollback and local completion
 
 - Both exact repositories can be renamed back only after rechecking the old
   names and captured settings.
@@ -131,14 +132,22 @@ redirect. It was not removed.
   repository rollback is authorized.
 - The preserved Vercel Project ID, settings, old domain, existing deployments,
   and last known-good rollback deployment remain available.
-- The temporary Preview branch must be deleted only after the completion
-  documentation commit is published and the final Production smoke test
-  passes.
-- The local directory still uses the legacy basename. Close all old-path
-  terminals, editors, servers, and agents before renaming it and reopening
-  Cursor/Codex.
+- The external review required temporary Preview-branch cleanup to wait for
+  completion documentation and the final Production smoke test. That
+  sequencing is historical process evidence, not a remaining migration gate.
+- The local workspace was renamed to `D:\numerical-t-lab`, and Cursor/Codex
+  reopened from that canonical path. Git remained valid; branch remained
+  `main`; HEAD remained
+  `521d8eba2aad3ad361c289e3e4b1e8e2e7ce6f30` during the physical rename; the
+  worktree remained clean; and the canonical remotes remained unchanged.
+- No Project Identity Migration action remains pending. The exact next gate is
+  repository-grounded Content-Agnostic Interactive Glossary Framework
+  implementation planning.
 
 No repository was transferred, deleted, recreated, or made more or less
 visible. No history was rewritten. No environment value was exposed. No
 numerical, routing, session, Tutor-scope, Glossary, or deployment-architecture
 behavior changed.
+
+Former repository names, URLs, and local paths retained above are intentional
+point-in-time migration evidence.

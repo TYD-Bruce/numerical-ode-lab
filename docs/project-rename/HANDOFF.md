@@ -2,9 +2,9 @@
 
 ## Status
 
-The Numerical T-Lab internal identity and external platform migration are
-complete and verified. The local workspace-directory rename is the only
-remaining migration gate.
+The Numerical T-Lab Project Identity Migration is complete and verified,
+including the local workspace-directory rename and canonical workspace reopen.
+No migration action remains pending.
 
 The product is **Numerical T-Lab**.
 
@@ -27,8 +27,11 @@ The official public meaning of `T` is Theory, Tools, and Teaching.
   `https://github.com/TYD-Bruce/numerical-t-lab.git`
 - Current deployment remote:
   `https://github.com/TYD-Bruce/numerical-t-lab-deploy.git`
-- Current local directory basename: `numerical-ode-lab`
-  (machine-local absolute path intentionally omitted from public docs)
+- External-checkpoint local directory basename: `numerical-ode-lab`
+- Current canonical local workspace: `D:\numerical-t-lab`
+- Final reopen checkpoint: branch `main`, HEAD
+  `521d8eba2aad3ad361c289e3e4b1e8e2e7ce6f30`, clean worktree, canonical
+  `origin` and `vercel` remotes
 
 The reviewed external-migration HEAD contains the identity commit
 `e6c4ca5213fdfc572a6156999ba9e5323d59b0f1` and the separately authorized
@@ -50,7 +53,7 @@ is pre-commit / still-external evidence only.
 | Private deployment repository | `TYD-Bruce/numerical-ode-lab-w_ai` | `TYD-Bruce/numerical-t-lab-deploy` (complete) |
 | Vercel project | `numerical-ode-lab-w_ai` | `numerical-t-lab` (complete; Project ID preserved) |
 | Production address | `numerical-ode-lab-wai.vercel.app` | `numerical-t-lab.vercel.app` (verified); old address retained as an alias |
-| Local directory basename | `numerical-ode-lab` | `numerical-t-lab` |
+| Local directory basename | `numerical-ode-lab` | `numerical-t-lab` (complete at `D:\numerical-t-lab`) |
 
 Target availability was checked through authenticated controls before the
 renames. No replacement Vercel project was created.
@@ -127,6 +130,12 @@ Vercel behavior changes.
   accepted deferred-chunk size warning.
 - Full `npm.cmd run verify`: 60 files and 870 tests passed, followed by both
   TypeScript checks and the production build.
+- After the physical folder rename, Cursor/Codex reopened from
+  `D:\numerical-t-lab`. Git remained valid; branch stayed `main`; HEAD stayed
+  `521d8eba2aad3ad361c289e3e4b1e8e2e7ce6f30`; the worktree stayed clean; and
+  the canonical remotes stayed unchanged. The migration-closeout task reruns
+  the focused About test, both typechecks, build, and full verification from
+  that canonical path.
 - Generated `index.html` uses `Numerical T-Lab`.
 - Generated route titles use `Numerical T-Lab`.
 - Generated active chunks contain no former product title or old
@@ -193,8 +202,9 @@ guidance, not released evidence. Its chronology remains in Git history.
 
 ## Exact next gate
 
-Close all terminals, editors, servers, and agents that own the legacy
-workspace path. Rename the local directory basename to `numerical-t-lab`,
-reopen Cursor/Codex from the new path, and verify branch, HEAD, clean status,
-remotes, and a focused local smoke test. Do not begin Glossary implementation
-until that gate is complete.
+Create and review the repository-grounded Content-Agnostic Interactive
+Glossary Framework implementation plan. The design is approved and committed;
+implementation has not started and must not begin until the plan is approved.
+
+Former repository names, URLs, and directory names elsewhere in this handoff
+are intentional point-in-time migration evidence, not current canonical state.

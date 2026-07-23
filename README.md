@@ -144,7 +144,7 @@ design specifications, implementation plans, reviews, and feature handoffs.
 
 ## Changelog
 
-### 2026-07-23 — Numerical T-Lab external migration completed
+### 2026-07-23 — Numerical T-Lab Project Identity Migration completed
 
 - Renamed the public and private deployment repositories while preserving
   their identities and visibility.
@@ -152,7 +152,12 @@ design specifications, implementation plans, reviews, and feature handoffs.
   settings, and verified Preview and Production deployments.
 - Verified `numerical-t-lab.vercel.app` as the canonical Production address;
   retained the former address as a working alias.
-- The local workspace-directory rename remains the final migration gate.
+- Renamed the local workspace to `D:\numerical-t-lab`, reopened Cursor/Codex
+  from the canonical path, and confirmed valid Git state on `main` with the
+  canonical remotes.
+- Project Identity Migration is complete; repository-grounded
+  Content-Agnostic Interactive Glossary Framework implementation planning is
+  the next gate.
 
 ### 2026-07-22 — Numerical T-Lab identity migration prepared
 
