@@ -57,6 +57,11 @@ describe("Vite root-base deployment contract", () => {
     expect(indexHtml).not.toMatch(/(?:src|href)="\.\/assets\//);
   });
 
+  it("uses the canonical product title in generated HTML", () => {
+    expect(indexHtml).toContain("<title>Numerical Analysis Lab</title>");
+    expect(indexHtml).not.toContain("<title>Numerical ODE Lab</title>");
+  });
+
   it("keeps dynamic chunks measurable in the manifest", () => {
     const entry = manifest["index.html"];
     expect(entry?.file).toMatch(/^assets\//);

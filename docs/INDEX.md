@@ -16,6 +16,8 @@
 
 [PLAN.md](../PLAN.md) points to the Content-Agnostic Interactive Glossary
 Framework. Its approved design is documented; implementation has not started.
+A temporary, bounded Project Identity Migration gate is prepared before
+Glossary implementation planning resumes. No external rename has occurred.
 
 ## Product and feature specifications
 
@@ -31,6 +33,7 @@ Framework. Its approved design is documented; implementation has not started.
 | Document | Status |
 |---|---|
 | [Theme-Ready Platform Shell Implementation Plan](superpowers/plans/2026-07-13-theme-ready-platform-shell-implementation-plan.md) | Implemented historical plan; check the final review and architecture map for current state |
+| [Project Rename Migration Plan](superpowers/plans/2026-07-22-project-rename-migration-plan.md) | Internal preparation committed locally; external GitHub, Vercel, domain, remote, and directory checkpoints pending |
 | Content-Agnostic Interactive Glossary Framework implementation plan | Not created; repository-grounded planning follows design approval |
 
 ## Reviews and release evidence
@@ -49,6 +52,8 @@ Framework. Its approved design is documented; implementation has not started.
   evidence-research continuation state.
 - [Content-Agnostic Interactive Glossary Framework handoff](glossary/HANDOFF.md)
   — approved design state and implementation-planning continuation.
+- [Project Rename handoff](project-rename/HANDOFF.md) — canonical identity
+  preparation and pending external migration checkpoints.
 
 ## Historical documents
 

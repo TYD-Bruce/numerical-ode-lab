@@ -54,11 +54,11 @@ export function runCoefficientValidation(): void {
   const failed = checks.filter((c) => !c.ok);
   if (failed.length > 0) {
     console.error(
-      "[Numerical ODE Lab] Coefficient validation failed:",
+      "[Initial Value Problems Lab] Coefficient validation failed:",
       failed.map((f) => f.name)
     );
   } else if (import.meta.env.DEV) {
-    console.info("[Numerical ODE Lab] Coefficient validation passed.");
+    console.info("[Initial Value Problems Lab] Coefficient validation passed.");
   }
 }
 
@@ -75,7 +75,9 @@ export function runSanityCheck(): void {
   }
   if (errors[1]! < errors[0]! && errors[2]! < errors[1]!) {
     if (import.meta.env.DEV) {
-      console.info("[Numerical ODE Lab] Forward Euler sanity check: error decreases with h.");
+      console.info(
+        "[Initial Value Problems Lab] Forward Euler sanity check: error decreases with h.",
+      );
     }
   }
 }

@@ -4,7 +4,11 @@ Numerical Analysis Lab is an interactive, AI-assisted platform for learning nume
 
 The implemented module is the **Initial Value Problems Lab**, a browser-based teaching environment for scalar fixed-step ODE methods. It preserves the established **Method -> Data -> Output** workflow, numerical plots and tables, method comparison, exact-solution checks, Convergence Study, and grounded AI Method Tutor.
 
-**Deployment target:** [numerical-ode-lab-wai.vercel.app](https://numerical-ode-lab-wai.vercel.app/) — verify the reviewed Platform Shell commits in a Vercel preview before production promotion.
+**Current production address:** [numerical-ode-lab-wai.vercel.app](https://numerical-ode-lab-wai.vercel.app/) — not re-verified by the local identity-preparation task.
+
+**Preferred migration target:** `numerical-analysis-lab.vercel.app` — the
+project name, domain availability, Git integration, and deployment remain
+pending external verification.
 
 ## Routes and module status
 
@@ -43,11 +47,12 @@ There is no browser storage or account persistence. Refreshing, closing the tab,
 
 ## Local development
 
-Requires a current Node.js LTS release.
+Requires a current Node.js LTS release. After the external GitHub repository
+rename is completed, clone the canonical target with:
 
 ```bash
-git clone https://github.com/TYD-Bruce/numerical-ode-lab.git
-cd numerical-ode-lab
+git clone https://github.com/TYD-Bruce/numerical-analysis-lab.git
+cd numerical-analysis-lab
 npm install
 npm run dev
 ```
@@ -130,6 +135,15 @@ See [`docs/INDEX.md`](docs/INDEX.md) for the current architecture, active plan,
 design specifications, implementation plans, reviews, and feature handoffs.
 
 ## Changelog
+
+### 2026-07-22 — Project identity migration prepared
+
+- Prepared the canonical `numerical-analysis-lab` package, repository, and
+  deployment targets without renaming or contacting external services.
+- Preserved the Numerical ODE routes, Initial Value Problems Lab identity,
+  numerical behavior, and historical release evidence.
+- External repository, Vercel, domain, remote, and local-directory changes
+  remain pending review and explicit authorization.
 
 ### 2026-07-22 — Interactive Glossary framework design started
 

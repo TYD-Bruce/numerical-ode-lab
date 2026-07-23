@@ -2,7 +2,9 @@
 
 ## Status
 
-Approved design documented; implementation not started.
+Approved Glossary design documented; implementation not started. A temporary,
+maintainer-authorized Project Identity Migration gate is prepared locally
+before Glossary implementation planning continues.
 
 ## Current released baseline
 
@@ -13,6 +15,23 @@ locally verified, and Vercel Preview-verified. The release state is recorded in
 ## Active milestone
 
 **Content-Agnostic Interactive Glossary Framework**
+
+This remains the active product milestone. The identity migration is a bounded
+repository and deployment-identity checkpoint; it does not start or alter
+Glossary implementation.
+
+## Temporary Project Identity Migration gate
+
+The canonical target slug is `numerical-analysis-lab`. Internal package,
+fallback-title, Tutor identity wording, migration documentation, and
+publication-safety preparation are recorded by:
+
+- [Project Rename Migration Plan](docs/superpowers/plans/2026-07-22-project-rename-migration-plan.md)
+- [Project Rename Handoff](docs/project-rename/HANDOFF.md)
+
+No GitHub repository, Git remote, Vercel project, production domain, or local
+directory has been renamed. Target availability and all external actions
+remain pending maintainer authorization after a conservative audit.
 
 ## Why this milestone
 
@@ -46,7 +65,10 @@ Not created yet. Repository-grounded planning follows design approval.
 
 ## Current next action
 
-Create the repository-grounded implementation plan.
+Perform a conservative Cursor audit of the Project Identity Migration
+preparation commit. After that audit and separately authorized external
+checkpoints complete, return to creating the repository-grounded Glossary
+implementation plan.
 
 ## Current production behavior
 
@@ -70,13 +92,16 @@ Create the repository-grounded implementation plan.
 
 Repository-grounded implementation planning may begin only after:
 
-1. this design-documentation commit is reviewed;
-2. `PLAN.md`, the Glossary handoff, README Changelog, architecture map, and
+1. the Project Identity Migration preparation commit passes conservative
+   review and its external checkpoints are either completed or explicitly
+   deferred;
+2. the Glossary design-documentation commit is reviewed;
+3. `PLAN.md`, the Glossary handoff, README Changelog, architecture map, and
    project handoff agree that the design is approved and implementation has not
    started;
-3. no unresolved ownership, lifecycle, accessibility, content-scope, or
+4. no unresolved ownership, lifecycle, accessibility, content-scope, or
    lazy-loading conflict remains;
-4. local `main` is clean and no production Glossary content is present.
+5. local `main` is clean and no production Glossary content is present.
 
 ## Update rule
 
