@@ -124,6 +124,15 @@ The next milestone is **Interactive Term Glossary**. A **Linear Systems Lab** is
 
 ## Changelog
 
+### 2026-07-22 — Codex project guidance added
+
+- Added repository-level agent instructions and a current active-plan
+  dashboard.
+- Added durable product goals, implemented architecture documentation, and a
+  documentation index.
+- Added a local override pattern for private development context.
+- No numerical or runtime behavior changed.
+
 ### 2026-07-22 — Numerical notation research started
 
 - Began Milestone 2A-1 evidence collection for a future canonical numerical

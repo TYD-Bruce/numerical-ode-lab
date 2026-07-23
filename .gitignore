@@ -5,5 +5,9 @@ dist
 .env.*.local
 .DS_Store
 
+# Local Codex guidance override
+AGENTS.override.md
+
+# Private local reference material
 references/private/*
 !references/private/.gitkeep
