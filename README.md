@@ -122,6 +122,19 @@ Key locations:
 
 The next milestone is **Interactive Term Glossary**. A **Linear Systems Lab** is a later milestone.
 
+## Changelog
+
+### 2026-07-22 — Numerical notation research started
+
+- Began Milestone 2A-1 evidence collection for a future canonical numerical
+  notation standard and Interactive Term Glossary.
+- Added a private course-note handling boundary and public-source evidence
+  workflow.
+- Added a living evidence inventory and research handoff.
+- Research is in progress; no canonical notation or runtime Glossary content
+  has been released.
+- Detailed status: [`docs/research/HANDOFF.md`](docs/research/HANDOFF.md)
+
 ## License
 
 This project is licensed under the MIT License. See [LICENSE](LICENSE).
