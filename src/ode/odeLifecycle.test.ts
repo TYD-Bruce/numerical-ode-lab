@@ -20,6 +20,8 @@ import {
   setConvergenceState,
   setTeachingAccordion,
 } from "../convergenceStudyState";
+import { methodMathContent } from "../math/ui/methodMathContent";
+import { METHOD_CATALOG } from "../methodCatalog";
 
 const destroyChart = vi.fn();
 const disposeConvergence = vi.fn();
@@ -207,6 +209,51 @@ describe("mounted ODE lifecycle", () => {
     expect(target.childElementCount).toBe(0);
     expect(destroyChart).toHaveBeenCalledTimes(1);
     expect(disposeConvergence).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps one accessible method formula through rerender and final disposal", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const mounted = mountOdeApp({
+      target,
+      initialSession: outputSession(),
+    });
+    await Promise.resolve();
+
+    const forwardEuler = METHOD_CATALOG.find(
+      (entry) => entry.family === "forward_euler"
+    )!;
+    const expected = methodMathContent(forwardEuler).formula!;
+    const first = target.querySelector<HTMLElement>("[data-method-formula]")!;
+    expect([expected.displayText, expected.latex]).toContain(first.textContent);
+    expect(
+      [first, ...first.querySelectorAll<HTMLElement>("*")].filter(
+        (element) => element.getAttribute("aria-label") === expected.ariaLabel
+      )
+    ).toHaveLength(1);
+
+    target.querySelector<HTMLButtonElement>("[data-back]")!.click();
+    target.querySelector<HTMLButtonElement>("[data-return-output]")!.click();
+    await Promise.resolve();
+
+    const replacement =
+      target.querySelector<HTMLElement>("[data-method-formula]")!;
+    expect(replacement).not.toBe(first);
+    expect([expected.displayText, expected.latex]).toContain(
+      replacement.textContent
+    );
+    expect(
+      [replacement, ...replacement.querySelectorAll<HTMLElement>("*")].filter(
+        (element) => element.getAttribute("aria-label") === expected.ariaLabel
+      )
+    ).toHaveLength(1);
+
+    mounted.dispose();
+    mounted.dispose();
+    expect(first.isConnected).toBe(false);
+    expect(replacement.isConnected).toBe(false);
+    expect(target.childElementCount).toBe(0);
   });
 
   it("hydrates comparison output independently from single output", async () => {

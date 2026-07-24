@@ -28,12 +28,12 @@ Linear Algebra and PDE are truthful roadmap pages with no runnable controls.
 The current next milestone is **Content-Agnostic Interactive Glossary
 Framework**; **Linear Systems Lab** is later. The
 [authoritative Glossary design](./superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md)
-is approved and committed, but implementation has not started. Production has
-no Glossary terms, binding, registry, Host behavior, or definition surface.
-Repository-grounded implementation planning is complete. The conservative
-Cursor audit found documentation corrections, which are now applied;
-implementation has not started. The exact next gate is review of the corrected
-plan.
+is approved and committed. Commit 1, the content-agnostic Glossary model and
+scope lifecycle, is implemented and accepted after conservative audit.
+Production still has no Glossary terms, Host behavior, definition surface, or
+visible Glossary behavior. The readonly-math accessibility prerequisite is
+implemented and locally verified. The exact next gate is its conservative
+accessibility audit; shared Glossary surfaces remain unauthorized.
 
 ## 2. Verification baseline
 
@@ -263,8 +263,9 @@ Known limitations:
 - Tutor is unavailable for Compare output.
 - Deferred MathLive and editable/Compute Engine chunks remain large.
 - Linear Algebra and PDE are not runnable Labs.
-- Content-Agnostic Interactive Glossary Framework implementation has not
-  started; production contains no Glossary terms or runtime behavior.
+- Content-Agnostic Interactive Glossary Framework Commit 1 is implemented and
+  accepted, and the readonly-math prerequisite is locally verified. Production
+  contains no Glossary terms, Host, surface, or visible Glossary behavior.
 
 Contributor rules:
 
@@ -277,9 +278,8 @@ Contributor rules:
 - Keep `beforeunload` minimal and synchronous.
 - Run `npm run verify` after changes and add focused tests first.
 
-*Last updated: 2026-07-23 for the completed Numerical T-Lab Project Identity
-Migration and Production verification. No migration action remains pending.
-The approved Content-Agnostic Interactive Glossary Framework has not started
-implementation; repository-grounded implementation planning is complete, its
-audit documentation corrections are applied, and review of the corrected plan
-is the exact next gate.*
+*Last updated: 2026-07-23. Project Identity Migration and Production
+verification remain complete. Glossary Commit 1 is accepted, the readonly-math
+accessibility prerequisite is locally verified, and its conservative
+accessibility audit is the exact next gate. Production still contains no
+Glossary terms, Host, surface, or visible behavior.*

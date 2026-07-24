@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   createCachedMathBackendLoader,
   renderReadonlyMath,
@@ -31,13 +31,28 @@ function connectedTarget(): HTMLSpanElement {
   return target;
 }
 
+function accessibleRepresentations(
+  target: HTMLElement,
+  accessibleText: string
+): HTMLElement[] {
+  return [target, ...target.querySelectorAll<HTMLElement>("*")].filter(
+    (element) =>
+      element.getAttribute("aria-label") === accessibleText &&
+      element.getAttribute("aria-hidden") !== "true"
+  );
+}
+
 async function settle(): Promise<void> {
   await Promise.resolve();
   await Promise.resolve();
 }
 
 describe("renderReadonlyMath", () => {
-  it("provides an immediate meaningful, non-tabbable fallback", () => {
+  beforeEach(() => {
+    document.body.replaceChildren();
+  });
+
+  it("provides exactly one immediate meaningful, non-tabbable fallback", () => {
     const target = connectedTarget();
     renderReadonlyMath(target, content, { loadBackend: () => new Promise(() => undefined) });
 
@@ -45,9 +60,12 @@ describe("renderReadonlyMath", () => {
     expect(target.getAttribute("aria-label")).toBe(content.ariaLabel);
     expect(target.getAttribute("role")).toBe("math");
     expect(target.tabIndex).toBe(-1);
+    expect(accessibleRepresentations(target, content.ariaLabel)).toEqual([
+      target,
+    ]);
   });
 
-  it("upgrades the fallback through the injected static renderer", async () => {
+  it("transfers accessible ownership to one enhanced child without changing visible math", async () => {
     const target = connectedTarget();
     renderReadonlyMath(target, content, { display: "block", loadBackend: async () => backend() });
     await settle();
@@ -58,9 +76,15 @@ describe("renderReadonlyMath", () => {
     expect(math.mode).toBe("displaystyle");
     expect(math.tabIndex).toBe(-1);
     expect(math.getAttribute("aria-label")).toBe(content.ariaLabel);
+    expect(math.getAttribute("role")).toBe("math");
+    expect(target.hasAttribute("aria-label")).toBe(false);
+    expect(target.hasAttribute("role")).toBe(false);
+    expect(accessibleRepresentations(target, content.ariaLabel)).toEqual([
+      math,
+    ]);
   });
 
-  it("keeps the fallback when loading or rendering fails", async () => {
+  it("keeps one fallback when loading or rendering fails", async () => {
     const loadingTarget = connectedTarget();
     renderReadonlyMath(loadingTarget, content, { loadBackend: async () => { throw new Error("offline"); } });
 
@@ -71,15 +95,42 @@ describe("renderReadonlyMath", () => {
     expect(loadingTarget.textContent).toBe(content.displayText);
     expect(renderingTarget.textContent).toBe(content.displayText);
     expect(renderingTarget.classList).toContain("readonly-math-fallback");
+    expect(
+      accessibleRepresentations(loadingTarget, content.ariaLabel)
+    ).toEqual([loadingTarget]);
+    expect(
+      accessibleRepresentations(renderingTarget, content.ariaLabel)
+    ).toEqual([renderingTarget]);
   });
 
-  it("restores the fallback after an asynchronous renderer error", async () => {
+  it("contains a synchronous backend-loader failure and retains one fallback", () => {
+    const target = connectedTarget();
+    expect(() =>
+      renderReadonlyMath(target, content, {
+        loadBackend: () => {
+          throw new Error("backend unavailable");
+        },
+      })
+    ).not.toThrow();
+
+    expect(target.textContent).toBe(content.displayText);
+    expect(accessibleRepresentations(target, content.ariaLabel)).toEqual([
+      target,
+    ]);
+  });
+
+  it("restores exactly one fallback after an asynchronous renderer error", async () => {
     const target = connectedTarget();
     renderReadonlyMath(target, content, { loadBackend: async () => backend() });
     await settle();
     target.firstElementChild!.dispatchEvent(new Event("error"));
 
     expect(target.textContent).toBe(content.displayText);
+    expect(target.getAttribute("role")).toBe("math");
+    expect(target.getAttribute("aria-label")).toBe(content.ariaLabel);
+    expect(accessibleRepresentations(target, content.ariaLabel)).toEqual([
+      target,
+    ]);
   });
 
   it("does not upgrade a target removed before loading completes", async () => {
@@ -94,18 +145,65 @@ describe("renderReadonlyMath", () => {
     expect(target.textContent).toBe(content.displayText);
   });
 
-  it("prevents an older request from replacing newer content", async () => {
+  it("prevents an older request or stale handle from replacing newer content", async () => {
     let resolve!: (value: ReadonlyMathBackend) => void;
     const pending = new Promise<ReadonlyMathBackend>((done) => { resolve = done; });
     const target = connectedTarget();
-    renderReadonlyMath(target, content, { loadBackend: () => pending });
+    const stale = renderReadonlyMath(target, content, { loadBackend: () => pending });
     const newer = { latex: "t^2", displayText: "t squared", ariaLabel: "t squared" };
     renderReadonlyMath(target, newer, { loadBackend: () => pending });
+    stale.dispose();
     resolve(backend());
     await settle();
 
     expect(target.firstElementChild?.textContent).toBe("t^2");
-    expect(target.getAttribute("aria-label")).toBe("t squared");
+    expect(accessibleRepresentations(target, newer.ariaLabel)).toHaveLength(1);
+    expect(accessibleRepresentations(target, content.ariaLabel)).toHaveLength(0);
+  });
+
+  it("disposes fallback ownership before completion and ignores stale enhancement", async () => {
+    let resolve!: (value: ReadonlyMathBackend) => void;
+    const pending = new Promise<ReadonlyMathBackend>((done) => { resolve = done; });
+    const target = connectedTarget();
+    const handle = renderReadonlyMath(target, content, {
+      loadBackend: () => pending,
+    });
+
+    handle.dispose();
+    handle.dispose();
+    expect(target.textContent).toBe("");
+    expect(target.hasAttribute("role")).toBe(false);
+    expect(target.hasAttribute("aria-label")).toBe(false);
+
+    resolve(backend());
+    await settle();
+
+    expect(target.textContent).toBe("");
+    expect(accessibleRepresentations(target, content.ariaLabel)).toHaveLength(
+      0
+    );
+  });
+
+  it("keeps multiple expressions independently accessible without IDs or shared ownership", async () => {
+    const first = connectedTarget();
+    const second = connectedTarget();
+    const secondContent = {
+      latex: "t^2",
+      displayText: "t squared",
+      ariaLabel: "t squared",
+    };
+    renderReadonlyMath(first, content, { loadBackend: async () => backend() });
+    renderReadonlyMath(second, secondContent, {
+      loadBackend: async () => backend(),
+    });
+    await settle();
+
+    expect(accessibleRepresentations(first, content.ariaLabel)).toHaveLength(1);
+    expect(
+      accessibleRepresentations(second, secondContent.ariaLabel)
+    ).toHaveLength(1);
+    expect(first.id).toBe("");
+    expect(second.id).toBe("");
   });
 
   it("caches one dependency import promise", async () => {

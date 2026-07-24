@@ -90,6 +90,32 @@ describe("renderTutorMessageContent", () => {
     expect(target.textContent).toContain("not HTML");
   });
 
+  it("keeps controlled Tutor math singly accessible without parent-child duplication", async () => {
+    const target = document.createElement("div");
+    document.body.append(target);
+    renderTutorMessageContent(
+      target,
+      {
+        role: "assistant",
+        content: "<script>not executable</script> Inline \\(p=4\\).",
+      },
+      { loadBackend: mockLoader() }
+    );
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(target.querySelector("script")).toBeNull();
+    expect(target.textContent).toContain("<script>not executable</script>");
+    const host = target.querySelector<HTMLElement>(".ai-math-inline")!;
+    const accessible = [
+      host,
+      ...host.querySelectorAll<HTMLElement>("*"),
+    ].filter((element) => element.getAttribute("aria-label") === "p=4");
+    expect(accessible).toHaveLength(1);
+    expect(accessible[0]?.getAttribute("role")).toBe("math");
+    expect(host.hasAttribute("aria-label")).toBe(false);
+  });
+
   it("retains only the failed segment fallback and all surrounding text", async () => {
     const target = document.createElement("div");
     document.body.append(target);
@@ -97,6 +123,14 @@ describe("renderTutorMessageContent", () => {
     await Promise.resolve();
 
     expect(target.textContent).toBe("Before x after");
+    const host = target.querySelector<HTMLElement>(".ai-math-inline")!;
+    expect(host.getAttribute("role")).toBe("math");
+    expect(host.getAttribute("aria-label")).toBe("x");
+    expect(
+      [host, ...host.querySelectorAll<HTMLElement>("*")].filter(
+        (element) => element.getAttribute("aria-label") === "x"
+      )
+    ).toHaveLength(1);
   });
 
   it("does not interpret Markdown-looking text", () => {

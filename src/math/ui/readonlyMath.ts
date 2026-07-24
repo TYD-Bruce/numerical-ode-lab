@@ -18,6 +18,10 @@ export interface ReadonlyMathBackend {
 
 export type ReadonlyMathBackendLoader = () => Promise<ReadonlyMathBackend>;
 
+export interface ReadonlyMathHandle {
+  dispose(): void;
+}
+
 interface RenderState {
   revision: number;
   content: ReadonlyMathContent;
@@ -69,11 +73,22 @@ function showFallback(
 
 function isCurrent(
   target: HTMLElement,
-  revision: number,
-  content: ReadonlyMathContent
+  state: RenderState
 ): boolean {
-  const state = renderStates.get(target);
-  return target.isConnected && state?.revision === revision && state.content === content;
+  return target.isConnected && renderStates.get(target) === state;
+}
+
+function clearReadonlyMath(target: HTMLElement): void {
+  target.classList.remove(
+    "readonly-math",
+    "readonly-math-inline",
+    "readonly-math-block",
+    "readonly-math-fallback"
+  );
+  target.removeAttribute("role");
+  target.removeAttribute("aria-label");
+  target.removeAttribute("tabindex");
+  target.replaceChildren();
 }
 
 export function renderReadonlyMath(
@@ -83,33 +98,58 @@ export function renderReadonlyMath(
     display?: ReadonlyMathDisplay;
     loadBackend?: ReadonlyMathBackendLoader;
   } = {}
-): void {
+): ReadonlyMathHandle {
   const display = options.display ?? "inline";
   const revision = (renderStates.get(target)?.revision ?? 0) + 1;
-  renderStates.set(target, { revision, content });
+  const state: RenderState = { revision, content };
+  renderStates.set(target, state);
   showFallback(target, content, display);
 
+  let disposed = false;
+  const handle: ReadonlyMathHandle = Object.freeze({
+    dispose(): void {
+      if (disposed) return;
+      disposed = true;
+      if (renderStates.get(target) !== state) return;
+      renderStates.delete(target);
+      clearReadonlyMath(target);
+    },
+  });
+
   const loadBackend = options.loadBackend ?? loadDefaultBackend;
-  void loadBackend()
+  let pendingBackend: Promise<ReadonlyMathBackend>;
+  try {
+    pendingBackend = loadBackend();
+  } catch {
+    return handle;
+  }
+
+  void pendingBackend
     .then((backend) => {
-      if (!isCurrent(target, revision, content)) return;
+      if (!isCurrent(target, state)) return;
       const math = backend.createMathSpan();
       math.format = "latex";
       math.mode = display === "block" ? "displaystyle" : "textstyle";
       math.textContent = content.latex;
+      math.setAttribute("role", "math");
       math.setAttribute("aria-label", content.ariaLabel);
       math.tabIndex = -1;
 
+      let failed = false;
       const restore = (): void => {
-        if (isCurrent(target, revision, content)) showFallback(target, content, display);
+        failed = true;
+        if (isCurrent(target, state)) showFallback(target, content, display);
       };
       math.addEventListener("error", restore, { once: true });
 
       try {
         math.render();
-        if (!isCurrent(target, revision, content)) return;
+        if (failed || !isCurrent(target, state)) return;
         target.classList.remove("readonly-math-fallback", "readonly-math-inline", "readonly-math-block");
         target.classList.add("readonly-math", `readonly-math-${display}`);
+        target.removeAttribute("role");
+        target.removeAttribute("aria-label");
+        target.removeAttribute("tabindex");
         target.replaceChildren(math);
       } catch {
         restore();
@@ -118,4 +158,6 @@ export function renderReadonlyMath(
     .catch(() => {
       // The meaningful fallback is already present. Rendering is display-only.
     });
+
+  return handle;
 }

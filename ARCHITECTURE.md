@@ -162,6 +162,13 @@ MathLive draft
 Relevant files are under `src/math/`. Solvers do not interpret LaTeX, MathJSON,
 DOM nodes, or Tutor output.
 
+Shared readonly display math in `src/math/ui/readonlyMath.ts` exposes one
+accessible owner at a time. The immediate readable fallback owns the math role
+and approved label; a successful deferred MathLive enhancement transfers that
+ownership to the enhanced child. Failure keeps or restores the fallback, and
+render identity plus idempotent disposal prevents stale asynchronous
+enhancement from changing newer or disposed output. MathLive remains deferred.
+
 ### ODE Tutor binding
 
 `src/ode/odeTutorBinding.ts` owns ODE suggestions and a binding that reads
@@ -274,24 +281,30 @@ Other module sessions remain isolated. Cancel and Escape make no state change.
 Deployment contracts are tested in `src/app/viteBase.contract.test.ts` and
 `src/app/vercelRouting.contract.test.ts`.
 
-## Planned Glossary extension point
+## Glossary framework status
 
 The
 [Content-Agnostic Interactive Glossary Framework Design](docs/superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md)
-is approved. Implementation has not started.
+is approved. Commit 1 implements the content-agnostic model and lifecycle
+library under `src/glossary/`:
 
-The design introduces a planned extension involving:
+- branded term and scope IDs, immutable display/formula records, strict
+  builders, and production-safe readable fallback;
+- an immutable empty production core and core-plus-module registry;
+- scope-local first-occurrence deduplication and native term-trigger creation;
+- Lab-owned binding, optional Host-port connection, dynamic context contracts,
+  explicit rerender replacement transactions, and idempotent disposal;
+- the optional type-only `MountedLabRoute.getGlossaryBinding?()` contract edge.
 
-- an optional conceptual `getGlossaryBinding()` on a complete-Lab handle;
-- a lightweight, inert conceptual `PlatformGlossaryHost`;
-- Lab-owned binding lifetime and final disposal;
-- platform-owned definition presentation and lazy surface loading.
+This runtime state and its DOM/listener/subscription handles remain outside
+`AppSessionStore`. The current Initial Value Problems route omits the optional
+binding, so none of the implemented model/lifecycle code creates visible
+production behavior.
 
-These names describe the approved design, not existing source APIs. No current
-source file or runtime API implements `getGlossaryBinding()`,
-`PlatformGlossaryHost`, a production Glossary binding, a production term
-registry, or production Glossary Host behavior. No production term or
-canonical Glossary notation exists.
+The Platform Glossary Host, definition surfaces, modal environment,
+development route, Playground, and production content remain planned and are
+not implemented. No production term, annotation, definition, or canonical
+Glossary notation exists.
 
 ## Architecture invariants
 

@@ -11,6 +11,13 @@ import {
   type ConvergenceStudyIntent,
 } from "./convergenceStudyView";
 import {
+  renderReadonlyMath,
+  type ReadonlyMathBackendLoader,
+  type ReadonlyMathContent,
+  type ReadonlyMathDisplay,
+  type StaticMathElement,
+} from "./math/ui/readonlyMath";
+import {
   createConvergenceUiState,
   createSuccessfulFirstOrderRunSnapshot,
   editConvergenceSetup,
@@ -102,7 +109,17 @@ function study(state: ConvergenceUiState): ConvergenceStudyResult {
   };
 }
 
-function harness(initial: ConvergenceUiState, run = snapshot()) {
+function harness(
+  initial: ConvergenceUiState,
+  run = snapshot(),
+  options: {
+    renderMath?: (
+      target: HTMLElement,
+      content: ReadonlyMathContent,
+      options?: { display?: ReadonlyMathDisplay }
+    ) => void;
+  } = {}
+) {
   const host = document.createElement("div");
   document.body.append(host);
   let state = initial;
@@ -134,7 +151,7 @@ function harness(initial: ConvergenceUiState, run = snapshot()) {
       }
     },
     chartFactory,
-    renderMath,
+    renderMath: options.renderMath ?? renderMath,
   });
   return { host, get state() { return state; }, set state(value) { state = value; }, intents, chartFactory, configurations, destroyed, renderMath, view };
 }
@@ -175,6 +192,66 @@ describe("Convergence Study drawer", () => {
     expect(value.host.textContent).toContain("Newton-based implicit methods cost more per step");
     expect(value.renderMath).toHaveBeenCalled();
     expect(value.host.querySelector("[aria-label='Study base step size']")).not.toBeNull();
+  });
+
+  it("keeps each readonly formula singly accessible through update and disposal", async () => {
+    const run = snapshot();
+    let state = createConvergenceUiState(run);
+    state = setConvergenceDrawerOpen(recordConvergenceSuccess(state, study(state)), true);
+    const loadBackend: ReadonlyMathBackendLoader = async () => ({
+      createMathSpan: () => {
+        const node = document.createElement("span") as StaticMathElement;
+        node.render = () => undefined;
+        return node;
+      },
+    });
+    const renderMath = (
+      target: HTMLElement,
+      content: ReadonlyMathContent,
+      renderOptions?: { display?: ReadonlyMathDisplay }
+    ): void => {
+      renderReadonlyMath(target, content, {
+        ...renderOptions,
+        loadBackend,
+      });
+    };
+    const value = harness(state, run, { renderMath });
+    await Promise.resolve();
+    await Promise.resolve();
+
+    const firstHosts = [
+      ...value.host.querySelectorAll<HTMLElement>(".readonly-math"),
+    ];
+    expect(firstHosts.length).toBeGreaterThan(1);
+    for (const host of firstHosts) {
+      expect(
+        [host, ...host.querySelectorAll<HTMLElement>("*")].filter(
+          (element) => element.hasAttribute("aria-label")
+        )
+      ).toHaveLength(1);
+    }
+    expect(value.host.textContent).toContain(
+      run.exactSolution?.latex
+    );
+
+    value.view.update();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(firstHosts.every((host) => !host.isConnected)).toBe(true);
+    for (const host of value.host.querySelectorAll<HTMLElement>(
+      ".readonly-math"
+    )) {
+      expect(
+        [host, ...host.querySelectorAll<HTMLElement>("*")].filter(
+          (element) => element.hasAttribute("aria-label")
+        )
+      ).toHaveLength(1);
+    }
+
+    value.view.dispose();
+    value.view.dispose();
+    expect(value.host.childElementCount).toBe(0);
   });
 
   it("emits setup edits while keeping the original run step unchanged", async () => {

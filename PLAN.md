@@ -7,8 +7,11 @@ Framework design is approved and committed. Its repository-grounded
 implementation plan was conservatively audited, corrected for documentation
 findings, and passed conservative re-audit with verdict **SAFE TO IMPLEMENT**.
 Commit 1, `Build glossary model and scope lifecycle`, is implemented and
-locally verified. Production still contains no Glossary terms or visible
-Glossary runtime behavior. Commit 2 is not authorized.
+accepted after its conservative audit returned **SAFE TO PROCEED**. Commit 2,
+`Fix readonly math accessible ownership`, is implemented and locally verified.
+Production still contains no Glossary terms or visible Glossary runtime
+behavior. Shared Glossary surfaces have not started, and Commit 3 is not
+authorized.
 
 ## Current released baseline
 
@@ -56,16 +59,16 @@ loading while keeping formal mathematical content separate.
 
 [Content-Agnostic Interactive Glossary Framework Design](docs/superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md)
 
-Status: **Approved design; Commit 1 implemented locally; conservative Commit 1
-audit pending.**
+Status: **Approved design; Commit 1 accepted; readonly-math prerequisite
+implemented locally; conservative accessibility audit pending.**
 
 ## Authoritative implementation plan
 
 [Content-Agnostic Interactive Glossary Framework Implementation Plan](docs/superpowers/plans/2026-07-23-content-agnostic-interactive-glossary-framework-implementation-plan.md)
 
 Status: **Repository-grounded plan corrected after conservative audit and
-re-audited SAFE TO IMPLEMENT; Commit 1 implemented locally; conservative
-Commit 1 audit pending.**
+re-audited SAFE TO IMPLEMENT; Commit 1 accepted; readonly-math prerequisite
+implemented locally; conservative accessibility audit pending.**
 
 ## Approved delivery sequence
 
@@ -75,9 +78,10 @@ Commit 1 audit pending.**
 3. Create the repository-grounded implementation plan on local `main`.
    Complete; conservative audit findings were corrected, and the corrected
    plan passed conservative re-audit.
-4. Build Glossary model and scope lifecycle. Complete locally; conservative
-   Commit 1 audit pending.
-5. Fix readonly math accessible ownership as a narrow prerequisite.
+4. Build Glossary model and scope lifecycle. Complete and accepted after
+   conservative audit.
+5. Fix readonly math accessible ownership as a narrow prerequisite. Complete
+   locally; conservative accessibility audit pending.
 6. Add shared Glossary surfaces and the minimal committed DEV-only Playground
    harness.
 7. Complete the development Glossary Playground.
@@ -87,9 +91,9 @@ Commit 1 audit pending.**
 
 ## Current next action
 
-Run a conservative Cursor audit of Commit 1, `Build glossary model and scope
-lifecycle`. Commit 2 is not authorized; do not begin the readonly-math
-prerequisite before Commit 1 is audited and approved.
+Run a conservative accessibility audit of Commit 2, `Fix readonly math
+accessible ownership`. Commit 3, `Add shared glossary surfaces`, is not
+authorized and must not begin before this prerequisite is audited and approved.
 
 ## Current production behavior
 
@@ -114,10 +118,10 @@ prerequisite before Commit 1 is audited and approved.
 
 ## Review gate
 
-Conservative Cursor audit of Commit 1 is the active gate. The corrected
-implementation plan passed re-audit, and Commit 1 is implemented and locally
-verified. Commit 2 remains unauthorized. Production Glossary terms and visible
-runtime behavior remain absent.
+Conservative accessibility audit of Commit 2 is the active gate. Commit 1 was
+accepted after conservative audit, and the readonly-math prerequisite is
+implemented and locally verified. Commit 3 remains unauthorized. Production
+Glossary terms and visible runtime behavior remain absent.
 
 ## Update rule
 

@@ -4,15 +4,18 @@
 
 Approved design and corrected repository-grounded implementation plan
 documented; conservative re-audit verdict **SAFE TO IMPLEMENT**. Commit 1,
-`Build glossary model and scope lifecycle`, is implemented and locally
-verified; conservative Commit 1 audit is pending.
+`Build glossary model and scope lifecycle`, is accepted after its conservative
+audit returned **SAFE TO PROCEED**. Commit 2, `Fix readonly math accessible
+ownership`, is implemented and locally verified; conservative accessibility
+audit is pending.
 
 The active milestone is **Content-Agnostic Interactive Glossary Framework**.
 Production contains no Glossary terms, term annotations, Host behavior,
 definition surface, Tutor handoff, queue, or Playground route. Commit 1 adds
 content-agnostic model and lifecycle infrastructure only, with no visible
-production behavior. No canonical numerical notation is defined by this
-feature.
+production behavior. Commit 2 corrects the existing shared readonly-math
+accessibility path without adding a Glossary surface or content. No canonical
+numerical notation is defined by this feature.
 
 The repository-grounded planning iteration is complete. The exact plan is:
 
@@ -124,6 +127,72 @@ placement, modal/focus/scroll behavior, Tutor behavior, readonly-math changes,
 Playground fixtures, persistence, source/audit metadata, packages,
 configuration, generated output, deployment behavior, or numerical changes.
 
+## Commit 2 readonly-math prerequisite
+
+- Starting branch: `main`
+- Starting HEAD: `38447a462bcc2878f087ab0c4013287a800cd58f`
+- Final HEAD: the local commit containing this handoff, named
+  `Fix readonly math accessible ownership`; its SHA is authoritative in Git
+  history and is reported after the commit because a commit cannot contain its
+  own SHA.
+- Starting worktree: clean, including untracked files
+- Nothing was fetched, pulled, pushed, deployed, or sent to a remote.
+
+`src/math/ui/readonlyMath.ts` now gives each expression exactly one accessible
+owner throughout its lifecycle. The immediate readable fallback owns
+`role="math"` and the approved accessible label. After deferred MathLive
+enhancement succeeds, the enhanced child assumes that same role and label and
+the parent owner attributes are removed. Rejection, synchronous loader failure,
+render failure, or an unusable asynchronous enhancement leaves or restores the
+single fallback owner. Exact render-state identity prevents stale completions
+and stale handles from mutating newer output; the returned handle disposes
+idempotently and removes only its own current expression.
+
+Caller inventory and regression coverage are complete for every production
+category:
+
+- direct helper behavior in `src/math/ui/readonlyMath.test.ts`;
+- ODE method and formula lifecycle in `src/ode/odeLifecycle.test.ts`;
+- Convergence Study update and disposal in
+  `src/convergenceStudyView.test.ts`;
+- controlled, non-executable Tutor math in `src/math/ui/tutorMath.test.ts`.
+
+`src/ode/odeApp.ts` contains the ODE call sites,
+`src/convergenceStudyView.ts` contains the Convergence call sites, and
+`src/math/ui/tutorMath.ts` contains the Tutor call site. The editable math
+helper shares only the deferred `loadMathLiveModule()` boundary and is not
+another readonly renderer caller. No additional production caller category was
+found.
+
+Verification:
+
+- The first focused run, before changing the helper, failed seven regressions
+  across the four caller categories and exposed duplicate parent/child
+  accessible labels after enhancement.
+- Focused tests: 4 files passed, 52 tests passed.
+- Full tests: 64 files passed, 933 tests passed.
+- `npm.cmd run typecheck`: passed.
+- `npm.cmd run build`: passed; MathLive remained a separate deferred chunk.
+- Local browser route: `/ode/initial-value-problems`, using Beginner Starter,
+  Forward Euler, Exponential Decay, a normal simulation run, and a normal
+  Convergence Study run.
+- Browser DOM inspection found one enhanced child owner and no parent owner for
+  both ODE result expressions and for all 11 readonly expressions present
+  after expanding and running Convergence. Visible authored LaTeX remained
+  unchanged, and the console had no warnings or errors.
+- The immediate fallback is covered by deterministic helper tests but completed
+  too quickly to observe manually with the real local MathLive backend.
+- The local Tutor panel had no controlled-math transcript without sending a
+  model request. No message was submitted and no external model call was made;
+  Tutor browser evidence remains a manual follow-up, while the focused Tutor
+  regression passed.
+
+Commit 2 does not change mathematical expressions, numerical behavior,
+MathLive loading order, ODE/Convergence/Tutor source, Glossary model or
+lifecycle source, App or Tutor Hosts, routes, CSS, modal behavior, packages,
+configuration, generated output, deployment behavior, production Glossary
+content, or visible Glossary behavior.
+
 ## Later-phase carry-forward finding
 
 `SUSPEND-ARIA-MODAL-ORDER`
@@ -131,7 +200,7 @@ configuration, generated output, deployment behavior, or numerical changes.
 Before Commit 3, Tutor suspension must deactivate the mobile Tutor dialog
 under the external-modal guard criteria before Glossary attempts acquisition.
 
-This finding is not implemented or resolved by Commit 1.
+This finding is not implemented or resolved by Commit 1 or Commit 2.
 
 ## Planning baseline
 
@@ -311,14 +380,16 @@ defined by the framework design.
 
 The repository-grounded plan maps the design’s conceptual interfaces to exact
 implementation files. Commit 1 now implements only its model, registry, scope,
-binding, and replacement-lifecycle APIs. Later-phase Host, surface, modal,
-Tutor, readonly-math, and Playground APIs remain proposed.
+binding, and replacement-lifecycle APIs. Commit 2 corrects shared readonly-math
+ownership. Later-phase Host, surface, modal, Tutor, and Playground APIs remain
+proposed.
 
 ## Planned implementation commits
 
-1. `Build glossary model and scope lifecycle` — implemented locally;
-   conservative audit pending
-2. `Fix readonly math accessible ownership`
+1. `Build glossary model and scope lifecycle` — accepted after conservative
+   audit
+2. `Fix readonly math accessible ownership` — implemented locally;
+   conservative accessibility audit pending
 3. `Add shared glossary surfaces`
 4. `Complete glossary framework playground`
 
@@ -343,14 +414,14 @@ the plan or audit-correction iterations.
 
 ## Planning-iteration verification scope
 
-The plan correction changes documentation only. It does not run implementation
-tests or claim runtime/browser/bundle evidence. Documentation verification
-must confirm:
+At that historical checkpoint, the plan correction changed documentation only
+and did not claim runtime/browser/bundle evidence. Its documentation
+verification confirmed:
 
 - the new plan and all relative links resolve;
 - only the plan, `PLAN.md`, `docs/INDEX.md`, this handoff, and
   `docs/PROJECT_HANDOFF.md` changed;
-- current architecture is not described as already implementing Glossary;
+- planned Glossary APIs were not described as implemented before Commit 1;
 - no production term, notation, definition, fixture, API, or private-reference
   material was added;
 - no source, test, CSS, configuration, package, lockfile, generated output,
@@ -358,7 +429,7 @@ must confirm:
 
 ## Exact next action
 
-Run a conservative Cursor audit of Commit 1, `Build glossary model and scope
-lifecycle`. Commit 2, `Fix readonly math accessible ownership`, is not
-authorized and must not begin before the Commit 1 audit and maintainer
+Run a conservative accessibility audit of Commit 2, `Fix readonly math
+accessible ownership`. Commit 3, `Add shared glossary surfaces`, is not
+authorized and must not begin before the Commit 2 audit and maintainer
 approval.
