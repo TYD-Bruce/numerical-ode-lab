@@ -45,6 +45,35 @@ function controlledBinding() {
   };
 }
 
+function controlledMutableIdentityBinding() {
+  let identity = Object.freeze({ moduleId: "ode" as const });
+  let port: GlossaryHostPort | undefined;
+  const binding: LabGlossaryBinding = {
+    moduleId: "ode",
+    get identity() {
+      return identity;
+    },
+    connect(next) {
+      port = next;
+      return () => {
+        if (port === next) port = undefined;
+      };
+    },
+    createScope: vi.fn() as never,
+    beginScopeRerender: vi.fn() as never,
+    dispose: vi.fn(),
+  };
+  return {
+    binding,
+    replaceIdentity(): void {
+      identity = Object.freeze({ moduleId: "ode" as const });
+    },
+    get port() {
+      return port;
+    },
+  };
+}
+
 function surfaceRequest(
   binding: LabGlossaryBinding,
   trigger: HTMLButtonElement,
@@ -608,6 +637,77 @@ describe("Platform Glossary Host", () => {
     host.dispose();
   });
 
+  it("closes transferred mobile sheets onto each replacement trigger", async () => {
+    const target = document.createElement("div");
+    const background = document.createElement("main");
+    document.body.append(background, target);
+    const controlled = controlledBinding();
+    const host = createPlatformGlossaryHost({
+      target,
+      loadSurface: async () => ({ mountGlossarySurface }),
+      isMobile: () => true,
+      modalBackground: () => [background],
+    });
+    host.connect(controlled.binding);
+
+    const openAndTransfer = async (
+      originalGeneration: number,
+      replacementGeneration: number
+    ): Promise<HTMLButtonElement> => {
+      const originalTrigger = connectedTrigger();
+      const originalRequest = surfaceRequest(
+        controlled.binding,
+        originalTrigger,
+        { kind: "activate", pointer: "touch" },
+        undefined,
+        originalGeneration
+      );
+      controlled.port!.requestOpen(originalRequest);
+      await vi.waitFor(() =>
+        expect(
+          target.querySelector('.glossary-surface-mobile-sheet[aria-modal="true"]')
+        ).not.toBeNull()
+      );
+      const candidate = controlled.port!.beginScopeRerender(
+        originalRequest.identity.scope
+      )!;
+      expect(candidate.mode).toBe("mobile-sheet");
+      const replacementTrigger = connectedTrigger();
+      const replacement = surfaceRequest(
+        controlled.binding,
+        replacementTrigger,
+        { kind: "activate", pointer: "touch" },
+        undefined,
+        replacementGeneration
+      );
+      controlled.port!.replacementCommitted({
+        kind: "transferred",
+        previous: candidate,
+        replacement: replacement.identity,
+      });
+      expect(originalTrigger.hasAttribute("aria-expanded")).toBe(false);
+      expect(replacementTrigger.getAttribute("aria-expanded")).toBe("true");
+      return replacementTrigger;
+    };
+
+    const escapeReplacement = await openAndTransfer(1, 2);
+    document.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "Escape", bubbles: true })
+    );
+    expect(target.childElementCount).toBe(0);
+    expect(document.activeElement).toBe(escapeReplacement);
+    expect(background.hasAttribute("inert")).toBe(false);
+
+    const closeReplacement = await openAndTransfer(3, 4);
+    target
+      .querySelector<HTMLButtonElement>("[data-glossary-close]")!
+      .click();
+    expect(target.childElementCount).toBe(0);
+    expect(document.activeElement).toBe(closeReplacement);
+    expect(background.hasAttribute("inert")).toBe(false);
+    host.dispose();
+  });
+
   it("ignores hover requests when the device does not support fine hover", async () => {
     vi.useFakeTimers();
     const target = document.createElement("div");
@@ -672,7 +772,7 @@ describe("Platform Glossary Host", () => {
     );
   });
 
-  it("does not suspend Tutor or mount when an external modal appears during loading", async () => {
+  it("rolls Tutor back and does not mount when an external modal appears during loading", async () => {
     let resolve!: (module: GlossarySurfaceRuntimeModule) => void;
     const pending = new Promise<GlossarySurfaceRuntimeModule>((done) => {
       resolve = done;
@@ -716,6 +816,148 @@ describe("Platform Glossary Host", () => {
     expect(restoreTutor).toHaveBeenCalledOnce();
     expect(background.hasAttribute("inert")).toBe(false);
     expect(document.body.style.overflow).toBe("");
+  });
+
+  it("aborts a detached pending trigger and rolls back its Tutor suspension once", async () => {
+    let resolve!: (module: GlossarySurfaceRuntimeModule) => void;
+    const pendingModule = new Promise<GlossarySurfaceRuntimeModule>((done) => {
+      resolve = done;
+    });
+    const target = document.createElement("div");
+    document.body.append(target);
+    const runtime = surfaceModule();
+    const restoreTutor = vi.fn();
+    const tutor = {
+      isPresentationVisible: vi.fn(() => true),
+      suspendPresentationForGlossary: vi.fn(() => ({
+        restore: restoreTutor,
+      })),
+    };
+    const controlled = controlledBinding();
+    const host = createPlatformGlossaryHost({
+      target,
+      loadSurface: () => pendingModule,
+      isMobile: () => true,
+      tutorPresentation: tutor,
+    });
+    host.connect(controlled.binding);
+    const trigger = connectedTrigger();
+    controlled.port!.requestOpen(
+      surfaceRequest(controlled.binding, trigger, {
+        kind: "activate",
+        pointer: "touch",
+      })
+    );
+    expect(tutor.suspendPresentationForGlossary).toHaveBeenCalledOnce();
+
+    trigger.remove();
+    resolve(runtime.module);
+    await pendingModule;
+    await Promise.resolve();
+
+    expect(runtime.mount).not.toHaveBeenCalled();
+    expect(restoreTutor).toHaveBeenCalledOnce();
+    expect(target.childElementCount).toBe(0);
+    host.close({ restoreFocus: false });
+    expect(restoreTutor).toHaveBeenCalledOnce();
+  });
+
+  it("cleans a pending suspension when its binding identity becomes stale", async () => {
+    let resolve!: (module: GlossarySurfaceRuntimeModule) => void;
+    const pendingModule = new Promise<GlossarySurfaceRuntimeModule>((done) => {
+      resolve = done;
+    });
+    const target = document.createElement("div");
+    document.body.append(target);
+    const runtime = surfaceModule();
+    const restoreTutor = vi.fn();
+    const tutor = {
+      isPresentationVisible: vi.fn(() => true),
+      suspendPresentationForGlossary: vi.fn(() => ({
+        restore: restoreTutor,
+      })),
+    };
+    const controlled = controlledMutableIdentityBinding();
+    const host = createPlatformGlossaryHost({
+      target,
+      loadSurface: () => pendingModule,
+      isMobile: () => true,
+      tutorPresentation: tutor,
+    });
+    host.connect(controlled.binding);
+    controlled.port!.requestOpen(
+      surfaceRequest(controlled.binding, connectedTrigger(), {
+        kind: "activate",
+        pointer: "touch",
+      })
+    );
+
+    controlled.replaceIdentity();
+    resolve(runtime.module);
+    await pendingModule;
+    await Promise.resolve();
+
+    expect(runtime.mount).not.toHaveBeenCalled();
+    await vi.waitFor(() => expect(restoreTutor).toHaveBeenCalledOnce());
+    host.close({ restoreFocus: false });
+    expect(restoreTutor).toHaveBeenCalledOnce();
+  });
+
+  it("does not let a stale abort roll back a newer pending request", async () => {
+    let resolve!: (module: GlossarySurfaceRuntimeModule) => void;
+    const pendingModule = new Promise<GlossarySurfaceRuntimeModule>((done) => {
+      resolve = done;
+    });
+    const target = document.createElement("div");
+    document.body.append(target);
+    const runtime = surfaceModule();
+    const restoreFirst = vi.fn();
+    const restoreSecond = vi.fn();
+    const tutor = {
+      isPresentationVisible: vi.fn(() => true),
+      suspendPresentationForGlossary: vi
+        .fn()
+        .mockReturnValueOnce({ restore: restoreFirst })
+        .mockReturnValueOnce({ restore: restoreSecond }),
+    };
+    const controlled = controlledBinding();
+    const host = createPlatformGlossaryHost({
+      target,
+      loadSurface: () => pendingModule,
+      isMobile: () => true,
+      tutorPresentation: tutor,
+    });
+    host.connect(controlled.binding);
+    controlled.port!.requestOpen(
+      surfaceRequest(
+        controlled.binding,
+        connectedTrigger(),
+        { kind: "activate", pointer: "touch" },
+        undefined,
+        1
+      )
+    );
+    const newestTrigger = connectedTrigger();
+    controlled.port!.requestOpen(
+      surfaceRequest(
+        controlled.binding,
+        newestTrigger,
+        { kind: "activate", pointer: "touch" },
+        undefined,
+        2
+      )
+    );
+
+    expect(restoreFirst).toHaveBeenCalledOnce();
+    resolve(runtime.module);
+    await pendingModule;
+    await vi.waitFor(() => expect(runtime.mount).toHaveBeenCalledOnce());
+
+    expect(runtime.mount.mock.calls[0]![1].request.trigger).toBe(newestTrigger);
+    expect(restoreSecond).not.toHaveBeenCalled();
+    expect(newestTrigger.getAttribute("aria-expanded")).toBe("true");
+    host.close({ restoreFocus: false });
+    expect(restoreSecond).not.toHaveBeenCalled();
   });
 
   it("restores focus for Escape/Close but not outside-pointer closure", async () => {

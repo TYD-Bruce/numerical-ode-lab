@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createAppSessionStore } from "./appSessionStore";
 import type { LabTutorBinding } from "./contracts";
 import { createPlatformTutorHost } from "./platformTutorHost";
@@ -20,6 +20,7 @@ function binding(moduleId: "ode" = "ode"): LabTutorBinding<unknown> {
 
 describe("Platform Tutor Host", () => {
   beforeEach(() => document.body.replaceChildren());
+  afterEach(() => vi.unstubAllGlobals());
 
   it("preserves the shell-owned placement class when it renders", () => {
     const target = document.createElement("aside");
@@ -335,4 +336,82 @@ describe("Platform Tutor Host", () => {
     expect(dispose).toHaveBeenCalledOnce();
     expect(target.childElementCount).toBe(0);
   });
+
+  it.each(["disconnect", "close", "dispose"] as const)(
+    "leaves no deferred restore authority after suspended Tutor %s",
+    async (action) => {
+      const observerConstructed = vi.fn();
+      vi.stubGlobal(
+        "MutationObserver",
+        class {
+          constructor() {
+            observerConstructed();
+          }
+          observe(): void {}
+          disconnect(): void {}
+          takeRecords(): MutationRecord[] {
+            return [];
+          }
+        }
+      );
+      const target = document.createElement("div");
+      const lab = document.createElement("main");
+      document.body.append(lab, target);
+      const store = createAppSessionStore();
+      const disposePanel = vi.fn();
+      const host = createPlatformTutorHost({
+        target,
+        labTarget: lab,
+        modalEnvironment: createPlatformModalEnvironment(),
+        modalBackground: () => [lab],
+        isMobile: () => true,
+        loadPanel: async () => ({
+          mountPlatformTutorPanel: (panelTarget) => {
+            const panel = document.createElement("aside");
+            panel.className = "ai-tutor-panel";
+            panelTarget.append(panel);
+            return {
+              dispose: disposePanel,
+              focus: vi.fn(),
+              cancelPending: vi.fn(),
+            };
+          },
+        }),
+      });
+      host.connect(binding(), store.createTutorSessionAccess("ode"));
+      await host.open(target.querySelector<HTMLElement>("[data-tutor-open]")!);
+      const suspension = host.suspendPresentationForGlossary()!;
+      const blocker = document.createElement("section");
+      blocker.setAttribute("role", "dialog");
+      blocker.setAttribute("aria-modal", "true");
+      document.body.append(blocker);
+
+      suspension.restore();
+      expect(host.isPresentationVisible()).toBe(false);
+      expect(target.querySelector("[data-tutor-open]")).not.toBeNull();
+      expect(observerConstructed).not.toHaveBeenCalled();
+
+      if (action === "disconnect") {
+        host.disconnect();
+      } else if (action === "close") {
+        host.close({ restoreFocus: false });
+      } else {
+        host.dispose();
+      }
+      blocker.remove();
+      suspension.restore();
+      await Promise.resolve();
+
+      expect(host.isPresentationVisible()).toBe(false);
+      expect(disposePanel).toHaveBeenCalledOnce();
+      expect(observerConstructed).not.toHaveBeenCalled();
+      if (action === "close") {
+        expect(target.querySelector("[data-tutor-open]")).not.toBeNull();
+        host.dispose();
+      } else {
+        expect(target.childElementCount).toBe(0);
+        if (action === "disconnect") host.dispose();
+      }
+    }
+  );
 });

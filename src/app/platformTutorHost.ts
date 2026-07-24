@@ -65,7 +65,6 @@ export function createPlatformTutorHost(
   let mobileOpen = false;
   let suspended = false;
   let suspensionIdentity: object | undefined;
-  let deferredRestoreObserver: MutationObserver | undefined;
   let returnFocus: HTMLElement | undefined;
   let presentation: HTMLElement | undefined;
   let modalLease: PlatformModalLease | undefined;
@@ -75,11 +74,6 @@ export function createPlatformTutorHost(
 
   const loadPanel = options.loadPanel ?? (() => import("../tutor/platformTutorPanel"));
   const isMobile = options.isMobile ?? (() => window.matchMedia?.("(max-width: 760px)").matches ?? false);
-
-  const clearDeferredRestore = (): void => {
-    deferredRestoreObserver?.disconnect();
-    deferredRestoreObserver = undefined;
-  };
 
   const releaseMobileEnvironment = (): void => {
     modalLease?.release();
@@ -137,7 +131,6 @@ export function createPlatformTutorHost(
         setTutorDesktopOpen(current, true)
       );
     }
-    clearDeferredRestore();
     suspensionIdentity = undefined;
     suspended = false;
     presentation.hidden = false;
@@ -156,30 +149,7 @@ export function createPlatformTutorHost(
     return true;
   };
 
-  const deferSuspendedPresentationRestore = (
-    identity: object,
-    mobile: boolean
-  ): void => {
-    if (
-      deferredRestoreObserver ||
-      disposed ||
-      suspensionIdentity !== identity
-    ) {
-      return;
-    }
-    deferredRestoreObserver = new MutationObserver(() => {
-      restoreSuspendedPresentation(identity, mobile, false);
-    });
-    deferredRestoreObserver.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["aria-hidden", "aria-modal", "hidden"],
-      childList: true,
-      subtree: true,
-    });
-  };
-
   const renderClosed = (): void => {
-    clearDeferredRestore();
     panel?.dispose();
     panel = undefined;
     presentation = undefined;
@@ -302,7 +272,6 @@ export function createPlatformTutorHost(
       presentation = undefined;
       suspended = false;
       suspensionIdentity = undefined;
-      clearDeferredRestore();
       releaseMobileEnvironment();
       options.target.replaceChildren();
     },
@@ -377,7 +346,6 @@ export function createPlatformTutorHost(
       presentation = undefined;
       suspended = false;
       suspensionIdentity = undefined;
-      clearDeferredRestore();
       releaseMobileEnvironment();
       if (connection && !wasMobile) {
         connection.sessionAccess.updateSession((current) =>
@@ -401,7 +369,6 @@ export function createPlatformTutorHost(
       if (disposed || !panel || !presentation || suspended) return undefined;
       const wasMobile = mobileOpen;
       const identity = Object.freeze({});
-      clearDeferredRestore();
       suspensionIdentity = identity;
       suspended = true;
       presentation.hidden = true;
@@ -414,9 +381,7 @@ export function createPlatformTutorHost(
       appendLauncher();
       return Object.freeze({
         restore(): void {
-          if (!restoreSuspendedPresentation(identity, wasMobile, false)) {
-            deferSuspendedPresentationRestore(identity, wasMobile);
-          }
+          restoreSuspendedPresentation(identity, wasMobile, false);
         },
       });
     },
@@ -433,7 +398,6 @@ export function createPlatformTutorHost(
       if (disposed) return;
       host.disconnect();
       disposed = true;
-      clearDeferredRestore();
       options.target.removeEventListener("keydown", onKeyDown);
       options.target.replaceChildren();
       if (ownsModalEnvironment) modalEnvironment.dispose();

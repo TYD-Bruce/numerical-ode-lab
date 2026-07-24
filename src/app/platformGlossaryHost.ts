@@ -192,6 +192,13 @@ export function createPlatformGlossaryHost(
     pending.tutorSuspension = undefined;
     suspension?.restore();
   };
+  const abortLoadingSurface = (pending: LoadingSurface): void => {
+    if (loading !== pending) return;
+    loading = undefined;
+    requestGeneration += 1;
+    if (watchedRequest === pending.request) unwatchTrigger();
+    rollbackTutorSuspension(pending);
+  };
 
   function unwatchTrigger(): void {
     watchedRequest?.trigger.removeEventListener(
@@ -402,10 +409,11 @@ export function createPlatformGlossaryHost(
       !activeIdentityMatches(pending.request, connection) ||
       !triggerIsUsable(pending.request, connection)
     ) {
+      abortLoadingSurface(pending);
       return;
     }
     if (pending.mode === "mobile-sheet" && hasActiveExternalModal(options.target)) {
-      closeInternal(false, pending.request);
+      abortLoadingSurface(pending);
       return;
     }
 
@@ -413,7 +421,7 @@ export function createPlatformGlossaryHost(
     if (pending.mode === "mobile-sheet") {
       const background = options.modalBackground?.() ?? [];
       if (hasActiveExternalModal(options.target)) {
-        closeInternal(false, pending.request);
+        abortLoadingSurface(pending);
         return;
       }
       const acquired = modalEnvironment.acquire({
@@ -422,7 +430,7 @@ export function createPlatformGlossaryHost(
         background,
       });
       if (acquired.status === "blocked") {
-        closeInternal(false, pending.request);
+        abortLoadingSurface(pending);
         return;
       }
       modalLease = acquired.lease;
@@ -460,6 +468,7 @@ export function createPlatformGlossaryHost(
     ) {
       mounted.dispose();
       modalLease?.release();
+      abortLoadingSurface(pending);
       return;
     }
     active = {
@@ -537,7 +546,10 @@ export function createPlatformGlossaryHost(
         mountLoadedSurface(module, pending),
     };
     try {
-      await (retry ? loader.retry(loadRequest) : loader.load(loadRequest));
+      const result = await (
+        retry ? loader.retry(loadRequest) : loader.load(loadRequest)
+      );
+      if (result === "stale") abortLoadingSurface(pending);
     } catch (cause) {
       renderFailure(pending, cause);
     }

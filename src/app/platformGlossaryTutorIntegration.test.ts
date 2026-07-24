@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { LabGlossaryBinding } from "../glossary/glossaryController";
 import {
   defineGlossaryScopeId,
@@ -160,6 +160,7 @@ describe("Platform Tutor and Glossary Host integration", () => {
     document.body.replaceChildren();
     document.body.style.overflow = "";
   });
+  afterEach(() => vi.unstubAllGlobals());
 
   it("suspends the actual mobile Tutor before opening Glossary and retains its panel", async () => {
     const lab = document.createElement("main");
@@ -201,7 +202,7 @@ describe("Platform Tutor and Glossary Host integration", () => {
       isMobile: () => true,
       loadPanel: async () => ({ mountPlatformTutorPanel: mountPanel }),
       onBeforeManualOpen: () =>
-        glossaryHost.close({ restoreFocus: false }),
+        glossaryHost?.close({ restoreFocus: false }),
     });
     glossaryHost = createPlatformGlossaryHost({
       target: glossaryTarget,
@@ -289,7 +290,21 @@ describe("Platform Tutor and Glossary Host integration", () => {
     modalEnvironment.dispose();
   });
 
-  it("rolls the actual Tutor back when a real external modal appears after suspension", async () => {
+  it("never auto-restores a blocked Tutor after a later Glossary session closes", async () => {
+    const observerCallbacks: MutationCallback[] = [];
+    vi.stubGlobal(
+      "MutationObserver",
+      class {
+        constructor(callback: MutationCallback) {
+          observerCallbacks.push(callback);
+        }
+        observe(): void {}
+        disconnect(): void {}
+        takeRecords(): MutationRecord[] {
+          return [];
+        }
+      }
+    );
     const lab = document.createElement("main");
     const tutorTarget = document.createElement("aside");
     const glossaryTarget = document.createElement("aside");
@@ -308,6 +323,7 @@ describe("Platform Tutor and Glossary Host integration", () => {
       pendingRequest = false;
     });
     const panelDispose = vi.fn();
+    const panelFocus = vi.fn();
     const mountPanel = vi.fn((target: HTMLElement) => {
       const panel = document.createElement("aside");
       panel.className = "ai-tutor-panel";
@@ -315,7 +331,7 @@ describe("Platform Tutor and Glossary Host integration", () => {
       target.append(panel);
       return {
         dispose: panelDispose,
-        focus: vi.fn(),
+        focus: panelFocus,
         cancelPending,
       };
     });
@@ -386,13 +402,164 @@ describe("Platform Tutor and Glossary Host integration", () => {
 
     blocker?.remove();
     blocker = undefined;
-    await vi.waitFor(() =>
-      expect(tutorHost.isPresentationVisible()).toBe(true)
+    const nextRequest = glossaryRequest(
+      glossary.binding,
+      connectedTrigger()
     );
-    expect(tutorTarget.querySelector('[aria-modal="true"]')).not.toBeNull();
+    glossary.port!.requestOpen(nextRequest);
+    await vi.waitFor(() =>
+      expect(glossaryTarget.querySelector('[aria-modal="true"]')).not.toBeNull()
+    );
+    expect(tutorHost.isPresentationVisible()).toBe(false);
+    expect(mountSurface).toHaveBeenCalledOnce();
+
+    glossaryHost.close({ restoreFocus: false });
+    for (const callback of observerCallbacks) {
+      callback([], {} as MutationObserver);
+    }
+    await Promise.resolve();
+
+    expect(tutorHost.isPresentationVisible()).toBe(false);
+    expect(observerCallbacks).toHaveLength(0);
+    expect(tutorTarget.querySelector("[data-tutor-open]")).not.toBeNull();
+    expect(tutorTarget.querySelector("[data-test-tutor-panel]")).toBe(
+      retainedPanel
+    );
+    expect(panelDispose).not.toHaveBeenCalled();
+    expect(cancelPending).not.toHaveBeenCalled();
+    expect(pendingRequest).toBe(true);
+
+    await tutorHost.open(
+      tutorTarget.querySelector<HTMLElement>("[data-tutor-open]")!
+    );
+    expect(tutorHost.isPresentationVisible()).toBe(true);
+    expect(tutorTarget.querySelector("[data-test-tutor-panel]")).toBe(
+      retainedPanel
+    );
+    expect(mountPanel).toHaveBeenCalledOnce();
+    expect(panelFocus).toHaveBeenCalledTimes(2);
     expect(activeModalDialogs()).toHaveLength(1);
-    expect(document.activeElement).toBe(focusSentinel);
+
+    glossaryHost.dispose();
+    tutorHost.dispose();
+    modalEnvironment.dispose();
+  });
+
+  it("aborts an unusable post-load trigger without leaking blocked Tutor rollback", async () => {
+    let resolveSurface!: (module: {
+      mountGlossarySurface: typeof mountGlossarySurface;
+    }) => void;
+    const pendingSurface = new Promise<{
+      mountGlossarySurface: typeof mountGlossarySurface;
+    }>((resolve) => {
+      resolveSurface = resolve;
+    });
+    const lab = document.createElement("main");
+    const tutorTarget = document.createElement("aside");
+    const glossaryTarget = document.createElement("aside");
+    document.body.append(lab, tutorTarget, glossaryTarget);
+    const modalEnvironment = createPlatformModalEnvironment();
+    const store = createAppSessionStore();
+    store.updateTutor("ode", (current) =>
+      updateTutorDraft(
+        appendTutorMessage(current, "user", "Keep pending"),
+        "keep draft"
+      )
+    );
+    const panelDispose = vi.fn();
+    const panelFocus = vi.fn();
+    const mountPanel = vi.fn((target: HTMLElement) => {
+      const panel = document.createElement("aside");
+      panel.className = "ai-tutor-panel";
+      panel.dataset.testTutorPanel = "";
+      target.append(panel);
+      return {
+        dispose: panelDispose,
+        focus: panelFocus,
+        cancelPending: vi.fn(),
+      };
+    });
+    let glossaryHost: PlatformGlossaryHost;
+    const tutorHost = createPlatformTutorHost({
+      target: tutorTarget,
+      labTarget: lab,
+      modalEnvironment,
+      modalBackground: () => [lab, glossaryTarget],
+      isMobile: () => true,
+      loadPanel: async () => ({ mountPlatformTutorPanel: mountPanel }),
+      onBeforeManualOpen: () =>
+        glossaryHost?.close({ restoreFocus: false }),
+    });
+    tutorHost.connect(tutorBinding(), store.createTutorSessionAccess("ode"));
+    await tutorHost.open(
+      tutorTarget.querySelector<HTMLElement>("[data-tutor-open]")!
+    );
+    const retainedPanel = tutorTarget.querySelector<HTMLElement>(
+      "[data-test-tutor-panel]"
+    )!;
+    let restoreCalls = 0;
+    const tutorPresentation: PlatformTutorHost = {
+      ...tutorHost,
+      suspendPresentationForGlossary() {
+        const suspension = tutorHost.suspendPresentationForGlossary();
+        if (!suspension) return undefined;
+        return {
+          restore(): void {
+            restoreCalls += 1;
+            suspension.restore();
+          },
+        };
+      },
+    };
+    const mountSurface = vi.fn(mountGlossarySurface);
+    glossaryHost = createPlatformGlossaryHost({
+      target: glossaryTarget,
+      modalEnvironment,
+      modalBackground: () => [lab, tutorTarget],
+      tutorPresentation,
+      isMobile: () => true,
+      loadSurface: () => pendingSurface,
+    });
+    const glossary = controlledGlossaryBinding();
+    glossaryHost.connect(glossary.binding);
+    const trigger = connectedTrigger();
+    glossary.port!.requestOpen(glossaryRequest(glossary.binding, trigger));
+    expect(tutorHost.isPresentationVisible()).toBe(false);
+
+    const blocker = document.createElement("section");
+    blocker.setAttribute("role", "dialog");
+    blocker.setAttribute("aria-modal", "true");
+    document.body.append(blocker);
+    trigger.remove();
+    resolveSurface({ mountGlossarySurface: mountSurface });
+    await pendingSurface;
+    await Promise.resolve();
+
     expect(mountSurface).not.toHaveBeenCalled();
+    expect(restoreCalls).toBe(1);
+    expect(glossaryTarget.childElementCount).toBe(0);
+    expect(tutorHost.isPresentationVisible()).toBe(false);
+    expect(tutorTarget.querySelector("[data-tutor-open]")).not.toBeNull();
+    expect(tutorTarget.querySelector("[data-test-tutor-panel]")).toBe(
+      retainedPanel
+    );
+    expect(panelDispose).not.toHaveBeenCalled();
+    expect(store.getTutor("ode")).toMatchObject({ draftMessage: "keep draft" });
+    expect(store.getTutor("ode").items).toHaveLength(1);
+
+    blocker.remove();
+    await Promise.resolve();
+    expect(tutorHost.isPresentationVisible()).toBe(false);
+    await tutorHost.open(
+      tutorTarget.querySelector<HTMLElement>("[data-tutor-open]")!
+    );
+    expect(restoreCalls).toBe(1);
+    expect(tutorHost.isPresentationVisible()).toBe(true);
+    expect(tutorTarget.querySelector("[data-test-tutor-panel]")).toBe(
+      retainedPanel
+    );
+    expect(mountPanel).toHaveBeenCalledOnce();
+    expect(panelFocus).toHaveBeenCalledTimes(2);
 
     glossaryHost.dispose();
     tutorHost.dispose();

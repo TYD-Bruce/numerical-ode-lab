@@ -33,11 +33,13 @@ scope lifecycle, is implemented and accepted after conservative audit.
 The readonly-math accessibility prerequisite is locally verified. Commit 3
 shared Host/surface/modal infrastructure and a minimal DEV-only Playground are
 implemented and locally/browser verified but not deployed. Its two P1
-lifecycle findings and one P2 copy finding have a locally verified follow-up.
-Production still has no Glossary terms, annotations, or visible Glossary
-behavior: the current Lab supplies no binding, and production excludes the
-Playground. The exact next gate is a conservative re-audit of Commit 3 plus
-the lifecycle-fix commit; Commit 4 remains unauthorized.
+lifecycle findings and one P2 copy finding have a locally verified follow-up;
+the second re-audit's deferred Tutor restore and pre-mount abort findings have
+a second locally verified lifecycle follow-up. Production still has no
+Glossary terms, annotations, or visible Glossary behavior: the current Lab
+supplies no binding, and production excludes the Playground. The exact next
+gate is the final conservative re-audit of Commit 3 plus both lifecycle-fix
+commits; Commit 4 remains unauthorized.
 
 ## 2. Verification baseline
 
@@ -269,10 +271,10 @@ Known limitations:
 - Linear Algebra and PDE are not runnable Labs.
 - Content-Agnostic Interactive Glossary Framework Commit 1 is implemented and
   accepted, the readonly-math prerequisite is locally verified, and Commit 3
-  shared surfaces are locally/browser verified with a locally verified
-  lifecycle audit follow-up. Production initializes an inert Host but contains
-  no Glossary terms, annotations, activatable surface, Playground, or visible
-  Glossary behavior.
+  shared surfaces are locally/browser verified with two locally verified
+  lifecycle audit follow-ups. Production initializes an inert Host but
+  contains no Glossary terms, annotations, activatable surface, Playground, or
+  visible Glossary behavior.
 
 Contributor rules:
 
@@ -288,8 +290,8 @@ Contributor rules:
 *Last updated: 2026-07-24. Project Identity Migration and prior Production
 verification remain complete. Glossary Commit 1 is accepted, the readonly-math
 accessibility prerequisite is locally verified, and Commit 3 shared surfaces
-are locally/browser verified with a locally verified lifecycle audit
-follow-up. A conservative re-audit of Commit 3 plus the lifecycle-fix commit is
-the exact next gate. Commit 4 has not started. Production still contains no
-Glossary terms, annotations, Playground, activatable surface, or visible
-behavior.*
+are locally/browser verified with two locally verified lifecycle audit
+follow-ups. The final conservative re-audit of Commit 3 plus both lifecycle-fix
+commits is the exact next gate. Commit 4 has not started. Production still
+contains no Glossary terms, annotations, Playground, activatable surface, or
+visible behavior.*
