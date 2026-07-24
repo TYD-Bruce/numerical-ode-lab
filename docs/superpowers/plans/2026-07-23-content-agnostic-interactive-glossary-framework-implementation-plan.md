@@ -1,6 +1,7 @@
 # Content-Agnostic Interactive Glossary Framework Implementation Plan
 
-**Status:** Repository-grounded plan; implementation not started
+**Status:** Corrected after conservative audit; re-audit pending;
+implementation not started
 **Date:** 2026-07-23
 **Milestone:** Content-Agnostic Interactive Glossary Framework
 **Authoritative design:** [Content-Agnostic Interactive Glossary Framework Design](../specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md)
@@ -107,18 +108,26 @@ There is no shared modal utility.
 - `src/app/platform.css` and `src/style.css` both currently use modal
   `z-index: 1000`.
 
-Glossary must not add a third independent body-scroll/inert owner. Commit 2
-will extract the Tutor-compatible mobile environment into one platform
-utility shared by Tutor and Glossary. The Lab-owned New experiment dialog
-remains unchanged except for consuming the same semantic layer token; inert
-state prevents users from opening it underneath a platform modal.
+Glossary must not add a third independent body-scroll/inert owner. The shared
+surface commit will extract the Tutor-compatible mobile environment into one
+platform utility shared by Tutor and Glossary. The Lab-owned New experiment
+dialog remains unchanged unless implementation evidence demonstrates that a
+minimal semantic marker is required and separately justifies it. A generic
+modal-blocking guard refuses a Tutor or Glossary platform modal while an
+external active modal dialog, including New experiment, is already present.
+When Tutor or Glossary already owns the platform modal environment, its
+existing inert ownership prevents the New experiment trigger from being
+activated.
 
 ### Current development-route and bundle-contract capability
 
 No development-route injection seam, development shortcut, `src/dev` tree, or
 Developer Tools area exists. `createRouteDefinitions()` has only
-`initialValueProblemsLoader` and `homeSessionSource` options. Commit 3 must add
-conditional injection; it must not claim to reuse a nonexistent utility.
+`initialValueProblemsLoader` and `homeSessionSource` options. The shared
+surface commit must add the minimum explicit injection seam and committed
+development-only Playground shell needed for reproducible browser evidence;
+the final Playground commit expands that same route. Neither commit may claim
+to reuse a nonexistent utility or create a second temporary harness route.
 
 Bundle protection already exists:
 
@@ -150,19 +159,19 @@ only.
 | Generic Lab adapter | `src/app/labRouteAdapter.ts` — `createCompleteLabRoute()` | Coordinates Store, optional Lab bindings, scroll, and disposal while treating domain data as opaque; correct place to connect an optional Glossary binding | `src/app/labRouteAdapter.test.ts`, `src/app/platformBootstrap.test.ts`; must preserve session snapshot and Tutor order |
 | Lab contract | `src/app/contracts.ts` — `MountedLabRoute<TSession>`, `LabRouteModule<TSession>` | Shared structural Lab contract; correct location for a type-only optional `getGlossaryBinding?()` edge | Widely imported by app, pages, Tutor, Store, ODE, and tests; no runtime Glossary import is allowed |
 | ODE route adapter | `src/ode/initialValueProblemsRoute.ts` — `mount()` and `MountedInitialValueProblemsRoute` | Adapts `MountedOdeApp` to the generic Lab shape | `src/ode/initialValueProblemsRoute.test.ts`; Milestone 2A leaves it without a Glossary binding |
-| ODE runtime ownership | `src/ode/odeApp.ts` — `mountOdeApp()`, `render()`, returned `dispose()` | Owns Lab rerender generations and runtime cleanup | `src/ode/odeLifecycle.test.ts`, `src/ode/newExperiment.test.ts`; no ODE annotation or Glossary binding change in this milestone |
+| ODE runtime ownership | `src/ode/odeApp.ts` — `mountOdeApp()` and its private factory-internal `render()` plus the returned `dispose()` | Owns Lab rerender generations and runtime cleanup; the containing factory, not its private `render()`, is the interaction seam | `src/ode/odeLifecycle.test.ts`, `src/ode/newExperiment.test.ts`; no ODE annotation or Glossary binding change in this milestone |
 | Tutor binding | `src/app/contracts.ts` — `LabTutorBinding<TContext>` and `TutorSessionAccess`; `src/ode/odeTutorBinding.ts` — `createOdeTutorBinding()` | Lab owns fresh domain context; Store owns live session access | `src/ode/odeTutorBinding.test.ts`, `src/ode/odeLifecycle.test.ts`, `src/app/platformTutorHost.test.ts` |
 | Tutor presentation | `src/app/platformTutorHost.ts` — `createPlatformTutorHost()` | Owns Tutor presentation and lazy panel lifecycle; correct coordination seam for non-destructive temporary hiding | `src/app/platformTutorHost.test.ts`, `src/app/tutorLazyBoundary.test.ts`; ordinary `close()` disposes the panel and aborts pending work, so Glossary must not call it |
-| Tutor panel | `src/tutor/platformTutorPanel.ts` — `mountPlatformTutorPanel()` | Owns mounted transcript/composer and pending `AbortController`; `dispose()` aborts requests | `src/aiTutorPanel.test.ts`; Commit 2 must keep the panel mounted while suspended and add a presentation-visibility guard so request completion cannot focus hidden Tutor DOM |
+| Tutor panel | `src/tutor/platformTutorPanel.ts` — `mountPlatformTutorPanel()` | Owns mounted transcript/composer and pending `AbortController`; `dispose()` aborts requests | `src/aiTutorPanel.test.ts`; Commit 3 must keep the panel mounted while suspended and add a presentation-visibility guard so request completion cannot focus hidden Tutor DOM |
 | Store | `src/app/appSessionStore.ts` — `createAppSessionStore()`, `assertPureValue()` | Pure Lab/Tutor/route data only | `src/app/appSessionStore.test.ts` rejects DOM, functions, abort objects, errors, cycles, and classes; Glossary does not modify this file |
 | Shell and layers | `src/app/appShell.ts` — `createAppShell()` and `AppShell` | Persistent header, menu, outlet, Tutor region; correct owner for an empty Glossary surface region and modal background element references | `src/app/appShell.test.ts`, `src/app/navigationAccessibility.test.ts`, `src/app/platform.css` |
 | Router | `src/app/router.ts` — `createPlatformRouter()` and `onNavigationStart` | Calls the navigation-start hook before scroll capture and route disposal; correct place to close/disconnect the global Glossary Host before capture | `src/app/router.test.ts`, `src/app/scrollRestoration.test.ts` |
 | Route definitions | `src/app/routeDefinitions.ts` — `createRouteDefinitions()` | Owns route table; must accept explicit development definitions while defaults remain production-safe | `src/app/router.test.ts`, `src/app/navigationAccessibility.test.ts`, bootstrap route matrix |
 | About entry | `src/pages/aboutPage.ts` — current `aboutPage` constant | Current About is a static production page; add an optioned factory while retaining the production constant | `src/pages/pages.test.ts`; no static import from About into `src/dev` |
 | Static page helper | `src/pages/pageContracts.ts` — `mountStaticPage()`, `createRouteLink()` | Correct DOM-safe helper for the Developer Tools section | `src/pages/pages.test.ts` |
-| Mobile Tutor | `src/app/platformTutorHost.ts` — `enableMobileEnvironment()` and `restoreMobileEnvironment()` | Existing scroll/inert implementation to extract into a shared utility | Host mobile test verifies inert, body overflow, and scroll restoration |
-| New experiment modal | `src/ode/odeApp.ts` — `openResetDialog()` and `closeResetDialog()` | Lab-owned modal and focus trap; remains separate because platform modal inert state makes its trigger unavailable | `src/ode/newExperiment.test.ts`, `src/ode/odeLifecycle.test.ts` |
-| Safe formula display | `src/math/ui/readonlyMath.ts` — `renderReadonlyMath()` and `loadMathLiveModule()` | Immediate accessible text fallback and deferred MathLive enhancement | `src/math/ui/readonlyMath.test.ts`; Commit 2 adds a no-duplicate-accessible-output assertion |
+| Mobile Tutor | `src/app/platformTutorHost.ts` — `createPlatformTutorHost()` contains private factory-internal `enableMobileEnvironment()` and `restoreMobileEnvironment()` closures | Existing scroll/inert implementation to extract into a shared utility; the factory is the real extraction seam and the closures are not exported APIs | Host mobile test verifies inert, body overflow, and scroll restoration |
+| New experiment modal | `src/ode/odeApp.ts` — `mountOdeApp()` contains private factory-internal `openResetDialog()` and `closeResetDialog()` functions | Lab-owned modal and focus trap; the containing factory is the interaction seam. The dialog remains separate and unchanged unless a minimal semantic marker is demonstrably required | `src/ode/newExperiment.test.ts`, `src/ode/odeLifecycle.test.ts` |
+| Safe formula display | `src/math/ui/readonlyMath.ts` — `renderReadonlyMath()` and `loadMathLiveModule()` | Immediate accessible text fallback and deferred MathLive enhancement shared by ODE, Convergence, and Tutor | `src/math/ui/readonlyMath.test.ts`, `src/ode/odeLifecycle.test.ts`, `src/convergenceStudyView.test.ts`, and `src/math/ui/tutorMath.test.ts`; the dedicated prerequisite commit corrects accessible ownership before Glossary surfaces |
 | Tokens and layering | `src/app/theme.css`, `src/app/platform.css`, `src/tutor/tutor.css`, `src/style.css` | Semantic tokens, platform layout, Tutor responsive rules, ODE modal layer | `src/app/themeTokens.test.ts`; current modal value is 1000 and no forced-colors/reduced-motion Glossary rule exists |
 | Build mode | `vite.config.ts`, Vite-provided `import.meta.env.DEV` | Vite has no custom development-route configuration; compile-time `DEV` is the production-exclusion switch | `src/app/viteBase.contract.test.ts` performs a real production build |
 | Manifest contract | `src/app/viteBase.contract.test.ts` | Primary emitted-graph evidence using a temporary outDir | Extend it for Glossary surface and dev exclusions |
@@ -261,17 +270,11 @@ Kind: pure/runtime records with erased TypeScript brands
 ```ts
 declare const glossaryTermIdBrand: unique symbol;
 declare const glossaryScopeIdBrand: unique symbol;
-declare const glossarySourceAuditIdBrand: unique symbol;
 
 export type GlossaryTermId =
   string & { readonly [glossaryTermIdBrand]: true };
 export type GlossaryScopeId =
   string & { readonly [glossaryScopeIdBrand]: true };
-
-// Opaque compile-time boundary only in Milestone 2A. No source resolver,
-// URL, private path, health record, or audit runtime is added.
-export type GlossarySourceAuditId =
-  string & { readonly [glossarySourceAuditIdBrand]: true };
 
 export interface GlossaryFormula {
   readonly latex: string;
@@ -311,10 +314,10 @@ export interface GlossaryModuleExtension {
 }
 ```
 
-`GlossarySourceAuditId` reserves only the safe opaque-ID boundary requested for
-later source work. It is not a field on `GlossaryEntry` or a Milestone 2A
-runtime dependency. No source/audit implementation is planned in the three
-framework commits.
+All source IDs, audit metadata, source-health behavior, and related types are
+completely deferred to a later approved source/audit design. Milestone 2A
+creates no placeholder source identifier, entry field, resolver, URL, private
+path, health record, or source/audit runtime boundary.
 
 ### Builders, diagnostics, and registry
 
@@ -483,6 +486,15 @@ interface MountedLabRoute<TSession> extends MountedRoute {
 
 Current ODE omits the optional method.
 
+A valid, undisposed binding and scope may create triggers before a Host port is
+connected. Hover, focus, or activation during that unconnected interval is a
+no-op: it does not throw, queue a request, mutate Store or session state, or
+create work outside the scope's ordinary interaction handling. A pre-connect
+interaction is never replayed. Once one port connects, only future fresh
+interactions are delivered. Disposed scopes/bindings and a second simultaneous
+connection retain strict development/test failure and controlled
+production-safe no-op/close policies.
+
 ### Host connection, request, and transient state
 
 Future files:
@@ -562,11 +574,22 @@ export interface PlatformModalLease {
   release(): void;
 }
 
+export type PlatformModalAcquireResult =
+  | {
+      readonly status: "acquired";
+      readonly lease: PlatformModalLease;
+    }
+  | {
+      readonly status: "blocked";
+      readonly reason: "external-modal-active";
+    };
+
 export interface PlatformModalEnvironment {
   acquire(options: {
     readonly owner: "tutor" | "glossary";
+    readonly hostRegion: HTMLElement;
     readonly background: readonly HTMLElement[];
-  }): PlatformModalLease;
+  }): PlatformModalAcquireResult;
   dispose(): void;
 }
 
@@ -584,11 +607,30 @@ export interface PlatformTutorHost {
 ```
 
 The modal environment has one active owner and owner-checked leases. It
-snapshots each background element’s prior inert state, body overflow, and
+snapshots each background element's prior inert state, body overflow, and
 document scroll. A stale lease cannot unlock a newer owner.
 `modalBackgroundFor()` returns the header, mobile menu, route outlet, and the
 inactive Host region while excluding the active Host region; it never inerts an
 ancestor of the active dialog.
+
+The two-way modal-conflict policy is explicit:
+
+> A Tutor or Glossary platform modal must refuse to acquire/open while another
+> active modal dialog outside the requesting Host is already present.
+
+Immediately before acquiring, the generic modal environment inspects connected,
+active `[aria-modal="true"]` dialogs outside `hostRegion`. For this guard,
+active means connected, without `hidden`, and not `aria-hidden="true"`; no
+product-specific class or accessible name participates. If one exists,
+`acquire()` returns the controlled `external-modal-active` refusal without
+changing focus, scroll, inert state, Host state, or Store/session state. It does
+not use an ODE product-name gate, automatically close New experiment, or queue
+Tutor/Glossary. The requesting Host also re-checks after lazy import and calls
+the guarded acquire immediately before mounting, so a dialog that appears
+during loading blocks stale completion. Programmatic and stale callbacks use
+the same guard. When a Tutor or Glossary platform modal is already active, its
+existing inert ownership keeps the New experiment trigger inactive. After a
+blocking dialog closes, only a later fresh interaction may try again.
 
 Tutor Host mounts the lazy panel into a nested presentation container. During
 Glossary suspension it hides/inerts that container, releases a Tutor modal
@@ -675,6 +717,11 @@ Detailed event behavior:
 - Click, Enter, or Space use the native button activation. Desktop mouse or
   keyboard activation pins; touch activation or a viewport at/below 760 px
   opens the mobile sheet.
+- A mobile request blocked by an active external `aria-modal="true"` dialog
+  returns to closed without mounting. It creates no focus, scroll-lock, inert,
+  timer, queued-request, stale-surface, or session side effect. Closing the
+  blocking dialog does not replay the request; a later fresh activation may
+  open normally.
 - Escape closes preview, pinned popover, or sheet. Preview does not move focus;
   pinned/sheet close restores focus only to the current connected trigger.
 - Outside pointer closes pinned desktop. A pointer inside trigger/surface does
@@ -688,6 +735,8 @@ Detailed event behavior:
 - Route leave, Host disconnect, binding replacement, scope disposal, or Lab
   disposal closes without focus restoration.
 - A stale lazy import may populate the cached loader attempt, but cannot mount.
+  Every mobile completion re-checks the external-modal guard after import and
+  again through guarded acquisition immediately before mount.
 - Host reconnect increments generation, closes the old request, unsubscribes
   old context, and connects only the new binding.
 
@@ -721,6 +770,12 @@ unhide Tutor. A later manual Tutor open reuses the mounted panel and current
 request state. Ordinary Tutor close and route disconnect keep their existing
 disposal/abort semantics.
 
+If New experiment or another external modal is already active, mobile Tutor
+and mobile Glossary both receive the same controlled no-open result. Neither
+Host suspends the other, mounts a panel/sheet, moves focus, or changes
+scroll/inert state for a refused request. A later fresh open after the blocker
+closes follows the normal state machine.
+
 ## 6. Accessibility and responsive contract
 
 ### Trigger and relationship
@@ -736,9 +791,13 @@ disposal/abort semantics.
   surface is removed; no inactive trigger points to nonexistent DOM.
 - Never place a term button inside a native `label`, button, link, or other
   interactive control.
-- For educational labels, keep the input’s name in a native/hidden label or
-  `aria-labelledby`; render the term button as a sibling; preserve input
-  `aria-describedby` error relationships.
+- For educational labels, keep the input's name in a native/hidden label or
+  `aria-labelledby`; render the term button as a sibling, never as a child of
+  `<label>`; preserve the input's `aria-describedby` help/error relationship.
+  Activating the term opens only Glossary and never activates or unexpectedly
+  refocuses the input. A later same-scope occurrence stays plain text. The
+  committed minimal Playground fixture and automated/browser checks exercise
+  this complete composition in desktop and mobile surface modes.
 
 ### Preview announcement
 
@@ -782,9 +841,13 @@ disposal/abort semantics.
 - At 200% zoom and approximately 390 × 844, surface content remains reachable,
   the close action remains visible or scroll-reachable, and the document has no
   horizontal overflow.
-- Formula fallback exposes exactly one accessible text representation. Commit
-  2 updates `renderReadonlyMath()` so the enhanced child, not both parent and
-  child, owns the math role/name; failure restores the single fallback.
+- Formula fallback exposes exactly one accessible text representation. The
+  dedicated `Fix readonly math accessible ownership` prerequisite corrects
+  `renderReadonlyMath()` and verifies all current caller categories before
+  Glossary surface work begins. The enhanced child, not both parent and child,
+  owns the math role/name; failure restores the single fallback. Shared
+  surfaces consume that corrected helper without reopening its global
+  ownership.
 - Complete cards use one `h2`-level internal heading relative to the surface
   landmark/dialog. Fixture comparison tables use real `th` scope. Fixture
   controls use native labels. Headings are not term triggers when that would
@@ -827,21 +890,49 @@ generation. A fulfilled stale import is cached but not mounted.
 ### Development-only direction
 
 ```text
-platformBootstrap.ts
+shared-surfaces commit
+  platformBootstrap.ts
   -> import.meta.env.DEV guarded dynamic route descriptor
      -> dynamic import src/dev/glossary/glossaryPlaygroundRoute.ts
         -> src/dev/glossary/glossaryFixtures.ts
-        -> src/dev/glossary/glossaryPlayground.css
 
-platformBootstrap.ts
-  -> import.meta.env.DEV guarded dynamic import
-     -> src/dev/glossary/glossaryDevelopmentControls.ts
+final Playground commit
+  the same glossaryPlaygroundRoute.ts
+    -> expanded glossaryFixtures.ts
+    -> glossaryPlayground.css
+  platformBootstrap.ts
+    -> import.meta.env.DEV guarded dynamic import
+       -> glossaryDevelopmentControls.ts
 ```
 
-`src/pages/aboutPage.ts` receives only a boolean/path option and never imports
-`src/dev`. Production `createRouteDefinitions()` receives no dev definitions.
-Fixtures never enter `coreGlossary.ts`, a production module extension, or a
-production import.
+The shared-surfaces commit creates exactly one committed, reproducible
+development route, `/__dev/glossary-playground`, using the exact route module
+`src/dev/glossary/glossaryPlaygroundRoute.ts` and exact minimal fixture module
+`src/dev/glossary/glossaryFixtures.ts`. Its content-neutral shell covers one
+valid term trigger, hover preview, pinned desktop popover, mobile sheet,
+dynamic context update, explicit replacement, formula fallback/deferred
+enhancement, Tutor arbitration through an injected mock handoff, and the full
+educational label/input/term composition. It is guarded by
+`import.meta.env.DEV`, absent from production route definitions and emitted
+chunks, unlinked from About, and unavailable through the development shortcut
+at this stage. No second temporary harness route is permitted.
+
+The exact local launch procedure for the committed shell is:
+
+```powershell
+npm.cmd run dev -- --host 127.0.0.1 --port 5173 --strictPort
+```
+
+Then open `http://127.0.0.1:5173/__dev/glossary-playground`. This command is
+planned for later browser verification; it is not run during this
+documentation correction.
+
+The final Playground commit expands these same two files with the full
+interaction matrix and richer fixtures, adds final Playground styling, About
+Developer Tools, and the development shortcut. `src/pages/aboutPage.ts`
+receives only a boolean/path option and never imports `src/dev`. Production
+`createRouteDefinitions()` receives no dev definitions. Fixtures never enter
+`coreGlossary.ts`, a production module extension, or a production import.
 
 ### Required proof
 
@@ -859,6 +950,11 @@ Primary evidence:
 6. Browser Network: Home has no Glossary surface chunk; complete-Lab mount with
    a binding still has no surface chunk; first definition opening loads it
    once; formula enhancement and Tutor remain independent.
+
+The shared-surfaces commit must prove items 1-3 before using the route for
+browser evidence. It must also prove that neither About nor the development
+shortcut imports or exposes the route. The final Playground commit repeats and
+extends that proof after adding its development-only entry points.
 
 Runtime marker searches are supplementary only. They do not replace manifest,
 source-graph, and browser Network evidence.
@@ -893,26 +989,60 @@ Create tests first:
   - trigger/scope idempotent disposal.
 - `src/glossary/glossaryController.test.ts`
   - stable binding identity;
+  - valid scope/trigger creation before Host-port connection;
+  - pre-connect hover/focus/activation is a no-op with no throw, queue,
+    replay, Store/session mutation, or out-of-scope timer;
+  - only future fresh interactions reach a subsequently connected port;
   - one Host port connection at a time;
   - dynamic snapshot subscription ownership;
   - disposed binding rejects/no-ops by policy;
   - successful pinned replacement;
   - missing/aborted replacement closes;
   - stale transaction cannot affect a later scope.
-- Modify `src/app/appSessionStore.test.ts` only to assert the new runtime types
-  are not imported/stored; do not add Store APIs.
 - Type-level/structural coverage in `src/ode/initialValueProblemsRoute.test.ts`
   proves current ODE may omit the optional binding.
+- Extend `src/app/routeBundleOwnership.test.ts` with source-graph/import
+  evidence that `AppSessionStore` has no Glossary runtime dependency.
 
-### Phase B — Host, modal environment, surfaces, and coordination
+`src/app/appSessionStore.ts` receives no Glossary API or state field, and
+`src/app/appSessionStore.test.ts` remains unchanged. Its existing
+`assertPureValue()` tests continue to protect pure state. The only shared
+contract edge is type-only and optional; controller/Host tests, plus import
+review, prove transient Glossary ownership. Store tests change later only if
+Store behavior actually changes, which is outside this milestone.
+
+### Phase B — readonly-math accessible ownership prerequisite
+
+Write regression tests before changing the shared helper:
+
+- `src/math/ui/readonlyMath.test.ts`
+  - fallback owns exactly one accessible representation;
+  - enhanced output transfers that ownership without duplication;
+  - enhancement failure restores the single fallback;
+  - visual text and deferred backend behavior remain unchanged.
+- `src/ode/odeLifecycle.test.ts`
+  - ODE method/formula rendering retains one accessible representation.
+- `src/convergenceStudyView.test.ts`
+  - Convergence Study readonly formulas retain one accessible representation.
+- `src/math/ui/tutorMath.test.ts`
+  - controlled Tutor math rendering retains one accessible representation.
+
+This phase modifies only the shared readonly-math helper and these direct
+regressions. It adds no Glossary Host, surface, route, or fixture.
+
+### Phase C — Host, modal environment, surfaces, coordination, and minimal harness
 
 Create tests first:
 
 - `src/app/platformModalEnvironment.test.ts`
   - one owner;
+  - active external `aria-modal="true"` outside the requesting Host returns a
+    controlled refusal;
+  - blocking dialog close permits a later fresh acquisition;
   - exact inert snapshot restoration;
   - body overflow and scroll restoration;
   - stale lease cannot release current owner;
+  - refusal creates no focus, scroll-lock, inert, or stale-surface side effect;
   - idempotent release/dispose.
 - `src/glossary/glossarySurfaceLoader.test.ts`
   - one cached pending/fulfilled attempt;
@@ -939,6 +1069,8 @@ Create tests first:
   - resize/mode switch;
   - context subscribe/unsubscribe;
   - stale lazy import, request, binding, and scope generations;
+  - New experiment already open makes the mobile sheet refuse to open;
+  - a dialog appearing during lazy load prevents stale completion from mount;
   - no focus restoration during route leave.
 - Modify `src/app/platformTutorHost.test.ts`
   - suspension preserves the mounted panel, draft, transcript, desktop
@@ -947,7 +1079,11 @@ Create tests first:
     focusing hidden Tutor DOM;
   - manual reopen reuses the panel;
   - Tutor manual open closes Glossary first;
-  - mobile lease transfers without simultaneous inert/scroll ownership.
+  - mobile lease transfers without simultaneous inert/scroll ownership;
+  - New experiment already open makes mobile Tutor refuse a second modal;
+  - platform modal inert ownership keeps the New experiment trigger inactive;
+  - blocker close permits a later fresh open;
+  - refusal has no focus, scroll-lock, inert, or stale-panel side effect.
 - Modify `src/aiTutorPanel.test.ts`
   - request completion remains current while presentation is suspended;
   - hidden presentation receives no completion focus;
@@ -964,41 +1100,67 @@ Create tests first:
   - no Host state on static routes.
 - Modify `src/app/appShell.test.ts`,
   `src/app/navigationAccessibility.test.ts`,
-  `src/math/ui/readonlyMath.test.ts`,
   `src/app/themeTokens.test.ts`,
   `src/app/routeBundleOwnership.test.ts`,
   `src/app/tutorLazyBoundary.test.ts`, and
   `src/app/viteBase.contract.test.ts` for their specific contracts.
 
-### Phase C — development Playground and exclusion
+- Create `src/dev/glossary/glossaryPlaygroundRoute.test.ts`
+  - the minimal committed fixture shell mounts at the exact route;
+  - valid trigger, hover preview, pin, mobile sheet, dynamic context,
+    replacement, formula fallback/enhancement, and mock Tutor arbitration;
+  - educational native/hidden label owns the input name;
+  - term trigger is a sibling rather than nested in `<label>`;
+  - input `aria-describedby` help/error relation remains intact;
+  - term activation does not activate or refocus the input;
+  - same-scope duplicate stays plain text in desktop and mobile modes;
+  - dispose disconnects Host before binding;
+  - no Store/Resume/meaningful-work dependency.
+- Create `src/app/developmentRoutes.test.ts`
+  - explicit dev injection matches the route;
+  - default/production definitions resolve the same path to Not Found;
+  - dynamic loader shares attempt and Retry behavior.
+- Modify `src/app/platformBootstrap.test.ts`,
+  `src/app/routeBundleOwnership.test.ts`, and
+  `src/app/viteBase.contract.test.ts`
+  - DEV-guarded route wiring;
+  - production graph/manifest/fixture exclusion;
+  - About and shortcut remain absent.
+
+The six required modal-conflict tests are distributed explicitly:
+
+1. `platformGlossaryHost.test.ts`: New experiment open → Glossary sheet
+   refusal.
+2. `platformTutorHost.test.ts`: New experiment open → mobile Tutor refusal.
+3. `platformTutorHost.test.ts` plus browser verification: active platform
+   modal → New experiment trigger remains inert.
+4. Modal/Host tests: blocker closes → later fresh request opens.
+5. `platformGlossaryHost.test.ts`: stale lazy completion after another modal
+   opens cannot mount.
+6. Modal/Host tests: refusal creates no focus, scroll-lock, inert, or
+   stale-surface side effect.
+
+### Phase D — complete development Playground and exclusion
 
 Create tests first:
 
-- `src/dev/glossary/glossaryPlaygroundRoute.test.ts`
-  - all fixture interaction cases mount;
-  - same-scope duplicates and cross-scope reuse;
-  - dynamic context and replacement transaction;
-  - mock handoff only;
-  - dispose disconnects Host before binding;
-  - no Store/Resume/meaningful-work dependency.
-- `src/dev/glossary/glossaryDevelopmentControls.test.ts`
+- Expand `src/dev/glossary/glossaryPlaygroundRoute.test.ts`
+  - complete interaction matrix;
+  - richer short/long, cross-scope, edge, scroll, invalid, and fixture cases.
+- Create `src/dev/glossary/glossaryDevelopmentControls.test.ts`
   - Ctrl/Cmd+Shift+G;
   - ignored prevented events;
   - ignored input, textarea, select, contenteditable, and MathLive targets;
   - no duplicate navigation on current path;
   - listener cleanup.
-- Create `src/app/developmentRoutes.test.ts`
-  - explicit dev injection matches the route;
-  - default/production definitions resolve the same path to Not Found;
-  - dynamic loader shares attempt and Retry behavior.
 - Modify `src/pages/pages.test.ts`
   - Developer Tools appears only from the optioned About factory;
   - production `aboutPage` remains unchanged.
 - Modify `src/app/platformBootstrap.test.ts`,
   `src/app/routeBundleOwnership.test.ts`, and
   `src/app/viteBase.contract.test.ts`
-  - conditional route/shortcut wiring;
-  - production graph/manifest/fixture exclusion.
+  - conditional development-control wiring;
+  - repeated production graph/manifest/fixture exclusion after expansion.
 
 ### Evidence boundary
 
@@ -1034,7 +1196,8 @@ Create:
 Modify:
 
 - `src/app/contracts.ts` — type-only optional binding edge
-- `src/app/appSessionStore.test.ts` — negative ownership/import evidence only
+- `src/app/routeBundleOwnership.test.ts` — Store-to-Glossary negative
+  source-graph evidence
 - `src/ode/initialValueProblemsRoute.test.ts` — current ODE omission evidence
 
 Tests first: all Phase A failures listed above.
@@ -1042,7 +1205,7 @@ Tests first: all Phase A failures listed above.
 Verification:
 
 ```powershell
-npm.cmd run test:run -- src/glossary/glossaryBuilders.test.ts src/glossary/glossaryRegistry.test.ts src/glossary/glossaryScope.test.ts src/glossary/glossaryController.test.ts src/app/appSessionStore.test.ts src/ode/initialValueProblemsRoute.test.ts
+npm.cmd run test:run -- src/glossary/glossaryBuilders.test.ts src/glossary/glossaryRegistry.test.ts src/glossary/glossaryScope.test.ts src/glossary/glossaryController.test.ts src/app/routeBundleOwnership.test.ts src/ode/initialValueProblemsRoute.test.ts
 npm.cmd run test:run
 npm.cmd run typecheck
 git diff --check
@@ -1052,8 +1215,8 @@ git status --short
 Browser checks: none required; this commit exposes no production UI.
 
 Stop/review gate: conservative audit of IDs, validation/fallback,
-first-occurrence behavior, transaction ownership, and Store exclusion before
-Host work.
+first-occurrence behavior, unconnected-port no-op behavior, transaction
+ownership, and Store exclusion before the readonly-math prerequisite.
 
 Rollback boundary: revert only this commit; no platform Host or UI depends on
 it yet.
@@ -1061,7 +1224,57 @@ it yet.
 Explicit non-changes: no ODE binding/annotation, no production entry, no
 surface, no Store state, no Tutor/API work, no CSS, no route.
 
-### Commit 2 — `Add shared glossary surfaces`
+### Commit 2 — `Fix readonly math accessible ownership`
+
+Create: no new files.
+
+Modify:
+
+- `src/math/ui/readonlyMath.ts`
+- `src/math/ui/readonlyMath.test.ts`
+- `src/ode/odeLifecycle.test.ts`
+- `src/convergenceStudyView.test.ts`
+- `src/math/ui/tutorMath.test.ts`
+
+Tests first: all Phase B failures listed above. The helper must expose exactly
+one accessible representation in fallback and enhanced states while preserving
+current visual output, failure fallback, and the existing deferred MathLive
+boundary. The four test categories are direct helper, ODE method/formula,
+Convergence Study, and controlled Tutor math rendering.
+
+Verification:
+
+```powershell
+npm.cmd run test:run -- src/math/ui/readonlyMath.test.ts src/ode/odeLifecycle.test.ts src/convergenceStudyView.test.ts src/math/ui/tutorMath.test.ts
+npm.cmd run test:run
+npm.cmd run typecheck
+npm.cmd run build
+git diff --check
+git status --short
+```
+
+Browser checks: focused accessibility inspection of fallback, enhanced, and
+failed enhancement output in current ODE, Convergence, and Tutor views; do not
+use or add a Glossary harness in this commit.
+
+Stop/review gate: conservative accessibility audit of exact single accessible
+ownership across all current caller categories. Shared Glossary surfaces do
+not begin until this gate passes.
+
+Rollback boundary: revert only this prerequisite commit; Commit 1's unused
+Glossary model remains intact and current callers return to their exact prior
+helper behavior.
+
+Explicit non-changes: no Glossary Host/surface/route/fixture, no visual formula
+redesign, no eager MathLive, no ODE numerical behavior, no Tutor behavior, and
+no dependency change.
+
+### Commit 3 — `Add shared glossary surfaces`
+
+This is the audited surface phase formerly numbered Commit 2. In the final
+four-commit sequence it is Commit 3 because the readonly-math prerequisite was
+inserted ahead of it; the approved committed browser-harness requirement stays
+with this surface phase.
 
 Create:
 
@@ -1077,6 +1290,10 @@ Create:
 - `src/glossary/surface/glossarySurfaceRuntime.ts`
 - `src/glossary/surface/glossarySurfaceRuntime.test.ts`
 - `src/glossary/surface/glossarySurface.css`
+- `src/dev/glossary/glossaryFixtures.ts`
+- `src/dev/glossary/glossaryPlaygroundRoute.ts`
+- `src/dev/glossary/glossaryPlaygroundRoute.test.ts`
+- `src/app/developmentRoutes.test.ts`
 
 Modify:
 
@@ -1092,22 +1309,23 @@ Modify:
 - `src/aiTutorPanel.test.ts`
 - `src/app/platformBootstrap.ts`
 - `src/app/platformBootstrap.test.ts`
+- `src/app/contracts.ts` — add the dev route ID to the closed route union
+- `src/app/routeDefinitions.ts` — explicit development definition injection
 - `src/app/moduleRegistry.ts`
 - `src/app/labRouteAdapter.ts`
 - `src/app/labRouteAdapter.test.ts`
-- `src/math/ui/readonlyMath.ts`
-- `src/math/ui/readonlyMath.test.ts`
 - `src/app/navigationAccessibility.test.ts`
 - `src/app/routeBundleOwnership.test.ts`
 - `src/app/tutorLazyBoundary.test.ts`
 - `src/app/viteBase.contract.test.ts`
 
-Tests first: all Phase B failures listed above.
+Tests first: all Phase C failures listed above, including the modal-refusal
+matrix, educational label composition, and minimal committed harness.
 
 Verification:
 
 ```powershell
-npm.cmd run test:run -- src/app/platformModalEnvironment.test.ts src/glossary/glossarySurfaceLoader.test.ts src/glossary/surface/glossaryPlacement.test.ts src/glossary/surface/glossarySurfaceRuntime.test.ts src/app/platformGlossaryHost.test.ts src/app/platformTutorHost.test.ts src/aiTutorPanel.test.ts src/app/labRouteAdapter.test.ts src/app/platformBootstrap.test.ts src/math/ui/readonlyMath.test.ts src/app/routeBundleOwnership.test.ts src/app/tutorLazyBoundary.test.ts src/app/viteBase.contract.test.ts
+npm.cmd run test:run -- src/app/platformModalEnvironment.test.ts src/glossary/glossarySurfaceLoader.test.ts src/glossary/surface/glossaryPlacement.test.ts src/glossary/surface/glossarySurfaceRuntime.test.ts src/app/platformGlossaryHost.test.ts src/app/platformTutorHost.test.ts src/aiTutorPanel.test.ts src/app/labRouteAdapter.test.ts src/app/platformBootstrap.test.ts src/dev/glossary/glossaryPlaygroundRoute.test.ts src/app/developmentRoutes.test.ts src/app/routeBundleOwnership.test.ts src/app/tutorLazyBoundary.test.ts src/app/viteBase.contract.test.ts
 npm.cmd run test:run
 npm.cmd run typecheck
 npm.cmd run build
@@ -1115,38 +1333,48 @@ git diff --check
 git status --short
 ```
 
-Browser checks: run the Commit 2 subset in Section 10 using a temporary
-test-only fixture harness or injected test route that is not committed as a
-production route.
+Browser checks: run the shared-surface subset in Section 10 against the
+committed `import.meta.env.DEV`-guarded
+`/__dev/glossary-playground` route. Launch it exactly with:
+
+```powershell
+npm.cmd run dev -- --host 127.0.0.1 --port 5173 --strictPort
+```
+
+Open `http://127.0.0.1:5173/__dev/glossary-playground`. The minimal fixture
+shell must reproduce one valid trigger, hover preview, pin, mobile sheet,
+dynamic update, replacement, formula fallback/enhancement, mock Tutor
+arbitration, and educational label composition. About remains unlinked and no
+development shortcut exists in this commit.
 
 Stop/review gate: browser and conservative code audit of focus, scroll, modal
-lease, Tutor suspension, stale loads, one-surface ownership, and manifest
-boundaries.
+refusal/lease behavior, Tutor suspension, stale loads, one-surface ownership,
+educational composition, and production route/fixture/manifest exclusion.
 
-Rollback boundary: revert Commit 2 while retaining Commit 1’s unused model.
-The optional Lab contract remains harmless and current ODE still omits it.
+Rollback boundary: revert Commit 3 while retaining Commit 1's unused model and
+Commit 2's independently corrected readonly-math helper. The optional Lab
+contract then returns to its Commit 1 state and current ODE still omits it.
 
 Explicit non-changes: no real Tutor handoff, queue, transcript card, API,
 production term, ODE annotation, persistence, numerical behavior, dependency,
-or public route.
+public route, About Developer Tools entry, or development shortcut.
 
-### Commit 3 — `Add glossary framework playground`
+### Commit 4 — `Complete glossary framework playground`
 
 Create:
 
-- `src/dev/glossary/glossaryFixtures.ts`
-- `src/dev/glossary/glossaryPlaygroundRoute.ts`
-- `src/dev/glossary/glossaryPlaygroundRoute.test.ts`
 - `src/dev/glossary/glossaryPlayground.css`
 - `src/dev/glossary/glossaryDevelopmentControls.ts`
 - `src/dev/glossary/glossaryDevelopmentControls.test.ts`
-- `src/app/developmentRoutes.test.ts`
 
 Modify:
 
-- `src/app/contracts.ts` — add the dev route ID to the closed route union
-- `src/app/routeDefinitions.ts` — explicit development definition injection
-- `src/app/platformBootstrap.ts` — DEV-guarded dynamic route/control imports
+- `src/dev/glossary/glossaryFixtures.ts` — richer content-neutral matrix
+- `src/dev/glossary/glossaryPlaygroundRoute.ts` — expand the same minimal
+  route; do not create another harness
+- `src/dev/glossary/glossaryPlaygroundRoute.test.ts`
+- `src/app/platformBootstrap.ts` — add DEV-guarded controls import to the
+  existing DEV route injection
 - `src/app/platformBootstrap.test.ts`
 - `src/pages/aboutPage.ts` — production constant plus optioned dev factory
 - `src/pages/pages.test.ts`
@@ -1160,7 +1388,7 @@ Modify:
 - `README.md` only if the completed framework is a major public project
   change; update one date group rather than adding multiple same-day entries
 
-Tests first: all Phase C failures listed above.
+Tests first: all Phase D failures listed above.
 
 Verification:
 
@@ -1173,52 +1401,60 @@ git diff --check
 git status --short
 ```
 
-Browser checks: run the Commit 3 subset and the full Playground matrix in
-Section 10.
+Browser checks: run the Commit 4 subset and the full Playground matrix in
+Section 10 using the same committed route and exact launch command from Commit
+3. Verify the About Developer Tools link and shortcut only now.
 
 Stop/review gate: production-exclusion audit. Do not proceed to production
 Glossary content.
 
-Rollback boundary: revert Commit 3 to remove every dev route, fixture, shortcut,
-and Developer Tools entry while retaining the content-agnostic model and
-surfaces.
+Rollback boundary: revert Commit 4 to remove the expanded matrix, final
+Playground styling, shortcut, and Developer Tools entry while retaining Commit
+3's minimal reproducible DEV-only route and fixtures for surface auditing.
 
 Explicit non-changes: no production terms, formal definitions, notation,
 private-reference tooling, real Tutor handoff/queue/API, or ODE annotations.
 
 ## 10. Browser verification matrix
 
-| Check | After Commit 2 | After Commit 3 | Before framework release |
-|---|---:|---:|---:|
-| Desktop mouse hover delay/cancel/preview/pin | Required | Repeat smoke | Required |
-| Keyboard-only focus, Enter/Space, Escape, focus restore | Required | Repeat | Required |
-| Mobile touch sheet near 390 × 844 | Required | Required | Required |
-| Hybrid touch/mouse behavior | Required | Required | Required |
-| Nested surface scroll does not reposition | Required | Required | Required |
-| Document scroll closes preview/follows pin | Required | Required | Required |
-| Resize and desktop/mobile mode change while open | Required | Required | Required |
-| Route navigation closes/disconnects without stale focus | Required | Required | Required |
-| Tutor open/Glossary open arbitration | Required | Required | Required |
-| Pending Tutor request survives temporary presentation hiding | Required | Required | Required |
-| Mobile menu is closed/inert before sheet | Required | Required | Required |
-| Reduced motion | Required | Required | Required |
-| Forced colors/high contrast | Required | Required | Required |
-| 200% zoom | Required | Required | Required |
-| Detached trigger and far-offscreen trigger | Required | Required | Required |
-| Stale lazy import/Retry using injected delayed loader | Required | Smoke | Required |
-| Repeated mount/dispose and Host reconnect | Required | Required | Required |
-| Replacement trigger transaction | Required | Required | Required |
-| Dynamic context update without focus loss | Required | Required | Required |
-| Edge placement: top/bottom/left/right | Required | Required | Required |
-| Long/short content and internal card scroll | Required | Required | Required |
-| Formula fallback and enhanced output | Required | Required | Required |
-| Mock Tutor handoff sends no network request | — | Required | Required |
-| Direct dev route and About Developer Tools link | — | Required | Required |
-| Dev shortcut and editable-target exclusions | — | Required | Required |
-| Production direct dev path renders Not Found | — | Required | Required |
-| Home/Lab/first-open Network chunk sequence | Required | Required | Required |
-| No horizontal overflow | Required | Required | Required |
-| Console warnings/errors/unhandled rejections | Required | Required | Required |
+| Check | After Commit 2 prerequisite | After Commit 3 surfaces | After Commit 4 Playground | Before framework release |
+|---|---:|---:|---:|---:|
+| Current ODE/Convergence/Tutor formula accessibility | Required | Smoke | Smoke | Required |
+| Desktop mouse hover delay/cancel/preview/pin | — | Required | Repeat smoke | Required |
+| Keyboard-only focus, Enter/Space, Escape, focus restore | — | Required | Repeat | Required |
+| Educational label/input/term composition | — | Required | Required | Required |
+| Mobile touch sheet near 390 × 844 | — | Required | Required | Required |
+| Hybrid touch/mouse behavior | — | Required | Required | Required |
+| Nested surface scroll does not reposition | — | Required | Required | Required |
+| Document scroll closes preview/follows pin | — | Required | Required | Required |
+| Resize and desktop/mobile mode change while open | — | Required | Required | Required |
+| Route navigation closes/disconnects without stale focus | — | Required | Required | Required |
+| Tutor open/Glossary open arbitration | — | Required | Required | Required |
+| New experiment open refuses Glossary and mobile Tutor | — | Required | Required | Required |
+| Active platform modal keeps New experiment trigger inert | — | Required | Required | Required |
+| Blocker close permits only a later fresh open | — | Required | Required | Required |
+| Pending Tutor request survives temporary presentation hiding | — | Required | Required | Required |
+| Mobile menu is closed/inert before sheet | — | Required | Required | Required |
+| Reduced motion | — | Required | Required | Required |
+| Forced colors/high contrast | — | Required | Required | Required |
+| 200% zoom | — | Required | Required | Required |
+| Detached trigger and far-offscreen trigger | — | Required | Required | Required |
+| Stale lazy import blocked by a newly opened modal | — | Required | Smoke | Required |
+| Repeated mount/dispose and Host reconnect | — | Required | Required | Required |
+| Replacement trigger transaction | — | Required | Required | Required |
+| Dynamic context update without focus loss | — | Required | Required | Required |
+| Edge placement: top/bottom/left/right | — | Required | Required | Required |
+| Long/short content and internal card scroll | — | Minimal shell | Required | Required |
+| Glossary formula fallback and enhanced output | — | Required | Required | Required |
+| Mock Tutor handoff sends no network request | — | Required | Required | Required |
+| Direct committed dev route | — | Required | Required | Required |
+| About Developer Tools link | — | Must be absent | Required | Required |
+| Dev shortcut and editable-target exclusions | — | Must be absent | Required | Required |
+| Production direct dev path renders Not Found | — | Required | Required | Required |
+| Production manifest/chunks exclude fixtures | — | Required | Required | Required |
+| Home/Lab/first-open Network chunk sequence | — | Required | Required | Required |
+| No horizontal overflow | — | Required | Required | Required |
+| Console warnings/errors/unhandled rejections | Required | Required | Required | Required |
 
 Manual evidence records viewport, input mode, route, expected result, actual
 result, console state, and Network chunk boundary. jsdom results are not
@@ -1253,20 +1489,21 @@ iteration.
 
 | Risk | Prevention | Focused test/evidence | Runtime fallback | Rollback boundary |
 |---|---|---|---|---|
-| Focus/scroll collision with Tutor | Shared modal environment; non-destructive Tutor suspension; one owner lease | Host, modal, bootstrap tests plus mobile browser matrix | Close Glossary without focus restore; preserve Tutor panel/session/request | Revert Commit 2 |
-| Stale lazy surface import | Connection/request generations checked after await; cached attempt with rejected-only Retry | Loader and Host deferred-promise tests | Keep readable trigger; controlled failure/Retry | Revert Commit 2 |
-| Detached trigger references | Connectivity/visibility checks before focus, position, update, or transfer | Host detach/far-offscreen tests | Close and clear reference | Revert Commit 2 |
+| Focus/scroll collision with Tutor | Shared modal environment; non-destructive Tutor suspension; one owner lease | Host, modal, bootstrap tests plus mobile browser matrix | Close Glossary without focus restore; preserve Tutor panel/session/request | Revert Commit 3 |
+| External modal collision | Generic guard detects an active `aria-modal="true"` outside the requesting Host before acquire, after lazy import, and at pre-mount acquire | Six focused refusal/recovery/stale/inert tests plus New experiment browser check | Controlled no-open; no queue, focus, scroll-lock, inert, or stale surface effect | Revert Commit 3 |
+| Stale lazy surface import | Connection/request generations and modal blocker checked after await; cached attempt with rejected-only Retry | Loader and Host deferred-promise tests | Keep readable trigger; controlled failure/Retry or no-open | Revert Commit 3 |
+| Detached trigger references | Connectivity/visibility checks before focus, position, update, or transfer | Host detach/far-offscreen tests | Close and clear reference | Revert Commit 3 |
 | Duplicate registrations | Scope-local set updated atomically; strict diagnostics | Scope/registry tests | Later occurrence remains plain text | Revert Commit 1 |
-| Hybrid-device mode switching | Event-specific pointer intent plus shared 760 px mobile query | Host unit tests and hybrid browser check | Prefer full mobile sheet for touch activation | Revert Commit 2 |
-| Z-index conflict | One semantic modal layer token and exclusive modal owner | Token test and mobile browser stacking check | Close previous platform surface before acquiring layer | Revert Commit 2 |
-| Playground fixture leakage | `src/dev` isolation, DEV-guarded dynamic imports, empty core | Production manifest, emitted graph, and direct-path tests | Production route is Not Found | Revert Commit 3 |
-| `AppSessionStore` pollution | No Store dependency in Glossary; runtime objects fail pure guard | Store import/guard tests | Reject attempted runtime state | Revert offending commit; Commit 1 is independently removable |
-| Eager bundle regression | Type-only Lab edge, lightweight Host, dynamic surface, dev dynamic imports | Static graph, manifest, build sizes, browser Network | Keep Host inert; rollback eager edge | Revert Commit 2 or 3 |
+| Hybrid-device mode switching | Event-specific pointer intent plus shared 760 px mobile query | Host unit tests and hybrid browser check | Prefer full mobile sheet for touch activation | Revert Commit 3 |
+| Z-index conflict | One semantic modal layer token and exclusive modal owner | Token test and mobile browser stacking check | Refuse conflicting modal or close previous platform surface before acquiring layer | Revert Commit 3 |
+| Playground fixture leakage | `src/dev` isolation, DEV-guarded dynamic imports, empty core | Production manifest, emitted graph, and direct-path tests in Commits 3 and 4 | Production route is Not Found | Revert the leaking Commit 3/4 change |
+| `AppSessionStore` pollution | No Store API/field or runtime dependency; optional Lab edge is type-only | Existing pure-value tests unchanged; source-graph/import review plus controller/Host ownership tests | No Store write path exists; reject the offending architecture change | Revert offending commit; Commit 1 is independently removable |
+| Eager bundle regression | Type-only Lab edge, lightweight Host, dynamic surface, DEV-only dynamic imports | Static graph, manifest, build sizes, browser Network | Keep Host inert; rollback eager edge | Revert Commit 3 or 4 |
 | Invalid content | Strict dev/test validation and once-only production diagnostics | Builders/registry/scope tests | Preserve authored plain text; no button/surface/Tutor | Revert Commit 1 |
-| Source/audit dependency leakage | Opaque erased ID only; no entry field, resolver, URL, or source module | Static graph and type review | No runtime source behavior exists | Revert Commit 1 type if necessary |
-| Misleading placeholder content | Empty production core; test/dev fixtures use neutral labels and explicit fixture markers | Registry, manifest, and documentation review | Production has no entries | Revert Commit 3 |
-| Future Tutor queue contract drift | Keep handoff interface isolated and add no production adapter | Contract/type tests and negative API/Store checks | Ask absent without injected mock | Revert Commit 2 contract without touching Tutor |
-| Context subscription leak | Host subscribes only in complete modes and owns idempotent unsubscribe | Controller/Host subscription tests | Close surface and stop updates | Revert Commit 1/2 at owning layer |
+| Readonly-math accessible duplication | Correct shared ownership in a dedicated prerequisite before Glossary integration | Direct helper plus ODE, Convergence, Tutor regressions and accessibility audit | Retain readable single fallback when enhancement fails | Revert Commit 2 only |
+| Misleading placeholder content | Empty production core; test/dev fixtures use neutral labels and explicit fixture markers | Registry, manifest, and documentation review | Production has no entries | Revert offending Commit 3/4 fixture change |
+| Future Tutor queue contract drift | Keep handoff interface isolated and add no production adapter | Contract/type tests and negative API/Store checks | Ask absent without injected mock | Revert Commit 3 contract without touching Tutor |
+| Context subscription leak | Host subscribes only in complete modes and owns idempotent unsubscribe | Controller/Host subscription tests | Close surface and stop updates | Revert Commit 1/3 at owning layer |
 | Replacement transaction abandoned | Transaction has explicit commit/abort and binding-disposal invalidation | Controller tests | Close surface and dispose replacement scope | Revert Commit 1 |
 
 High-risk changes stop at their commit review gate. No later commit is used to
@@ -1281,7 +1518,8 @@ The framework plan explicitly defers:
 - canonical notation standards;
 - formal definition review;
 - private-reference processing or tooling;
-- source-health or audit tooling beyond the erased opaque ID type;
+- all source IDs, audit metadata, source-health behavior, source/audit tooling,
+  and related types pending a later approved source/audit design;
 - a real structured Tutor request implementation;
 - a Glossary request queue;
 - Keep/Replace behavior;
@@ -1295,44 +1533,58 @@ The framework plan explicitly defers:
 - a theme selector;
 - new numerical behavior or methods.
 
-## 14. Open questions
+## 14. Resolved implementation questions from plan audit
 
-No unresolved implementation question remains after repository inspection.
+The conservative plan audit exposed three implementation questions that source
+inspection alone could not approve. The maintainer resolved them as follows:
 
-The two apparent repository gaps are resolved by this plan rather than left
-open:
+1. **Shared-surface browser harness.** The audited former Commit 2 surface
+   phase, now Commit 3 after inserting the readonly-math prerequisite, creates
+   the minimum committed DEV-only Playground shell at
+   `/__dev/glossary-playground`. It uses the exact route and fixture modules
+   named in Sections 7 and 9 and supplies reproducible surface evidence without
+   a temporary or second harness route.
+2. **New experiment/platform modal overlap.** A generic
+   `PlatformModalEnvironment` guard returns a controlled refusal while an
+   external active modal is present. It does not close or queue either feature,
+   use an ODE-name gate, or change the existing New experiment dialog.
+3. **Global readonly-math accessibility.** A separate
+   `Fix readonly math accessible ownership` prerequisite commit corrects the
+   shared helper and covers direct, ODE, Convergence, and Tutor callers before
+   any Glossary surface work.
 
-- Development routes do not currently exist; Commit 3 adds explicit injected
-  definitions guarded by `import.meta.env.DEV`.
-- Ordinary Tutor close aborts pending work; Commit 2 adds a non-destructive
-  presentation-suspension path and does not use ordinary close for Glossary
-  arbitration.
-
-Any audit finding that requires changing an approved product decision stops
-implementation and returns to design review.
+No implementation question remains that blocks Commit 1. Later conservative,
+accessibility, browser, or production-exclusion audits may still stop a
+subsequent commit if source evidence contradicts this plan. No approved product
+decision was reopened.
 
 ## 15. Final recommended execution order
 
 1. Plan review.
-2. Conservative Cursor audit of this repository-grounded plan.
-3. Maintainer approval of the plan and any audit fixes.
+2. Conservative Cursor re-audit of this corrected repository-grounded plan.
+3. Maintainer approval of the corrected plan.
 4. Commit 1 — `Build glossary model and scope lifecycle`.
 5. Conservative audit of Commit 1.
-6. Commit 2 — `Add shared glossary surfaces`.
-7. Desktop/mobile/accessibility/browser audit of Commit 2.
-8. Commit 3 — `Add glossary framework playground`.
-9. Production-exclusion and manifest audit.
-10. Full framework release review.
+6. Commit 2 — `Fix readonly math accessible ownership`.
+7. Conservative accessibility audit of Commit 2 and all current callers.
+8. Commit 3 — `Add shared glossary surfaces`.
+9. Desktop/mobile/accessibility/browser audit of Commit 3 using the committed
+   minimal DEV route.
+10. Commit 4 — `Complete glossary framework playground`.
+11. Production-exclusion and manifest audit.
+12. Full framework release review.
 
 ```text
 plan review
--> Cursor conservative audit
+-> Cursor conservative re-audit
 -> maintainer approval
 -> Commit 1
 -> audit
 -> Commit 2
--> browser audit
+-> accessibility audit
 -> Commit 3
+-> browser audit
+-> Commit 4
 -> production-exclusion audit
 -> full framework release review
 ```

@@ -30,7 +30,10 @@ Framework**; **Linear Systems Lab** is later. The
 [authoritative Glossary design](./superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md)
 is approved and committed, but implementation has not started. Production has
 no Glossary terms, binding, registry, Host behavior, or definition surface.
-Repository-grounded implementation planning is next.
+Repository-grounded implementation planning is complete. The conservative
+Cursor audit found documentation corrections, which are now applied;
+implementation has not started. The exact next gate is review of the corrected
+plan.
 
 ## 2. Verification baseline
 
@@ -277,5 +280,6 @@ Contributor rules:
 *Last updated: 2026-07-23 for the completed Numerical T-Lab Project Identity
 Migration and Production verification. No migration action remains pending.
 The approved Content-Agnostic Interactive Glossary Framework has not started
-implementation; repository-grounded implementation planning is the exact next
-gate.*
+implementation; repository-grounded implementation planning is complete, its
+audit documentation corrections are applied, and review of the corrected plan
+is the exact next gate.*

@@ -2,8 +2,8 @@
 
 ## Status
 
-Approved design and repository-grounded implementation plan documented;
-implementation not started.
+Approved design and corrected repository-grounded implementation plan
+documented; conservative re-audit pending; implementation not started.
 
 The active milestone is **Content-Agnostic Interactive Glossary Framework**.
 Production contains no Glossary terms, term annotations, registry, binding,
@@ -23,6 +23,36 @@ The repository-grounded planning iteration is complete. The exact plan is:
 - The plan and status updates are recorded by the local documentation commit
   named `Plan glossary framework implementation`.
 - Nothing is pushed by this planning iteration.
+
+## Conservative plan audit correction
+
+The conservative Cursor audit verdict was **SAFE AFTER DOCUMENTATION FIXES**:
+
+- P0: 0
+- P1: 3
+- P2: 5
+- P3: 3
+
+All named documentation findings are resolved in the implementation plan. The
+approved resolutions are:
+
+1. The shared-surface commit creates one minimal, committed DEV-only harness at
+   `/__dev/glossary-playground` with exact route/fixture modules and production
+   exclusion evidence. The final Playground commit expands that same route;
+   it does not create a temporary or second harness.
+2. The proposed `PlatformModalEnvironment` includes a generic
+   controlled-refusal policy when an active external `aria-modal="true"`
+   dialog already exists. It neither closes New experiment nor queues
+   Tutor/Glossary.
+3. Shared readonly-math accessible ownership is corrected in a separate
+   prerequisite commit with direct, ODE, Convergence, and Tutor regressions
+   before Glossary surfaces begin.
+
+The correction also removes the premature source/audit type, keeps Store tests
+unchanged, defines unconnected Host-port behavior, assigns complete educational
+label/input/term coverage, and labels the identified Tutor, New experiment,
+and ODE helpers as private factory internals. Implementation remains not
+started.
 
 ## Repository-grounded planning completed
 
@@ -47,14 +77,20 @@ The implementation plan inspected and mapped:
 - jsdom helpers, lifecycle tests, source-graph tests, and temporary Vite
   manifest tests.
 
-The plan resolves the two most important repository constraints:
+The corrected plan resolves the repository constraints:
 
 - development routes must be added through a new explicit injection seam
   because no current seam exists;
+- the shared-surface browser audit needs a committed minimal DEV-only
+  Playground shell rather than temporary uncommitted source;
 - Glossary cannot use ordinary Tutor `close()` for presentation arbitration
   because panel disposal aborts pending work, so the surface commit must add a
   non-destructive Tutor presentation-suspension path and shared mobile
-  inert/scroll coordination.
+  inert/scroll coordination;
+- Tutor or Glossary must refuse a platform modal while New experiment or
+  another external active modal is present;
+- readonly-math accessible ownership must be corrected and audited separately
+  before Glossary surface integration.
 
 No binding design conflict was found.
 
@@ -161,35 +197,38 @@ them.
 ## Planned implementation commits
 
 1. `Build glossary model and scope lifecycle`
-2. `Add shared glossary surfaces`
-3. `Add the glossary framework playground`
+2. `Fix readonly math accessible ownership`
+3. `Add shared glossary surfaces`
+4. `Complete glossary framework playground`
 
 Each commit requires focused tests and the ownership, privacy, lazy-loading,
 and no-production-content gates in the design.
 
 The repository-grounded plan supplies exact files, APIs, state machines,
 tests-first order, browser checks, production-exclusion proof, risks, rollback
-points, and stop/review gates for all three commits.
+points, and stop/review gates for all four commits.
 
-## Files changed in the planning iteration
+## Documentation files changed through plan correction
 
 - `docs/superpowers/plans/2026-07-23-content-agnostic-interactive-glossary-framework-implementation-plan.md`
 - `docs/glossary/HANDOFF.md`
 - `PLAN.md`
 - `docs/INDEX.md`
+- `docs/PROJECT_HANDOFF.md`
 
 No source, test, CSS, configuration, package, lockfile, generated output, API,
 Vite, Vercel, numerical, ODE, Tutor, deployment, or README change is part of
-this planning iteration.
+the plan or audit-correction iterations.
 
 ## Planning-iteration verification scope
 
-This iteration changes documentation only. It does not run implementation
+The plan correction changes documentation only. It does not run implementation
 tests or claim runtime/browser/bundle evidence. Documentation verification
 must confirm:
 
 - the new plan and all relative links resolve;
-- only the plan, `PLAN.md`, `docs/INDEX.md`, and this handoff changed;
+- only the plan, `PLAN.md`, `docs/INDEX.md`, this handoff, and
+  `docs/PROJECT_HANDOFF.md` changed;
 - current architecture is not described as already implementing Glossary;
 - no production term, notation, definition, fixture, API, or private-reference
   material was added;
@@ -198,8 +237,8 @@ must confirm:
 
 ## Exact next action
 
-Run a conservative Cursor audit of the repository-grounded implementation
-plan. Apply only reviewed documentation fixes, then obtain maintainer approval
-before Commit 1.
+Run a conservative Cursor re-audit of the corrected repository-grounded
+implementation plan. Obtain maintainer approval after that re-audit before
+Commit 1; Commit 1 is not yet authorized.
 
 No framework implementation begins from this planning task.

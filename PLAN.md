@@ -4,7 +4,9 @@
 
 Project Identity Migration complete. The Content-Agnostic Interactive Glossary
 Framework design is approved and committed. Its repository-grounded
-implementation plan is created; implementation has not started.
+implementation plan was conservatively audited, corrected for documentation
+findings, and remains pending re-audit. Implementation has not started, and
+Commit 1 is not authorized.
 
 ## Current released baseline
 
@@ -58,8 +60,8 @@ Status: **Approved design; implementation not started.**
 
 [Content-Agnostic Interactive Glossary Framework Implementation Plan](docs/superpowers/plans/2026-07-23-content-agnostic-interactive-glossary-framework-implementation-plan.md)
 
-Status: **Repository-grounded plan created; conservative review pending.
-Implementation not started.**
+Status: **Repository-grounded plan corrected after conservative audit;
+re-audit pending. Implementation not started.**
 
 ## Approved delivery sequence
 
@@ -67,19 +69,23 @@ Implementation not started.**
 2. Document the Content-Agnostic Interactive Glossary Framework design on
    local `main`. Complete in the commit containing this plan.
 3. Create the repository-grounded implementation plan on local `main`.
-   Complete; conservative review pending.
+   Complete; conservative audit found documentation corrections, and the
+   corrected plan is pending re-audit.
 4. Build Glossary model and scope lifecycle.
-5. Add shared Glossary surfaces.
-6. Add the development Glossary Playground.
-7. Complete the separate notation and definition foundation.
-8. Add the reviewed ODE vertical slice.
-9. Push only when explicitly requested by the maintainer.
+5. Fix readonly math accessible ownership as a narrow prerequisite.
+6. Add shared Glossary surfaces and the minimal committed DEV-only Playground
+   harness.
+7. Complete the development Glossary Playground.
+8. Complete the separate notation and definition foundation.
+9. Add the reviewed ODE vertical slice.
+10. Push only when explicitly requested by the maintainer.
 
 ## Current next action
 
-Run a conservative review of the repository-grounded Content-Agnostic
-Interactive Glossary Framework implementation plan. Do not begin framework
-implementation before the plan and any review fixes are approved.
+Run a conservative Cursor re-audit of the corrected repository-grounded
+Content-Agnostic Interactive Glossary Framework implementation plan. Commit 1
+is not authorized; do not begin framework implementation before the corrected
+plan is re-audited and approved.
 
 ## Current production behavior
 
@@ -103,11 +109,11 @@ implementation before the plan and any review fixes are approved.
 
 ## Review gate
 
-Conservative review of the repository-grounded implementation plan is the
-active gate. The plan maps the approved design to current source, tests,
-lifecycle, accessibility, responsive behavior, and lazy-loading boundaries.
-It must be audited and approved before implementation begins. Production
-Glossary terms and runtime behavior remain absent.
+Conservative Cursor re-audit of the corrected repository-grounded
+implementation plan is the active gate. The initial audit returned
+documentation findings; the plan now records their approved resolutions while
+preserving the design. It must be re-audited and approved before Commit 1.
+Production Glossary terms and runtime behavior remain absent.
 
 ## Update rule
 
