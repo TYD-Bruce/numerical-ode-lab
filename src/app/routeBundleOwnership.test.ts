@@ -119,4 +119,24 @@ describe("public route bundle ownership", () => {
       /odeApp|odeSession|initialValueProblemsRoute/
     );
   });
+
+  it("keeps Glossary runtime ownership out of AppSessionStore and the eager platform graph", () => {
+    const storeGraph = eagerGraph("app/appSessionStore.ts");
+    expect(
+      [...storeGraph].filter((path) => path.startsWith("glossary/"))
+    ).toEqual([]);
+
+    const contractGraph = eagerGraph("app/contracts.ts");
+    expect(
+      [...contractGraph].filter((path) => path.startsWith("glossary/"))
+    ).toEqual([]);
+
+    const entryGraph = eagerGraph("main.ts");
+    expect(
+      [...entryGraph].filter((path) => path.startsWith("glossary/"))
+    ).toEqual([]);
+
+    const glossaryGraph = eagerGraph("glossary/glossaryController.ts");
+    expect(glossaryGraph.has("app/appSessionStore.ts")).toBe(false);
+  });
 });

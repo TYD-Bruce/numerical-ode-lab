@@ -5,8 +5,10 @@
 Project Identity Migration complete. The Content-Agnostic Interactive Glossary
 Framework design is approved and committed. Its repository-grounded
 implementation plan was conservatively audited, corrected for documentation
-findings, and remains pending re-audit. Implementation has not started, and
-Commit 1 is not authorized.
+findings, and passed conservative re-audit with verdict **SAFE TO IMPLEMENT**.
+Commit 1, `Build glossary model and scope lifecycle`, is implemented and
+locally verified. Production still contains no Glossary terms or visible
+Glossary runtime behavior. Commit 2 is not authorized.
 
 ## Current released baseline
 
@@ -54,14 +56,16 @@ loading while keeping formal mathematical content separate.
 
 [Content-Agnostic Interactive Glossary Framework Design](docs/superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md)
 
-Status: **Approved design; implementation not started.**
+Status: **Approved design; Commit 1 implemented locally; conservative Commit 1
+audit pending.**
 
 ## Authoritative implementation plan
 
 [Content-Agnostic Interactive Glossary Framework Implementation Plan](docs/superpowers/plans/2026-07-23-content-agnostic-interactive-glossary-framework-implementation-plan.md)
 
-Status: **Repository-grounded plan corrected after conservative audit;
-re-audit pending. Implementation not started.**
+Status: **Repository-grounded plan corrected after conservative audit and
+re-audited SAFE TO IMPLEMENT; Commit 1 implemented locally; conservative
+Commit 1 audit pending.**
 
 ## Approved delivery sequence
 
@@ -69,9 +73,10 @@ re-audit pending. Implementation not started.**
 2. Document the Content-Agnostic Interactive Glossary Framework design on
    local `main`. Complete in the commit containing this plan.
 3. Create the repository-grounded implementation plan on local `main`.
-   Complete; conservative audit found documentation corrections, and the
-   corrected plan is pending re-audit.
-4. Build Glossary model and scope lifecycle.
+   Complete; conservative audit findings were corrected, and the corrected
+   plan passed conservative re-audit.
+4. Build Glossary model and scope lifecycle. Complete locally; conservative
+   Commit 1 audit pending.
 5. Fix readonly math accessible ownership as a narrow prerequisite.
 6. Add shared Glossary surfaces and the minimal committed DEV-only Playground
    harness.
@@ -82,10 +87,9 @@ re-audit pending. Implementation not started.**
 
 ## Current next action
 
-Run a conservative Cursor re-audit of the corrected repository-grounded
-Content-Agnostic Interactive Glossary Framework implementation plan. Commit 1
-is not authorized; do not begin framework implementation before the corrected
-plan is re-audited and approved.
+Run a conservative Cursor audit of Commit 1, `Build glossary model and scope
+lifecycle`. Commit 2 is not authorized; do not begin the readonly-math
+prerequisite before Commit 1 is audited and approved.
 
 ## Current production behavior
 
@@ -95,6 +99,7 @@ plan is re-audited and approved.
 - The former Production address remains available as a verified alias.
 - Production contains no Glossary terms.
 - Production contains no Glossary Host behavior.
+- Commit 1 adds no visible production Glossary behavior.
 - Canonical notation and production definitions are intentionally deferred.
 
 ## Explicit non-goals
@@ -109,11 +114,10 @@ plan is re-audited and approved.
 
 ## Review gate
 
-Conservative Cursor re-audit of the corrected repository-grounded
-implementation plan is the active gate. The initial audit returned
-documentation findings; the plan now records their approved resolutions while
-preserving the design. It must be re-audited and approved before Commit 1.
-Production Glossary terms and runtime behavior remain absent.
+Conservative Cursor audit of Commit 1 is the active gate. The corrected
+implementation plan passed re-audit, and Commit 1 is implemented and locally
+verified. Commit 2 remains unauthorized. Production Glossary terms and visible
+runtime behavior remain absent.
 
 ## Update rule
 

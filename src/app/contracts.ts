@@ -1,3 +1,5 @@
+import type { LabGlossaryBinding } from "../glossary/glossaryController";
+
 export type RouteId =
   | "home"
   | "ode-overview"
@@ -96,6 +98,7 @@ export interface MountedLabRoute<TSession> extends MountedRoute {
   getSession(): TSession;
   getResumeSummary(): ResumeSummary | undefined;
   getTutorBinding(): LabTutorBinding<unknown>;
+  getGlossaryBinding?(): LabGlossaryBinding;
 }
 
 export interface LabRouteModule<TSession> {

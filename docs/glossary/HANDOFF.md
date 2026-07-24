@@ -3,16 +3,135 @@
 ## Status
 
 Approved design and corrected repository-grounded implementation plan
-documented; conservative re-audit pending; implementation not started.
+documented; conservative re-audit verdict **SAFE TO IMPLEMENT**. Commit 1,
+`Build glossary model and scope lifecycle`, is implemented and locally
+verified; conservative Commit 1 audit is pending.
 
 The active milestone is **Content-Agnostic Interactive Glossary Framework**.
-Production contains no Glossary terms, term annotations, registry, binding,
-Host behavior, definition surface, Tutor handoff, queue, or Playground route.
-No canonical numerical notation is defined by this feature.
+Production contains no Glossary terms, term annotations, Host behavior,
+definition surface, Tutor handoff, queue, or Playground route. Commit 1 adds
+content-agnostic model and lifecycle infrastructure only, with no visible
+production behavior. No canonical numerical notation is defined by this
+feature.
 
 The repository-grounded planning iteration is complete. The exact plan is:
 
 `docs/superpowers/plans/2026-07-23-content-agnostic-interactive-glossary-framework-implementation-plan.md`
+
+## Commit 1 implementation baseline
+
+- Starting branch: `main`
+- Starting HEAD: `c135c2fab73f2676dba9d6f2601288725f5e899b`
+- Final implementation boundary: the local commit containing this handoff,
+  named `Build glossary model and scope lifecycle`; its SHA is authoritative
+  in Git history and cannot be embedded in the commit whose contents determine
+  that SHA.
+- Starting worktree: clean, including untracked files
+- Nothing was fetched, pulled, pushed, deployed, or sent to a remote.
+
+Created source:
+
+- `src/glossary/glossaryRuntimeTypes.ts`
+- `src/glossary/glossaryBuilders.ts`
+- `src/glossary/coreGlossary.ts`
+- `src/glossary/glossaryRegistry.ts`
+- `src/glossary/glossaryScope.ts`
+- `src/glossary/glossaryController.ts`
+
+Created focused tests:
+
+- `src/glossary/glossaryBuilders.test.ts`
+- `src/glossary/glossaryRegistry.test.ts`
+- `src/glossary/glossaryScope.test.ts`
+- `src/glossary/glossaryController.test.ts`
+
+Modified existing source and tests:
+
+- `src/app/contracts.ts`
+- `src/app/routeBundleOwnership.test.ts`
+- `src/ode/initialValueProblemsRoute.test.ts`
+
+Status documents updated in the same implementation commit:
+
+- `PLAN.md`
+- `docs/INDEX.md`
+- `docs/glossary/HANDOFF.md`
+
+## Commit 1 implemented behavior
+
+- `GlossaryTermId` and `GlossaryScopeId` use exact, branded
+  `^[a-z][a-z0-9_]*$` identifiers without trimming, case folding, inference,
+  or repair.
+- Typed builders defensively copy and freeze entries, aliases, formulas,
+  module extensions, overrides, and nested records.
+- Strict validation throws `GlossaryValidationError` with a precise diagnostic.
+  Injected production fallback reports each equivalent diagnostic at most once
+  per owning registry or binding, preserves readable authored display, and
+  creates no interactive registration for invalid metadata.
+- The frozen production core is empty. Registry construction detects duplicate
+  IDs and exact string or `(latex, accessibleText)` alias conflicts. Resolution
+  supports module fallback, contextual overrides, formula inheritance,
+  replacement, and explicit `null` suppression without mutable results.
+- Every explicit scope owns first-occurrence deduplication. The first valid
+  occurrence creates a native `button[type="button"]`; later same-scope
+  occurrences are plain readable text, while another scope may enhance the
+  term once. Validation completes before atomic reservation.
+- Triggers created before Host-port connection are valid. Pre-connection hover,
+  focus, and activation are no-ops and are never queued or replayed; only later
+  fresh interactions reach a connected port.
+- One Host port may connect at a time. Strict conflicts fail clearly, production
+  fallback refuses safely, and returned disconnect functions are idempotent and
+  connection-identity checked. The Lab-owned binding remains final disposal
+  owner.
+- Dynamic context sources expose pure `getSnapshot()` and `subscribe(listener)`
+  contracts. Commit 1 retains only the context-source references required by a
+  scope and creates no surface subscription loop.
+- Explicit rerender transactions invalidate old preview ownership, dispose the
+  old scope, preserve the same scope ID, and transfer only a matching
+  pinned/mobile identity to an explicitly registered current-generation
+  replacement trigger. Mismatch, absence, abort, conflict, staleness, and
+  binding disposal close or invalidate safely.
+- Binding and scope disposal are explicit and idempotent. They disconnect the
+  active port, invalidate transactions, dispose scopes and triggers, remove
+  listeners and transient ARIA state, and release retained context references.
+- `MountedLabRoute<TSession>` gains only the optional, type-only
+  `getGlossaryBinding?()` edge. The current ODE route validly omits it; no fake
+  binding is introduced.
+- Source-graph tests prove `AppSessionStore`, `src/app/contracts.ts`, and the
+  production entry eager graph do not acquire a Glossary runtime dependency,
+  and the Glossary controller graph does not depend on `AppSessionStore`.
+
+Glossary state remains outside `AppSessionStore`, Lab/Tutor sessions, history,
+Resume metadata, meaningful-work state, and browser persistence.
+
+## Commit 1 verification
+
+- Tests were written first; the four new suites initially failed at module
+  loading because the Glossary implementation files did not yet exist.
+- Focused command: 6 test files passed, 67 tests passed.
+- Full test suite: 64 test files passed, 927 tests passed.
+- `npm.cmd run typecheck`: passed.
+- `git diff --check`: passed after the final documentation update.
+- No build, browser, preview, deployment, bundle-manifest, or production claim
+  is made for Commit 1.
+
+## Commit 1 explicit non-changes
+
+No production terms, definitions, notation, formulas, aliases, annotations, or
+placeholder content were added. Commit 1 does not add CSS, routes, bootstrap
+integration, a Platform Glossary Host, a definition surface, hover timers,
+placement, modal/focus/scroll behavior, Tutor behavior, readonly-math changes,
+Playground fixtures, persistence, source/audit metadata, packages,
+configuration, generated output, deployment behavior, or numerical changes.
+
+## Later-phase carry-forward finding
+
+`SUSPEND-ARIA-MODAL-ORDER`
+
+Before Commit 3, Tutor suspension must deactivate the mobile Tutor dialog
+under the external-modal guard criteria before Glossary attempts acquisition.
+
+This finding is not implemented or resolved by Commit 1.
 
 ## Planning baseline
 
@@ -51,8 +170,8 @@ approved resolutions are:
 The correction also removes the premature source/audit type, keeps Store tests
 unchanged, defines unconnected Host-port behavior, assigns complete educational
 label/input/term coverage, and labels the identified Tutor, New experiment,
-and ODE helpers as private factory internals. Implementation remains not
-started.
+and ODE helpers as private factory internals. Those planning corrections
+enabled the now-complete local Commit 1 implementation.
 
 ## Repository-grounded planning completed
 
@@ -191,12 +310,14 @@ defined by the framework design.
   Milestone 2A.
 
 The repository-grounded plan maps the design’s conceptual interfaces to exact
-future source files. They remain proposed: no current runtime API implements
-them.
+implementation files. Commit 1 now implements only its model, registry, scope,
+binding, and replacement-lifecycle APIs. Later-phase Host, surface, modal,
+Tutor, readonly-math, and Playground APIs remain proposed.
 
 ## Planned implementation commits
 
-1. `Build glossary model and scope lifecycle`
+1. `Build glossary model and scope lifecycle` — implemented locally;
+   conservative audit pending
 2. `Fix readonly math accessible ownership`
 3. `Add shared glossary surfaces`
 4. `Complete glossary framework playground`
@@ -237,8 +358,7 @@ must confirm:
 
 ## Exact next action
 
-Run a conservative Cursor re-audit of the corrected repository-grounded
-implementation plan. Obtain maintainer approval after that re-audit before
-Commit 1; Commit 1 is not yet authorized.
-
-No framework implementation begins from this planning task.
+Run a conservative Cursor audit of Commit 1, `Build glossary model and scope
+lifecycle`. Commit 2, `Fix readonly math accessible ownership`, is not
+authorized and must not begin before the Commit 1 audit and maintainer
+approval.

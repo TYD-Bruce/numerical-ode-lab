@@ -1,8 +1,12 @@
 // @vitest-environment jsdom
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { MountedLabRoute } from "../app/contracts";
 import { updatePresetProblemFields } from "../problemPresets";
-import { createBeginnerStarterSession } from "./odeSession";
+import {
+  createBeginnerStarterSession,
+  type OdeSessionState,
+} from "./odeSession";
 
 const chartDestroy = vi.fn();
 const chartInstances: Array<{ destroy: typeof chartDestroy }> = [];
@@ -88,6 +92,9 @@ describe("Initial Value Problems route", () => {
       },
     });
     expect(first.getTutorBinding().moduleId).toBe("ode");
+    const structurallyComplete: MountedLabRoute<OdeSessionState> = first;
+    expect(structurallyComplete.getGlossaryBinding).toBeUndefined();
+    expect("getGlossaryBinding" in first).toBe(false);
 
     first.dispose();
     expect(firstTarget.childElementCount).toBe(0);
