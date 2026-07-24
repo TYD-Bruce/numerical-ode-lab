@@ -6,7 +6,7 @@ import { createAppShell } from "./appShell";
 describe("app shell", () => {
   beforeEach(() => document.body.replaceChildren());
 
-  it("renders a persistent header, navigation, outlet, and empty future Tutor region", () => {
+  it("renders persistent navigation plus empty Tutor and Glossary host regions", () => {
     const host = document.createElement("div");
     document.body.append(host);
     const shell = createAppShell(host);
@@ -17,7 +17,25 @@ describe("app shell", () => {
     expect(shell.root.querySelector('nav[aria-label="Primary"]')).not.toBeNull();
     expect(shell.outlet.tagName).toBe("MAIN");
     expect(shell.root.querySelector("[data-platform-tutor-host]")?.children).toHaveLength(0);
+    expect(shell.glossaryRegion.children).toHaveLength(0);
+    expect(shell.glossaryStatus.getAttribute("role")).toBe("status");
+    expect(shell.glossaryStatus.getAttribute("aria-live")).toBe("polite");
     expect(shell.root.textContent).not.toContain("AI Tutor");
+  });
+
+  it("returns modal background siblings without including an active Host ancestor", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+    const shell = createAppShell(host);
+
+    expect(shell.modalBackgroundFor("tutor")).toContain(shell.outlet);
+    expect(shell.modalBackgroundFor("tutor")).toContain(shell.glossaryRegion);
+    expect(shell.modalBackgroundFor("tutor")).not.toContain(shell.tutorRegion);
+    expect(shell.modalBackgroundFor("glossary")).toContain(shell.tutorRegion);
+    expect(shell.modalBackgroundFor("glossary")).not.toContain(shell.glossaryRegion);
+    for (const background of shell.modalBackgroundFor("glossary")) {
+      expect(background.contains(shell.glossaryRegion)).toBe(false);
+    }
   });
 
   it("provides an accessible mobile menu with Escape and explicit close", () => {

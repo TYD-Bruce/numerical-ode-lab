@@ -7,6 +7,7 @@ import type {
 } from "./contracts";
 import { createAppSessionStore } from "./appSessionStore";
 import type { PlatformTutorHost } from "./platformTutorHost";
+import type { PlatformGlossaryHost } from "./platformGlossaryHost";
 import { createPlatformBootstrap } from "./platformBootstrap";
 import { appendTutorMessage, updateTutorDraft } from "../tutor/moduleTutorSession";
 
@@ -85,9 +86,20 @@ function tutorHostSpy(events: string[] = []): PlatformTutorHost {
     open: vi.fn(async () => undefined),
     close: vi.fn(),
     closeMobileForNavigation: vi.fn(() => events.push("host-mobile-close")),
+    suspendPresentationForGlossary: vi.fn(() => events.push("host-suspend")),
+    isPresentationVisible: vi.fn(() => false),
     invalidateCurrentRequest: vi.fn(() => events.push("host-invalidate")),
     refresh: vi.fn(() => events.push("host-refresh")),
     dispose: vi.fn(() => events.push("host-dispose")),
+  };
+}
+
+function glossaryHostSpy(events: string[] = []): PlatformGlossaryHost {
+  return {
+    connect: vi.fn(() => events.push("glossary-connect")),
+    disconnect: vi.fn(() => events.push("glossary-disconnect")),
+    close: vi.fn(() => events.push("glossary-close")),
+    dispose: vi.fn(() => events.push("glossary-dispose")),
   };
 }
 
@@ -271,6 +283,52 @@ describe("public platform bootstrap", () => {
     expect(store.getTutor("ode")).toMatchObject({ draftMessage: "draft" });
     expect(store.getTutor("ode").items).toHaveLength(1);
     expect(app.shell.tutorRegion.childElementCount).toBe(0);
+    app.dispose();
+  });
+
+  it("owns one Glossary Host and closes it at navigation start before Lab disposal", async () => {
+    const events: string[] = [];
+    const glossaryHost = glossaryHostSpy(events);
+    history.replaceState({}, "", "/ode/initial-value-problems");
+    const target = document.createElement("div");
+    document.body.replaceChildren(target);
+    const app = createPlatformBootstrap({
+      target,
+      glossaryHost,
+      initialValueProblemsLoader: async () => testLabModule({ events }),
+    });
+    await vi.waitFor(() => expect(app.shell.outlet.textContent).toContain("Initial"));
+
+    await app.navigate("/about");
+
+    expect(events).toContain("glossary-close");
+    expect(events.indexOf("glossary-disconnect")).toBeLessThan(
+      events.indexOf("lab-dispose")
+    );
+    app.dispose();
+    expect(glossaryHost.dispose).toHaveBeenCalledOnce();
+  });
+
+  it("closes Glossary without term-focus restoration before a manual Tutor open", async () => {
+    const glossaryHost = glossaryHostSpy();
+    history.replaceState({}, "", "/ode/initial-value-problems");
+    const target = document.createElement("div");
+    document.body.replaceChildren(target);
+    const app = createPlatformBootstrap({
+      target,
+      glossaryHost,
+      initialValueProblemsLoader: async () => testLabModule(),
+    });
+    await vi.waitFor(() =>
+      expect(app.shell.tutorRegion.querySelector("[data-tutor-open]")).not.toBeNull()
+    );
+    const trigger = app.shell.tutorRegion.querySelector<HTMLElement>(
+      "[data-tutor-open]"
+    )!;
+
+    await app.tutorHost.open(trigger);
+
+    expect(glossaryHost.close).toHaveBeenCalledWith({ restoreFocus: false });
     app.dispose();
   });
 

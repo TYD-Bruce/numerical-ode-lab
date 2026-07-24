@@ -11,6 +11,7 @@ let manifest: Record<
   { file: string; css?: string[]; dynamicImports?: string[] }
 > = {};
 let emittedCss = "";
+let emittedJavaScript = "";
 
 describe("Vite root-base deployment contract", () => {
   beforeAll(async () => {
@@ -37,6 +38,14 @@ describe("Vite root-base deployment contract", () => {
     const cssFiles = (await readdir(assetDirectory)).filter((file) => file.endsWith(".css"));
     emittedCss = (
       await Promise.all(cssFiles.map((file) => readFile(join(assetDirectory, file), "utf8")))
+    ).join("\n");
+    const javascriptFiles = (await readdir(assetDirectory)).filter((file) =>
+      file.endsWith(".js")
+    );
+    emittedJavaScript = (
+      await Promise.all(
+        javascriptFiles.map((file) => readFile(join(assetDirectory, file), "utf8"))
+      )
     ).join("\n");
   }, 60_000);
 
@@ -68,6 +77,19 @@ describe("Vite root-base deployment contract", () => {
     expect(entry?.file).toMatch(/^assets\//);
     expect(entry?.dynamicImports).toContain("src/ode/initialValueProblemsRoute.ts");
     expect(entry?.dynamicImports).toContain("src/tutor/platformTutorPanel.ts");
+    expect(entry?.dynamicImports).toContain(
+      "src/glossary/surface/glossarySurfaceRuntime.ts"
+    );
+  });
+
+  it("excludes the development Glossary route and fixtures from production output", () => {
+    const keys = Object.keys(manifest).join("\n");
+    expect(keys).not.toContain("glossaryPlaygroundRoute");
+    expect(keys).not.toContain("glossaryFixtures");
+    expect(emittedJavaScript).not.toContain(
+      "Development fixtures only — not production definitions."
+    );
+    expect(emittedJavaScript).not.toContain("Replaceable term");
   });
 
   it("uses root-origin URLs for emitted CSS font assets", () => {

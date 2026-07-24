@@ -6,16 +6,17 @@ Approved design and corrected repository-grounded implementation plan
 documented; conservative re-audit verdict **SAFE TO IMPLEMENT**. Commit 1,
 `Build glossary model and scope lifecycle`, is accepted after its conservative
 audit returned **SAFE TO PROCEED**. Commit 2, `Fix readonly math accessible
-ownership`, is implemented and locally verified; conservative accessibility
-audit is pending.
+ownership`, is implemented and locally verified. Commit 3, `Add shared glossary
+surfaces`, is implemented and locally/browser verified under direct maintainer
+authorization; conservative Commit 3 audit is pending.
 
 The active milestone is **Content-Agnostic Interactive Glossary Framework**.
-Production contains no Glossary terms, term annotations, Host behavior,
-definition surface, Tutor handoff, queue, or Playground route. Commit 1 adds
-content-agnostic model and lifecycle infrastructure only, with no visible
-production behavior. Commit 2 corrects the existing shared readonly-math
-accessibility path without adding a Glossary surface or content. No canonical
-numerical notation is defined by this feature.
+Production contains no Glossary terms, term annotations, activatable surface,
+real Tutor handoff, queue, or Playground route. Commit 3 adds an inert Platform
+Host and lazy shared surface implementation, but the current Lab provides no
+binding. Its five neutral fixtures and Playground exist only in DEV and are
+excluded from production. No canonical numerical notation is defined by this
+feature.
 
 The repository-grounded planning iteration is complete. The exact plan is:
 
@@ -193,14 +194,166 @@ lifecycle source, App or Tutor Hosts, routes, CSS, modal behavior, packages,
 configuration, generated output, deployment behavior, production Glossary
 content, or visible Glossary behavior.
 
-## Later-phase carry-forward finding
+## Resolved carry-forward finding
 
 `SUSPEND-ARIA-MODAL-ORDER`
 
-Before Commit 3, Tutor suspension must deactivate the mobile Tutor dialog
-under the external-modal guard criteria before Glossary attempts acquisition.
+Tutor suspension now deactivates dialog semantics, hides/inerts the retained
+Tutor panel, and releases its shared modal lease before Glossary evaluates the
+external-modal guard and attempts acquisition. Manual Tutor reopen reuses the
+retained panel state.
 
-This finding is not implemented or resolved by Commit 1 or Commit 2.
+## Commit 3 shared-surface implementation
+
+- Starting branch: `main`
+- Starting HEAD: `bce6ce74798d07cdbb522e56c015f567c1a6153d`
+- Starting worktree: clean, including untracked files
+- Final implementation boundary: the local commit containing this handoff,
+  named `Add shared glossary surfaces`; its SHA is authoritative in Git history
+  and is reported after commit because a commit cannot contain its own SHA.
+- No Git remote was contacted, and nothing was pushed or deployed.
+
+Created implementation:
+
+- `src/app/platformModalEnvironment.ts`
+- `src/app/platformGlossaryHost.ts`
+- `src/glossary/glossarySurfaceLoader.ts`
+- `src/glossary/glossaryTutorContract.ts`
+- `src/glossary/surface/glossaryPlacement.ts`
+- `src/glossary/surface/glossarySurfaceRuntime.ts`
+- `src/glossary/surface/glossarySurface.css`
+- `src/dev/glossary/glossaryFixtures.ts`
+- `src/dev/glossary/glossaryPlaygroundRoute.ts`
+
+Created focused tests:
+
+- `src/app/platformModalEnvironment.test.ts`
+- `src/app/platformGlossaryHost.test.ts`
+- `src/app/developmentRoutes.test.ts`
+- `src/glossary/glossarySurfaceLoader.test.ts`
+- `src/glossary/surface/glossaryPlacement.test.ts`
+- `src/glossary/surface/glossarySurfaceRuntime.test.ts`
+- `src/dev/glossary/glossaryPlaygroundRoute.test.ts`
+
+Modified integration, tests, styles, and status documentation:
+
+- `src/app/appShell.ts`
+- `src/app/appShell.test.ts`
+- `src/app/contracts.ts`
+- `src/app/labRouteAdapter.ts`
+- `src/app/labRouteAdapter.test.ts`
+- `src/app/moduleRegistry.ts`
+- `src/app/platformBootstrap.ts`
+- `src/app/platformBootstrap.test.ts`
+- `src/app/platformTutorHost.ts`
+- `src/app/platformTutorHost.test.ts`
+- `src/app/routeDefinitions.ts`
+- `src/app/routeBundleOwnership.test.ts`
+- `src/app/tutorLazyBoundary.test.ts`
+- `src/app/viteBase.contract.test.ts`
+- `src/app/platform.css`
+- `src/app/theme.css`
+- `src/app/themeTokens.test.ts`
+- `src/tutor/platformTutorPanel.ts`
+- `src/aiTutorPanel.test.ts`
+- `src/style.css`
+- `ARCHITECTURE.md`
+- `PLAN.md`
+- `docs/INDEX.md`
+- `docs/glossary/HANDOFF.md`
+- `docs/PROJECT_HANDOFF.md`
+
+Integration changes are confined to the App Shell/bootstrap, optional complete
+Lab binding edge, route definitions, Tutor presentation arbitration, shared
+theme/platform styles, and their focused tests. The bootstrap owns exactly one
+shared modal environment and one Platform Glossary Host. Glossary transient
+state, DOM, listeners, subscriptions, animation frames, timers, and modal
+leases remain outside `AppSessionStore`.
+
+Implemented behavior:
+
+- one active platform Glossary surface;
+- immediate keyboard preview and 220 ms fine-pointer hover preview;
+- 300 ms leave close with surface-entry cancellation;
+- click/Enter/Space pinning without moving focus on desktop;
+- collision-aware 360 px preferred / 288 px minimum desktop placement, viewport
+  clamping, scroll/resize repositioning, and far-offscreen auto-close;
+- modal mobile bottom sheet with focus trap, inert background, body scroll lock,
+  exact restoration, Escape/Close focus restoration, and one-shot suppression
+  of the resulting programmatic focus event;
+- safe readonly formula rendering and complete-card context refresh;
+- explicit trigger replacement transfer for pinned card/sheet state;
+- external-modal refusal and non-destructive Tutor suspension before Glossary
+  modal acquisition;
+- a typed, mockable Tutor handoff with no real request, queue, or transcript
+  integration;
+- exactly five content-neutral DEV fixtures at
+  `/__dev/glossary-playground`, including dynamic context, safe formula,
+  educational label composition, replacement, mock Tutor, and modal
+  arbitration cases.
+
+Browser review found and repaired two lifecycle defects before final
+verification: Playground update/replacement controls were first interpreted as
+outside-pointer closes, and mobile Close/Escape focus restoration immediately
+reopened the sheet through a keyboard-focus request. Both have focused
+regressions.
+
+Checkpoint outcomes:
+
+1. Shared modal ownership and non-destructive Tutor suspension passed focused
+   modal/Tutor/App Shell coverage.
+2. Cached/retryable loading and pure detached/offscreen-aware placement passed
+   focused loader/placement coverage.
+3. Preview/card/sheet rendering, focus rules, safe formula ownership, dynamic
+   context, and preference CSS passed focused surface/theme coverage.
+4. Singleton Host, optional Lab binding, stale-work guards, replacement,
+   navigation disposal, and Tutor arbitration passed focused integration
+   coverage.
+5. The five-fixture DEV route and production graph/manifest exclusion passed
+   focused route/lazy-boundary/build coverage.
+6. Browser defects were repaired, final verification passed, status documents
+   were updated, and Commit 4 was not started.
+
+Final verification:
+
+- `npm.cmd run verify`: passed.
+- Full tests: 71 files passed, 978 tests passed.
+- `npm.cmd run typecheck`: passed within `verify`.
+- `npm.cmd run typecheck:api`: passed within `verify`.
+- Production build: passed; 79 modules transformed.
+- Main production entry: 51.80 kB raw / 15.95 kB gzip.
+- Lazy Glossary surface runtime: 6.74 kB raw / 2.45 kB gzip.
+- Lazy Glossary surface CSS: 2.20 kB raw / 0.78 kB gzip.
+- Manifest/contract tests prove the DEV route, fixtures, and warning markers are
+  absent from production. Home observed no DEV or surface modules; the fresh
+  DEV route observed its route/fixtures before activation and loaded the
+  surface/readonly-math modules only after a valid term request.
+
+Isolated localhost browser evidence used 1440 x 900 desktop and 390 x 844
+mobile viewports. It verified pinned cards, live context refresh, replacement
+transfer, one readonly math owner, mobile dialog/focus trap/inert/scroll-lock
+behavior, Close and Escape restoration, external-modal refusal, mock Tutor
+handoff without an app API request, far-offscreen cleanup, route leave/re-entry
+without duplicate triggers, no horizontal mobile overflow, and no console
+warnings/errors. The loaded surface stylesheet contained the explicit
+reduced-motion and forced-colors rules. The selected browser did not expose
+preference emulation, and its pointer movement did not synthesize the hover
+event; those two paths are deterministic focused-test/loaded-CSS evidence
+rather than toggled visual evidence. A 200% zoom override was also unavailable.
+The asset inventory observed the application's pre-existing Google Fonts
+stylesheet URL while the controlled top-level navigation remained localhost;
+no account, credential, personal, browser-history, or live Tutor/model data was
+accessed.
+
+Explicit non-changes:
+
+- no production terms, definitions, aliases, annotations, or notation;
+- no ODE, Linear Algebra, or PDE Glossary binding/content;
+- no real Tutor Glossary API request, queue, Keep/Replace, or transcript card;
+- no persistent Glossary state;
+- no numerical algorithm, expression, security boundary, dependency, package,
+  API, Vite/Vercel configuration, generated-output, or deployment change;
+- no README change and no push.
 
 ## Planning baseline
 
@@ -360,8 +513,7 @@ defined by the framework design.
 
 ## Design decisions captured
 
-- The complete-Lab contract may later expose optional
-  `getGlossaryBinding?()`.
+- The complete-Lab contract exposes optional `getGlossaryBinding?()`.
 - Current ODE may omit the binding; no fake empty binding is introduced.
 - One binding is stable for one complete route-mount lifetime.
 - Host disconnect precedes Lab disposal; the Lab owns final binding disposal.
@@ -379,19 +531,20 @@ defined by the framework design.
   Milestone 2A.
 
 The repository-grounded plan maps the design’s conceptual interfaces to exact
-implementation files. Commit 1 now implements only its model, registry, scope,
-binding, and replacement-lifecycle APIs. Commit 2 corrects shared readonly-math
-ownership. Later-phase Host, surface, modal, Tutor, and Playground APIs remain
-proposed.
+implementation files. Commit 1 implements its model, registry, scope, binding,
+and replacement-lifecycle APIs. Commit 2 corrects shared readonly-math
+ownership. Commit 3 implements the Host, shared surfaces, modal arbitration,
+mock Tutor boundary, and minimal DEV-only Playground. Real Tutor integration,
+production content, and Commit 4 completion remain proposed.
 
 ## Planned implementation commits
 
 1. `Build glossary model and scope lifecycle` — accepted after conservative
    audit
-2. `Fix readonly math accessible ownership` — implemented locally;
-   conservative accessibility audit pending
-3. `Add shared glossary surfaces`
-4. `Complete glossary framework playground`
+2. `Fix readonly math accessible ownership` — implemented and locally verified
+3. `Add shared glossary surfaces` — implemented and locally/browser verified;
+   conservative audit pending
+4. `Complete glossary framework playground` — not started
 
 Each commit requires focused tests and the ownership, privacy, lazy-loading,
 and no-production-content gates in the design.
@@ -429,7 +582,6 @@ verification confirmed:
 
 ## Exact next action
 
-Run a conservative accessibility audit of Commit 2, `Fix readonly math
-accessible ownership`. Commit 3, `Add shared glossary surfaces`, is not
-authorized and must not begin before the Commit 2 audit and maintainer
-approval.
+Run a conservative audit of Commit 3, `Add shared glossary surfaces`. Do not
+begin Commit 4, `Complete glossary framework playground`, before that audit and
+maintainer approval.

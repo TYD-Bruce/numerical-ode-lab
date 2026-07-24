@@ -24,6 +24,9 @@ export interface AppShell {
   root: HTMLElement;
   outlet: HTMLElement;
   tutorRegion: HTMLElement;
+  glossaryRegion: HTMLElement;
+  glossaryStatus: HTMLElement;
+  modalBackgroundFor(owner: "tutor" | "glossary"): readonly HTMLElement[];
   setActiveRoute(routeId: RouteId): void;
   renderLoading(): void;
   renderFailure(onRetry: () => Promise<void>): void;
@@ -108,11 +111,20 @@ export function createAppShell(target: HTMLElement): AppShell {
   tutorRegion.className = "platform-tutor-region";
   tutorRegion.setAttribute("aria-label", "Tutor tools");
 
+  const glossaryRegion = document.createElement("div");
+  glossaryRegion.dataset.platformGlossaryHost = "true";
+  glossaryRegion.className = "platform-glossary-region";
+  const glossaryStatus = document.createElement("p");
+  glossaryStatus.className = "sr-only";
+  glossaryStatus.dataset.platformGlossaryStatus = "true";
+  glossaryStatus.setAttribute("role", "status");
+  glossaryStatus.setAttribute("aria-live", "polite");
+
   const workspace = document.createElement("div");
   workspace.className = "platform-workspace";
   workspace.append(outlet, tutorRegion);
 
-  root.append(header, mobileMenu, workspace);
+  root.append(header, mobileMenu, workspace, glossaryRegion, glossaryStatus);
   target.replaceChildren(root);
 
   const closeMobileMenu = (options: { restoreFocus?: boolean } = {}): void => {
@@ -148,6 +160,13 @@ export function createAppShell(target: HTMLElement): AppShell {
     root,
     outlet,
     tutorRegion,
+    glossaryRegion,
+    glossaryStatus,
+    modalBackgroundFor(owner) {
+      return owner === "tutor"
+        ? [header, mobileMenu, outlet, glossaryRegion]
+        : [header, mobileMenu, outlet, tutorRegion];
+    },
     setActiveRoute(routeId) {
       for (const link of root.querySelectorAll<HTMLElement>("[data-route-id]")) {
         link.removeAttribute("aria-current");

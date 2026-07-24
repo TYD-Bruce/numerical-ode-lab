@@ -4,6 +4,12 @@ import type {
   MountedPlatformTutorPanel,
   PlatformTutorPanelOptions,
 } from "../tutor/platformTutorPanel";
+import {
+  createPlatformModalEnvironment,
+  hasActiveExternalModal,
+  type PlatformModalEnvironment,
+  type PlatformModalLease,
+} from "./platformModalEnvironment";
 
 export interface TutorPanelModule {
   mountPlatformTutorPanel(
@@ -18,6 +24,8 @@ export interface PlatformTutorHost {
   open(trigger: HTMLElement): Promise<void>;
   close(options?: { restoreFocus?: boolean }): void;
   closeMobileForNavigation(): void;
+  suspendPresentationForGlossary(): void;
+  isPresentationVisible(): boolean;
   invalidateCurrentRequest(): void;
   refresh(): void;
   dispose(): void;
@@ -28,6 +36,9 @@ export interface CreatePlatformTutorHostOptions {
   readonly labTarget?: HTMLElement;
   readonly loadPanel?: () => Promise<TutorPanelModule>;
   readonly isMobile?: () => boolean;
+  readonly modalEnvironment?: PlatformModalEnvironment;
+  readonly modalBackground?: () => readonly HTMLElement[];
+  readonly onBeforeManualOpen?: () => void;
 }
 
 type Connection = {
@@ -46,47 +57,41 @@ export function createPlatformTutorHost(
   let generation = 0;
   let disposed = false;
   let mobileOpen = false;
+  let suspended = false;
   let returnFocus: HTMLElement | undefined;
-  let savedScrollY = 0;
-  let previousBodyOverflow = "";
-
-  const readDocumentScrollY = (): number => {
-    const value = document.scrollingElement?.scrollTop ?? window.scrollY;
-    return Number.isFinite(value) && value >= 0 ? value : 0;
-  };
-
-  const restoreDocumentScroll = (value: number): void => {
-    if (window.navigator.userAgent.toLowerCase().includes("jsdom")) {
-      if (document.scrollingElement) document.scrollingElement.scrollTop = value;
-      return;
-    }
-    try {
-      window.scrollTo({ top: value, left: 0, behavior: "auto" });
-    } catch {
-      // Environments without scrolling still receive the DOM cleanup.
-    }
-  };
+  let presentation: HTMLElement | undefined;
+  let modalLease: PlatformModalLease | undefined;
+  const ownsModalEnvironment = options.modalEnvironment === undefined;
+  const modalEnvironment =
+    options.modalEnvironment ?? createPlatformModalEnvironment();
 
   const loadPanel = options.loadPanel ?? (() => import("../tutor/platformTutorPanel"));
   const isMobile = options.isMobile ?? (() => window.matchMedia?.("(max-width: 760px)").matches ?? false);
 
-  const restoreMobileEnvironment = (): void => {
-    if (!mobileOpen) return;
+  const releaseMobileEnvironment = (): void => {
+    modalLease?.release();
+    modalLease = undefined;
     mobileOpen = false;
     options.target.classList.remove("platform-tutor-host-mobile");
-    options.labTarget?.removeAttribute("inert");
-    document.body.style.overflow = previousBodyOverflow;
-    restoreDocumentScroll(savedScrollY);
   };
 
-  const renderClosed = (): void => {
-    panel?.dispose();
-    panel = undefined;
-    restoreMobileEnvironment();
-    options.target.classList.remove("platform-tutor-host-mobile");
-    options.target.classList.add("platform-tutor-host");
-    options.target.replaceChildren();
-    if (!connection || disposed) return;
+  const acquireMobileEnvironment = (): boolean => {
+    if (mobileOpen && modalLease) return true;
+    const result = modalEnvironment.acquire({
+      owner: "tutor",
+      hostRegion: options.target,
+      background:
+        options.modalBackground?.() ??
+        (options.labTarget ? [options.labTarget] : []),
+    });
+    if (result.status === "blocked") return false;
+    modalLease = result.lease;
+    mobileOpen = true;
+    options.target.classList.add("platform-tutor-host-mobile");
+    return true;
+  };
+
+  const appendLauncher = (): HTMLButtonElement => {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "btn primary platform-tutor-open";
@@ -96,10 +101,26 @@ export function createPlatformTutorHost(
     button.setAttribute("aria-expanded", "false");
     button.addEventListener("click", () => void host.open(button));
     options.target.append(button);
+    return button;
+  };
+
+  const renderClosed = (): void => {
+    panel?.dispose();
+    panel = undefined;
+    presentation = undefined;
+    suspended = false;
+    releaseMobileEnvironment();
+    options.target.classList.remove("platform-tutor-host-mobile");
+    options.target.classList.add("platform-tutor-host");
+    options.target.replaceChildren();
+    if (!connection || disposed) return;
+    appendLauncher();
   };
 
   const renderLoading = (): HTMLElement => {
     options.target.replaceChildren();
+    presentation = document.createElement("div");
+    presentation.dataset.tutorPresentation = "";
     const panelShell = document.createElement("aside");
     panelShell.className = "platform-tutor-loading";
     panelShell.setAttribute("aria-label", "AI Method Tutor");
@@ -112,13 +133,15 @@ export function createPlatformTutorHost(
     close.textContent = "Close";
     close.addEventListener("click", () => host.close());
     panelShell.append(status, close);
-    options.target.append(panelShell);
+    presentation.append(panelShell);
+    options.target.append(presentation);
     return panelShell;
   };
 
   const renderFailure = (cause: unknown, openGeneration: number): void => {
     if (disposed || openGeneration !== generation || !connection) return;
-    restoreMobileEnvironment();
+    presentation = undefined;
+    releaseMobileEnvironment();
     options.target.replaceChildren();
     const failure = document.createElement("aside");
     failure.className = "platform-tutor-failure";
@@ -148,27 +171,17 @@ export function createPlatformTutorHost(
     retry.focus();
   };
 
-  const enableMobileEnvironment = (): void => {
-    if (mobileOpen) return;
-    mobileOpen = true;
-    savedScrollY = readDocumentScrollY();
-    previousBodyOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    options.labTarget?.setAttribute("inert", "");
-    options.target.classList.add("platform-tutor-host-mobile");
-  };
-
   const onKeyDown = (event: KeyboardEvent): void => {
-    if (event.key === "Escape" && (panel || mobileOpen)) {
+    if (event.key === "Escape" && host.isPresentationVisible()) {
       event.preventDefault();
       host.close();
       return;
     }
     if (!panel) return;
     if (event.key !== "Tab" || !mobileOpen) return;
-    const focusable = [...options.target.querySelectorAll<HTMLElement>(
+    const focusable = [...presentation?.querySelectorAll<HTMLElement>(
       'button:not([disabled]), textarea:not([disabled]), [href], [tabindex]:not([tabindex="-1"])'
-    )];
+    ) ?? []];
     if (focusable.length === 0) return;
     const first = focusable[0]!;
     const last = focusable.at(-1)!;
@@ -210,19 +223,44 @@ export function createPlatformTutorHost(
       connection = undefined;
       panel?.dispose();
       panel = undefined;
-      restoreMobileEnvironment();
+      presentation = undefined;
+      suspended = false;
+      releaseMobileEnvironment();
       options.target.replaceChildren();
     },
     async open(trigger): Promise<void> {
       if (disposed || !connection) return;
+      options.onBeforeManualOpen?.();
+      const mobile = isMobile();
+      if (panel && suspended && presentation) {
+        if (mobile && !acquireMobileEnvironment()) return;
+        if (!mobile) {
+          connection.sessionAccess.updateSession((current) =>
+            setTutorDesktopOpen(current, true)
+          );
+        }
+        suspended = false;
+        presentation.hidden = false;
+        presentation.removeAttribute("aria-hidden");
+        presentation.removeAttribute("inert");
+        options.target.querySelector("[data-tutor-open]")?.remove();
+        const dialog = presentation.querySelector<HTMLElement>(".ai-tutor-panel");
+        if (mobile) {
+          dialog?.setAttribute("role", "dialog");
+          dialog?.setAttribute("aria-modal", "true");
+        } else {
+          dialog?.removeAttribute("role");
+          dialog?.removeAttribute("aria-modal");
+        }
+        panel.focus();
+        return;
+      }
+      if (mobile && !acquireMobileEnvironment()) return;
       const activeConnection = connection;
       const openGeneration = ++generation;
       returnFocus = trigger;
       activeConnection.binding.prepareForOpen?.();
-      const mobile = isMobile();
-      if (mobile) {
-        enableMobileEnvironment();
-      } else {
+      if (!mobile) {
         activeConnection.sessionAccess.updateSession((current) =>
           setTutorDesktopOpen(current, true)
         );
@@ -241,9 +279,14 @@ export function createPlatformTutorHost(
           openGeneration !== generation ||
           connection !== activeConnection
         ) return;
+        if (mobile && hasActiveExternalModal(options.target)) {
+          renderClosed();
+          return;
+        }
         moduleRejected = false;
-        options.target.replaceChildren();
-        panel = loaded.mountPlatformTutorPanel(options.target, {
+        presentation?.replaceChildren();
+        if (!presentation) return;
+        panel = loaded.mountPlatformTutorPanel(presentation, {
           binding: activeConnection.binding,
           sessionAccess: activeConnection.sessionAccess,
           onClose: () => host.close(),
@@ -251,9 +294,10 @@ export function createPlatformTutorHost(
             !disposed &&
             generation === openGeneration &&
             connection === activeConnection,
+          isPresentationVisible: () => host.isPresentationVisible(),
         });
         if (mobileOpen) {
-          const dialog = options.target.querySelector<HTMLElement>(".ai-tutor-panel");
+          const dialog = presentation.querySelector<HTMLElement>(".ai-tutor-panel");
           dialog?.setAttribute("role", "dialog");
           dialog?.setAttribute("aria-modal", "true");
         }
@@ -268,7 +312,9 @@ export function createPlatformTutorHost(
       generation += 1;
       panel?.dispose();
       panel = undefined;
-      restoreMobileEnvironment();
+      presentation = undefined;
+      suspended = false;
+      releaseMobileEnvironment();
       if (connection && !wasMobile) {
         connection.sessionAccess.updateSession((current) =>
           setTutorDesktopOpen(current, false)
@@ -285,6 +331,21 @@ export function createPlatformTutorHost(
     closeMobileForNavigation(): void {
       if (mobileOpen) host.close({ restoreFocus: false });
     },
+    suspendPresentationForGlossary(): void {
+      if (disposed || !panel || !presentation || suspended) return;
+      suspended = true;
+      presentation.hidden = true;
+      presentation.setAttribute("aria-hidden", "true");
+      presentation.setAttribute("inert", "");
+      const dialog = presentation.querySelector<HTMLElement>(".ai-tutor-panel");
+      dialog?.removeAttribute("aria-modal");
+      dialog?.removeAttribute("role");
+      releaseMobileEnvironment();
+      appendLauncher();
+    },
+    isPresentationVisible(): boolean {
+      return Boolean(panel && presentation && !suspended && !presentation.hidden);
+    },
     invalidateCurrentRequest(): void {
       panel?.cancelPending?.();
     },
@@ -297,6 +358,7 @@ export function createPlatformTutorHost(
       disposed = true;
       options.target.removeEventListener("keydown", onKeyDown);
       options.target.replaceChildren();
+      if (ownsModalEnvironment) modalEnvironment.dispose();
     },
   };
   return Object.freeze(host);

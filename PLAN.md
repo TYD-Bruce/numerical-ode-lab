@@ -9,9 +9,11 @@ findings, and passed conservative re-audit with verdict **SAFE TO IMPLEMENT**.
 Commit 1, `Build glossary model and scope lifecycle`, is implemented and
 accepted after its conservative audit returned **SAFE TO PROCEED**. Commit 2,
 `Fix readonly math accessible ownership`, is implemented and locally verified.
-Production still contains no Glossary terms or visible Glossary runtime
-behavior. Shared Glossary surfaces have not started, and Commit 3 is not
-authorized.
+Commit 3, `Add shared glossary surfaces`, is implemented and locally verified
+under direct maintainer authorization. Production still contains no Glossary
+terms, annotations, or visible Glossary behavior: the Platform Host remains
+inert because the current Lab exposes no Glossary binding, and the committed
+Playground is DEV-only. Commit 3 now awaits conservative audit.
 
 ## Current released baseline
 
@@ -60,7 +62,8 @@ loading while keeping formal mathematical content separate.
 [Content-Agnostic Interactive Glossary Framework Design](docs/superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md)
 
 Status: **Approved design; Commit 1 accepted; readonly-math prerequisite
-implemented locally; conservative accessibility audit pending.**
+implemented locally; shared surfaces implemented and locally verified in
+Commit 3; conservative Commit 3 audit pending.**
 
 ## Authoritative implementation plan
 
@@ -68,7 +71,8 @@ implemented locally; conservative accessibility audit pending.**
 
 Status: **Repository-grounded plan corrected after conservative audit and
 re-audited SAFE TO IMPLEMENT; Commit 1 accepted; readonly-math prerequisite
-implemented locally; conservative accessibility audit pending.**
+implemented locally; shared surfaces implemented and locally verified in
+Commit 3; conservative Commit 3 audit pending.**
 
 ## Approved delivery sequence
 
@@ -81,9 +85,9 @@ implemented locally; conservative accessibility audit pending.**
 4. Build Glossary model and scope lifecycle. Complete and accepted after
    conservative audit.
 5. Fix readonly math accessible ownership as a narrow prerequisite. Complete
-   locally; conservative accessibility audit pending.
+   locally.
 6. Add shared Glossary surfaces and the minimal committed DEV-only Playground
-   harness.
+   harness. Complete locally; conservative audit pending.
 7. Complete the development Glossary Playground.
 8. Complete the separate notation and definition foundation.
 9. Add the reviewed ODE vertical slice.
@@ -91,9 +95,9 @@ implemented locally; conservative accessibility audit pending.**
 
 ## Current next action
 
-Run a conservative accessibility audit of Commit 2, `Fix readonly math
-accessible ownership`. Commit 3, `Add shared glossary surfaces`, is not
-authorized and must not begin before this prerequisite is audited and approved.
+Run a conservative audit of Commit 3, `Add shared glossary surfaces`. Do not
+begin Commit 4, `Complete glossary framework playground`, before that audit and
+maintainer approval.
 
 ## Current production behavior
 
@@ -102,8 +106,11 @@ authorized and must not begin before this prerequisite is audited and approved.
 - Production is verified at `https://numerical-t-lab.vercel.app/`.
 - The former Production address remains available as a verified alias.
 - Production contains no Glossary terms.
-- Production contains no Glossary Host behavior.
-- Commit 1 adds no visible production Glossary behavior.
+- Production initializes an inert Platform Glossary Host, but the current Lab
+  supplies no binding and cannot activate a surface.
+- The DEV-only Playground and its five neutral fixtures are excluded from the
+  production build.
+- Commits 1 through 3 add no visible production Glossary behavior.
 - Canonical notation and production definitions are intentionally deferred.
 
 ## Explicit non-goals
@@ -118,10 +125,11 @@ authorized and must not begin before this prerequisite is audited and approved.
 
 ## Review gate
 
-Conservative accessibility audit of Commit 2 is the active gate. Commit 1 was
-accepted after conservative audit, and the readonly-math prerequisite is
-implemented and locally verified. Commit 3 remains unauthorized. Production
-Glossary terms and visible runtime behavior remain absent.
+Conservative audit of Commit 3 is the active gate. Commit 1 was accepted after
+conservative audit, the readonly-math prerequisite is locally verified, and
+shared surfaces are implemented and locally/browser verified. Commit 4 remains
+unauthorized. Production Glossary terms, annotations, and visible runtime
+behavior remain absent.
 
 ## Update rule
 

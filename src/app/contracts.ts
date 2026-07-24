@@ -7,6 +7,7 @@ export type RouteId =
   | "linear-algebra-overview"
   | "pde-overview"
   | "about"
+  | "glossary-playground"
   | "not-found";
 
 export type LabModuleId = "ode" | "linear_algebra" | "pde";

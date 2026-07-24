@@ -23,4 +23,14 @@ describe("Tutor first-open import boundary", () => {
       /let\s+conversation\s*[:=]/
     );
   });
+
+  it("keeps Glossary surface and Tutor imports independent", async () => {
+    const glossaryHost = await import("./platformGlossaryHost.ts?raw");
+    expect(glossaryHost.default).toMatch(
+      /import\(["']\.\.\/glossary\/surface\/glossarySurfaceRuntime["']\)/
+    );
+    expect(glossaryHost.default).not.toMatch(
+      /import\(["']\.\.\/tutor\/platformTutorPanel["']\)/
+    );
+  });
 });

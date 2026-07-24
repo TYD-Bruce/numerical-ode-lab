@@ -29,9 +29,18 @@ export interface NormalizedApplicationLocation {
   href: string;
 }
 
+export interface DevelopmentRouteDefinitionInput {
+  readonly id: Extract<RouteId, "glossary-playground">;
+  readonly path: string;
+  readonly title: string;
+  readonly kind: RouteKind;
+  readonly loader: () => Promise<RouteModule>;
+}
+
 interface CreateRouteDefinitionsOptions {
   initialValueProblemsLoader?: () => Promise<RouteModule>;
   homeSessionSource?: HomeSessionSource;
+  developmentRoutes?: readonly DevelopmentRouteDefinitionInput[];
 }
 
 export function normalizePathname(pathname: string): string {
@@ -60,7 +69,7 @@ export function createRouteDefinitions(
     options.initialValueProblemsLoader ??
     (() => Promise.reject(new Error("The Initial Value Problems Lab is not registered.")));
 
-  return [
+  const publicRoutes: RouteDefinition[] = [
     {
       id: "home",
       path: "/",
@@ -105,6 +114,20 @@ export function createRouteDefinitions(
       kind: "page",
       loader: createRouteLoader(() => Promise.resolve(aboutPage)),
     },
+  ];
+  const developmentRoutes = (options.developmentRoutes ?? []).map(
+    (definition): RouteDefinition => ({
+      id: definition.id,
+      path: definition.path,
+      title: definition.title,
+      kind: definition.kind,
+      loader: createRouteLoader(definition.loader),
+    })
+  );
+
+  return [
+    ...publicRoutes,
+    ...developmentRoutes,
     {
       id: "not-found",
       path: null,

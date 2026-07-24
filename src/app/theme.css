@@ -29,4 +29,12 @@
   --radius-pill: 999px;
   --content-width-platform: 77.5rem;
   --content-width-reading: 72ch;
+  --layer-glossary-popover: 900;
+  --layer-platform-modal: 1000;
+  --color-glossary-underline: var(--color-text-secondary);
+  --glossary-popover-width: 22.5rem;
+  --glossary-popover-min-width: 18rem;
+  --glossary-popover-max-width: 26.25rem;
+  --glossary-viewport-margin: 0.75rem;
+  --glossary-trigger-gap: 0.5rem;
 }

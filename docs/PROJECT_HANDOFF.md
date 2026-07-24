@@ -2,7 +2,7 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
-**Status (2026-07-23):** Numerical T-Lab is locally verified and
+**Status (2026-07-24):** Numerical T-Lab is locally verified and
 Production-verified at `https://numerical-t-lab.vercel.app/`. The GitHub
 repositories, Git remotes, existing Vercel project, Git integration, and
 canonical domain use the Numerical T-Lab identity. The local workspace rename
@@ -30,10 +30,12 @@ Framework**; **Linear Systems Lab** is later. The
 [authoritative Glossary design](./superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md)
 is approved and committed. Commit 1, the content-agnostic Glossary model and
 scope lifecycle, is implemented and accepted after conservative audit.
-Production still has no Glossary terms, Host behavior, definition surface, or
-visible Glossary behavior. The readonly-math accessibility prerequisite is
-implemented and locally verified. The exact next gate is its conservative
-accessibility audit; shared Glossary surfaces remain unauthorized.
+The readonly-math accessibility prerequisite is locally verified. Commit 3
+shared Host/surface/modal infrastructure and a minimal DEV-only Playground are
+implemented and locally/browser verified but not deployed. Production still
+has no Glossary terms, annotations, or visible Glossary behavior: the current
+Lab supplies no binding, and production excludes the Playground. The exact
+next gate is a conservative Commit 3 audit.
 
 ## 2. Verification baseline
 
@@ -264,8 +266,10 @@ Known limitations:
 - Deferred MathLive and editable/Compute Engine chunks remain large.
 - Linear Algebra and PDE are not runnable Labs.
 - Content-Agnostic Interactive Glossary Framework Commit 1 is implemented and
-  accepted, and the readonly-math prerequisite is locally verified. Production
-  contains no Glossary terms, Host, surface, or visible Glossary behavior.
+  accepted, the readonly-math prerequisite is locally verified, and Commit 3
+  shared surfaces are locally/browser verified. Production initializes an
+  inert Host but contains no Glossary terms, annotations, activatable surface,
+  Playground, or visible Glossary behavior.
 
 Contributor rules:
 
@@ -278,8 +282,9 @@ Contributor rules:
 - Keep `beforeunload` minimal and synchronous.
 - Run `npm run verify` after changes and add focused tests first.
 
-*Last updated: 2026-07-23. Project Identity Migration and Production
+*Last updated: 2026-07-24. Project Identity Migration and prior Production
 verification remain complete. Glossary Commit 1 is accepted, the readonly-math
-accessibility prerequisite is locally verified, and its conservative
-accessibility audit is the exact next gate. Production still contains no
-Glossary terms, Host, surface, or visible behavior.*
+accessibility prerequisite is locally verified, and Commit 3 shared surfaces
+are locally/browser verified. A conservative Commit 3 audit is the exact next
+gate. Commit 4 has not started. Production still contains no Glossary terms,
+annotations, Playground, activatable surface, or visible behavior.*

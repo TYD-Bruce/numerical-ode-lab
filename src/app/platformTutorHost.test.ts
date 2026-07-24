@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createAppSessionStore } from "./appSessionStore";
 import type { LabTutorBinding } from "./contracts";
 import { createPlatformTutorHost } from "./platformTutorHost";
+import { createPlatformModalEnvironment } from "./platformModalEnvironment";
 import { appendTutorMessage, updateTutorDraft } from "../tutor/moduleTutorSession";
 import { createOdeTutorBinding } from "../ode/odeTutorBinding";
 import { mountPlatformTutorPanel } from "../tutor/platformTutorPanel";
@@ -211,5 +212,127 @@ describe("Platform Tutor Host", () => {
     expect(document.body.style.overflow).toBe("");
     expect(store.getTutor("ode").desktopOpen).toBe(false);
     expect(document.documentElement.scrollTop).toBe(320);
+  });
+
+  it("silently refuses an external modal and requires a later fresh open", async () => {
+    const target = document.createElement("div");
+    const lab = document.createElement("main");
+    const blocker = document.createElement("div");
+    blocker.setAttribute("role", "dialog");
+    blocker.setAttribute("aria-modal", "true");
+    document.body.append(lab, target, blocker);
+    const focused = document.createElement("button");
+    blocker.append(focused);
+    focused.focus();
+    const store = createAppSessionStore();
+    const mount = vi.fn(() => ({ dispose: vi.fn(), focus: vi.fn() }));
+    const loadPanel = vi.fn(async () => ({ mountPlatformTutorPanel: mount }));
+    const host = createPlatformTutorHost({
+      target,
+      labTarget: lab,
+      modalEnvironment: createPlatformModalEnvironment(),
+      modalBackground: () => [lab],
+      isMobile: () => true,
+      loadPanel,
+    });
+    host.connect(binding(), store.createTutorSessionAccess("ode"));
+    const trigger = target.querySelector<HTMLElement>("[data-tutor-open]")!;
+
+    await host.open(trigger);
+
+    expect(loadPanel).not.toHaveBeenCalled();
+    expect(document.activeElement).toBe(focused);
+    expect(lab.hasAttribute("inert")).toBe(false);
+    expect(document.body.style.overflow).toBe("");
+    expect(target.querySelector("[data-tutor-open]")).not.toBeNull();
+
+    blocker.remove();
+    expect(loadPanel).not.toHaveBeenCalled();
+    await host.open(trigger);
+    expect(mount).toHaveBeenCalledOnce();
+    host.dispose();
+  });
+
+  it("suspends a mounted Tutor before releasing its modal lease and reuses it on manual open", async () => {
+    const target = document.createElement("div");
+    const lab = document.createElement("main");
+    document.body.append(lab, target);
+    const store = createAppSessionStore();
+    store.updateTutor("ode", (current) =>
+      updateTutorDraft(appendTutorMessage(current, "user", "Preserve me"), "draft")
+    );
+    const dispose = vi.fn();
+    const focus = vi.fn();
+    const mount = vi.fn((panelTarget: HTMLElement) => {
+      const panel = document.createElement("aside");
+      panel.className = "ai-tutor-panel";
+      panelTarget.append(panel);
+      return { dispose, focus };
+    });
+    const host = createPlatformTutorHost({
+      target,
+      labTarget: lab,
+      modalEnvironment: createPlatformModalEnvironment(),
+      modalBackground: () => [lab],
+      isMobile: () => true,
+      loadPanel: async () => ({ mountPlatformTutorPanel: mount }),
+    });
+    host.connect(binding(), store.createTutorSessionAccess("ode"));
+    await host.open(target.querySelector<HTMLElement>("[data-tutor-open]")!);
+
+    host.suspendPresentationForGlossary();
+
+    const presentation = target.querySelector<HTMLElement>("[data-tutor-presentation]")!;
+    expect(dispose).not.toHaveBeenCalled();
+    expect(host.isPresentationVisible()).toBe(false);
+    expect(presentation.hidden).toBe(true);
+    expect(presentation.getAttribute("aria-hidden")).toBe("true");
+    expect(presentation.hasAttribute("inert")).toBe(true);
+    expect(target.querySelector('[aria-modal="true"]')).toBeNull();
+    expect(lab.hasAttribute("inert")).toBe(false);
+    expect(document.body.style.overflow).toBe("");
+    expect(store.getTutor("ode")).toMatchObject({ draftMessage: "draft" });
+    expect(store.getTutor("ode").items).toHaveLength(1);
+
+    const launcher = target.querySelector<HTMLElement>("[data-tutor-open]")!;
+    await host.open(launcher);
+
+    expect(mount).toHaveBeenCalledOnce();
+    expect(host.isPresentationVisible()).toBe(true);
+    expect(presentation.hidden).toBe(false);
+    expect(presentation.hasAttribute("inert")).toBe(false);
+    expect(presentation.querySelector('[aria-modal="true"]')).not.toBeNull();
+    expect(focus).toHaveBeenCalledTimes(2);
+
+    host.close();
+    expect(dispose).toHaveBeenCalledOnce();
+  });
+
+  it("keeps ordinary disconnect disposal behavior after suspension", async () => {
+    const target = document.createElement("div");
+    document.body.append(target);
+    const store = createAppSessionStore();
+    const dispose = vi.fn();
+    const cancelPending = vi.fn();
+    const host = createPlatformTutorHost({
+      target,
+      isMobile: () => false,
+      loadPanel: async () => ({
+        mountPlatformTutorPanel: (panelTarget) => {
+          const panel = document.createElement("aside");
+          panel.className = "ai-tutor-panel";
+          panelTarget.append(panel);
+          return { dispose, focus: vi.fn(), cancelPending };
+        },
+      }),
+    });
+    host.connect(binding(), store.createTutorSessionAccess("ode"));
+    await host.open(target.querySelector<HTMLElement>("[data-tutor-open]")!);
+    host.suspendPresentationForGlossary();
+
+    host.disconnect();
+
+    expect(dispose).toHaveBeenCalledOnce();
+    expect(target.childElementCount).toBe(0);
   });
 });

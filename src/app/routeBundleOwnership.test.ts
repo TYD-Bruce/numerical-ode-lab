@@ -120,7 +120,7 @@ describe("public route bundle ownership", () => {
     );
   });
 
-  it("keeps Glossary runtime ownership out of AppSessionStore and the eager platform graph", () => {
+  it("keeps Glossary state out of Store and only the lightweight loader in the eager platform graph", () => {
     const storeGraph = eagerGraph("app/appSessionStore.ts");
     expect(
       [...storeGraph].filter((path) => path.startsWith("glossary/"))
@@ -133,8 +133,17 @@ describe("public route bundle ownership", () => {
 
     const entryGraph = eagerGraph("main.ts");
     expect(
-      [...entryGraph].filter((path) => path.startsWith("glossary/"))
-    ).toEqual([]);
+      [...entryGraph].filter((path) => path.startsWith("glossary/")).sort()
+    ).toEqual(["glossary/glossarySurfaceLoader.ts"]);
+    expect(
+      [...entryGraph].some(
+        (path) =>
+          path.startsWith("glossary/surface/") ||
+          path.includes("glossaryRegistry") ||
+          path.includes("glossaryScope") ||
+          path.includes("glossaryFixtures")
+      )
+    ).toBe(false);
 
     const glossaryGraph = eagerGraph("glossary/glossaryController.ts");
     expect(glossaryGraph.has("app/appSessionStore.ts")).toBe(false);

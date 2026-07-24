@@ -40,6 +40,14 @@ describe("platform theme tokens", () => {
       "--radius-lg",
       "--content-width-platform",
       "--content-width-reading",
+      "--layer-platform-modal",
+      "--layer-glossary-popover",
+      "--color-glossary-underline",
+      "--glossary-popover-width",
+      "--glossary-popover-min-width",
+      "--glossary-popover-max-width",
+      "--glossary-viewport-margin",
+      "--glossary-trigger-gap",
     ]) {
       expect(theme).toContain(`${token}:`);
     }
@@ -61,6 +69,15 @@ describe("platform theme tokens", () => {
     expect(platform).toContain(":focus-visible");
     expect(platform).toMatch(/overflow-x:\s*hidden/);
     expect(platform).toContain("@media");
+
+    const glossarySurface = readFileSync(
+      join(SRC_DIR, "glossary", "surface", "glossarySurface.css"),
+      "utf8"
+    );
+    expect(glossarySurface).toContain("prefers-reduced-motion");
+    expect(glossarySurface).toContain("forced-colors");
+    expect(glossarySurface).toMatch(/max-height:\s*82dvh/);
+    expect(glossarySurface).not.toMatch(literalColor);
   });
 
   it("keeps new platform runtime modules outside heavy ODE, Tutor, and math imports", () => {

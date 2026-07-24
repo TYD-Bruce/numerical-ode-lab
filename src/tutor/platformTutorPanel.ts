@@ -22,6 +22,7 @@ export interface PlatformTutorPanelOptions {
   readonly sessionAccess: TutorSessionAccess;
   readonly onClose: () => void;
   readonly isCurrent: () => boolean;
+  readonly isPresentationVisible?: () => boolean;
   readonly sendMessage?: (
     request: ChatRequest,
     signal: AbortSignal
@@ -240,7 +241,7 @@ export function mountPlatformTutorPanel(
       } finally {
         if (!disposed && request === requestGeneration && options.isCurrent()) {
           setLoading(false);
-          input.focus();
+          if (options.isPresentationVisible?.() !== false) input.focus();
         }
       }
     };

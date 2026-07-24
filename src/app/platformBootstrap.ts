@@ -7,7 +7,15 @@ import {
   createPlatformTutorHost,
   type PlatformTutorHost,
 } from "./platformTutorHost";
-import { createRouteDefinitions } from "./routeDefinitions";
+import {
+  createPlatformGlossaryHost,
+  type PlatformGlossaryHost,
+} from "./platformGlossaryHost";
+import { createPlatformModalEnvironment } from "./platformModalEnvironment";
+import {
+  createRouteDefinitions,
+  type DevelopmentRouteDefinitionInput,
+} from "./routeDefinitions";
 import { createPlatformRouter, type PlatformRouter } from "./router";
 import {
   createScrollRestoration,
@@ -18,6 +26,7 @@ export interface PlatformBootstrap {
   readonly store: AppSessionStore;
   readonly shell: AppShell;
   readonly tutorHost: PlatformTutorHost;
+  readonly glossaryHost: PlatformGlossaryHost;
   readonly router: PlatformRouter;
   readonly scrollRestoration: ScrollRestoration;
   readonly navigate: Navigate;
@@ -28,20 +37,44 @@ export function createPlatformBootstrap(options: {
   readonly target: HTMLElement;
   readonly store?: AppSessionStore;
   readonly tutorHost?: PlatformTutorHost;
+  readonly glossaryHost?: PlatformGlossaryHost;
   readonly initialValueProblemsLoader?: () => Promise<LabRouteModule<unknown>>;
+  readonly developmentRoutes?: readonly DevelopmentRouteDefinitionInput[];
 }): PlatformBootstrap {
   const store = options.store ?? createAppSessionStore();
   const shell = createAppShell(options.target);
+  const modalEnvironment = createPlatformModalEnvironment();
+  let glossaryHost: PlatformGlossaryHost;
   const tutorHost =
     options.tutorHost ??
     createPlatformTutorHost({
       target: shell.tutorRegion,
       labTarget: shell.outlet,
+      modalEnvironment,
+      modalBackground: () => {
+        shell.closeMobileMenu();
+        return shell.modalBackgroundFor("tutor");
+      },
+      onBeforeManualOpen: () =>
+        glossaryHost?.close({ restoreFocus: false }),
+    });
+  glossaryHost =
+    options.glossaryHost ??
+    createPlatformGlossaryHost({
+      target: shell.glossaryRegion,
+      statusRegion: shell.glossaryStatus,
+      modalEnvironment,
+      modalBackground: () => {
+        shell.closeMobileMenu();
+        return shell.modalBackgroundFor("glossary");
+      },
+      tutorPresentation: tutorHost,
     });
   const scrollRestoration = createScrollRestoration({ store });
   const registry = createPlatformModuleRegistry({
     store,
     tutorHost,
+    glossaryHost,
     scrollRestoration,
     initialValueProblemsLoader: options.initialValueProblemsLoader,
   });
@@ -50,9 +83,40 @@ export function createPlatformBootstrap(options: {
     routes: createRouteDefinitions({
       initialValueProblemsLoader: registry.loadInitialValueProblems,
       homeSessionSource: store,
+      developmentRoutes:
+        options.developmentRoutes ??
+        (import.meta.env.DEV
+          ? [
+              {
+                id: "glossary-playground",
+                path: "/__dev/glossary-playground",
+                title: "Glossary Playground | Numerical T-Lab",
+                kind: "page",
+                loader: () => {
+                  const modulePath =
+                    "../dev/glossary/glossaryPlaygroundRoute.ts";
+                  return (
+                    import(
+                      /* @vite-ignore */
+                      modulePath
+                    ) as Promise<
+                      typeof import("../dev/glossary/glossaryPlaygroundRoute")
+                    >
+                  ).then(
+                    (module) =>
+                      module.createGlossaryPlaygroundRoute({ glossaryHost })
+                  );
+                },
+              },
+            ]
+          : []),
     }),
     scrollRestoration,
-    onNavigationStart: () => tutorHost.closeMobileForNavigation(),
+    onNavigationStart: () => {
+      glossaryHost.close({ restoreFocus: false });
+      glossaryHost.disconnect();
+      tutorHost.closeMobileForNavigation();
+    },
   });
   let disposed = false;
   const handleBeforeUnload = createBeforeUnloadHandler(store);
@@ -63,6 +127,7 @@ export function createPlatformBootstrap(options: {
     store,
     shell,
     tutorHost,
+    glossaryHost,
     router,
     scrollRestoration,
     navigate: router.navigate,
@@ -73,6 +138,9 @@ export function createPlatformBootstrap(options: {
       router.dispose();
       tutorHost.disconnect();
       tutorHost.dispose();
+      glossaryHost.disconnect();
+      glossaryHost.dispose();
+      modalEnvironment.dispose();
       options.target.replaceChildren();
     },
   });

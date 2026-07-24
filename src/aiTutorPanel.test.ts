@@ -159,6 +159,48 @@ describe("shared Tutor panel", () => {
     expect(store.getTutor("ode").items).toHaveLength(1);
   });
 
+  it("updates the live session while presentation is hidden without focusing hidden DOM", async () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+    const store = createAppSessionStore();
+    let resolve!: (value: { message: string }) => void;
+    const response = new Promise<{ message: string }>((done) => {
+      resolve = done;
+    });
+    let presentationVisible = true;
+    const mounted = mountPlatformTutorPanel(host, {
+      binding: {
+        moduleId: "ode",
+        promptProfile: "ode",
+        suggestedQuestions: [],
+        getContext: source,
+      },
+      sessionAccess: store.createTutorSessionAccess("ode"),
+      onClose: vi.fn(),
+      isCurrent: () => true,
+      isPresentationVisible: () => presentationVisible,
+      sendMessage: () => response,
+    });
+    const input = host.querySelector<HTMLTextAreaElement>("#platform-tutor-input")!;
+    const focus = vi.spyOn(input, "focus");
+    input.value = "Finish while hidden";
+    host.querySelector<HTMLFormElement>(".ai-compose")!.dispatchEvent(
+      new Event("submit", { bubbles: true, cancelable: true })
+    );
+    presentationVisible = false;
+    resolve({ message: "Stored without focus." });
+    await response;
+    await vi.waitFor(() => expect(store.getTutor("ode").items).toHaveLength(2));
+
+    expect(store.getTutor("ode").items.at(-1)).toMatchObject({
+      kind: "message",
+      role: "assistant",
+      content: "Stored without focus.",
+    });
+    expect(focus).not.toHaveBeenCalled();
+    mounted.dispose();
+  });
+
   it("keeps controlled user and assistant rendering non-executable", async () => {
     const host = document.createElement("div");
     document.body.append(host);

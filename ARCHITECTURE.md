@@ -202,16 +202,19 @@ On complete-Lab mount:
 2. The Lab creates fresh DOM and runtime handles.
 3. The adapter connects the Lab-owned Tutor binding to live module session
    access.
-4. The router waits for readiness and restores the current navigation's scroll.
+4. If the mounted Lab provides a Glossary binding, the adapter connects it to
+   the Platform Glossary Host; the current ODE Lab omits this optional edge.
+5. The router waits for readiness and restores the current navigation's scroll.
 
 On route leave:
 
-1. Mobile Tutor presentation closes.
-2. Router/scroll services capture the current route position.
-3. The adapter captures the Lab session and Resume summary.
-4. The Tutor Host disconnects and invalidates pending work.
-5. The mounted Lab disposes domain bindings and runtime handles.
-6. The route outlet is cleared.
+1. The Glossary Host closes and disconnects before session capture.
+2. Mobile Tutor presentation closes.
+3. Router/scroll services capture the current route position.
+4. The adapter captures the Lab session and Resume summary.
+5. The Tutor Host disconnects and invalidates pending work.
+6. The mounted Lab disposes domain bindings and runtime handles.
+7. The route outlet is cleared.
 
 Disposal is idempotent and stale generations cannot mutate a later mount.
 
@@ -243,6 +246,11 @@ aborted requests cannot append to another module.
   route.
 - `src/app/platformTutorHost.ts` dynamically imports
   `src/tutor/platformTutorPanel.ts` on first open.
+- `src/app/platformGlossaryHost.ts` dynamically imports the complete definition
+  surface runtime on the first valid Glossary request. A rejected attempt alone
+  is retryable; pending and fulfilled attempts are shared.
+- The DEV-only `/__dev/glossary-playground` route and its fixtures are injected
+  only under `import.meta.env.DEV` and are absent from the production manifest.
 - Editable math and MathLive/Compute Engine remain behind later ODE interaction
   boundaries.
 - Static routes do not import ODE, Chart.js, Convergence implementation,
@@ -285,8 +293,8 @@ Deployment contracts are tested in `src/app/viteBase.contract.test.ts` and
 
 The
 [Content-Agnostic Interactive Glossary Framework Design](docs/superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md)
-is approved. Commit 1 implements the content-agnostic model and lifecycle
-library under `src/glossary/`:
+is approved. Commits 1 through 3 now implement the content-agnostic model,
+lifecycle, Host, and shared-surface infrastructure:
 
 - branded term and scope IDs, immutable display/formula records, strict
   builders, and production-safe readable fallback;
@@ -295,16 +303,26 @@ library under `src/glossary/`:
 - Lab-owned binding, optional Host-port connection, dynamic context contracts,
   explicit rerender replacement transactions, and idempotent disposal;
 - the optional type-only `MountedLabRoute.getGlossaryBinding?()` contract edge.
+- a bootstrap-owned `PlatformGlossaryHost` and shared
+  `PlatformModalEnvironment`, with one active platform surface, owner-checked
+  modal leases, external-modal refusal, Tutor presentation suspension, stale
+  generation/identity guards, and route-safe disposal;
+- lazily loaded desktop preview, pinned card, and mobile bottom-sheet surfaces,
+  including collision-aware placement, live curated-context refresh, safe
+  readonly formula rendering, focus restoration/trapping, and explicit trigger
+  replacement;
+- the typed mockable Tutor handoff boundary, without a real queue or API
+  integration;
+- a five-fixture DEV-only Playground for framework verification.
 
-This runtime state and its DOM/listener/subscription handles remain outside
-`AppSessionStore`. The current Initial Value Problems route omits the optional
-binding, so none of the implemented model/lifecycle code creates visible
-production behavior.
+This transient runtime state and its DOM/listener/subscription/modal handles
+remain outside `AppSessionStore`. The current Initial Value Problems route
+omits the optional binding, so the production Host is inert and the surface
+chunk cannot be requested through current product UI. The Playground and all
+five neutral fixtures are excluded from production.
 
-The Platform Glossary Host, definition surfaces, modal environment,
-development route, Playground, and production content remain planned and are
-not implemented. No production term, annotation, definition, or canonical
-Glossary notation exists.
+No production term, annotation, definition, real Tutor Glossary request, queue,
+or canonical Glossary notation exists.
 
 ## Architecture invariants
 

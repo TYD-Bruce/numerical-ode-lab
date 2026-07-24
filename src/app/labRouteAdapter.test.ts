@@ -11,6 +11,8 @@ import type {
 import { createAppSessionStore } from "./appSessionStore";
 import { createCompleteLabRoute } from "./labRouteAdapter";
 import type { PlatformTutorHost } from "./platformTutorHost";
+import type { PlatformGlossaryHost } from "./platformGlossaryHost";
+import type { LabGlossaryBinding } from "../glossary/glossaryController";
 import {
   createScrollRestoration,
   type ScrollRestoration,
@@ -49,9 +51,20 @@ function host(): PlatformTutorHost {
     open: vi.fn(async () => undefined),
     close: vi.fn(),
     closeMobileForNavigation: vi.fn(),
+    suspendPresentationForGlossary: vi.fn(),
+    isPresentationVisible: vi.fn(() => false),
     invalidateCurrentRequest: vi.fn(),
     refresh: vi.fn(),
     dispose: vi.fn(),
+  };
+}
+
+function glossaryHost(events: string[] = []): PlatformGlossaryHost {
+  return {
+    connect: vi.fn(() => events.push("glossary-connect")),
+    disconnect: vi.fn(() => events.push("glossary-disconnect")),
+    close: vi.fn(() => events.push("glossary-close")),
+    dispose: vi.fn(() => events.push("glossary-dispose")),
   };
 }
 
@@ -79,6 +92,7 @@ describe("complete Lab meaningful metadata", () => {
       labModule: module,
       store,
       tutorHost: host(),
+      glossaryHost: glossaryHost(),
       routeId: "ode-initial-value-problems",
       scrollRestoration: createScrollRestoration({ store }),
     });
@@ -138,6 +152,7 @@ describe("complete Lab meaningful metadata", () => {
       labModule: module,
       store,
       tutorHost,
+      glossaryHost: glossaryHost(),
       scrollRestoration,
     });
     const mounted = route.mount({
@@ -171,5 +186,61 @@ describe("complete Lab meaningful metadata", () => {
     expect(store.getLab("ode")).toEqual({ value: "fresh" });
     expect(store.getLabMetadata("ode")?.meaningful).toBe(false);
     mounted.dispose();
+  });
+
+  it("connects an optional Glossary binding and closes it before session capture and Lab disposal", () => {
+    const events: string[] = [];
+    const glossaryBinding = {
+      moduleId: "ode",
+      identity: Object.freeze({ moduleId: "ode" }),
+      connect: vi.fn(),
+      createScope: vi.fn(),
+      beginScopeRerender: vi.fn(),
+      dispose: vi.fn(),
+    } as unknown as LabGlossaryBinding;
+    const module: LabRouteModule<{ value: string }> = {
+      createBeginnerStarterSession: () => ({ value: "starter" }),
+      mount() {
+        return {
+          getSession: () => {
+            events.push("session-capture");
+            return { value: "starter" };
+          },
+          getResumeSummary: () => summary(),
+          getTutorBinding: () => binding,
+          getGlossaryBinding: () => glossaryBinding,
+          dispose: () => events.push("lab-dispose"),
+        };
+      },
+    };
+    const route = createCompleteLabRoute({
+      moduleId: "ode",
+      routeId: "ode-initial-value-problems",
+      labModule: module,
+      store: createAppSessionStore(),
+      tutorHost: host(),
+      glossaryHost: glossaryHost(events),
+      scrollRestoration: createScrollRestoration({}),
+    });
+    const mounted = route.mount({
+      target: document.createElement("div"),
+      navigate: vi.fn(),
+      location: {
+        pathname: "/ode/initial-value-problems",
+        search: "",
+        hash: "",
+      },
+    });
+
+    expect(events).toContain("glossary-connect");
+    mounted.dispose();
+
+    expect(events.indexOf("glossary-close")).toBeLessThan(
+      events.indexOf("session-capture")
+    );
+    expect(events.indexOf("glossary-disconnect")).toBeLessThan(
+      events.indexOf("lab-dispose")
+    );
+    expect(glossaryBinding.dispose).not.toHaveBeenCalled();
   });
 });

@@ -17,12 +17,14 @@
 [PLAN.md](../PLAN.md) points to the Content-Agnostic Interactive Glossary
 Framework. Its approved design and repository-grounded implementation plan are
 documented. The corrected plan passed conservative re-audit, Commit 1 was
-accepted after conservative audit, and the readonly-math prerequisite is
-implemented locally with its accessibility audit pending. Production contains
-no Glossary content or visible surface behavior. The bounded Project Identity
-Migration is complete. The GitHub repositories, remotes, existing Vercel
-project, Git integration, Preview, Production deployment, canonical domain,
-and canonical local workspace are migrated and verified.
+accepted after conservative audit, the readonly-math prerequisite is locally
+verified, and Commit 3 shared surfaces are implemented and locally/browser
+verified. The exact gate is a conservative Commit 3 audit. Production contains
+no Glossary content or visible surface behavior; its Host is inert, and the
+Playground is DEV-only. The bounded Project Identity Migration is complete.
+The GitHub repositories, remotes, existing Vercel project, Git integration,
+Preview, Production deployment, canonical domain, and canonical local
+workspace are migrated and verified.
 
 ## Product and feature specifications
 
@@ -31,7 +33,7 @@ and canonical local workspace are migrated and verified.
 | [Theme-Ready Platform Shell Design](superpowers/specs/2026-07-13-theme-ready-platform-shell-design.md) | Implemented, Vercel Preview-verified, safe to release |
 | [Human-Friendly Math Expressions Design](superpowers/specs/2026-07-10-human-friendly-math-expressions-design.md) | Implemented and verified |
 | [Observed Convergence Order Experiment Design](superpowers/specs/2026-07-10-convergence-study-design.md) | Implemented, verified, release ready |
-| [Content-Agnostic Interactive Glossary Framework Design](superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md) | Approved design; Commit 1 accepted; readonly-math prerequisite implemented locally; accessibility audit pending |
+| [Content-Agnostic Interactive Glossary Framework Design](superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md) | Approved design; Commit 1 accepted; readonly-math prerequisite locally verified; Commit 3 shared surfaces locally/browser verified; conservative Commit 3 audit pending |
 
 ## Implementation plans
 
@@ -39,7 +41,7 @@ and canonical local workspace are migrated and verified.
 |---|---|
 | [Theme-Ready Platform Shell Implementation Plan](superpowers/plans/2026-07-13-theme-ready-platform-shell-implementation-plan.md) | Implemented historical plan; check the final review and architecture map for current state |
 | [Numerical T-Lab Rename Migration Plan](superpowers/plans/2026-07-22-numerical-t-lab-rename-migration-plan.md) | Project Identity Migration completed and verified |
-| [Content-Agnostic Interactive Glossary Framework Implementation Plan](superpowers/plans/2026-07-23-content-agnostic-interactive-glossary-framework-implementation-plan.md) | Corrected and conservatively re-audited SAFE TO IMPLEMENT; Commit 1 accepted; readonly-math prerequisite implemented locally; accessibility audit pending; no production content or surface behavior |
+| [Content-Agnostic Interactive Glossary Framework Implementation Plan](superpowers/plans/2026-07-23-content-agnostic-interactive-glossary-framework-implementation-plan.md) | Corrected and conservatively re-audited SAFE TO IMPLEMENT; Commit 1 accepted; readonly-math prerequisite locally verified; Commit 3 shared surfaces locally/browser verified; conservative Commit 3 audit pending; no production content or visible behavior |
 
 ## Reviews and release evidence
 
@@ -58,7 +60,8 @@ and canonical local workspace are migrated and verified.
   evidence-research continuation state.
 - [Content-Agnostic Interactive Glossary Framework handoff](glossary/HANDOFF.md)
   — approved design, corrected and re-audited implementation plan, accepted
-  Commit 1, and locally verified readonly-math prerequisite continuation.
+  Commit 1, locally verified readonly-math prerequisite, and locally/browser
+  verified Commit 3 continuation.
 - [Project Rename handoff](project-rename/HANDOFF.md) — completed Project
   Identity Migration evidence, including the canonical local workspace reopen.
 

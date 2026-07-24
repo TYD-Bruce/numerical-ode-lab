@@ -7,6 +7,7 @@ import type {
 } from "./contracts";
 import type { AppSessionStore } from "./appSessionStore";
 import type { PlatformTutorHost } from "./platformTutorHost";
+import type { PlatformGlossaryHost } from "./platformGlossaryHost";
 import type { ScrollRestoration } from "./scrollRestoration";
 
 export function createCompleteLabRoute<TSession>(options: {
@@ -14,6 +15,7 @@ export function createCompleteLabRoute<TSession>(options: {
   readonly labModule: LabRouteModule<TSession>;
   readonly store: AppSessionStore;
   readonly tutorHost: PlatformTutorHost;
+  readonly glossaryHost: PlatformGlossaryHost;
   readonly routeId: RouteId;
   readonly scrollRestoration: ScrollRestoration;
 }): RouteModule {
@@ -79,11 +81,16 @@ export function createCompleteLabRoute<TSession>(options: {
       });
 
       try {
+        const glossaryBinding = mountedLab.getGlossaryBinding?.();
+        if (glossaryBinding) options.glossaryHost.connect(glossaryBinding);
         options.tutorHost.connect(
           mountedLab.getTutorBinding(),
           options.store.createTutorSessionAccess(options.moduleId)
         );
       } catch (cause) {
+        options.glossaryHost.close({ restoreFocus: false });
+        options.glossaryHost.disconnect();
+        options.tutorHost.disconnect();
         mountedLab.dispose();
         target.replaceChildren();
         throw cause;
@@ -94,6 +101,8 @@ export function createCompleteLabRoute<TSession>(options: {
         dispose(): void {
           if (disposed) return;
           disposed = true;
+          options.glossaryHost.close({ restoreFocus: false });
+          options.glossaryHost.disconnect();
           options.tutorHost.closeMobileForNavigation();
           try {
             const resumeSummary = mountedLab.getResumeSummary();
