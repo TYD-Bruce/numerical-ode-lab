@@ -23,6 +23,7 @@ import {
   type PlatformModalEnvironment,
   type PlatformModalLease,
 } from "./platformModalEnvironment";
+import type { PlatformTutorPresentationSuspension } from "./platformTutorHost";
 
 export interface PlatformGlossaryHost {
   connect(
@@ -43,7 +44,10 @@ export interface CreatePlatformGlossaryHostOptions {
   readonly modalEnvironment?: PlatformModalEnvironment;
   readonly modalBackground?: () => readonly HTMLElement[];
   readonly tutorPresentation?: {
-    suspendPresentationForGlossary(): void;
+    isPresentationVisible(): boolean;
+    suspendPresentationForGlossary():
+      | PlatformTutorPresentationSuspension
+      | undefined;
   };
   readonly requestAnimationFrame?: (callback: FrameRequestCallback) => number;
   readonly cancelAnimationFrame?: (handle: number) => void;
@@ -56,6 +60,7 @@ interface Connection {
 }
 
 interface ActiveSurface {
+  readonly identity: object;
   request: GlossarySurfaceRequest;
   readonly mode: GlossarySurfaceMode;
   readonly mounted: MountedGlossarySurface;
@@ -67,6 +72,7 @@ interface LoadingSurface {
   readonly request: GlossarySurfaceRequest;
   readonly mode: GlossarySurfaceMode;
   readonly generation: number;
+  tutorSuspension?: PlatformTutorPresentationSuspension;
 }
 
 function sameTermIdentity(
@@ -181,6 +187,11 @@ export function createPlatformGlossaryHost(
     request.trigger.removeAttribute("aria-expanded");
     request.trigger.classList.remove("glossary-term-trigger-active");
   };
+  const rollbackTutorSuspension = (pending: LoadingSurface): void => {
+    const suspension = pending.tutorSuspension;
+    pending.tutorSuspension = undefined;
+    suspension?.restore();
+  };
 
   function unwatchTrigger(): void {
     watchedRequest?.trigger.removeEventListener(
@@ -249,6 +260,7 @@ export function createPlatformGlossaryHost(
       return;
     }
     const closingRequest = active?.request ?? loading?.request;
+    const closingLoading = loading;
     clearOpenTimer();
     clearCloseTimer();
     clearAnimationFrame();
@@ -262,6 +274,7 @@ export function createPlatformGlossaryHost(
     unwatchTrigger();
     disconnectGlobals();
     options.target.replaceChildren();
+    if (closingLoading) rollbackTutorSuspension(closingLoading);
     if (
       restoreFocus &&
       closingRequest &&
@@ -276,6 +289,14 @@ export function createPlatformGlossaryHost(
         }
       });
     }
+  }
+
+  function closeMountedSurface(
+    restoreFocus: boolean,
+    expectedSurfaceIdentity: object
+  ): void {
+    if (active?.identity !== expectedSurfaceIdentity) return;
+    closeInternal(restoreFocus);
   }
 
   function applyPlacement(surface: ActiveSurface): boolean {
@@ -346,6 +367,7 @@ export function createPlatformGlossaryHost(
     ) {
       return;
     }
+    rollbackTutorSuspension(failed);
     const failure = document.createElement("aside");
     failure.className = "glossary-surface glossary-surface-failure";
     failure.setAttribute("role", "alert");
@@ -382,21 +404,22 @@ export function createPlatformGlossaryHost(
     ) {
       return;
     }
-    if (
-      pending.mode === "mobile-sheet" &&
-      hasActiveExternalModal(options.target)
-    ) {
+    if (pending.mode === "mobile-sheet" && hasActiveExternalModal(options.target)) {
       closeInternal(false, pending.request);
       return;
     }
 
-    options.tutorPresentation?.suspendPresentationForGlossary();
     let modalLease: PlatformModalLease | undefined;
     if (pending.mode === "mobile-sheet") {
+      const background = options.modalBackground?.() ?? [];
+      if (hasActiveExternalModal(options.target)) {
+        closeInternal(false, pending.request);
+        return;
+      }
       const acquired = modalEnvironment.acquire({
         owner: "glossary",
         hostRegion: options.target,
-        background: options.modalBackground?.() ?? [],
+        background,
       });
       if (acquired.status === "blocked") {
         closeInternal(false, pending.request);
@@ -406,14 +429,15 @@ export function createPlatformGlossaryHost(
     }
 
     const currentConnection = connection;
+    const surfaceIdentity = Object.freeze({});
     const mounted = module.mountGlossarySurface(options.target, {
       mode: pending.mode,
       request: pending.request,
       statusRegion: options.statusRegion,
       onClose: (reason) =>
-        closeInternal(
+        closeMountedSurface(
           reason === "escape" || reason === "explicit-close",
-          pending.request
+          surfaceIdentity
         ),
       ...(currentConnection?.tutorHandoff
         ? {
@@ -439,11 +463,13 @@ export function createPlatformGlossaryHost(
       return;
     }
     active = {
+      identity: surfaceIdentity,
       request: pending.request,
       mode: pending.mode,
       mounted,
       ...(modalLease ? { modalLease } : {}),
     };
+    pending.tutorSuspension = undefined;
     loading = undefined;
     pending.request.trigger.setAttribute("aria-controls", mounted.element.id);
     pending.request.trigger.setAttribute("aria-expanded", "true");
@@ -479,15 +505,25 @@ export function createPlatformGlossaryHost(
     ) {
       return;
     }
+    closeInternal(false);
+    let tutorSuspension: PlatformTutorPresentationSuspension | undefined;
+    if (
+      mode === "mobile-sheet" &&
+      options.tutorPresentation?.isPresentationVisible()
+    ) {
+      tutorSuspension =
+        options.tutorPresentation.suspendPresentationForGlossary();
+    }
     if (mode === "mobile-sheet" && hasActiveExternalModal(options.target)) {
+      tutorSuspension?.restore();
       return;
     }
-    closeInternal(false);
     watchTrigger(request);
     const pending: LoadingSurface = {
       request,
       mode,
       generation: ++requestGeneration,
+      ...(tutorSuspension ? { tutorSuspension } : {}),
     };
     loading = pending;
     const loadRequest = {
@@ -550,6 +586,7 @@ export function createPlatformGlossaryHost(
     });
     active.request = replacementRequest;
     active.mounted.replaceTrigger?.(result.replacement.trigger);
+    watchTrigger(replacementRequest);
     result.replacement.trigger.setAttribute(
       "aria-controls",
       active.mounted.element.id

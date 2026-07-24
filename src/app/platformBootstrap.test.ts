@@ -86,7 +86,10 @@ function tutorHostSpy(events: string[] = []): PlatformTutorHost {
     open: vi.fn(async () => undefined),
     close: vi.fn(),
     closeMobileForNavigation: vi.fn(() => events.push("host-mobile-close")),
-    suspendPresentationForGlossary: vi.fn(() => events.push("host-suspend")),
+    suspendPresentationForGlossary: vi.fn(() => {
+      events.push("host-suspend");
+      return undefined;
+    }),
     isPresentationVisible: vi.fn(() => false),
     invalidateCurrentRequest: vi.fn(() => events.push("host-invalidate")),
     refresh: vi.fn(() => events.push("host-refresh")),

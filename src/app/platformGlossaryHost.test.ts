@@ -12,6 +12,7 @@ import type {
   GlossarySurfaceRuntimeModule,
   MountedGlossarySurface,
 } from "../glossary/surface/glossarySurfaceRuntime";
+import { mountGlossarySurface } from "../glossary/surface/glossarySurfaceRuntime";
 import { createPlatformModalEnvironment } from "./platformModalEnvironment";
 import { createPlatformGlossaryHost } from "./platformGlossaryHost";
 
@@ -161,6 +162,54 @@ function invokeSurfaceClose(
   holder.current(reason);
 }
 
+async function openTransferredPinnedSurface() {
+  const target = document.createElement("div");
+  const outside = document.createElement("button");
+  document.body.append(target, outside);
+  const controlled = controlledBinding();
+  const host = createPlatformGlossaryHost({
+    target,
+    loadSurface: async () => ({ mountGlossarySurface }),
+    isMobile: () => false,
+  });
+  host.connect(controlled.binding);
+  const firstTrigger = connectedTrigger();
+  const firstRequest = surfaceRequest(controlled.binding, firstTrigger, {
+    kind: "activate",
+    pointer: "mouse",
+  });
+  controlled.port!.requestOpen(firstRequest);
+  await vi.waitFor(() =>
+    expect(target.querySelector("[data-glossary-surface]")).not.toBeNull()
+  );
+  const candidate = controlled.port!.beginScopeRerender(
+    firstRequest.identity.scope
+  )!;
+  const replacementTrigger = connectedTrigger();
+  const replacement = surfaceRequest(
+    controlled.binding,
+    replacementTrigger,
+    { kind: "activate", pointer: "mouse" },
+    undefined,
+    2
+  );
+  controlled.port!.replacementCommitted({
+    kind: "transferred",
+    previous: candidate,
+    replacement: replacement.identity,
+  });
+  return {
+    controlled,
+    host,
+    target,
+    outside,
+    firstTrigger,
+    firstRequest,
+    replacementTrigger,
+    replacement,
+  };
+}
+
 describe("Platform Glossary Host", () => {
   beforeEach(() => {
     vi.useRealTimers();
@@ -300,8 +349,12 @@ describe("Platform Glossary Host", () => {
     document.body.append(background, target);
     const runtime = surfaceModule();
     const controlled = controlledBinding();
+    const restoreTutor = vi.fn();
     const tutor = {
-      suspendPresentationForGlossary: vi.fn(),
+      isPresentationVisible: vi.fn(() => true),
+      suspendPresentationForGlossary: vi.fn(() => ({
+        restore: restoreTutor,
+      })),
     };
     const host = createPlatformGlossaryHost({
       target,
@@ -325,7 +378,8 @@ describe("Platform Glossary Host", () => {
     );
     await Promise.resolve();
     expect(runtime.mount).not.toHaveBeenCalled();
-    expect(tutor.suspendPresentationForGlossary).not.toHaveBeenCalled();
+    expect(tutor.suspendPresentationForGlossary).toHaveBeenCalledOnce();
+    expect(restoreTutor).toHaveBeenCalledOnce();
     expect(background.hasAttribute("inert")).toBe(false);
     expect(document.body.style.overflow).toBe("");
 
@@ -337,7 +391,8 @@ describe("Platform Glossary Host", () => {
       })
     );
     await vi.waitFor(() => expect(runtime.mount).toHaveBeenCalledOnce());
-    expect(tutor.suspendPresentationForGlossary).toHaveBeenCalledOnce();
+    expect(tutor.suspendPresentationForGlossary).toHaveBeenCalledTimes(2);
+    expect(restoreTutor).toHaveBeenCalledOnce();
     expect(background.hasAttribute("inert")).toBe(true);
     expect(document.body.style.overflow).toBe("hidden");
   });
@@ -402,6 +457,155 @@ describe("Platform Glossary Host", () => {
     expect(firstTrigger.hasAttribute("aria-expanded")).toBe(false);
     expect(replacementTrigger.getAttribute("aria-expanded")).toBe("true");
     expect(runtime.dispose).not.toHaveBeenCalled();
+  });
+
+  it("closes a transferred pinned surface with Escape and restores replacement focus", async () => {
+    const transferred = await openTransferredPinnedSurface();
+    transferred.outside.focus();
+
+    document.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "Escape", bubbles: true })
+    );
+
+    expect(transferred.target.childElementCount).toBe(0);
+    expect(document.activeElement).toBe(transferred.replacementTrigger);
+    transferred.host.dispose();
+  });
+
+  it("closes a transferred pinned surface explicitly and restores replacement focus", async () => {
+    const transferred = await openTransferredPinnedSurface();
+    transferred.outside.focus();
+
+    transferred.target
+      .querySelector<HTMLButtonElement>("[data-glossary-close]")!
+      .click();
+
+    expect(transferred.target.childElementCount).toBe(0);
+    expect(document.activeElement).toBe(transferred.replacementTrigger);
+    transferred.host.dispose();
+  });
+
+  it("closes a transferred pinned surface outside without forcing replacement focus", async () => {
+    const transferred = await openTransferredPinnedSurface();
+    transferred.outside.focus();
+
+    transferred.outside.dispatchEvent(
+      new PointerEvent("pointerdown", { bubbles: true })
+    );
+
+    expect(transferred.target.childElementCount).toBe(0);
+    expect(document.activeElement).toBe(transferred.outside);
+    transferred.host.dispose();
+  });
+
+  it("does not let a stale pre-transfer close callback close a later surface", async () => {
+    const target = document.createElement("div");
+    document.body.append(target);
+    const runtime = surfaceModule();
+    const controlled = controlledBinding();
+    const host = createPlatformGlossaryHost({
+      target,
+      loadSurface: async () => runtime.module,
+      isMobile: () => false,
+    });
+    host.connect(controlled.binding);
+    const firstTrigger = connectedTrigger();
+    const firstRequest = surfaceRequest(controlled.binding, firstTrigger, {
+      kind: "activate",
+      pointer: "mouse",
+    });
+    controlled.port!.requestOpen(firstRequest);
+    await vi.waitFor(() => expect(runtime.mount).toHaveBeenCalledOnce());
+    const staleClose = runtime.mount.mock.calls[0]![1].onClose;
+    const candidate = controlled.port!.beginScopeRerender(
+      firstRequest.identity.scope
+    )!;
+    const replacementTrigger = connectedTrigger();
+    const replacement = surfaceRequest(
+      controlled.binding,
+      replacementTrigger,
+      { kind: "activate", pointer: "mouse" },
+      undefined,
+      2
+    );
+    controlled.port!.replacementCommitted({
+      kind: "transferred",
+      previous: candidate,
+      replacement: replacement.identity,
+    });
+    host.close({ restoreFocus: false });
+
+    const unrelatedTrigger = connectedTrigger();
+    controlled.port!.requestOpen(
+      surfaceRequest(
+        controlled.binding,
+        unrelatedTrigger,
+        { kind: "activate", pointer: "mouse" },
+        undefined,
+        3
+      )
+    );
+    await vi.waitFor(() => expect(runtime.mount).toHaveBeenCalledTimes(2));
+    staleClose("explicit-close");
+
+    expect(target.childElementCount).toBe(1);
+    expect(unrelatedTrigger.getAttribute("aria-expanded")).toBe("true");
+    host.dispose();
+  });
+
+  it("rebinds replacement trigger watching and ignores the detached old trigger", async () => {
+    let frame: FrameRequestCallback | undefined;
+    const target = document.createElement("div");
+    document.body.append(target);
+    const controlled = controlledBinding();
+    const host = createPlatformGlossaryHost({
+      target,
+      loadSurface: async () => ({ mountGlossarySurface }),
+      isMobile: () => false,
+      requestAnimationFrame: (callback) => {
+        frame = callback;
+        return 1;
+      },
+      cancelAnimationFrame: vi.fn(),
+    });
+    host.connect(controlled.binding);
+    const firstTrigger = connectedTrigger();
+    const firstRequest = surfaceRequest(controlled.binding, firstTrigger, {
+      kind: "activate",
+      pointer: "mouse",
+    });
+    controlled.port!.requestOpen(firstRequest);
+    await vi.waitFor(() =>
+      expect(target.querySelector("[data-glossary-surface]")).not.toBeNull()
+    );
+    const candidate = controlled.port!.beginScopeRerender(
+      firstRequest.identity.scope
+    )!;
+    const replacementTrigger = connectedTrigger();
+    const replacement = surfaceRequest(
+      controlled.binding,
+      replacementTrigger,
+      { kind: "activate", pointer: "mouse" },
+      undefined,
+      2
+    );
+    controlled.port!.replacementCommitted({
+      kind: "transferred",
+      previous: candidate,
+      replacement: replacement.identity,
+    });
+
+    firstTrigger.remove();
+    firstTrigger.dispatchEvent(new FocusEvent("blur"));
+    document.dispatchEvent(new Event("scroll"));
+    frame?.(0);
+    expect(target.querySelector("[data-glossary-surface]")).not.toBeNull();
+
+    replacementTrigger.remove();
+    document.dispatchEvent(new Event("scroll"));
+    frame?.(1);
+    expect(target.childElementCount).toBe(0);
+    host.dispose();
   });
 
   it("ignores hover requests when the device does not support fine hover", async () => {
@@ -477,7 +681,13 @@ describe("Platform Glossary Host", () => {
     const background = document.createElement("main");
     document.body.append(background, target);
     const runtime = surfaceModule();
-    const tutor = { suspendPresentationForGlossary: vi.fn() };
+    const restoreTutor = vi.fn();
+    const tutor = {
+      isPresentationVisible: vi.fn(() => true),
+      suspendPresentationForGlossary: vi.fn(() => ({
+        restore: restoreTutor,
+      })),
+    };
     const controlled = controlledBinding();
     const host = createPlatformGlossaryHost({
       target,
@@ -502,7 +712,8 @@ describe("Platform Glossary Host", () => {
     await Promise.resolve();
 
     expect(runtime.mount).not.toHaveBeenCalled();
-    expect(tutor.suspendPresentationForGlossary).not.toHaveBeenCalled();
+    expect(tutor.suspendPresentationForGlossary).toHaveBeenCalledOnce();
+    expect(restoreTutor).toHaveBeenCalledOnce();
     expect(background.hasAttribute("inert")).toBe(false);
     expect(document.body.style.overflow).toBe("");
   });

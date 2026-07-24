@@ -212,6 +212,36 @@ describe("Glossary surface runtime", () => {
     expect(root.dataset.glossarySide).toBe("bottom");
   });
 
+  it("shows an ASCII Tutor-opening status while handoff is pending", async () => {
+    const target = document.createElement("div");
+    const trigger = document.createElement("button");
+    document.body.append(trigger, target);
+    let resolveHandoff!: () => void;
+    const handoff = new Promise<void>((resolve) => {
+      resolveHandoff = resolve;
+    });
+    const mounted = mountGlossarySurface(target, {
+      mode: "pinned",
+      request: request(trigger),
+      onClose: vi.fn(),
+      onAskTutor: () => handoff,
+      renderMath: mathFallback,
+    });
+    const ask = mounted.element.querySelector<HTMLButtonElement>(
+      "[data-glossary-ask]"
+    )!;
+
+    ask.click();
+
+    expect(ask.disabled).toBe(true);
+    expect(ask.textContent).toBe("Opening Tutor...");
+    resolveHandoff();
+    await handoff;
+    await Promise.resolve();
+    expect(ask.textContent).toBe("Ask the Tutor");
+    mounted.dispose();
+  });
+
   it("reports Escape, explicit Close, and outside pointer distinctly", () => {
     const target = document.createElement("div");
     const trigger = document.createElement("button");

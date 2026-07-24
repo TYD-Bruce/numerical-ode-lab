@@ -287,7 +287,7 @@ export function mountGlossarySurface(
   askButton?.addEventListener("click", () => {
     if (!options.onAskTutor || !askButton || askButton.disabled) return;
     askButton.disabled = true;
-    askButton.textContent = "Opening Tutorâ€¦";
+    askButton.textContent = "Opening Tutor...";
     const dynamic = currentTermContext(options.request, latestSnapshot);
     const tutorRequest: GlossaryTutorRequest = Object.freeze({
       kind: "glossary_term",

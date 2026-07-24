@@ -8,7 +8,10 @@ documented; conservative re-audit verdict **SAFE TO IMPLEMENT**. Commit 1,
 audit returned **SAFE TO PROCEED**. Commit 2, `Fix readonly math accessible
 ownership`, is implemented and locally verified. Commit 3, `Add shared glossary
 surfaces`, is implemented and locally/browser verified under direct maintainer
-authorization; conservative Commit 3 audit is pending.
+authorization. Its conservative audit verdict was **SAFE AFTER FIXES**
+(`P0 = 0`, `P1 = 2`, `P2 = 1`); the narrow lifecycle/copy follow-up is locally
+implemented and verified. Commit 3 plus the follow-up now await conservative
+re-audit, and Commit 4 remains unauthorized.
 
 The active milestone is **Content-Agnostic Interactive Glossary Framework**.
 Production contains no Glossary terms, term annotations, activatable surface,
@@ -198,10 +201,20 @@ content, or visible Glossary behavior.
 
 `SUSPEND-ARIA-MODAL-ORDER`
 
-Tutor suspension now deactivates dialog semantics, hides/inerts the retained
-Tutor panel, and releases its shared modal lease before Glossary evaluates the
-external-modal guard and attempts acquisition. Manual Tutor reopen reuses the
-retained panel state.
+The Commit 3 audit found that the intended ordering was not integrated: the
+Glossary Host ran its generic external-modal guard while the known mobile Tutor
+dialog was still active, so Tutor itself was mistaken for an external blocker.
+The follow-up now uses actual Host-to-Host integration evidence. Glossary first
+checks whether Tutor presentation is visible, then non-destructively
+hides/inerts it, removes active dialog semantics, and releases its modal lease.
+Only then does Glossary run the generic guard; it rechecks after lazy import
+and immediately before acquisition. A failed attempt restores the retained
+Tutor presentation without focus movement or request cancellation, deferring
+mobile lease reacquisition only while a real external modal still owns the
+modal boundary. Successful Glossary opening does not automatically reopen
+Tutor, while a later manual Tutor open closes Glossary first and reuses the
+same retained panel. This carry-forward finding is resolved by integrated
+evidence.
 
 ## Commit 3 shared-surface implementation
 
@@ -354,6 +367,69 @@ Explicit non-changes:
 - no numerical algorithm, expression, security boundary, dependency, package,
   API, Vite/Vercel configuration, generated-output, or deployment change;
 - no README change and no push.
+
+## Commit 3 lifecycle audit follow-up
+
+The conservative Commit 3 audit reported `P0 = 0`, `P1 = 2`, and `P2 = 1`
+with verdict **SAFE AFTER FIXES**.
+
+The first P1 was `CLOSE-AFTER-REPLACEMENT`. Each surface Close callback had
+captured its original request object. After an approved rerender transaction
+transferred the mounted pinned card or mobile sheet to a replacement request,
+Escape, explicit Close, and outside-pointer dismissal compared against the
+obsolete request and no-op’d. Each mounted surface now owns one stable
+surface-instance identity. Its callbacks may close the current request only
+while that same mounted instance remains active, so replacement Close behavior
+works while stale callbacks from a disposed or superseded instance remain
+harmless. Replacement also clears the old trigger state, rebinds trigger
+watching to the replacement request, transfers the runtime trigger and ARIA
+ownership, preserves the pinned/mobile mode, and prevents detached old-trigger
+events from changing replacement state.
+
+The second P1 was `SUSPEND-GUARD-BEFORE-SUSPEND`. The Glossary Host’s generic
+external-modal guard ran before known-peer Tutor suspension, so an active
+mobile Tutor blocked Glossary. The implemented order is now:
+
+1. determine whether the actual Tutor presentation is visible;
+2. obtain a reversible, non-destructive Tutor suspension that hides/inerts the
+   presentation, deactivates dialog semantics, and releases its modal lease;
+3. run the generic external-modal guard;
+4. recheck after lazy import and again immediately before acquisition;
+5. acquire and mount Glossary only if still clear.
+
+If a real external modal wins after Tutor suspension, the failed attempt
+creates no Glossary state and does not queue or replay the request. The retained
+Tutor panel, transcript, draft, and pending request remain intact; no focus
+moves and no request is aborted. Tutor restores without focus and reacquires
+its prior mobile lease when the external modal boundary becomes available.
+Closing a successfully opened Glossary still does not reopen Tutor
+automatically.
+
+The P2 visible-copy defect changed the corrupted `Opening Tutorâ€¦` state to the
+ASCII text `Opening Tutor...`, with a user-visible pending-handoff assertion.
+
+Tests-first evidence:
+
+- the initial replacement run failed the three new Escape, explicit Close, and
+  outside-pointer regressions while 13 existing Host tests passed;
+- after the stable instance/watcher repair, the Host suite passed 16 tests;
+- the actual Tutor/Glossary integration initially failed because Glossary
+  remained blocked by Tutor; the repaired four-file Host gate passed 45 tests;
+- the mojibake assertion initially observed `Opening Tutorâ€¦`; the corrected
+  surface suite passed 7 tests;
+- the combined focused gate passed 5 files and 52 tests, and
+  `git diff --check` passed;
+- the single `npm.cmd run verify` invocation passed all 72 test files and 986
+  tests, then stopped at TypeScript on one widened literal in the new test
+  fixture. After that test-only typing correction, the focused integration
+  suite, application typecheck, API typecheck, production build, and
+  `git diff --check` all passed. The full suite was not repeated, honoring the
+  one-run corrective-task limit.
+
+No localhost browser smoke was run because the deterministic Host-to-Host
+integration covered the affected path; no complete Commit 3 browser matrix was
+repeated. `SUSPEND-ARIA-MODAL-ORDER` is resolved by the integrated evidence
+above.
 
 ## Planning baseline
 
@@ -543,7 +619,7 @@ production content, and Commit 4 completion remain proposed.
    audit
 2. `Fix readonly math accessible ownership` — implemented and locally verified
 3. `Add shared glossary surfaces` — implemented and locally/browser verified;
-   conservative audit pending
+   lifecycle audit follow-up locally verified; conservative re-audit pending
 4. `Complete glossary framework playground` — not started
 
 Each commit requires focused tests and the ownership, privacy, lazy-loading,
@@ -582,6 +658,7 @@ verification confirmed:
 
 ## Exact next action
 
-Run a conservative audit of Commit 3, `Add shared glossary surfaces`. Do not
-begin Commit 4, `Complete glossary framework playground`, before that audit and
-maintainer approval.
+Run a conservative Cursor re-audit of Commit 3, `Add shared glossary surfaces`,
+together with the lifecycle-fix commit, `Fix shared glossary surface
+lifecycle`. Do not begin Commit 4, `Complete glossary framework playground`,
+before that re-audit and maintainer approval.

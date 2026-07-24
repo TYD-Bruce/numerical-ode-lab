@@ -24,11 +24,17 @@ export interface PlatformTutorHost {
   open(trigger: HTMLElement): Promise<void>;
   close(options?: { restoreFocus?: boolean }): void;
   closeMobileForNavigation(): void;
-  suspendPresentationForGlossary(): void;
+  suspendPresentationForGlossary():
+    | PlatformTutorPresentationSuspension
+    | undefined;
   isPresentationVisible(): boolean;
   invalidateCurrentRequest(): void;
   refresh(): void;
   dispose(): void;
+}
+
+export interface PlatformTutorPresentationSuspension {
+  restore(): void;
 }
 
 export interface CreatePlatformTutorHostOptions {
@@ -58,6 +64,8 @@ export function createPlatformTutorHost(
   let disposed = false;
   let mobileOpen = false;
   let suspended = false;
+  let suspensionIdentity: object | undefined;
+  let deferredRestoreObserver: MutationObserver | undefined;
   let returnFocus: HTMLElement | undefined;
   let presentation: HTMLElement | undefined;
   let modalLease: PlatformModalLease | undefined;
@@ -67,6 +75,11 @@ export function createPlatformTutorHost(
 
   const loadPanel = options.loadPanel ?? (() => import("../tutor/platformTutorPanel"));
   const isMobile = options.isMobile ?? (() => window.matchMedia?.("(max-width: 760px)").matches ?? false);
+
+  const clearDeferredRestore = (): void => {
+    deferredRestoreObserver?.disconnect();
+    deferredRestoreObserver = undefined;
+  };
 
   const releaseMobileEnvironment = (): void => {
     modalLease?.release();
@@ -104,11 +117,74 @@ export function createPlatformTutorHost(
     return button;
   };
 
+  const restoreSuspendedPresentation = (
+    identity: object,
+    mobile: boolean,
+    focus: boolean
+  ): boolean => {
+    if (
+      disposed ||
+      suspensionIdentity !== identity ||
+      !panel ||
+      !presentation ||
+      !suspended
+    ) {
+      return false;
+    }
+    if (mobile && !acquireMobileEnvironment()) return false;
+    if (!mobile && connection) {
+      connection.sessionAccess.updateSession((current) =>
+        setTutorDesktopOpen(current, true)
+      );
+    }
+    clearDeferredRestore();
+    suspensionIdentity = undefined;
+    suspended = false;
+    presentation.hidden = false;
+    presentation.removeAttribute("aria-hidden");
+    presentation.removeAttribute("inert");
+    options.target.querySelector("[data-tutor-open]")?.remove();
+    const dialog = presentation.querySelector<HTMLElement>(".ai-tutor-panel");
+    if (mobile) {
+      dialog?.setAttribute("role", "dialog");
+      dialog?.setAttribute("aria-modal", "true");
+    } else {
+      dialog?.removeAttribute("role");
+      dialog?.removeAttribute("aria-modal");
+    }
+    if (focus) panel.focus();
+    return true;
+  };
+
+  const deferSuspendedPresentationRestore = (
+    identity: object,
+    mobile: boolean
+  ): void => {
+    if (
+      deferredRestoreObserver ||
+      disposed ||
+      suspensionIdentity !== identity
+    ) {
+      return;
+    }
+    deferredRestoreObserver = new MutationObserver(() => {
+      restoreSuspendedPresentation(identity, mobile, false);
+    });
+    deferredRestoreObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["aria-hidden", "aria-modal", "hidden"],
+      childList: true,
+      subtree: true,
+    });
+  };
+
   const renderClosed = (): void => {
+    clearDeferredRestore();
     panel?.dispose();
     panel = undefined;
     presentation = undefined;
     suspended = false;
+    suspensionIdentity = undefined;
     releaseMobileEnvironment();
     options.target.classList.remove("platform-tutor-host-mobile");
     options.target.classList.add("platform-tutor-host");
@@ -225,6 +301,8 @@ export function createPlatformTutorHost(
       panel = undefined;
       presentation = undefined;
       suspended = false;
+      suspensionIdentity = undefined;
+      clearDeferredRestore();
       releaseMobileEnvironment();
       options.target.replaceChildren();
     },
@@ -233,26 +311,10 @@ export function createPlatformTutorHost(
       options.onBeforeManualOpen?.();
       const mobile = isMobile();
       if (panel && suspended && presentation) {
-        if (mobile && !acquireMobileEnvironment()) return;
-        if (!mobile) {
-          connection.sessionAccess.updateSession((current) =>
-            setTutorDesktopOpen(current, true)
-          );
+        const identity = suspensionIdentity;
+        if (identity) {
+          restoreSuspendedPresentation(identity, mobile, true);
         }
-        suspended = false;
-        presentation.hidden = false;
-        presentation.removeAttribute("aria-hidden");
-        presentation.removeAttribute("inert");
-        options.target.querySelector("[data-tutor-open]")?.remove();
-        const dialog = presentation.querySelector<HTMLElement>(".ai-tutor-panel");
-        if (mobile) {
-          dialog?.setAttribute("role", "dialog");
-          dialog?.setAttribute("aria-modal", "true");
-        } else {
-          dialog?.removeAttribute("role");
-          dialog?.removeAttribute("aria-modal");
-        }
-        panel.focus();
         return;
       }
       if (mobile && !acquireMobileEnvironment()) return;
@@ -314,6 +376,8 @@ export function createPlatformTutorHost(
       panel = undefined;
       presentation = undefined;
       suspended = false;
+      suspensionIdentity = undefined;
+      clearDeferredRestore();
       releaseMobileEnvironment();
       if (connection && !wasMobile) {
         connection.sessionAccess.updateSession((current) =>
@@ -331,8 +395,14 @@ export function createPlatformTutorHost(
     closeMobileForNavigation(): void {
       if (mobileOpen) host.close({ restoreFocus: false });
     },
-    suspendPresentationForGlossary(): void {
-      if (disposed || !panel || !presentation || suspended) return;
+    suspendPresentationForGlossary():
+      | PlatformTutorPresentationSuspension
+      | undefined {
+      if (disposed || !panel || !presentation || suspended) return undefined;
+      const wasMobile = mobileOpen;
+      const identity = Object.freeze({});
+      clearDeferredRestore();
+      suspensionIdentity = identity;
       suspended = true;
       presentation.hidden = true;
       presentation.setAttribute("aria-hidden", "true");
@@ -342,6 +412,13 @@ export function createPlatformTutorHost(
       dialog?.removeAttribute("role");
       releaseMobileEnvironment();
       appendLauncher();
+      return Object.freeze({
+        restore(): void {
+          if (!restoreSuspendedPresentation(identity, wasMobile, false)) {
+            deferSuspendedPresentationRestore(identity, wasMobile);
+          }
+        },
+      });
     },
     isPresentationVisible(): boolean {
       return Boolean(panel && presentation && !suspended && !presentation.hidden);
@@ -356,6 +433,7 @@ export function createPlatformTutorHost(
       if (disposed) return;
       host.disconnect();
       disposed = true;
+      clearDeferredRestore();
       options.target.removeEventListener("keydown", onKeyDown);
       options.target.replaceChildren();
       if (ownsModalEnvironment) modalEnvironment.dispose();
