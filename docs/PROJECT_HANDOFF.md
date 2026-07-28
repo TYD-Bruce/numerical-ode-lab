@@ -35,18 +35,18 @@ shared Host/surface/modal infrastructure and a minimal DEV-only Playground are
 implemented and locally/browser verified but not deployed. Its prior lifecycle
 audit findings have locally verified follow-ups and a final conservative
 re-audit verdict of SAFE TO PROCEED. Commit 4 completes the DEV-only Playground
-and production-exclusion evidence. The complete framework's 2026-07-28
-adversarial local release review returned **RELEASE BLOCKED**: a P1
-pending-load scope-replacement defect and substantive P2 one-shot Tab-bridge
-defect blocked acceptance, and the review also recorded one DEV-only P3
-unbounded-log issue. All three findings are now narrowly repaired and locally
-verified, including 1,028 passing full-suite tests and renewed production
-exclusion. The blocked review remains historical; a repeated independent
-release review of the exact repair commit is required before framework
-acceptance. Production still has no Glossary terms, annotations, or visible
-Glossary behavior: the current Lab supplies no binding, and production excludes
-the Playground. Production content and the ODE vertical slice remain
-unauthorized.
+and production-exclusion evidence. The complete framework's first 2026-07-28
+adversarial local release review returned **RELEASE BLOCKED** with one P1, one
+P2, and one DEV-only P3 finding. All three were narrowly repaired in
+`8af3ed80b25a520cfa61fa2d7037dea9ed2899d1`. The
+[repeated independent final review](./reviews/2026-07-28-content-agnostic-interactive-glossary-framework-final-review.md)
+then returned **APPROVED FOR LOCAL FRAMEWORK RELEASE** with all 40 binding
+requirements passing or passing with explicit manual carry-forwards. The
+framework is locally accepted as complete; the blocked review remains
+unchanged as history. Production still has no Glossary terms, annotations,
+ODE binding, or visible Glossary behavior, and production excludes the
+Playground. Production content and the ODE vertical slice remain unauthorized.
+Nothing was pushed or deployed by the repair or final review.
 
 ## 2. Verification baseline
 
@@ -277,10 +277,13 @@ Known limitations:
 - Deferred MathLive and editable/Compute Engine chunks remain large.
 - Linear Algebra and PDE are not runnable Labs.
 - The Content-Agnostic Interactive Glossary Framework's four planned phases
-  are complete locally. Its blocked-review P1/P2/P3 findings are repaired and
-  locally verified, but repeated independent release review is pending.
+  are complete and locally accepted after repeated independent final review.
   Production initializes an inert Host but contains no Glossary terms,
-  annotations, activatable surface, Playground, or visible Glossary behavior.
+  annotations, ODE binding, activatable surface, Playground, or visible
+  Glossary behavior.
+- The private-source-reviewed content foundation remains a draft. The next gate
+  is maintainer resolution of nine `DECISION_REQUIRED` terminology and
+  notation items, followed by project-language approval.
 
 Contributor rules:
 
@@ -294,8 +297,9 @@ Contributor rules:
 - Run `npm run verify` after changes and add focused tests first.
 
 *Last updated: 2026-07-28. Project Identity Migration and prior Production
-verification remain complete. All four Glossary framework phases are complete
-locally, and the three findings from the blocked framework release review are
-locally repaired and verified. A repeated independent release review of the
-exact repair commit is the next gate. Production still contains no Glossary
-terms, annotations, Playground, activatable surface, or visible behavior.*
+verification remain complete. The Glossary framework is locally accepted as
+complete after all three historical blocked-review findings were repaired and
+closed by repeated independent final review. Nothing was pushed or deployed.
+Production still contains no Glossary terms, annotations, ODE binding,
+Playground, activatable surface, or visible behavior. The next gate is the nine
+content decisions and project-language approval.*

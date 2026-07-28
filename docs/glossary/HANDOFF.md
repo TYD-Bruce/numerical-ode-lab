@@ -16,13 +16,15 @@ pre-mount-abort follow-up is locally implemented and verified. The final
 conservative re-audit of Commit 3 and both follow-ups returned **SAFE TO
 PROCEED** with `P0 = P1 = P2 = P3 = 0`. Commit 4, `Complete glossary framework
 playground`, is implemented and locally/browser verified. The complete
-four-phase framework completed its adversarial local release review on
+four-phase framework completed its first adversarial local release review on
 2026-07-28 with verdict **RELEASE BLOCKED**. The review found one P1
 pending-load scope-replacement defect, one substantive P2 one-shot Tab-bridge
-defect, and one DEV-only P3 unbounded-log issue. All three findings are now
-narrowly repaired and locally verified. The blocked review remains historical
-and framework acceptance still requires a repeated independent release review
-of the exact repair commit.
+defect, and one DEV-only P3 unbounded-log issue. All three findings were
+narrowly repaired in exact commit
+`8af3ed80b25a520cfa61fa2d7037dea9ed2899d1`. The repeated independent final
+review then returned **APPROVED FOR LOCAL FRAMEWORK RELEASE**. The blocked
+review remains historical, all three findings are closed, and the framework
+is locally accepted as complete.
 
 The active milestone is **Content-Agnostic Interactive Glossary Framework**.
 Production contains no Glossary terms, term annotations, activatable surface,
@@ -37,7 +39,7 @@ The repository-grounded planning iteration is complete. The exact plan is:
 
 `docs/superpowers/plans/2026-07-23-content-agnostic-interactive-glossary-framework-implementation-plan.md`
 
-## Full framework release review
+## Historical blocked framework release review
 
 The authoritative blocked review is:
 
@@ -59,9 +61,8 @@ in-memory reproductions of both blocking runtime paths. Production exclusion
 remains proven, but the framework is not locally accepted. Production terms,
 the ODE binding, and terminology/notation integration remain unauthorized.
 
-The next gate is a repeated independent full framework release review of the
-exact repair commit. The repair iteration does not itself approve the
-framework.
+That verdict was authoritative until the later repair and repeated independent
+final review. It remains unchanged as historical evidence.
 
 ## Release-blocker repair
 
@@ -137,6 +138,87 @@ No production terms, definitions, notation, aliases, annotations, ODE binding,
 real Tutor request/queue behavior, Store/persistence state, numerical behavior,
 CSS, packages, lockfile, API, Vite/Vercel configuration, private reference,
 deployment, or remote state changed.
+
+## Repeated independent final release review
+
+- Reviewed branch: `main`
+- Exact repair commit:
+  `8af3ed80b25a520cfa61fa2d7037dea9ed2899d1`
+  (`Fix glossary framework release blockers`)
+- Final-review boundary: the local documentation commit named
+  `Approve glossary framework release`; its SHA is authoritative in Git
+  history and is reported after commit
+- Verdict: **APPROVED FOR LOCAL FRAMEWORK RELEASE**
+- Findings: `P0 = P1 = P2 = P3 = 0`
+- Historical findings closed: `GLF-REL-001`, `GLF-REL-002`, and
+  `GLF-REL-003`
+- Requirements: 37 PASS, 3 PASS WITH CARRY-FORWARD, 0 PARTIAL, 0 FAIL
+- Push/deployment: none
+
+The authoritative accepting review is:
+
+`docs/reviews/2026-07-28-content-agnostic-interactive-glossary-framework-final-review.md`
+
+Automated evidence from exact unchanged repair source:
+
+- repaired suites: 3 files, 40 tests passed;
+- lifecycle/integration suites: 8 files, 69 tests passed;
+- remaining listed framework suites: 9 files, 64 tests passed;
+- full `npm.cmd run verify`: 73 files and 1,028 tests passed;
+- application typecheck, API typecheck, and production build passed;
+- 79 modules transformed;
+- `git diff --check` passed and the worktree was clean before documentation.
+
+The two requested historical test paths
+`src/glossary/glossaryModel.test.ts` and
+`src/glossary/readonlyMath.test.ts` do not exist and were omitted. Their
+implemented responsibilities are covered in the full suite by
+`glossaryBuilders.test.ts` and `src/math/ui/readonlyMath.test.ts`.
+
+Development browser evidence at 1440 x 900 and 390 x 844 covered the first-Tab
+bridge and new-cycle rearm, dynamic in-place update, repeated replacement,
+detach/recreate, formula and suppression, label composition, external-modal
+refusal, mobile focus containment/Escape/restoration, mock clear/reset,
+navigation remount, shortcut/editable exclusion, ODE absence, horizontal
+overflow, and console health. The automation backend did not reliably
+synthesize native document focus advancement after the unconsumed second Tab,
+and a cached browser cannot pause the pending dynamic import; those exact
+paths remain deterministic regression-test evidence.
+
+Local production preview confirmed normal Home, About, ODE, and IVP routes;
+the DEV path rendered in-shell Not Found; About had no Developer Tools; the
+shortcut was inert; no production annotation or surface existed; and console
+and overflow checks were clean.
+
+The fresh manifest contains only the ODE route, Tutor panel, and Glossary
+surface as entry dynamic imports. The surface retains a separate readonly
+math/MathLive lazy edge. No Playground, fixtures, controls, DEV CSS, fixture
+marker, or log constant was emitted. Production core remains empty and ODE
+still has no Glossary binding.
+
+Current bundle evidence reproduces the bounded repair values:
+
+- main JS: 52,725 raw / 16,274 gzip bytes;
+- main CSS: 9,518 / 2,240;
+- Glossary surface JS: 6,769 / 2,450;
+- Glossary surface CSS: 2,203 / 783;
+- readonly math JS: 2,080 / 922;
+- Tutor JS/CSS: 11,697 / 4,450 and 3,322 / 1,026;
+- MathLive JS: 825,514 / 228,041;
+- editable/Compute Engine JS/CSS: 1,144,224 / 308,799 and 1,756 / 676;
+- ODE JS/CSS: 241,437 / 80,303 and 11,636 / 3,106.
+
+Accepted evidence carry-forwards are limited to the absence of a live
+screen-reader/forced-colors/200%-zoom session, synthesized fine-pointer hover,
+and a physical touch/coarse-pointer device. They are non-blocking and retain
+deterministic test coverage where applicable.
+
+The content boundary is unchanged: there are no production terms,
+definitions, aliases, annotations, notation decisions, ODE binding, or real
+Glossary Tutor queue/API behavior. The private-source-reviewed content
+foundation remains a draft. The next gate is maintainer resolution of its nine
+`DECISION_REQUIRED` terminology and notation items, followed by approval of
+the project language standard.
 
 ## Commit 1 implementation baseline
 
@@ -1018,8 +1100,9 @@ verification confirmed:
 
 ## Exact next action
 
-Repeat the independent full Content-Agnostic Interactive Glossary Framework
-release review against the exact `Fix glossary framework release blockers`
-commit. Do not mark the framework accepted or begin production Glossary
-content, the ODE vertical slice, or terminology/notation integration before
-that review.
+Obtain maintainer resolution of the nine `DECISION_REQUIRED` terminology and
+notation items in the private-source-reviewed content foundation, then approve
+the project language standard. The framework is locally accepted as complete,
+but production Glossary content, the ODE vertical slice, and
+terminology/notation runtime integration remain unauthorized until that gate
+closes.

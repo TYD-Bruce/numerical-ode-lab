@@ -22,15 +22,17 @@ Production still contains no Glossary terms, annotations, or visible Glossary
 behavior: the Platform Host remains inert because the current Lab exposes no
 Glossary binding, and the complete committed Playground, development controls,
 fixtures, styles, About entry, and shortcut are DEV-only. The complete
-four-phase implementation completed its adversarial local release review on
-2026-07-28 with verdict **RELEASE BLOCKED**. One P1 pending-load
-scope-replacement defect and one substantive P2 one-shot Tab-bridge defect
-blocked acceptance; a DEV-only P3 recorded unbounded Playground logs. All
-three findings are now narrowly repaired with tests-first regressions, focused
-and full verification, affected browser evidence, and renewed production
-exclusion. The blocked review remains the authoritative historical verdict.
-Framework acceptance requires a repeated independent release review of the
-exact repair commit. Production content remains unauthorized.
+four-phase implementation completed its first adversarial local release review
+on 2026-07-28 with verdict **RELEASE BLOCKED**. Its P1 pending-load
+scope-replacement defect, substantive P2 one-shot Tab-bridge defect, and
+DEV-only P3 unbounded-log issue were narrowly repaired. A repeated independent
+review of exact repair commit
+`8af3ed80b25a520cfa61fa2d7037dea9ed2899d1` then returned
+**APPROVED FOR LOCAL FRAMEWORK RELEASE**. The historical blocked review remains
+unchanged, while the framework is now locally accepted as complete. Production
+still contains no Glossary terms, annotations, ODE binding, or visible
+Glossary behavior. Nothing was pushed or deployed by the repair or final
+review.
 
 ## Current released baseline
 
@@ -43,9 +45,8 @@ locally verified, Preview-verified, and Production-verified at
 
 **Content-Agnostic Interactive Glossary Framework**
 
-This remains the active product milestone. The identity migration is a bounded
-repository and deployment-identity checkpoint; it does not start or alter
-Glossary implementation.
+This framework milestone is locally complete. Production content integration
+has not begun and remains unauthorized.
 
 ## Completed Project Identity Migration
 
@@ -78,26 +79,17 @@ loading while keeping formal mathematical content separate.
 
 [Content-Agnostic Interactive Glossary Framework Design](docs/superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md)
 
-Status: **Approved design; Commit 1 accepted; readonly-math prerequisite
-implemented locally; shared surfaces implemented and locally verified in
-Commit 3; two lifecycle audit follow-ups locally verified; final conservative
-re-audit accepted; complete DEV-only Playground implemented and
-locally/browser verified; full framework release review completed with verdict
-RELEASE BLOCKED; its P1/P2/P3 findings are locally repaired, and repeated
-independent release review is pending.**
+Status: **Implemented and locally accepted after the historical blocked review,
+narrow P1/P2/P3 repairs, and a repeated independent final review with verdict
+APPROVED FOR LOCAL FRAMEWORK RELEASE. Production content remains deferred.**
 
 ## Authoritative implementation plan
 
 [Content-Agnostic Interactive Glossary Framework Implementation Plan](docs/superpowers/plans/2026-07-23-content-agnostic-interactive-glossary-framework-implementation-plan.md)
 
-Status: **Repository-grounded plan corrected after conservative audit and
-re-audited SAFE TO IMPLEMENT; Commit 1 accepted; readonly-math prerequisite
-implemented locally; shared surfaces implemented and locally verified in
-Commit 3; two lifecycle audit follow-ups locally verified; final conservative
-re-audit accepted; all four planned implementation phases complete locally;
-full framework release review completed with verdict RELEASE BLOCKED; its
-P1/P2/P3 findings are locally repaired, and repeated independent release
-review is pending.**
+Status: **Repository-grounded plan fully executed locally. The framework is
+accepted after the historical blocked review, narrow repairs, and repeated
+independent final review. No production content or ODE binding was added.**
 
 ## Approved delivery sequence
 
@@ -116,23 +108,23 @@ review is pending.**
    and accepted by final conservative re-audit.
 7. Complete the development Glossary Playground. Complete locally and
    browser-verified; production-exclusion audit passed.
-8. Complete the full framework release review. Completed with verdict
-   **RELEASE BLOCKED**.
+8. Complete the first full framework release review. Completed with historical
+   verdict **RELEASE BLOCKED**.
 9. Repair the P1 pending-load scope-replacement path and P2 one-shot Tab
-   bridge, bound the DEV-only logs, and add focused regressions. Complete
-   locally; repeat the full independent release review of the exact repair
-   commit.
+   bridge, bound the DEV-only logs, add focused regressions, and repeat the
+   independent release review. Complete locally; repeated verdict
+   **APPROVED FOR LOCAL FRAMEWORK RELEASE**.
 10. Resolve and approve the separate notation and definition foundation.
 11. Add the reviewed ODE vertical slice.
 12. Push only when explicitly requested by the maintainer.
 
 ## Current next action
 
-Repeat the independent full framework release review against the exact local
-repair commit. The repair invalidates stale pending scope work, consumes and
-transfers the pinned-card Tab bridge correctly, and bounds both DEV-only logs.
-Do not mark the framework accepted or begin production Glossary content, the
-ODE vertical slice, or terminology/notation integration before that review.
+Obtain maintainer resolution of the nine `DECISION_REQUIRED` terminology and
+notation items in the private-source-reviewed content foundation, then approve
+the project language standard. Do not publish production Glossary content,
+add the ODE vertical slice, or integrate terminology/notation into runtime
+before those decisions and approval.
 
 ## Parallel content foundation
 
@@ -144,8 +136,8 @@ conflicts. The package is planning evidence only: it publishes no production
 term, definition, annotation, or notation migration and authorizes no runtime
 copy change.
 
-This parallel draft does not alter the active milestone, current next action,
-or review gate above. Its continuation state is
+This draft is now the input to the current maintainer-decision gate. It remains
+planning evidence only. Its continuation state is
 [the content-foundation handoff](docs/content/HANDOFF.md).
 
 ## Current production behavior
@@ -175,11 +167,12 @@ or review gate above. Its continuation state is
 
 ## Review gate
 
-The repeated independent Content-Agnostic Interactive Glossary Framework
-release review of the exact repair commit is the active gate. The prior review
-remains **RELEASE BLOCKED** as historical evidence; its P1, P2, and P3 findings
-are locally repaired and verified but have not yet received independent
-acceptance. Production Glossary terms, annotations, and visible runtime
+The framework release gate is closed with
+**APPROVED FOR LOCAL FRAMEWORK RELEASE**. The prior **RELEASE BLOCKED** review
+remains historical evidence and all three of its findings are closed. The next
+gate is maintainer resolution of the nine `DECISION_REQUIRED` terminology and
+notation items, followed by approval of the project language standard.
+Production Glossary terms, annotations, an ODE binding, and visible runtime
 behavior remain absent.
 
 ## Update rule

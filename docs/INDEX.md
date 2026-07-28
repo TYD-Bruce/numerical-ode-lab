@@ -22,12 +22,13 @@ verified, and Commit 3 shared surfaces are implemented and locally/browser
 verified with two lifecycle follow-ups accepted by final conservative
 re-audit. Commit 4 completes the DEV-only Playground, development controls,
 About entry, shortcut, fixture matrix, and production-exclusion evidence. The
-four-phase implementation completed its 2026-07-28 full framework release
-review with verdict **RELEASE BLOCKED**. A P1 pending-load scope-replacement
-defect, substantive P2 one-shot Tab-bridge defect, and DEV-only P3 log finding
-are now locally repaired and verified. The blocked review remains historical;
-a repeated independent review of the exact repair commit is required before
-local acceptance.
+four-phase implementation completed its first 2026-07-28 full framework
+release review with verdict **RELEASE BLOCKED**. Its P1 pending-load
+scope-replacement defect, substantive P2 one-shot Tab-bridge defect, and
+DEV-only P3 log finding were narrowly repaired. The repeated independent final
+review then returned **APPROVED FOR LOCAL FRAMEWORK RELEASE**. The blocked
+review remains indexed as historical evidence; the framework is now locally
+accepted as complete.
 Production contains no Glossary terms or content and no visible surface
 behavior; its Host is inert and all Playground capabilities are DEV-only.
 The bounded Project Identity Migration is complete.
@@ -63,7 +64,7 @@ maintainer approval pending**.
 | [Theme-Ready Platform Shell Design](superpowers/specs/2026-07-13-theme-ready-platform-shell-design.md) | Implemented, Vercel Preview-verified, safe to release |
 | [Human-Friendly Math Expressions Design](superpowers/specs/2026-07-10-human-friendly-math-expressions-design.md) | Implemented and verified |
 | [Observed Convergence Order Experiment Design](superpowers/specs/2026-07-10-convergence-study-design.md) | Implemented, verified, release ready |
-| [Content-Agnostic Interactive Glossary Framework Design](superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md) | Approved design; four implementation phases complete locally; blocked-review P1/P2/P3 findings locally repaired; repeated independent review pending; production content remains deferred |
+| [Content-Agnostic Interactive Glossary Framework Design](superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md) | Implemented and locally accepted after a repeated independent final review; production content remains deferred |
 
 ## Implementation plans
 
@@ -71,7 +72,7 @@ maintainer approval pending**.
 |---|---|
 | [Theme-Ready Platform Shell Implementation Plan](superpowers/plans/2026-07-13-theme-ready-platform-shell-implementation-plan.md) | Implemented historical plan; check the final review and architecture map for current state |
 | [Numerical T-Lab Rename Migration Plan](superpowers/plans/2026-07-22-numerical-t-lab-rename-migration-plan.md) | Project Identity Migration completed and verified |
-| [Content-Agnostic Interactive Glossary Framework Implementation Plan](superpowers/plans/2026-07-23-content-agnostic-interactive-glossary-framework-implementation-plan.md) | Four planned phases complete locally; Commit 3 follow-ups accepted; Commit 4 evidence recorded; blocked-review findings locally repaired; repeated independent review pending; no production content or visible behavior |
+| [Content-Agnostic Interactive Glossary Framework Implementation Plan](superpowers/plans/2026-07-23-content-agnostic-interactive-glossary-framework-implementation-plan.md) | Fully executed locally; historical blocked-review findings closed; final verdict APPROVED FOR LOCAL FRAMEWORK RELEASE; no production content or visible behavior |
 
 ## Reviews and release evidence
 
@@ -81,7 +82,8 @@ maintainer approval pending**.
 | [Numerical T-Lab Rename Review](reviews/2026-07-22-numerical-t-lab-rename-review.md) | Project Identity Migration completed and verified |
 | [Human-Friendly Math Expressions Review](reviews/2026-07-10-human-friendly-math-expressions-review.md) | Safe to release Version 1 |
 | [Observed Convergence Order Experiment Review](reviews/2026-07-10-convergence-study-review.md) | Safe to release Version 1 |
-| [Content-Agnostic Interactive Glossary Framework Release Review](reviews/2026-07-28-content-agnostic-interactive-glossary-framework-review.md) | Historical verdict **RELEASE BLOCKED**; its P1/P2/P3 findings are locally repaired in a later commit, with repeated independent review pending |
+| [Content-Agnostic Interactive Glossary Framework Release Review](reviews/2026-07-28-content-agnostic-interactive-glossary-framework-review.md) | Historical verdict **RELEASE BLOCKED**; its P1/P2/P3 findings were later repaired and closed by the final review |
+| [Content-Agnostic Interactive Glossary Framework Final Review](reviews/2026-07-28-content-agnostic-interactive-glossary-framework-final-review.md) | Repeated independent verdict **APPROVED FOR LOCAL FRAMEWORK RELEASE**; all three historical findings closed; production content remains unauthorized |
 
 ## Feature handoffs
 
@@ -94,7 +96,7 @@ maintainer approval pending**.
   Commit 1, locally verified readonly-math prerequisite, accepted Commit 3
   lifecycle follow-ups, and the complete locally/browser-verified DEV
   Playground with production-exclusion evidence; all three blocked-review
-  findings are locally repaired, with repeated independent review pending.
+  findings are closed and the framework is locally accepted as complete.
 - [Numerical terminology and teaching-language foundation handoff](content/HANDOFF.md)
   — 29-source draft synthesis, notation/terminology decisions, current-copy
   audit, validation evidence, and maintainer-review continuation state; no
