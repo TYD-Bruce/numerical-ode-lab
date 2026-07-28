@@ -656,6 +656,23 @@ export function createPlatformGlossaryHost(
       identity: GlossaryScopeIdentity
     ): GlossaryReplacementCandidate | undefined {
       const surface = active;
+      const pending = loading;
+      if (pending?.request.identity.scope === identity) {
+        abortLoadingSurface(pending);
+        options.target.replaceChildren();
+      }
+      if (
+        watchedRequest?.identity.scope === identity &&
+        surface?.request !== watchedRequest
+      ) {
+        if (surface) {
+          clearOpenTimer();
+          unwatchTrigger();
+          watchTrigger(surface.request);
+        } else {
+          closeInternal(false);
+        }
+      }
       if (!surface || surface.request.identity.scope !== identity) {
         return undefined;
       }

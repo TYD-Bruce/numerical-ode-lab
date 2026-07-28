@@ -131,8 +131,10 @@ describe("Glossary surface runtime", () => {
   it("keeps focus on the pinned trigger and bridges only the next forward Tab", () => {
     const target = document.createElement("div");
     const trigger = document.createElement("button");
+    const following = document.createElement("button");
     trigger.textContent = "Sample parameter";
-    document.body.append(trigger, target);
+    following.textContent = "Following control";
+    document.body.append(trigger, target, following);
     trigger.focus();
     const mounted = mountGlossarySurface(target, {
       mode: "pinned",
@@ -154,6 +156,17 @@ describe("Glossary surface runtime", () => {
     );
 
     trigger.focus();
+    const laterForward = new KeyboardEvent("keydown", {
+      key: "Tab",
+      bubbles: true,
+      cancelable: true,
+    });
+    trigger.dispatchEvent(laterForward);
+    expect(laterForward.defaultPrevented).toBe(false);
+    following.focus();
+    expect(document.activeElement).toBe(following);
+
+    trigger.focus();
     const backward = new KeyboardEvent("keydown", {
       key: "Tab",
       shiftKey: true,
@@ -163,6 +176,68 @@ describe("Glossary surface runtime", () => {
     trigger.dispatchEvent(backward);
     expect(backward.defaultPrevented).toBe(false);
     mounted.dispose();
+  });
+
+  it("transfers an unconsumed Tab bridge without rearming a consumed surface", () => {
+    const target = document.createElement("div");
+    const firstTrigger = document.createElement("button");
+    const replacementTrigger = document.createElement("button");
+    const laterTrigger = document.createElement("button");
+    document.body.append(firstTrigger, replacementTrigger, laterTrigger, target);
+    const mounted = mountGlossarySurface(target, {
+      mode: "pinned",
+      request: request(firstTrigger, {
+        kind: "activate",
+        pointer: "keyboard",
+      }),
+      onClose: vi.fn(),
+      renderMath: mathFallback,
+    });
+
+    mounted.replaceTrigger?.(replacementTrigger);
+    replacementTrigger.focus();
+    const transferredForward = new KeyboardEvent("keydown", {
+      key: "Tab",
+      bubbles: true,
+      cancelable: true,
+    });
+    replacementTrigger.dispatchEvent(transferredForward);
+    expect(transferredForward.defaultPrevented).toBe(true);
+
+    mounted.replaceTrigger?.(laterTrigger);
+    mounted.updateContext({ revision: 2, terms: [] });
+    mounted.reposition(
+      { left: 20, right: 100, top: 100, bottom: 130 },
+      { width: 1000, height: 800 }
+    );
+    laterTrigger.focus();
+    const consumedForward = new KeyboardEvent("keydown", {
+      key: "Tab",
+      bubbles: true,
+      cancelable: true,
+    });
+    laterTrigger.dispatchEvent(consumedForward);
+    expect(consumedForward.defaultPrevented).toBe(false);
+    mounted.dispose();
+
+    const newCycle = mountGlossarySurface(target, {
+      mode: "pinned",
+      request: request(laterTrigger, {
+        kind: "activate",
+        pointer: "keyboard",
+      }),
+      onClose: vi.fn(),
+      renderMath: mathFallback,
+    });
+    laterTrigger.focus();
+    const rearmedForward = new KeyboardEvent("keydown", {
+      key: "Tab",
+      bubbles: true,
+      cancelable: true,
+    });
+    laterTrigger.dispatchEvent(rearmedForward);
+    expect(rearmedForward.defaultPrevented).toBe(true);
+    newCycle.dispose();
   });
 
   it("updates complete context and formula without remounting or losing focus", () => {

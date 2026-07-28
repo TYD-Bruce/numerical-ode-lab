@@ -25,8 +25,12 @@ fixtures, styles, About entry, and shortcut are DEV-only. The complete
 four-phase implementation completed its adversarial local release review on
 2026-07-28 with verdict **RELEASE BLOCKED**. One P1 pending-load
 scope-replacement defect and one substantive P2 one-shot Tab-bridge defect
-require a narrow runtime repair and regression tests before the framework can
-be locally accepted. Production content remains unauthorized.
+blocked acceptance; a DEV-only P3 recorded unbounded Playground logs. All
+three findings are now narrowly repaired with tests-first regressions, focused
+and full verification, affected browser evidence, and renewed production
+exclusion. The blocked review remains the authoritative historical verdict.
+Framework acceptance requires a repeated independent release review of the
+exact repair commit. Production content remains unauthorized.
 
 ## Current released baseline
 
@@ -79,7 +83,8 @@ implemented locally; shared surfaces implemented and locally verified in
 Commit 3; two lifecycle audit follow-ups locally verified; final conservative
 re-audit accepted; complete DEV-only Playground implemented and
 locally/browser verified; full framework release review completed with verdict
-RELEASE BLOCKED pending narrow P1/P2 repair and re-review.**
+RELEASE BLOCKED; its P1/P2/P3 findings are locally repaired, and repeated
+independent release review is pending.**
 
 ## Authoritative implementation plan
 
@@ -90,8 +95,9 @@ re-audited SAFE TO IMPLEMENT; Commit 1 accepted; readonly-math prerequisite
 implemented locally; shared surfaces implemented and locally verified in
 Commit 3; two lifecycle audit follow-ups locally verified; final conservative
 re-audit accepted; all four planned implementation phases complete locally;
-full framework release review completed with verdict RELEASE BLOCKED pending
-narrow P1/P2 repair and re-review.**
+full framework release review completed with verdict RELEASE BLOCKED; its
+P1/P2/P3 findings are locally repaired, and repeated independent release
+review is pending.**
 
 ## Approved delivery sequence
 
@@ -113,19 +119,20 @@ narrow P1/P2 repair and re-review.**
 8. Complete the full framework release review. Completed with verdict
    **RELEASE BLOCKED**.
 9. Repair the P1 pending-load scope-replacement path and P2 one-shot Tab
-   bridge, add focused regressions, and repeat the full release review.
+   bridge, bound the DEV-only logs, and add focused regressions. Complete
+   locally; repeat the full independent release review of the exact repair
+   commit.
 10. Resolve and approve the separate notation and definition foundation.
 11. Add the reviewed ODE vertical slice.
 12. Push only when explicitly requested by the maintainer.
 
 ## Current next action
 
-Authorize one narrow runtime repair task for the pending lazy-load
-scope-replacement invalidation and the pinned-card one-shot next-Tab bridge,
-with focused regressions, then rerun the full framework release review. The
-DEV-only log cap is a P3 follow-up that may be included if explicitly
-authorized. Do not begin production Glossary content, the ODE vertical slice,
-or terminology/notation integration.
+Repeat the independent full framework release review against the exact local
+repair commit. The repair invalidates stale pending scope work, consumes and
+transfers the pinned-card Tab bridge correctly, and bounds both DEV-only logs.
+Do not mark the framework accepted or begin production Glossary content, the
+ODE vertical slice, or terminology/notation integration before that review.
 
 ## Parallel content foundation
 
@@ -168,12 +175,12 @@ or review gate above. Its continuation state is
 
 ## Review gate
 
-The full Content-Agnostic Interactive Glossary Framework release review is the
-active gate. Commit 1 is accepted, the readonly-math prerequisite is locally
-verified, Commit 3 and both lifecycle follow-ups passed final conservative
-re-audit, and Commit 4 is locally/browser verified with production exclusion.
-Production Glossary terms, annotations, and visible runtime behavior remain
-absent.
+The repeated independent Content-Agnostic Interactive Glossary Framework
+release review of the exact repair commit is the active gate. The prior review
+remains **RELEASE BLOCKED** as historical evidence; its P1, P2, and P3 findings
+are locally repaired and verified but have not yet received independent
+acceptance. Production Glossary terms, annotations, and visible runtime
+behavior remain absent.
 
 ## Update rule
 

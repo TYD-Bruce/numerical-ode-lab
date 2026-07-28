@@ -38,8 +38,12 @@ re-audit verdict of SAFE TO PROCEED. Commit 4 completes the DEV-only Playground
 and production-exclusion evidence. The complete framework's 2026-07-28
 adversarial local release review returned **RELEASE BLOCKED**: a P1
 pending-load scope-replacement defect and substantive P2 one-shot Tab-bridge
-defect require narrow runtime repair, focused regressions, and repeated full
-review. Production still has no Glossary terms, annotations, or visible
+defect blocked acceptance, and the review also recorded one DEV-only P3
+unbounded-log issue. All three findings are now narrowly repaired and locally
+verified, including 1,028 passing full-suite tests and renewed production
+exclusion. The blocked review remains historical; a repeated independent
+release review of the exact repair commit is required before framework
+acceptance. Production still has no Glossary terms, annotations, or visible
 Glossary behavior: the current Lab supplies no binding, and production excludes
 the Playground. Production content and the ODE vertical slice remain
 unauthorized.
@@ -272,12 +276,11 @@ Known limitations:
 - Tutor is unavailable for Compare output.
 - Deferred MathLive and editable/Compute Engine chunks remain large.
 - Linear Algebra and PDE are not runnable Labs.
-- Content-Agnostic Interactive Glossary Framework Commit 1 is implemented and
-  accepted, the readonly-math prerequisite is locally verified, and Commit 3
-  shared surfaces are locally/browser verified with two locally verified
-  lifecycle audit follow-ups. Production initializes an inert Host but
-  contains no Glossary terms, annotations, activatable surface, Playground, or
-  visible Glossary behavior.
+- The Content-Agnostic Interactive Glossary Framework's four planned phases
+  are complete locally. Its blocked-review P1/P2/P3 findings are repaired and
+  locally verified, but repeated independent release review is pending.
+  Production initializes an inert Host but contains no Glossary terms,
+  annotations, activatable surface, Playground, or visible Glossary behavior.
 
 Contributor rules:
 
@@ -290,11 +293,9 @@ Contributor rules:
 - Keep `beforeunload` minimal and synchronous.
 - Run `npm run verify` after changes and add focused tests first.
 
-*Last updated: 2026-07-24. Project Identity Migration and prior Production
-verification remain complete. Glossary Commit 1 is accepted, the readonly-math
-accessibility prerequisite is locally verified, and Commit 3 shared surfaces
-are locally/browser verified with two locally verified lifecycle audit
-follow-ups. The final conservative re-audit of Commit 3 plus both lifecycle-fix
-commits is the exact next gate. Commit 4 has not started. Production still
-contains no Glossary terms, annotations, Playground, activatable surface, or
-visible behavior.*
+*Last updated: 2026-07-28. Project Identity Migration and prior Production
+verification remain complete. All four Glossary framework phases are complete
+locally, and the three findings from the blocked framework release review are
+locally repaired and verified. A repeated independent release review of the
+exact repair commit is the next gate. Production still contains no Glossary
+terms, annotations, Playground, activatable surface, or visible behavior.*

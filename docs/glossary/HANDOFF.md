@@ -19,9 +19,10 @@ playground`, is implemented and locally/browser verified. The complete
 four-phase framework completed its adversarial local release review on
 2026-07-28 with verdict **RELEASE BLOCKED**. The review found one P1
 pending-load scope-replacement defect, one substantive P2 one-shot Tab-bridge
-defect, and one DEV-only P3 unbounded-log issue. Narrow P1/P2 runtime repair,
-focused regressions, and a repeated full release review are required before
-local framework acceptance.
+defect, and one DEV-only P3 unbounded-log issue. All three findings are now
+narrowly repaired and locally verified. The blocked review remains historical
+and framework acceptance still requires a repeated independent release review
+of the exact repair commit.
 
 The active milestone is **Content-Agnostic Interactive Glossary Framework**.
 Production contains no Glossary terms, term annotations, activatable surface,
@@ -58,9 +59,84 @@ in-memory reproductions of both blocking runtime paths. Production exclusion
 remains proven, but the framework is not locally accepted. Production terms,
 the ODE binding, and terminology/notation integration remain unauthorized.
 
-The next gate is one separately authorized narrow repair task for both blocking
-defects, focused regressions, and a repeated full release review. The DEV log
-cap may be included only if explicitly authorized.
+The next gate is a repeated independent full framework release review of the
+exact repair commit. The repair iteration does not itself approve the
+framework.
+
+## Release-blocker repair
+
+- Starting branch: `main`
+- Starting HEAD: `cdf2ed29caf94c144fd5cd508d03d5ab135ef841`
+- Starting worktree: clean, including untracked files
+- Final repair boundary: the local commit containing this handoff, named
+  `Fix glossary framework release blockers`; its SHA is authoritative in Git
+  history and is reported after commit.
+- No remote was contacted, and nothing was pushed or deployed.
+
+Implemented corrections:
+
+- `PlatformGlossaryHost.beginScopeRerender()` now synchronously revokes a
+  watched request from the outgoing scope when that request is not the mounted
+  replacement candidate. This covers both a delayed preview and an in-flight
+  lazy surface load. A concurrently mounted unrelated surface keeps its own
+  watcher and remains authoritative. Existing generation, connection,
+  trigger-usability, and pre-/post-mount checks remain unchanged.
+- Each mounted pinned surface owns one `tabBridgeAvailable` flag. The first
+  eligible forward Tab consumes it before focus moves to Close. Shift+Tab does
+  not consume it; context updates, repositioning, focus return, and
+  post-consumption trigger replacement do not rearm it. Replacement before
+  consumption transfers the mounted flag, and a new pinned mount creates a
+  fresh arm. Mobile-sheet focus containment is unchanged.
+- The DEV Playground retains at most 100 event entries and 25 mock Tutor
+  records. Each list evicts its oldest entries independently and renders the
+  newest records in chronological order. Mock request sequence numbers remain
+  monotonic across eviction; the sequence resets only when the visible mock
+  log is explicitly cleared or the session is reset/disposed.
+
+Tests-first evidence:
+
+- The first repair gate failed exactly as intended: 5 files ran 60 tests, with
+  5 failures reproducing the stale generation-1 mount, both reusable Tab
+  paths, 101 event entries, and 26 mock records.
+- A supplemental pending-hover regression initially failed while an unrelated
+  pinned surface remained active, proving the replacement boundary also had to
+  cancel delayed outgoing-scope authority without closing newer valid work.
+- A second supplemental regression initially failed when a newer hover request
+  owned the trigger watcher while the replaced scope still owned the lazy-load
+  slot; the final invalidation preserves that newer request.
+- Final focused gate: 5 files passed, 62 tests passed. The requested
+  `glossaryAnnotation` source/test files do not exist; annotation behavior
+  remains covered through the real scope/controller/Host path.
+- Neighboring modal, Tutor, bootstrap, Lab-adapter, and loader gate: 6 files
+  passed, 47 tests passed.
+- Full `npm.cmd run verify`: 73 files passed, 1,028 tests passed; application
+  typecheck, API typecheck, and the 79-module production build passed. The only
+  warning was the pre-existing deferred large-chunk warning.
+
+Affected localhost browser evidence used only 1440 x 900. It verified pinned
+focus retention, first-Tab entry into Close, stable surface identity and ARIA
+ownership through trigger replacement, the exact 100-entry event cap plus
+oldest-entry eviction, no horizontal overflow, and a clean console. The
+reusable/post-consumption Tab path and the deferred-load replacement race are
+deterministic regression-test evidence. No full responsive matrix was repeated,
+and the controlled local server was stopped afterward.
+
+Fresh production evidence:
+
+- the entry dynamically imports only the complete ODE route, Tutor panel, and
+  Glossary surface runtime;
+- the manifest contains no DEV keys and emitted production text contains zero
+  requested Playground/development markers;
+- the production core remains empty and ODE runtime source contains no
+  Glossary binding;
+- the entry is 52,725 raw / 16,274 gzip bytes;
+- the lazy surface is 6,769 raw / 2,450 gzip bytes, a bounded increase of 34
+  raw / 25 gzip bytes from the blocked-review baseline.
+
+No production terms, definitions, notation, aliases, annotations, ODE binding,
+real Tutor request/queue behavior, Store/persistence state, numerical behavior,
+CSS, packages, lockfile, API, Vite/Vercel configuration, private reference,
+deployment, or remote state changed.
 
 ## Commit 1 implementation baseline
 
@@ -942,6 +1018,8 @@ verification confirmed:
 
 ## Exact next action
 
-Full Content-Agnostic Interactive Glossary Framework release review using the
-committed four-phase implementation, production manifest, browser evidence,
-and documentation. Do not begin production Glossary content yet.
+Repeat the independent full Content-Agnostic Interactive Glossary Framework
+release review against the exact `Fix glossary framework release blockers`
+commit. Do not mark the framework accepted or begin production Glossary
+content, the ODE vertical slice, or terminology/notation integration before
+that review.

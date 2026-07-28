@@ -1,13 +1,22 @@
 // @vitest-environment jsdom
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { LabGlossaryBinding } from "../glossary/glossaryController";
+import {
+  createLabGlossaryBinding,
+  type LabGlossaryBinding,
+} from "../glossary/glossaryController";
 import type {
   GlossaryHostPort,
   GlossaryScopeContextSource,
   GlossarySurfaceRequest,
 } from "../glossary/glossaryRuntimeTypes";
-import { defineGlossaryScopeId, defineGlossaryTermId } from "../glossary/glossaryBuilders";
+import {
+  createGlossaryValidationPolicy,
+  defineGlossaryEntry,
+  defineGlossaryScopeId,
+  defineGlossaryTermId,
+} from "../glossary/glossaryBuilders";
+import { createGlossaryRegistry } from "../glossary/glossaryRegistry";
 import type {
   GlossarySurfaceRuntimeModule,
   MountedGlossarySurface,
@@ -72,6 +81,30 @@ function controlledMutableIdentityBinding() {
       return port;
     },
   };
+}
+
+function actualBinding() {
+  const policy = createGlossaryValidationPolicy({ mode: "strict" });
+  return createLabGlossaryBinding({
+    moduleId: "ode",
+    registry: createGlossaryRegistry({
+      coreEntries: [
+        defineGlossaryEntry(
+          {
+            id: "sample_term",
+            label: "Sample parameter",
+            aliases: [],
+            definition: "Preview definition.",
+            whyItMatters: "Complete explanation.",
+            tutorTopic: "sample",
+          },
+          policy
+        )!,
+      ],
+      policy,
+    }),
+    policy,
+  });
 }
 
 function surfaceRequest(
@@ -486,6 +519,222 @@ describe("Platform Glossary Host", () => {
     expect(firstTrigger.hasAttribute("aria-expanded")).toBe(false);
     expect(replacementTrigger.getAttribute("aria-expanded")).toBe("true");
     expect(runtime.dispose).not.toHaveBeenCalled();
+  });
+
+  it("invalidates pending scope authority across consecutive replacements before allowing current work", async () => {
+    let resolve!: (module: GlossarySurfaceRuntimeModule) => void;
+    const pending = new Promise<GlossarySurfaceRuntimeModule>((done) => {
+      resolve = done;
+    });
+    const target = document.createElement("div");
+    document.body.append(target);
+    const runtime = surfaceModule();
+    const loadSurface = vi.fn(() => pending);
+    const binding = actualBinding();
+    const host = createPlatformGlossaryHost({
+      target,
+      loadSurface,
+      isMobile: () => false,
+    });
+    host.connect(binding);
+
+    const originalScope = binding.createScope({ id: scopeId });
+    const original = originalScope.createTerm({
+      termId,
+      display: "Sample parameter",
+    });
+    expect(original.kind).toBe("interactive");
+    if (original.kind !== "interactive") {
+      throw new Error("Expected an interactive original term.");
+    }
+    document.body.append(original.node);
+    original.node.click();
+    expect(loadSurface).toHaveBeenCalledOnce();
+
+    const firstReplacement = binding.beginScopeRerender({ id: scopeId });
+    const intermediate = firstReplacement.scope.createTerm({
+      termId,
+      display: "Sample parameter",
+    });
+    expect(intermediate.kind).toBe("interactive");
+    if (intermediate.kind !== "interactive") {
+      throw new Error("Expected an interactive intermediate term.");
+    }
+    document.body.append(intermediate.node);
+    firstReplacement.commit();
+
+    const secondReplacement = binding.beginScopeRerender({ id: scopeId });
+    const current = secondReplacement.scope.createTerm({
+      termId,
+      display: "Sample parameter",
+    });
+    expect(current.kind).toBe("interactive");
+    if (current.kind !== "interactive") {
+      throw new Error("Expected an interactive current term.");
+    }
+    document.body.append(current.node);
+    secondReplacement.commit();
+
+    expect(original.node.isConnected).toBe(true);
+    expect(intermediate.node.isConnected).toBe(true);
+    resolve(runtime.module);
+    await pending;
+    await Promise.resolve();
+
+    expect(runtime.mount).not.toHaveBeenCalled();
+    expect(target.childElementCount).toBe(0);
+    expect(original.node.hasAttribute("aria-expanded")).toBe(false);
+    expect(intermediate.node.hasAttribute("aria-expanded")).toBe(false);
+    expect(current.node.hasAttribute("aria-expanded")).toBe(false);
+
+    current.node.click();
+    await vi.waitFor(() => expect(runtime.mount).toHaveBeenCalledOnce());
+    expect(runtime.mount.mock.calls[0]![1].request.trigger).toBe(current.node);
+    expect(current.node.getAttribute("aria-expanded")).toBe("true");
+    host.dispose();
+    binding.dispose();
+  });
+
+  it("invalidates a delayed preview request when its scope enters replacement", async () => {
+    vi.useFakeTimers();
+    const target = document.createElement("div");
+    document.body.append(target);
+    const runtime = surfaceModule();
+    const loadSurface = vi.fn(async () => runtime.module);
+    const binding = actualBinding();
+    const host = createPlatformGlossaryHost({
+      target,
+      loadSurface,
+      isMobile: () => false,
+      canHover: () => true,
+    });
+    host.connect(binding);
+
+    const activeScope = binding.createScope({
+      id: defineGlossaryScopeId("active_scope")!,
+    });
+    const activeTerm = activeScope.createTerm({
+      termId,
+      display: "Sample parameter",
+    });
+    expect(activeTerm.kind).toBe("interactive");
+    if (activeTerm.kind !== "interactive") {
+      throw new Error("Expected an interactive active term.");
+    }
+    document.body.append(activeTerm.node);
+    activeTerm.node.click();
+    await vi.runAllTimersAsync();
+    expect(loadSurface).toHaveBeenCalledOnce();
+    expect(runtime.mount).toHaveBeenCalledOnce();
+
+    const originalScope = binding.createScope({ id: scopeId });
+    const original = originalScope.createTerm({
+      termId,
+      display: "Sample parameter",
+    });
+    expect(original.kind).toBe("interactive");
+    if (original.kind !== "interactive") {
+      throw new Error("Expected an interactive original term.");
+    }
+    document.body.append(original.node);
+    original.node.dispatchEvent(new PointerEvent("pointerenter"));
+
+    const transaction = binding.beginScopeRerender({ id: scopeId });
+    const current = transaction.scope.createTerm({
+      termId,
+      display: "Sample parameter",
+    });
+    expect(current.kind).toBe("interactive");
+    if (current.kind !== "interactive") {
+      throw new Error("Expected an interactive current term.");
+    }
+    document.body.append(current.node);
+    transaction.commit();
+
+    await vi.advanceTimersByTimeAsync(220);
+    expect(loadSurface).toHaveBeenCalledOnce();
+    expect(runtime.mount).toHaveBeenCalledOnce();
+    expect(activeTerm.node.getAttribute("aria-expanded")).toBe("true");
+
+    current.node.focus();
+    await vi.runAllTimersAsync();
+    expect(loadSurface).toHaveBeenCalledOnce();
+    expect(runtime.mount).toHaveBeenCalledTimes(2);
+    expect(runtime.mount.mock.calls[1]![1].request.trigger).toBe(current.node);
+    host.dispose();
+    binding.dispose();
+  });
+
+  it("invalidates a replaced pending load while preserving a newer watched request", async () => {
+    vi.useFakeTimers();
+    let resolve!: (module: GlossarySurfaceRuntimeModule) => void;
+    const pending = new Promise<GlossarySurfaceRuntimeModule>((done) => {
+      resolve = done;
+    });
+    const target = document.createElement("div");
+    document.body.append(target);
+    const runtime = surfaceModule();
+    const loadSurface = vi.fn(() => pending);
+    const binding = actualBinding();
+    const host = createPlatformGlossaryHost({
+      target,
+      loadSurface,
+      isMobile: () => false,
+      canHover: () => true,
+    });
+    host.connect(binding);
+
+    const replacedScope = binding.createScope({ id: scopeId });
+    const replaced = replacedScope.createTerm({
+      termId,
+      display: "Sample parameter",
+    });
+    expect(replaced.kind).toBe("interactive");
+    if (replaced.kind !== "interactive") {
+      throw new Error("Expected an interactive replaced term.");
+    }
+    document.body.append(replaced.node);
+    replaced.node.click();
+    expect(loadSurface).toHaveBeenCalledOnce();
+
+    const newerScope = binding.createScope({
+      id: defineGlossaryScopeId("newer_scope")!,
+    });
+    const newer = newerScope.createTerm({
+      termId,
+      display: "Sample parameter",
+    });
+    expect(newer.kind).toBe("interactive");
+    if (newer.kind !== "interactive") {
+      throw new Error("Expected an interactive newer term.");
+    }
+    document.body.append(newer.node);
+    newer.node.dispatchEvent(new PointerEvent("pointerenter"));
+
+    const transaction = binding.beginScopeRerender({ id: scopeId });
+    const current = transaction.scope.createTerm({
+      termId,
+      display: "Sample parameter",
+    });
+    expect(current.kind).toBe("interactive");
+    if (current.kind !== "interactive") {
+      throw new Error("Expected an interactive current term.");
+    }
+    document.body.append(current.node);
+    transaction.commit();
+
+    resolve(runtime.module);
+    await pending;
+    await Promise.resolve();
+    expect(runtime.mount).not.toHaveBeenCalled();
+    expect(replaced.node.hasAttribute("aria-expanded")).toBe(false);
+
+    await vi.advanceTimersByTimeAsync(220);
+    expect(runtime.mount).toHaveBeenCalledOnce();
+    expect(runtime.mount.mock.calls[0]![1].request.trigger).toBe(newer.node);
+    expect(newer.node.getAttribute("aria-expanded")).toBe("true");
+    host.dispose();
+    binding.dispose();
   });
 
   it("closes a transferred pinned surface with Escape and restores replacement focus", async () => {

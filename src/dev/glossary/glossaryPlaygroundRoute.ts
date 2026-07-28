@@ -34,6 +34,9 @@ import "./glossaryPlayground.css";
 
 let fixtureInputSequence = 0;
 
+const MAX_EVENT_LOG_ENTRIES = 100;
+const MAX_MOCK_TUTOR_LOG_ENTRIES = 25;
+
 export interface GlossaryPlaygroundRouteOptions {
   readonly glossaryHost: PlatformGlossaryHost;
   readonly onMockTutorRequest?: (termId: string) => void;
@@ -195,6 +198,7 @@ function mountPlaygroundSession(
   let pendingInPlaceUpdate: number | undefined;
   let externalModal: HTMLElement | undefined;
   let externalModalClose: (() => void) | undefined;
+  let mockTutorSequence = 0;
   const cleanup = new Set<() => void>();
   const events: string[] = [];
   const mockTutorRecords: MockTutorRecord[] = [];
@@ -287,6 +291,9 @@ function mountPlaygroundSession(
   const log = (message: string): void => {
     if (!active) return;
     events.push(message);
+    if (events.length > MAX_EVENT_LOG_ENTRIES) {
+      events.splice(0, events.length - MAX_EVENT_LOG_ENTRIES);
+    }
     renderEvents();
   };
   const renderMockTutorLog = (): void => {
@@ -954,6 +961,7 @@ function mountPlaygroundSession(
   protectOpenSurface(clearMockTutor);
   addListener(clearMockTutor, "click", () => {
     mockTutorRecords.splice(0);
+    mockTutorSequence = 0;
     mockStatus.textContent =
       "Development mock ready; no request has been recorded.";
     renderMockTutorLog();
@@ -1119,7 +1127,7 @@ function mountPlaygroundSession(
     }: Parameters<GlossaryTutorHandoff["askTerm"]>[0]) {
       if (!active) return { status: "cancelled" as const };
       const record: MockTutorRecord = Object.freeze({
-        sequence: mockTutorRecords.length + 1,
+        sequence: ++mockTutorSequence,
         kind: request.kind,
         termId: String(request.termId),
         moduleId: request.moduleId,
@@ -1130,6 +1138,12 @@ function mountPlaygroundSession(
         preserveDraft,
       });
       mockTutorRecords.push(record);
+      if (mockTutorRecords.length > MAX_MOCK_TUTOR_LOG_ENTRIES) {
+        mockTutorRecords.splice(
+          0,
+          mockTutorRecords.length - MAX_MOCK_TUTOR_LOG_ENTRIES
+        );
+      }
       options.onMockTutorRequest?.(record.termId);
       mockStatus.textContent = `Development mock recorded ${record.termId}; no network request was sent.`;
       renderMockTutorLog();
@@ -1155,6 +1169,7 @@ function mountPlaygroundSession(
       context.dispose();
       events.splice(0);
       mockTutorRecords.splice(0);
+      mockTutorSequence = 0;
       options.target.replaceChildren();
     },
   };

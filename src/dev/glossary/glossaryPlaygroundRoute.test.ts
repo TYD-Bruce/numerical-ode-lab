@@ -487,6 +487,123 @@ describe("complete Glossary Playground route", () => {
     mounted.dispose();
   });
 
+  it("keeps only the newest 100 route-local event log entries", () => {
+    const routeTarget = document.createElement("main");
+    const hostTarget = document.createElement("div");
+    document.body.append(routeTarget, hostTarget);
+    const glossaryHost = createPlatformGlossaryHost({
+      target: hostTarget,
+      loadSurface: () => import("../../glossary/surface/glossarySurfaceRuntime"),
+      isMobile: () => false,
+    });
+    const mounted = createGlossaryPlaygroundRoute({ glossaryHost }).mount({
+      target: routeTarget,
+      navigate: vi.fn(),
+      location: {
+        pathname: "/__dev/glossary-playground",
+        search: "",
+        hash: "",
+      },
+    });
+    const cycle = routeTarget.querySelector<HTMLButtonElement>(
+      "[data-cycle-glossary-context]"
+    )!;
+    const eventLog = routeTarget.querySelector<HTMLOListElement>(
+      "[data-playground-log]"
+    )!;
+
+    for (let index = 0; index < 99; index += 1) cycle.click();
+    expect(eventLog.children).toHaveLength(100);
+    expect(eventLog.firstElementChild?.textContent).toContain(
+      "Mounted one development Glossary binding."
+    );
+
+    cycle.click();
+    expect(eventLog.children).toHaveLength(100);
+    expect(eventLog.firstElementChild?.textContent).not.toContain(
+      "Mounted one development Glossary binding."
+    );
+    expect(eventLog.lastElementChild?.textContent).toContain(
+      "Cycled dynamic context"
+    );
+    mounted.dispose();
+  });
+
+  it("bounds mock Tutor records independently, preserves sequence order, and clears them on reset", async () => {
+    const routeTarget = document.createElement("main");
+    const hostTarget = document.createElement("div");
+    document.body.append(routeTarget, hostTarget);
+    const glossaryHost = createPlatformGlossaryHost({
+      target: hostTarget,
+      loadSurface: () => import("../../glossary/surface/glossarySurfaceRuntime"),
+      isMobile: () => false,
+    });
+    const mounted = createGlossaryPlaygroundRoute({ glossaryHost }).mount({
+      target: routeTarget,
+      navigate: vi.fn(),
+      location: {
+        pathname: "/__dev/glossary-playground",
+        search: "",
+        hash: "",
+      },
+    });
+    const dynamic = routeTarget.querySelector<HTMLButtonElement>(
+      '[data-fixture-instance="dynamic-primary"]'
+    )!;
+    const mockLog = routeTarget.querySelector<HTMLOListElement>(
+      "[data-mock-tutor-log]"
+    )!;
+
+    for (let sequence = 1; sequence <= 25; sequence += 1) {
+      dynamic.click();
+      await vi.waitFor(() =>
+        expect(
+          hostTarget.querySelector<HTMLButtonElement>("[data-glossary-ask]")
+        ).not.toBeNull()
+      );
+      hostTarget
+        .querySelector<HTMLButtonElement>("[data-glossary-ask]")!
+        .click();
+      await vi.waitFor(() =>
+        expect(mockLog.children).toHaveLength(sequence)
+      );
+    }
+    expect(mockLog.firstElementChild?.textContent).toContain("#1;");
+    expect(mockLog.lastElementChild?.textContent).toContain("#25;");
+
+    dynamic.click();
+    await vi.waitFor(() =>
+      expect(
+        hostTarget.querySelector<HTMLButtonElement>("[data-glossary-ask]")
+      ).not.toBeNull()
+    );
+    hostTarget
+      .querySelector<HTMLButtonElement>("[data-glossary-ask]")!
+      .click();
+    await vi.waitFor(() => expect(mockLog.children).toHaveLength(25));
+    expect(mockLog.firstElementChild?.textContent).toContain("#2;");
+    expect(mockLog.lastElementChild?.textContent).toContain("#26;");
+    expect(
+      routeTarget.querySelector("[data-playground-log]")?.children.length
+    ).toBeLessThanOrEqual(100);
+
+    routeTarget.querySelector<HTMLButtonElement>(
+      "[data-clear-mock-tutor-log]"
+    )!.click();
+    expect(mockLog.textContent).toContain("No mock requests yet.");
+
+    routeTarget.querySelector<HTMLButtonElement>(
+      "[data-reset-glossary-fixtures]"
+    )!.click();
+    expect(
+      routeTarget.querySelector("[data-playground-log]")?.children
+    ).toHaveLength(1);
+    expect(
+      routeTarget.querySelector("[data-mock-tutor-log]")?.textContent
+    ).toContain("No mock requests yet.");
+    mounted.dispose();
+  }, 15_000);
+
   it("uses structured mock Tutor logging, clears it, navigates away, and removes all route authority on disposal", async () => {
     const routeTarget = document.createElement("main");
     const hostTarget = document.createElement("div");

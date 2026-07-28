@@ -84,6 +84,7 @@ export function mountGlossarySurface(
   let latestSnapshot: GlossaryScopeSnapshot | undefined;
   let formulaHandle: ReadonlyMathHandle | undefined;
   let currentTrigger = options.request.trigger;
+  let tabBridgeAvailable = options.mode === "pinned";
 
   if (options.mode === "preview") {
     root.setAttribute("role", "tooltip");
@@ -244,6 +245,7 @@ export function mountGlossarySurface(
   const onTriggerTab = (event: KeyboardEvent): void => {
     if (
       disposed ||
+      !tabBridgeAvailable ||
       options.mode !== "pinned" ||
       event.key !== "Tab" ||
       event.shiftKey ||
@@ -255,6 +257,7 @@ export function mountGlossarySurface(
       'button:not([disabled]), [href], [tabindex]:not([tabindex="-1"])'
     );
     if (!first) return;
+    tabBridgeAvailable = false;
     event.preventDefault();
     focusWithoutScroll(first);
   };
@@ -350,6 +353,7 @@ export function mountGlossarySurface(
     dispose(): void {
       if (disposed) return;
       disposed = true;
+      tabBridgeAvailable = false;
       formulaHandle?.dispose();
       document.removeEventListener("keydown", onEscape);
       document.removeEventListener("pointerdown", onOutsidePointer);
