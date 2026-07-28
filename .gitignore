@@ -12,3 +12,4 @@ AGENTS.override.md
 # Private local reference material
 references/private/*
 !references/private/.gitkeep
+references/derived/

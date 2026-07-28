@@ -110,6 +110,20 @@ lifecycle` and `Remove deferred Tutor auto-restore`. Do not begin Commit 4,
 `Complete glossary framework playground`, before that re-audit and maintainer
 approval.
 
+## Parallel content foundation
+
+A private-source-reviewed terminology, notation, teaching-voice, Glossary
+candidate, and current-copy foundation is drafted under
+[`docs/content/`](docs/content/). It processed all 29 admitted sources and now
+awaits maintainer review, beginning with nine explicit decision-required
+conflicts. The package is planning evidence only: it publishes no production
+term, definition, annotation, or notation migration and authorizes no runtime
+copy change.
+
+This parallel draft does not alter the active milestone, current next action,
+or review gate above. Its continuation state is
+[the content-foundation handoff](docs/content/HANDOFF.md).
+
 ## Current production behavior
 
 - The Platform Shell is implemented and available.

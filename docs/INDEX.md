@@ -28,6 +28,27 @@ The GitHub repositories, remotes, existing Vercel project, Git integration,
 Preview, Production deployment, canonical domain, and canonical local
 workspace are migrated and verified.
 
+A parallel private-source-reviewed terminology and teaching-language
+foundation is now drafted for maintainer review. It does not change the active
+Glossary framework review gate, publish production terms, or authorize runtime
+copy changes.
+
+## Content foundation drafts
+
+All documents in this section have status **Private-source-reviewed draft;
+maintainer approval pending**.
+
+| Document | Purpose |
+|---|---|
+| [Content Source Policy](content/CONTENT_SOURCE_POLICY.md) | Abstract source keys, evidence priority, conflicts, locators, copyright, and approval lifecycle |
+| [Numerical Terminology Standard](content/NUMERICAL_TERMINOLOGY_STANDARD.md) | Complete merged candidate set admitted by the bounded review |
+| [Numerical Notation Standard](content/NUMERICAL_NOTATION_STANDARD.md) | Proposed notation conventions and unresolved choices |
+| [Teaching Voice](content/TEACHING_VOICE.md) | Learner-facing language, warnings, errors, results, and Tutor tone |
+| [Glossary Catalog](content/GLOSSARY_CATALOG.md) | Planning catalog for reviewed candidate terms; not runtime data |
+| [Project Copy Audit](content/PROJECT_COPY_AUDIT.md) | Current-copy evidence and staged A–F rewrite plan |
+| [Terminology Decisions](content/TERMINOLOGY_DECISIONS.md) | Aligned distinctions, provisional resolutions, and nine maintainer decisions |
+| [Content Foundation Handoff](content/HANDOFF.md) | Coverage, counts, validation, limitations, and continuation gate |
+
 ## Product and feature specifications
 
 | Document | Status |
@@ -65,6 +86,10 @@ workspace are migrated and verified.
   Commit 1, locally verified readonly-math prerequisite, and locally/browser
   verified Commit 3 continuation with two locally verified lifecycle audit
   follow-ups pending final conservative re-audit.
+- [Numerical terminology and teaching-language foundation handoff](content/HANDOFF.md)
+  — 29-source draft synthesis, notation/terminology decisions, current-copy
+  audit, validation evidence, and maintainer-review continuation state; no
+  production content or runtime change.
 - [Project Rename handoff](project-rename/HANDOFF.md) — completed Project
   Identity Migration evidence, including the canonical local workspace reopen.
 
