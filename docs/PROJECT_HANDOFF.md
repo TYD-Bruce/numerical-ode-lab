@@ -2,7 +2,7 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
-**Status (2026-07-24):** Numerical T-Lab is locally verified and
+**Status (2026-07-28):** Numerical T-Lab is locally verified and
 Production-verified at `https://numerical-t-lab.vercel.app/`. The GitHub
 repositories, Git remotes, existing Vercel project, Git integration, and
 canonical domain use the Numerical T-Lab identity. The local workspace rename
@@ -32,14 +32,17 @@ is approved and committed. Commit 1, the content-agnostic Glossary model and
 scope lifecycle, is implemented and accepted after conservative audit.
 The readonly-math accessibility prerequisite is locally verified. Commit 3
 shared Host/surface/modal infrastructure and a minimal DEV-only Playground are
-implemented and locally/browser verified but not deployed. Its two P1
-lifecycle findings and one P2 copy finding have a locally verified follow-up;
-the second re-audit's deferred Tutor restore and pre-mount abort findings have
-a second locally verified lifecycle follow-up. Production still has no
-Glossary terms, annotations, or visible Glossary behavior: the current Lab
-supplies no binding, and production excludes the Playground. The exact next
-gate is the final conservative re-audit of Commit 3 plus both lifecycle-fix
-commits; Commit 4 remains unauthorized.
+implemented and locally/browser verified but not deployed. Its prior lifecycle
+audit findings have locally verified follow-ups and a final conservative
+re-audit verdict of SAFE TO PROCEED. Commit 4 completes the DEV-only Playground
+and production-exclusion evidence. The complete framework's 2026-07-28
+adversarial local release review returned **RELEASE BLOCKED**: a P1
+pending-load scope-replacement defect and substantive P2 one-shot Tab-bridge
+defect require narrow runtime repair, focused regressions, and repeated full
+review. Production still has no Glossary terms, annotations, or visible
+Glossary behavior: the current Lab supplies no binding, and production excludes
+the Playground. Production content and the ODE vertical slice remain
+unauthorized.
 
 ## 2. Verification baseline
 

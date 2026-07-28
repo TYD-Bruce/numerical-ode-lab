@@ -16,7 +16,12 @@ pre-mount-abort follow-up is locally implemented and verified. The final
 conservative re-audit of Commit 3 and both follow-ups returned **SAFE TO
 PROCEED** with `P0 = P1 = P2 = P3 = 0`. Commit 4, `Complete glossary framework
 playground`, is implemented and locally/browser verified. The complete
-four-phase framework now awaits one full release review.
+four-phase framework completed its adversarial local release review on
+2026-07-28 with verdict **RELEASE BLOCKED**. The review found one P1
+pending-load scope-replacement defect, one substantive P2 one-shot Tab-bridge
+defect, and one DEV-only P3 unbounded-log issue. Narrow P1/P2 runtime repair,
+focused regressions, and a repeated full release review are required before
+local framework acceptance.
 
 The active milestone is **Content-Agnostic Interactive Glossary Framework**.
 Production contains no Glossary terms, term annotations, activatable surface,
@@ -30,6 +35,32 @@ feature.
 The repository-grounded planning iteration is complete. The exact plan is:
 
 `docs/superpowers/plans/2026-07-23-content-agnostic-interactive-glossary-framework-implementation-plan.md`
+
+## Full framework release review
+
+The authoritative blocked review is:
+
+`docs/reviews/2026-07-28-content-agnostic-interactive-glossary-framework-review.md`
+
+Its exact verdict is **RELEASE BLOCKED**:
+
+- P0: 0
+- P1: 1 — a pending lazy surface can mount for a disposed scope when a
+  replacement transaction commits while the obsolete trigger remains
+  connected;
+- P2: 1 — the pinned-card next-Tab bridge is not consumed after its first use;
+- P3: 1 — Playground event and mock-request logs are unbounded per mount.
+
+Independent evidence included 199/199 focused tests, 1,022/1,022 full tests,
+both TypeScript checks, a fresh 79-module manifest build, zero production DEV
+markers, development and production localhost browser matrices, and direct
+in-memory reproductions of both blocking runtime paths. Production exclusion
+remains proven, but the framework is not locally accepted. Production terms,
+the ODE binding, and terminology/notation integration remain unauthorized.
+
+The next gate is one separately authorized narrow repair task for both blocking
+defects, focused regressions, and a repeated full release review. The DEV log
+cap may be included only if explicitly authorized.
 
 ## Commit 1 implementation baseline
 

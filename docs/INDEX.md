@@ -22,7 +22,10 @@ verified, and Commit 3 shared surfaces are implemented and locally/browser
 verified with two lifecycle follow-ups accepted by final conservative
 re-audit. Commit 4 completes the DEV-only Playground, development controls,
 About entry, shortcut, fixture matrix, and production-exclusion evidence. The
-four-phase implementation now awaits full framework release review.
+four-phase implementation completed its 2026-07-28 full framework release
+review with verdict **RELEASE BLOCKED**. A P1 pending-load scope-replacement
+defect and substantive P2 one-shot Tab-bridge defect require narrow repair and
+re-review before local acceptance.
 Production contains no Glossary terms or content and no visible surface
 behavior; its Host is inert and all Playground capabilities are DEV-only.
 The bounded Project Identity Migration is complete.
@@ -58,7 +61,7 @@ maintainer approval pending**.
 | [Theme-Ready Platform Shell Design](superpowers/specs/2026-07-13-theme-ready-platform-shell-design.md) | Implemented, Vercel Preview-verified, safe to release |
 | [Human-Friendly Math Expressions Design](superpowers/specs/2026-07-10-human-friendly-math-expressions-design.md) | Implemented and verified |
 | [Observed Convergence Order Experiment Design](superpowers/specs/2026-07-10-convergence-study-design.md) | Implemented, verified, release ready |
-| [Content-Agnostic Interactive Glossary Framework Design](superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md) | Approved design; four implementation phases complete locally; production content remains deferred; full framework release review pending |
+| [Content-Agnostic Interactive Glossary Framework Design](superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md) | Approved design; four implementation phases complete locally; 2026-07-28 release review blocked pending narrow P1/P2 repair; production content remains deferred |
 
 ## Implementation plans
 
@@ -66,7 +69,7 @@ maintainer approval pending**.
 |---|---|
 | [Theme-Ready Platform Shell Implementation Plan](superpowers/plans/2026-07-13-theme-ready-platform-shell-implementation-plan.md) | Implemented historical plan; check the final review and architecture map for current state |
 | [Numerical T-Lab Rename Migration Plan](superpowers/plans/2026-07-22-numerical-t-lab-rename-migration-plan.md) | Project Identity Migration completed and verified |
-| [Content-Agnostic Interactive Glossary Framework Implementation Plan](superpowers/plans/2026-07-23-content-agnostic-interactive-glossary-framework-implementation-plan.md) | Four planned implementation phases complete locally; Commit 3 follow-ups accepted; Commit 4 browser/build/production-exclusion evidence recorded; no production content or visible behavior; full framework release review pending |
+| [Content-Agnostic Interactive Glossary Framework Implementation Plan](superpowers/plans/2026-07-23-content-agnostic-interactive-glossary-framework-implementation-plan.md) | Four planned implementation phases complete locally; Commit 3 follow-ups accepted; Commit 4 evidence recorded; 2026-07-28 release review blocked pending narrow P1/P2 repair; no production content or visible behavior |
 
 ## Reviews and release evidence
 
@@ -76,6 +79,7 @@ maintainer approval pending**.
 | [Numerical T-Lab Rename Review](reviews/2026-07-22-numerical-t-lab-rename-review.md) | Project Identity Migration completed and verified |
 | [Human-Friendly Math Expressions Review](reviews/2026-07-10-human-friendly-math-expressions-review.md) | Safe to release Version 1 |
 | [Observed Convergence Order Experiment Review](reviews/2026-07-10-convergence-study-review.md) | Safe to release Version 1 |
+| [Content-Agnostic Interactive Glossary Framework Release Review](reviews/2026-07-28-content-agnostic-interactive-glossary-framework-review.md) | **RELEASE BLOCKED** — P1 pending-load scope replacement and P2 one-shot Tab bridge require repair and re-review |
 
 ## Feature handoffs
 
@@ -87,8 +91,8 @@ maintainer approval pending**.
   — approved design, corrected and re-audited implementation plan, accepted
   Commit 1, locally verified readonly-math prerequisite, accepted Commit 3
   lifecycle follow-ups, and the complete locally/browser-verified DEV
-  Playground with production-exclusion evidence; full framework release
-  review is next.
+  Playground with production-exclusion evidence; the 2026-07-28 release review
+  is blocked pending narrow P1/P2 repair and re-review.
 - [Numerical terminology and teaching-language foundation handoff](content/HANDOFF.md)
   — 29-source draft synthesis, notation/terminology decisions, current-copy
   audit, validation evidence, and maintainer-review continuation state; no

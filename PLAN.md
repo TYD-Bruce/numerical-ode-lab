@@ -22,7 +22,11 @@ Production still contains no Glossary terms, annotations, or visible Glossary
 behavior: the Platform Host remains inert because the current Lab exposes no
 Glossary binding, and the complete committed Playground, development controls,
 fixtures, styles, About entry, and shortcut are DEV-only. The complete
-four-phase implementation now awaits one full framework release review.
+four-phase implementation completed its adversarial local release review on
+2026-07-28 with verdict **RELEASE BLOCKED**. One P1 pending-load
+scope-replacement defect and one substantive P2 one-shot Tab-bridge defect
+require a narrow runtime repair and regression tests before the framework can
+be locally accepted. Production content remains unauthorized.
 
 ## Current released baseline
 
@@ -74,7 +78,8 @@ Status: **Approved design; Commit 1 accepted; readonly-math prerequisite
 implemented locally; shared surfaces implemented and locally verified in
 Commit 3; two lifecycle audit follow-ups locally verified; final conservative
 re-audit accepted; complete DEV-only Playground implemented and
-locally/browser verified; full framework release review pending.**
+locally/browser verified; full framework release review completed with verdict
+RELEASE BLOCKED pending narrow P1/P2 repair and re-review.**
 
 ## Authoritative implementation plan
 
@@ -85,7 +90,8 @@ re-audited SAFE TO IMPLEMENT; Commit 1 accepted; readonly-math prerequisite
 implemented locally; shared surfaces implemented and locally verified in
 Commit 3; two lifecycle audit follow-ups locally verified; final conservative
 re-audit accepted; all four planned implementation phases complete locally;
-full framework release review pending.**
+full framework release review completed with verdict RELEASE BLOCKED pending
+narrow P1/P2 repair and re-review.**
 
 ## Approved delivery sequence
 
@@ -104,15 +110,22 @@ full framework release review pending.**
    and accepted by final conservative re-audit.
 7. Complete the development Glossary Playground. Complete locally and
    browser-verified; production-exclusion audit passed.
-8. Complete the separate notation and definition foundation.
-9. Add the reviewed ODE vertical slice.
-10. Push only when explicitly requested by the maintainer.
+8. Complete the full framework release review. Completed with verdict
+   **RELEASE BLOCKED**.
+9. Repair the P1 pending-load scope-replacement path and P2 one-shot Tab
+   bridge, add focused regressions, and repeat the full release review.
+10. Resolve and approve the separate notation and definition foundation.
+11. Add the reviewed ODE vertical slice.
+12. Push only when explicitly requested by the maintainer.
 
 ## Current next action
 
-Full Content-Agnostic Interactive Glossary Framework release review using the
-committed four-phase implementation, production manifest, browser evidence,
-and documentation. Do not begin production Glossary content yet.
+Authorize one narrow runtime repair task for the pending lazy-load
+scope-replacement invalidation and the pinned-card one-shot next-Tab bridge,
+with focused regressions, then rerun the full framework release review. The
+DEV-only log cap is a P3 follow-up that may be included if explicitly
+authorized. Do not begin production Glossary content, the ODE vertical slice,
+or terminology/notation integration.
 
 ## Parallel content foundation
 
