@@ -15,11 +15,14 @@ lifecycle defects and one P2 copy defect (`P0 = 0`); the narrow follow-up is
 locally implemented and verified. The second conservative re-audit then found
 the P1 deferred Tutor restore leak and the P2 pre-mount abort cleanup defect;
 both are fixed and locally verified in a second narrow lifecycle follow-up.
+The final conservative re-audit of Commit 3 and both follow-ups returned
+**SAFE TO PROCEED** with `P0 = P1 = P2 = P3 = 0`. Commit 4, `Complete
+glossary framework playground`, is implemented and locally/browser verified.
 Production still contains no Glossary terms, annotations, or visible Glossary
 behavior: the Platform Host remains inert because the current Lab exposes no
-Glossary binding, and the committed Playground is DEV-only. Commit 3 and both
-lifecycle-fix commits now await final conservative re-audit. Commit 4 remains
-unauthorized.
+Glossary binding, and the complete committed Playground, development controls,
+fixtures, styles, About entry, and shortcut are DEV-only. The complete
+four-phase implementation now awaits one full framework release review.
 
 ## Current released baseline
 
@@ -70,7 +73,8 @@ loading while keeping formal mathematical content separate.
 Status: **Approved design; Commit 1 accepted; readonly-math prerequisite
 implemented locally; shared surfaces implemented and locally verified in
 Commit 3; two lifecycle audit follow-ups locally verified; final conservative
-re-audit pending.**
+re-audit accepted; complete DEV-only Playground implemented and
+locally/browser verified; full framework release review pending.**
 
 ## Authoritative implementation plan
 
@@ -80,7 +84,8 @@ Status: **Repository-grounded plan corrected after conservative audit and
 re-audited SAFE TO IMPLEMENT; Commit 1 accepted; readonly-math prerequisite
 implemented locally; shared surfaces implemented and locally verified in
 Commit 3; two lifecycle audit follow-ups locally verified; final conservative
-re-audit pending.**
+re-audit accepted; all four planned implementation phases complete locally;
+full framework release review pending.**
 
 ## Approved delivery sequence
 
@@ -95,20 +100,19 @@ re-audit pending.**
 5. Fix readonly math accessible ownership as a narrow prerequisite. Complete
    locally.
 6. Add shared Glossary surfaces and the minimal committed DEV-only Playground
-   harness. Complete locally; two lifecycle audit follow-ups locally verified;
-   final conservative re-audit pending.
-7. Complete the development Glossary Playground.
+   harness. Complete locally; two lifecycle audit follow-ups locally verified
+   and accepted by final conservative re-audit.
+7. Complete the development Glossary Playground. Complete locally and
+   browser-verified; production-exclusion audit passed.
 8. Complete the separate notation and definition foundation.
 9. Add the reviewed ODE vertical slice.
 10. Push only when explicitly requested by the maintainer.
 
 ## Current next action
 
-Run a final conservative re-audit of Commit 3, `Add shared glossary surfaces`,
-together with both lifecycle-fix commits, `Fix shared glossary surface
-lifecycle` and `Remove deferred Tutor auto-restore`. Do not begin Commit 4,
-`Complete glossary framework playground`, before that re-audit and maintainer
-approval.
+Full Content-Agnostic Interactive Glossary Framework release review using the
+committed four-phase implementation, production manifest, browser evidence,
+and documentation. Do not begin production Glossary content yet.
 
 ## Parallel content foundation
 
@@ -133,9 +137,10 @@ or review gate above. Its continuation state is
 - Production contains no Glossary terms.
 - Production initializes an inert Platform Glossary Host, but the current Lab
   supplies no binding and cannot activate a surface.
-- The DEV-only Playground and its five neutral fixtures are excluded from the
+- The complete DEV-only Playground, its ten neutral fixtures, development
+  controls, About entry, shortcut, and route stylesheet are excluded from the
   production build.
-- Commits 1 through 3 add no visible production Glossary behavior.
+- Commits 1 through 4 add no visible production Glossary behavior.
 - Canonical notation and production definitions are intentionally deferred.
 
 ## Explicit non-goals
@@ -150,12 +155,12 @@ or review gate above. Its continuation state is
 
 ## Review gate
 
-Final conservative re-audit of Commit 3 plus both locally verified
-lifecycle-fix commits is the active gate. Commit 1 was accepted after
-conservative audit, the readonly-math prerequisite is locally verified, and
-shared surfaces remain content-agnostic and production-inert. Commit 4 remains
-unauthorized. Production Glossary terms, annotations, and visible runtime
-behavior remain absent.
+The full Content-Agnostic Interactive Glossary Framework release review is the
+active gate. Commit 1 is accepted, the readonly-math prerequisite is locally
+verified, Commit 3 and both lifecycle follow-ups passed final conservative
+re-audit, and Commit 4 is locally/browser verified with production exclusion.
+Production Glossary terms, annotations, and visible runtime behavior remain
+absent.
 
 ## Update rule
 

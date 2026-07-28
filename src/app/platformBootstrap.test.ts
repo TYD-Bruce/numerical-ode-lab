@@ -10,6 +10,10 @@ import type { PlatformTutorHost } from "./platformTutorHost";
 import type { PlatformGlossaryHost } from "./platformGlossaryHost";
 import { createPlatformBootstrap } from "./platformBootstrap";
 import { appendTutorMessage, updateTutorDraft } from "../tutor/moduleTutorSession";
+import type {
+  GlossaryDevelopmentControlsModule,
+} from "../dev/glossary/glossaryDevelopmentControls";
+import { createGlossaryDevelopmentAboutPage } from "../dev/glossary/glossaryDevelopmentControls";
 
 interface TestLabSession {
   readonly value: string;
@@ -139,7 +143,11 @@ describe("public platform bootstrap", () => {
   ])("boots %s inside the persistent shell", async (path, heading, title) => {
     const app = await bootAt(path);
     expect(app.shell.root.querySelector(".platform-header")).not.toBeNull();
-    expect(app.shell.outlet.querySelector("h1")?.textContent).toContain(heading);
+    await vi.waitFor(() =>
+      expect(app.shell.outlet.querySelector("h1")?.textContent).toContain(
+        heading
+      )
+    );
     expect(document.title).toBe(title);
     if (path === "/ode/initial-value-problems") {
       expect(app.shell.outlet.textContent).toContain("beginner-starter");
@@ -332,6 +340,103 @@ describe("public platform bootstrap", () => {
     await app.tutorHost.open(trigger);
 
     expect(glossaryHost.close).toHaveBeenCalledWith({ restoreFocus: false });
+    app.dispose();
+  });
+
+  it("installs one DEV control after router creation, exposes DEV About, and cleans up once", async () => {
+    history.replaceState({}, "", "/about");
+    const target = document.createElement("div");
+    document.body.replaceChildren(target);
+    const cleanup = vi.fn();
+    const install = vi.fn(() => cleanup);
+    const loadDevelopmentControls = vi.fn(
+      async (): Promise<GlossaryDevelopmentControlsModule> => ({
+        installGlossaryDevelopmentControls: install,
+        createGlossaryDevelopmentAboutPage,
+      })
+    );
+
+    const app = createPlatformBootstrap({
+      target,
+      enableDevelopmentTools: true,
+      loadDevelopmentControls,
+      initialValueProblemsLoader: async () => testLabModule(),
+    });
+    await vi.waitFor(() =>
+      expect(
+        app.shell.outlet.querySelector(
+          'a[href="/__dev/glossary-playground"]'
+        )
+      ).not.toBeNull()
+    );
+    await vi.waitFor(() => expect(install).toHaveBeenCalledOnce());
+    expect(loadDevelopmentControls).toHaveBeenCalledOnce();
+    expect(install).toHaveBeenCalledWith(
+      expect.objectContaining({
+        navigate: app.navigate,
+        playgroundPath: "/__dev/glossary-playground",
+      })
+    );
+
+    await app.navigate("/");
+    await app.navigate("/about");
+    expect(install).toHaveBeenCalledOnce();
+    app.dispose();
+    app.dispose();
+    expect(cleanup).toHaveBeenCalledOnce();
+  });
+
+  it("does not install stale DEV controls after bootstrap disposal", async () => {
+    let resolveControls!: (module: GlossaryDevelopmentControlsModule) => void;
+    const pending = new Promise<GlossaryDevelopmentControlsModule>((resolve) => {
+      resolveControls = resolve;
+    });
+    const install = vi.fn(() => vi.fn());
+    const target = document.createElement("div");
+    document.body.replaceChildren(target);
+    const app = createPlatformBootstrap({
+      target,
+      enableDevelopmentTools: true,
+      loadDevelopmentControls: () => pending,
+      initialValueProblemsLoader: async () => testLabModule(),
+    });
+
+    app.dispose();
+    resolveControls({
+      installGlossaryDevelopmentControls: install,
+      createGlossaryDevelopmentAboutPage,
+    });
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(install).not.toHaveBeenCalled();
+  });
+
+  it("keeps injected production/default bootstrap free of DEV controls and About links", async () => {
+    history.replaceState({}, "", "/about");
+    const target = document.createElement("div");
+    document.body.replaceChildren(target);
+    const loadDevelopmentControls = vi.fn();
+    const store = createAppSessionStore();
+    const app = createPlatformBootstrap({
+      target,
+      store,
+      enableDevelopmentTools: false,
+      loadDevelopmentControls,
+      developmentRoutes: [],
+      initialValueProblemsLoader: async () => testLabModule(),
+    });
+    await vi.waitFor(() =>
+      expect(app.shell.outlet.querySelector("h1")?.textContent).toBe("About")
+    );
+
+    expect(loadDevelopmentControls).not.toHaveBeenCalled();
+    expect(
+      app.shell.outlet.querySelector(
+        'a[href="/__dev/glossary-playground"]'
+      )
+    ).toBeNull();
+    expect(store.getResumeSummaries()).toEqual([]);
     app.dispose();
   });
 

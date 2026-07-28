@@ -6,8 +6,9 @@ import { homePage } from "./homePage";
 import { odeOverviewPage } from "./odeOverviewPage";
 import { linearAlgebraOverviewPage } from "./linearAlgebraOverviewPage";
 import { pdeOverviewPage } from "./pdeOverviewPage";
-import { aboutPage } from "./aboutPage";
+import { aboutPage, createAboutPage } from "./aboutPage";
 import { notFoundPage } from "./notFoundPage";
+import { createGlossaryDevelopmentAboutPage } from "../dev/glossary/glossaryDevelopmentControls";
 
 function mount(module: RouteModule, pathname = "/"): HTMLElement {
   const target = document.createElement("main");
@@ -124,6 +125,32 @@ describe("static platform pages", () => {
     expect(teachingCopy).toContain("planned");
     expect(target.textContent).not.toContain("Tian");
     expect(target.textContent).toContain("planned");
+  });
+
+  it("keeps the production About page unchanged and adds Developer Tools only by option", () => {
+    const production = mount(aboutPage, "/about");
+    const defaultFactory = mount(createAboutPage(), "/about");
+    const development = mount(
+      createGlossaryDevelopmentAboutPage({
+        playgroundPath: "/__dev/glossary-playground",
+      }),
+      "/about"
+    );
+
+    expect(defaultFactory.innerHTML).toBe(production.innerHTML);
+    expect(production.textContent).not.toContain("Developer Tools");
+    expect(
+      production.querySelector('a[href="/__dev/glossary-playground"]')
+    ).toBeNull();
+    expect(
+      development.querySelectorAll('[data-about-developer-tools]')
+    ).toHaveLength(1);
+    const link = development.querySelector<HTMLAnchorElement>(
+      'a[href="/__dev/glossary-playground"]'
+    );
+    expect(link?.textContent).toContain("Glossary Playground");
+    expect(link?.closest("a")?.querySelector("a, button")).toBeNull();
+    expect(development.textContent).toContain("development-only");
   });
 
   it("renders the unknown pathname as text and offers safe next steps", () => {

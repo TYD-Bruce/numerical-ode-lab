@@ -45,6 +45,10 @@ platform bootstrap
   → ODE UI, numerical code, Chart.js, and Convergence
   → first-open Tutor runtime
   → deferred MathLive and Compute Engine boundaries
+
+development build only
+  → dynamically loaded Glossary development controls
+  → DEV-only About composition and complete Glossary Playground route
 ```
 
 The router and shell do not import ODE equations, methods, session types,
@@ -66,7 +70,11 @@ complete-Lab boundary.
 - minimal `beforeunload` handler.
 
 It owns final platform disposal and leaves domain mounting to the module
-registry and generic Lab adapter.
+registry and generic Lab adapter. In development builds only, it also loads one
+cached Glossary development module after router startup. That module supplies
+the optioned About-page Developer Tools composition and installs the single
+Ctrl/Cmd+Shift+G listener; bootstrap owns its idempotent cleanup and prevents a
+late module resolution from installing after disposal.
 
 ### Router
 
@@ -249,8 +257,12 @@ aborted requests cannot append to another module.
 - `src/app/platformGlossaryHost.ts` dynamically imports the complete definition
   surface runtime on the first valid Glossary request. A rejected attempt alone
   is retryable; pending and fulfilled attempts are shared.
-- The DEV-only `/__dev/glossary-playground` route and its fixtures are injected
-  only under `import.meta.env.DEV` and are absent from the production manifest.
+- A cached DEV-only dynamic module supplies `/__dev/glossary-playground`, the
+  development About composition, and the navigation shortcut only under
+  `import.meta.env.DEV`.
+- The complete Playground route, fixtures, controls, and route stylesheet are
+  absent from the production route table, eager source graph, manifest, and
+  emitted assets. The production About page remains unchanged.
 - Editable math and MathLive/Compute Engine remain behind later ODE interaction
   boundaries.
 - Static routes do not import ODE, Chart.js, Convergence implementation,
@@ -293,8 +305,8 @@ Deployment contracts are tested in `src/app/viteBase.contract.test.ts` and
 
 The
 [Content-Agnostic Interactive Glossary Framework Design](docs/superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md)
-is approved. Commits 1 through 3 now implement the content-agnostic model,
-lifecycle, Host, and shared-surface infrastructure:
+is approved. Commits 1 through 4 now implement the complete content-agnostic
+framework and its development verification environment:
 
 - branded term and scope IDs, immutable display/formula records, strict
   builders, and production-safe readable fallback;
@@ -313,13 +325,22 @@ lifecycle, Host, and shared-surface infrastructure:
   replacement;
 - the typed mockable Tutor handoff boundary, without a real queue or API
   integration;
-- a five-fixture DEV-only Playground for framework verification.
+- one complete DEV-only Playground at the original committed route, with ten
+  stable content-neutral fixture IDs and sections for core interactions,
+  scopes/duplicates, dynamic snapshots, trigger replacement, readonly formula
+  display, educational composition, placement/scrolling, mobile/modal
+  arbitration, structured mock Tutor handoff, contained strict diagnostics,
+  event evidence, and reset/disposal;
+- a development-only About-page entry and Ctrl/Cmd+Shift+G shortcut supplied by
+  the same cached dynamic module, with editable-target suppression,
+  single-listener ownership, retryable loading, and stale-resolution guards.
 
 This transient runtime state and its DOM/listener/subscription/modal handles
 remain outside `AppSessionStore`. The current Initial Value Problems route
 omits the optional binding, so the production Host is inert and the surface
 chunk cannot be requested through current product UI. The Playground and all
-five neutral fixtures are excluded from production.
+ten neutral fixtures, its development controls, route stylesheet, About entry,
+shortcut, and unique markers are excluded from production.
 
 No production term, annotation, definition, real Tutor Glossary request, queue,
 or canonical Glossary notation exists.

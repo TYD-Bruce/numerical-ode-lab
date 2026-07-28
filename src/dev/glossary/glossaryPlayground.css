@@ -1,0 +1,206 @@
+.glossary-playground-laboratory {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.glossary-playground-header,
+.glossary-playground-section {
+  min-width: 0;
+}
+
+.glossary-playground-warning {
+  padding: var(--space-3) var(--space-4);
+  border: 1px dashed var(--color-caution);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-inset);
+  color: var(--color-text-primary);
+}
+
+.glossary-playground-section {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.glossary-playground-section > :where(h2, h3, p, ol, ul) {
+  margin-block: 0;
+}
+
+.glossary-playground-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.glossary-playground-controls :where(button, a) {
+  min-height: 2.75rem;
+  max-width: 100%;
+}
+
+.glossary-playground-state {
+  padding: var(--space-3);
+  border-inline-start: var(--space-1) solid var(--color-accent-secondary);
+  background: var(--color-surface-inset);
+}
+
+.glossary-playground-visible-label {
+  margin-bottom: 0;
+  color: var(--color-text-primary);
+  font-weight: 700;
+}
+
+.glossary-playground-section input {
+  width: min(100%, 28rem);
+  min-height: 2.75rem;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-inset);
+  color: var(--color-text-primary);
+  font: inherit;
+}
+
+.glossary-playground-section table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.glossary-playground-section :where(th, td) {
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  text-align: start;
+}
+
+.glossary-playground-section caption {
+  margin-bottom: var(--space-2);
+  color: var(--color-text-secondary);
+  text-align: start;
+}
+
+.glossary-playground-replacement-stage {
+  display: grid;
+  min-height: 7rem;
+  padding: var(--space-3);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.glossary-playground-replacement-current {
+  align-self: start;
+  justify-self: start;
+}
+
+.glossary-playground-replacement-current.is-moved {
+  align-self: end;
+  justify-self: end;
+}
+
+.glossary-playground-placement-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.glossary-playground-placement-zone {
+  display: flex;
+  min-width: 0;
+  min-height: 11rem;
+  padding: var(--space-3);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-inset);
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.glossary-playground-placement-zone.is-top {
+  justify-content: flex-start;
+}
+
+.glossary-playground-placement-zone.is-bottom {
+  justify-content: flex-end;
+}
+
+.glossary-playground-placement-zone.is-left {
+  align-items: flex-start;
+}
+
+.glossary-playground-placement-zone.is-right {
+  align-items: flex-end;
+  text-align: end;
+}
+
+.glossary-playground-placement-zone.is-center {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.glossary-playground-placement-zone.is-narrow {
+  width: min(100%, 12rem);
+}
+
+.glossary-playground-placement-zone.is-scroll {
+  max-height: 12rem;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.glossary-playground-external-modal {
+  z-index: var(--layer-platform-modal);
+}
+
+.glossary-playground-external-modal > [role="dialog"] {
+  max-width: min(32rem, calc(100vw - 2 * var(--space-4)));
+}
+
+@media (max-width: 48rem) {
+  .glossary-playground-placement-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .glossary-playground-controls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .glossary-playground-controls :where(button, a) {
+    width: 100%;
+  }
+
+  .glossary-playground-placement-zone.is-narrow {
+    width: 100%;
+  }
+
+  #app:has(.glossary-playground-laboratory)
+    .glossary-surface-mobile-sheet
+    .glossary-surface-close {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glossary-playground-laboratory *,
+  .glossary-playground-laboratory *::before,
+  .glossary-playground-laboratory *::after {
+    scroll-behavior: auto;
+    transition-duration: 0.01ms;
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+  }
+}
+
+@media (forced-colors: active) {
+  .glossary-playground-warning,
+  .glossary-playground-replacement-stage,
+  .glossary-playground-placement-zone,
+  .glossary-playground-section :where(th, td, input) {
+    border-color: CanvasText;
+  }
+
+  .glossary-playground-state {
+    border-inline-start-color: Highlight;
+  }
+}

@@ -16,11 +16,18 @@ import {
   createRouteDefinitions,
   type DevelopmentRouteDefinitionInput,
 } from "./routeDefinitions";
+import { createRouteLoader } from "./routeLoader";
 import { createPlatformRouter, type PlatformRouter } from "./router";
 import {
   createScrollRestoration,
   type ScrollRestoration,
 } from "./scrollRestoration";
+import type {
+  GlossaryDevelopmentControlsCleanup,
+  GlossaryDevelopmentControlsModule,
+} from "../dev/glossary/glossaryDevelopmentControls";
+
+const GLOSSARY_PLAYGROUND_PATH = "/__dev/glossary-playground";
 
 export interface PlatformBootstrap {
   readonly store: AppSessionStore;
@@ -40,7 +47,35 @@ export function createPlatformBootstrap(options: {
   readonly glossaryHost?: PlatformGlossaryHost;
   readonly initialValueProblemsLoader?: () => Promise<LabRouteModule<unknown>>;
   readonly developmentRoutes?: readonly DevelopmentRouteDefinitionInput[];
+  readonly enableDevelopmentTools?: boolean;
+  readonly loadDevelopmentControls?: () => Promise<
+    GlossaryDevelopmentControlsModule
+  >;
 }): PlatformBootstrap {
+  const developmentToolsEnabled =
+    import.meta.env.DEV && (options.enableDevelopmentTools ?? true);
+  let developmentModuleAttempt:
+    | Promise<GlossaryDevelopmentControlsModule>
+    | undefined;
+  const loadDevelopmentModule =
+    (): Promise<GlossaryDevelopmentControlsModule> => {
+      if (developmentModuleAttempt) return developmentModuleAttempt;
+      const loader =
+        options.loadDevelopmentControls ??
+        (() => {
+          const modulePath =
+            "../dev/glossary/glossaryDevelopmentControls.ts";
+          return import(
+            /* @vite-ignore */
+            modulePath
+          ) as Promise<GlossaryDevelopmentControlsModule>;
+        });
+      developmentModuleAttempt = loader().catch((error: unknown) => {
+        developmentModuleAttempt = undefined;
+        throw error;
+      });
+      return developmentModuleAttempt;
+    };
   const store = options.store ?? createAppSessionStore();
   const shell = createAppShell(options.target);
   const modalEnvironment = createPlatformModalEnvironment();
@@ -78,39 +113,51 @@ export function createPlatformBootstrap(options: {
     scrollRestoration,
     initialValueProblemsLoader: options.initialValueProblemsLoader,
   });
+  const routes = createRouteDefinitions({
+    initialValueProblemsLoader: registry.loadInitialValueProblems,
+    homeSessionSource: store,
+    developmentRoutes: developmentToolsEnabled
+      ? options.developmentRoutes ?? [
+          {
+            id: "glossary-playground",
+            path: GLOSSARY_PLAYGROUND_PATH,
+            title: "Glossary Playground | Numerical T-Lab",
+            kind: "page",
+            loader: () => {
+              const modulePath =
+                "../dev/glossary/glossaryPlaygroundRoute.ts";
+              return (
+                import(
+                  /* @vite-ignore */
+                  modulePath
+                ) as Promise<
+                  typeof import("../dev/glossary/glossaryPlaygroundRoute")
+                >
+              ).then(
+                (module) =>
+                  module.createGlossaryPlaygroundRoute({ glossaryHost })
+              );
+            },
+          },
+        ]
+      : [],
+  }).map((definition) =>
+    developmentToolsEnabled && definition.id === "about"
+      ? {
+          ...definition,
+          loader: createRouteLoader(() =>
+            loadDevelopmentModule().then((module) =>
+              module.createGlossaryDevelopmentAboutPage({
+                playgroundPath: GLOSSARY_PLAYGROUND_PATH,
+              })
+            )
+          ),
+        }
+      : definition
+  );
   const router = createPlatformRouter({
     shell,
-    routes: createRouteDefinitions({
-      initialValueProblemsLoader: registry.loadInitialValueProblems,
-      homeSessionSource: store,
-      developmentRoutes:
-        options.developmentRoutes ??
-        (import.meta.env.DEV
-          ? [
-              {
-                id: "glossary-playground",
-                path: "/__dev/glossary-playground",
-                title: "Glossary Playground | Numerical T-Lab",
-                kind: "page",
-                loader: () => {
-                  const modulePath =
-                    "../dev/glossary/glossaryPlaygroundRoute.ts";
-                  return (
-                    import(
-                      /* @vite-ignore */
-                      modulePath
-                    ) as Promise<
-                      typeof import("../dev/glossary/glossaryPlaygroundRoute")
-                    >
-                  ).then(
-                    (module) =>
-                      module.createGlossaryPlaygroundRoute({ glossaryHost })
-                  );
-                },
-              },
-            ]
-          : []),
-    }),
+    routes,
     scrollRestoration,
     onNavigationStart: () => {
       glossaryHost.close({ restoreFocus: false });
@@ -119,9 +166,23 @@ export function createPlatformBootstrap(options: {
     },
   });
   let disposed = false;
+  let disposeDevelopmentControls:
+    | GlossaryDevelopmentControlsCleanup
+    | undefined;
   const handleBeforeUnload = createBeforeUnloadHandler(store);
   window.addEventListener("beforeunload", handleBeforeUnload);
   router.start();
+  if (developmentToolsEnabled) {
+    void loadDevelopmentModule()
+      .then((module) => {
+        if (disposed) return;
+        disposeDevelopmentControls = module.installGlossaryDevelopmentControls({
+          navigate: router.navigate,
+          playgroundPath: GLOSSARY_PLAYGROUND_PATH,
+        });
+      })
+      .catch(() => undefined);
+  }
 
   return Object.freeze({
     store,
@@ -134,6 +195,8 @@ export function createPlatformBootstrap(options: {
     dispose(): void {
       if (disposed) return;
       disposed = true;
+      disposeDevelopmentControls?.();
+      disposeDevelopmentControls = undefined;
       window.removeEventListener("beforeunload", handleBeforeUnload);
       router.dispose();
       tutorHost.disconnect();

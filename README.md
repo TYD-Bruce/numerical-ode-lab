@@ -133,9 +133,11 @@ Key locations:
 - Numerical Linear Algebra is in development; Numerical PDE is planned.
 - The final semantic theme is not a theme switch or final fantasy brand treatment.
 
-The next milestone is the **Content-Agnostic Interactive Glossary Framework**.
-Its design is approved; implementation has not started. A **Linear Systems
-Lab** is a later milestone.
+The active milestone is the **Content-Agnostic Interactive Glossary
+Framework**. Its four planned implementation phases are complete locally and
+await full framework release review. The complete Playground is development
+only, and no production terms, definitions, annotations, or visible Glossary
+behavior have been released. A **Linear Systems Lab** is a later milestone.
 
 ## Project documentation
 
@@ -143,6 +145,20 @@ See [`docs/INDEX.md`](docs/INDEX.md) for the current architecture, active plan,
 design specifications, implementation plans, reviews, and feature handoffs.
 
 ## Changelog
+
+### 2026-07-28 — Glossary framework Playground completed locally
+
+- Completed the existing DEV-only Glossary Playground with the content-neutral
+  scope, dynamic-context, replacement, formula, composition, placement,
+  mobile/modal, mock Tutor, strict-diagnostic, event, and reset matrix.
+- Added the development-only About entry and Ctrl/Cmd+Shift+G shortcut through
+  one dynamically loaded controls boundary with explicit cleanup.
+- Passed focused and full verification, isolated localhost desktop/mobile
+  review, and production route/graph/manifest/chunk/marker exclusion checks.
+- Production remains unchanged: there are no production Glossary terms,
+  annotations, Playground route, Developer Tools entry, shortcut, or visible
+  Glossary behavior. Nothing was pushed or deployed.
+- Detailed status: [`docs/glossary/HANDOFF.md`](docs/glossary/HANDOFF.md)
 
 ### 2026-07-23 — Numerical T-Lab Project Identity Migration completed
 

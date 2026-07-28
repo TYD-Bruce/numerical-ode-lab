@@ -12,15 +12,18 @@ authorization. Its conservative audit verdict was **SAFE AFTER FIXES**
 (`P0 = 0`, `P1 = 2`, `P2 = 1`); the narrow lifecycle/copy follow-up is locally
 implemented and verified. The second conservative re-audit also returned
 **SAFE AFTER FIXES** (`P0 = 0`, `P1 = 1`, `P2 = 1`); its deferred-restore and
-pre-mount-abort follow-up is locally implemented and verified. Commit 3 plus
-both follow-ups now await final conservative re-audit, and Commit 4 remains
-unauthorized.
+pre-mount-abort follow-up is locally implemented and verified. The final
+conservative re-audit of Commit 3 and both follow-ups returned **SAFE TO
+PROCEED** with `P0 = P1 = P2 = P3 = 0`. Commit 4, `Complete glossary framework
+playground`, is implemented and locally/browser verified. The complete
+four-phase framework now awaits one full release review.
 
 The active milestone is **Content-Agnostic Interactive Glossary Framework**.
 Production contains no Glossary terms, term annotations, activatable surface,
 real Tutor handoff, queue, or Playground route. Commit 3 adds an inert Platform
 Host and lazy shared surface implementation, but the current Lab provides no
-binding. Its five neutral fixtures and Playground exist only in DEV and are
+binding. Commit 4's ten neutral fixtures, complete Playground, development
+controls, About entry, shortcut, and route stylesheet exist only in DEV and are
 excluded from production. No canonical numerical notation is defined by this
 feature.
 
@@ -491,6 +494,193 @@ No localhost browser smoke was run because deterministic actual Host-to-Host
 coverage exercised the integrated lifecycle. `SUSPEND-ARIA-MODAL-ORDER`,
 `DEFERRED-TUTOR-RESTORE-LEAK`, and `MOUNT-ABORT-NO-ROLLBACK` are resolved.
 
+## Commit 4 complete Playground implementation
+
+- Starting branch: `main`
+- Starting HEAD: `3ef0f670dbac73b420ae757c2d1b2e07845e8c12`
+- Starting worktree: clean, including untracked files
+- Final implementation boundary: the local commit containing this handoff,
+  named `Complete glossary framework playground`; its SHA is authoritative in
+  Git history and is reported after commit because a commit cannot contain its
+  own SHA.
+- The final conservative Commit 3 re-audit supplied by the maintainer returned
+  **SAFE TO PROCEED** with `P0 = P1 = P2 = P3 = 0`.
+- No remote was contacted after the required initial read-only inspection, and
+  nothing was pushed or deployed.
+
+Created:
+
+- `src/dev/glossary/glossaryPlayground.css`
+- `src/dev/glossary/glossaryDevelopmentControls.ts`
+- `src/dev/glossary/glossaryDevelopmentControls.test.ts`
+
+Modified implementation and focused tests:
+
+- `src/dev/glossary/glossaryFixtures.ts`
+- `src/dev/glossary/glossaryPlaygroundRoute.ts`
+- `src/dev/glossary/glossaryPlaygroundRoute.test.ts`
+- `src/app/platformBootstrap.ts`
+- `src/app/platformBootstrap.test.ts`
+- `src/pages/aboutPage.ts`
+- `src/pages/pages.test.ts`
+- `src/app/routeBundleOwnership.test.ts`
+- `src/app/viteBase.contract.test.ts`
+- `src/app/themeTokens.test.ts`
+
+Updated current status documentation:
+
+- `ARCHITECTURE.md`
+- `PLAN.md`
+- `docs/INDEX.md`
+- `docs/glossary/HANDOFF.md`
+- `README.md`
+
+The README update was required because its current-limitations statement still
+said Glossary implementation had not started. Its concise Changelog entry
+records the locally complete framework without claiming release, deployment,
+production content, or production-visible behavior.
+
+Implemented development behavior:
+
+- The existing `/__dev/glossary-playground` route was expanded rather than
+  duplicated. It has one binding and thirteen named sections covering
+  instructions, core interactions, scope/duplicate behavior, dynamic context,
+  replacement lifecycle, readonly formula display, educational composition,
+  placement/scrolling, mobile/modal arbitration, structured mock Tutor
+  handoff, contained strict diagnostics, event evidence, and reset/disposal.
+- The original stable IDs `sample_term`, `dynamic_term`, `formula_term`,
+  `label_term`, and `replacement_term` remain. `short_term`, `long_term`,
+  `alias_term`, `plain_term`, and `table_term` complete the neutral matrix.
+- Explicit scopes demonstrate first occurrence, same-scope plain duplicates,
+  cross-scope enhancement, multiple terms, disposal, replacement, and every
+  named placement zone. There is no DOM text scanning.
+- Curated dynamic variants replace or suppress formula metadata and update the
+  definition, “why it matters,” and mock Tutor context. Normal controls update
+  desktop cards in place; an explicitly armed one-shot control waits for the
+  next surface to open, then updates a mobile sheet without remounting or
+  stealing Close focus. Its bounded timer is cancelled on reset/disposal.
+- Replacement controls support replace, repeat, detach, and fresh-scope
+  recreation while preserving the accepted runtime transaction semantics.
+- The label/input fixture keeps the native label, term trigger, help, and error
+  as correctly related siblings. Heading-adjacent and table-header cases do not
+  nest interactive controls; an ordinary link and button remain intentionally
+  unannotated.
+- The external modal contains an explicit “Attempt Glossary while modal is
+  open” control so refusal is reproducible without defeating background
+  isolation. Closing the simulator grants no queued replay authority.
+- The mock Tutor records sequence, request kind, term/module/scope IDs,
+  `preserveDraft: true`, and curated context. It creates no network request,
+  transcript card, queue, Keep, or Replace behavior.
+- Six strict diagnostic cases are caught and displayed without weakening
+  strict mode. The empty-state line is removed on the first diagnostic, valid
+  fixtures continue working, and reset restores a fresh binding and scopes.
+- Route listeners, bounded delayed work, scopes, context subscriptions, Host
+  connection, external modal, mock records, logs, and DOM are disposed
+  explicitly and idempotently.
+- Development CSS uses semantic tokens, responsive wrapping and placement,
+  forced-colors and reduced-motion rules, and no literal colors. Long content
+  guarantees an internal mobile scroll region, and the DEV-scoped mobile Close
+  action does not wrap beside the deliberately long heading.
+
+Development entry and production isolation:
+
+- `src/dev/glossary/glossaryDevelopmentControls.ts` is the single DEV-only
+  module for the semantic About-page Developer Tools composition and
+  Ctrl/Cmd+Shift+G navigation.
+- The shortcut handles lower/uppercase key/code forms, ignores repeats,
+  unrelated modifiers, the current path, and input/textarea/select/
+  contenteditable/math-field targets and descendants. It prevents default only
+  when handled.
+- Bootstrap loads one cached attempt behind `import.meta.env.DEV`, installs one
+  listener after router startup, evicts a rejected attempt for retry, holds one
+  idempotent cleanup, and refuses stale installation after disposal.
+- `src/pages/aboutPage.ts` exposes a production page factory whose generated
+  content matches the existing production About page. Only the DEV module adds
+  the Developer Tools section; production has no placeholder or static DEV
+  import.
+
+Tests-first evidence:
+
+- The initial exact focused run failed at the missing controls module, missing
+  DEV About composition/shortcut, and incomplete route matrix.
+- Browser findings produced additional failing regressions before repair for
+  the persistent diagnostic empty state, reproducible mobile in-place refresh,
+  external-modal refusal control, and guaranteed long-content evidence.
+- The final exact focused gate passed 7 files and 67 tests.
+- The directly affected theme/style gate passed 1 file and 3 tests.
+- The full suite passed 73 files and 1,022 tests.
+- `npm.cmd run typecheck`, `npm.cmd run typecheck:api`,
+  `npm.cmd run build`, and `npm.cmd run verify` all passed.
+- The production build transformed 79 modules. The only build warning was the
+  established warning for the separately deferred large MathLive/editable
+  chunks; no manual chunking or dependency change was introduced.
+
+Production manifest and bundle evidence:
+
+- An explicit `vite build --manifest` inspection found no key, import, dynamic
+  import, CSS asset, or emitted marker for the Playground route, fixtures,
+  development controls, route CSS, warning, Developer Tools copy, unique
+  laboratory marker, or DEV path.
+- The production entry dynamically imports only the complete ODE Lab, Tutor
+  panel, and Glossary surface runtime. The surface keeps its own CSS and imports
+  the readonly helper; MathLive remains a later dynamic import.
+- Main production entry: 52,536 bytes raw / 16,236 bytes gzip
+  (52.51 kB / 16.24 kB). Compared with the accepted Commit 3 record, this is a
+  bounded 0.71 kB raw / 0.29 kB gzip increase from the production-safe About
+  factory/bootstrap seam, not DEV Playground payload.
+- Lazy Glossary surface runtime: 6,735 / 2,425 bytes.
+- Lazy Glossary surface CSS: 2,203 / 783 bytes.
+- Shared readonly helper: 2,080 / 922 bytes.
+- Lazy Tutor panel: 11,697 / 4,450 bytes.
+- Complete ODE route: 241,437 / 80,303 bytes.
+
+Isolated localhost browser evidence:
+
+- Top-level navigation remained on `http://127.0.0.1:5173` in newly created
+  controlled tabs at 1440 × 900 and 390 × 844. The exact local Vite process was
+  stopped afterward.
+- Home, About, the direct DEV route, the Ctrl+Shift+G entry, About link, and a
+  normal `/ode` route all loaded correctly. Route leave removed the Playground
+  and every active surface.
+- Desktop evidence covered pinned cards, live context refresh, mock Tutor
+  logging, placement zones within the viewport, no horizontal overflow, and
+  formula enhancement.
+- Mobile evidence covered named modal sheets, sticky/reachable Close, inert
+  platform regions, body scroll lock, Tab/Shift+Tab containment, Escape and
+  current-trigger focus restoration, repeated replacement, the armed in-place
+  dynamic update with stable surface identity and Close focus, long internal
+  scrolling (`611` px client / `878` px scroll height), formula display,
+  external-modal refusal, and no queued replay.
+- Scope disposal, one interactive plus one plain same-scope duplicate, strict
+  diagnostic containment, empty-state removal, valid-fixture continuity, and
+  reset were also verified.
+- Page asset inventory observed route/fixture/CSS modules on the DEV route,
+  surface/readonly modules only after the first valid request, MathLive/fonts
+  only after a formula request, and no new asset after mock Tutor handoff.
+  Browser console warning/error logs were empty.
+- The selected browser exposed viewport control but no reduced-motion,
+  forced-colors, page-zoom, coarse-pointer, touch, or hybrid-device emulation.
+  Those modes are not claimed as live toggles: deterministic tests and loaded
+  CSS cover reduced motion/forced colors, automated PointerEvent coverage
+  covers touch semantics, and the live narrow layout covers reflow/overflow.
+  Fine-pointer hover media was present, but the in-app pointer-move API did not
+  synthesize the preview event; preview behavior remains focused-test evidence.
+- Asset inventory reported the application’s pre-existing Google Fonts
+  stylesheet resource while all controlled top-level navigation remained
+  localhost. No account, credential, history, existing user tab, clipboard,
+  download, live Tutor/model, or private-reference data was accessed.
+
+Explicit non-changes:
+
+- no production term, definition, alias, annotation, or canonical notation;
+- no ODE/Linear Algebra/PDE Glossary binding or content;
+- no real Tutor request, API integration, transcript card, queue, Keep, or
+  Replace behavior;
+- no `AppSessionStore`, Resume, meaningful-work, history, persistence, or
+  `beforeunload` change;
+- no numerical, expression, solver, dependency, package, lockfile, API,
+  Vite/Vercel configuration, remote, deployment, or production release change.
+
 ## Planning baseline
 
 - Workflow: maintainer-owned local `main`
@@ -670,8 +860,10 @@ The repository-grounded plan maps the design’s conceptual interfaces to exact
 implementation files. Commit 1 implements its model, registry, scope, binding,
 and replacement-lifecycle APIs. Commit 2 corrects shared readonly-math
 ownership. Commit 3 implements the Host, shared surfaces, modal arbitration,
-mock Tutor boundary, and minimal DEV-only Playground. Real Tutor integration,
-production content, and Commit 4 completion remain proposed.
+mock Tutor boundary, and minimal DEV-only Playground. Commit 4 completes that
+same DEV route, its fixture matrix, development entry controls, browser
+evidence, and production-exclusion proof. Real Tutor integration and
+production content remain deferred.
 
 ## Planned implementation commits
 
@@ -679,9 +871,9 @@ production content, and Commit 4 completion remain proposed.
    audit
 2. `Fix readonly math accessible ownership` — implemented and locally verified
 3. `Add shared glossary surfaces` — implemented and locally/browser verified;
-   two lifecycle audit follow-ups locally verified; final conservative re-audit
-   pending
-4. `Complete glossary framework playground` — not started
+   two lifecycle audit follow-ups accepted by final conservative re-audit
+4. `Complete glossary framework playground` — implemented and locally/browser
+   verified; production-exclusion audit passed
 
 Each commit requires focused tests and the ownership, privacy, lazy-loading,
 and no-production-content gates in the design.
@@ -719,8 +911,6 @@ verification confirmed:
 
 ## Exact next action
 
-Run a final conservative Cursor re-audit of Commit 3, `Add shared glossary
-surfaces`, together with both lifecycle-fix commits, `Fix shared glossary
-surface lifecycle` and `Remove deferred Tutor auto-restore`. Do not begin
-Commit 4, `Complete glossary framework playground`, before that re-audit and
-maintainer approval.
+Full Content-Agnostic Interactive Glossary Framework release review using the
+committed four-phase implementation, production manifest, browser evidence,
+and documentation. Do not begin production Glossary content yet.

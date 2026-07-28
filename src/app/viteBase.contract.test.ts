@@ -86,10 +86,15 @@ describe("Vite root-base deployment contract", () => {
     const keys = Object.keys(manifest).join("\n");
     expect(keys).not.toContain("glossaryPlaygroundRoute");
     expect(keys).not.toContain("glossaryFixtures");
+    expect(keys).not.toContain("glossaryDevelopmentControls");
+    expect(keys).not.toContain("glossaryPlayground.css");
     expect(emittedJavaScript).not.toContain(
       "Development fixtures only — not production definitions."
     );
     expect(emittedJavaScript).not.toContain("Replaceable term");
+    expect(emittedJavaScript).not.toContain("Glossary Playground laboratory");
+    expect(emittedJavaScript).not.toContain("Developer Tools");
+    expect(emittedCss).not.toContain(".glossary-playground-laboratory");
   });
 
   it("uses root-origin URLs for emitted CSS font assets", () => {

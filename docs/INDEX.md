@@ -19,10 +19,12 @@ Framework. Its approved design and repository-grounded implementation plan are
 documented. The corrected plan passed conservative re-audit, Commit 1 was
 accepted after conservative audit, the readonly-math prerequisite is locally
 verified, and Commit 3 shared surfaces are implemented and locally/browser
-verified with two locally verified lifecycle follow-ups. The final
-conservative re-audit is pending. Production contains no Glossary terms or
-content and no visible surface behavior; its Host is inert, the Playground is
-DEV-only, and the final Playground commit has not started.
+verified with two lifecycle follow-ups accepted by final conservative
+re-audit. Commit 4 completes the DEV-only Playground, development controls,
+About entry, shortcut, fixture matrix, and production-exclusion evidence. The
+four-phase implementation now awaits full framework release review.
+Production contains no Glossary terms or content and no visible surface
+behavior; its Host is inert and all Playground capabilities are DEV-only.
 The bounded Project Identity Migration is complete.
 The GitHub repositories, remotes, existing Vercel project, Git integration,
 Preview, Production deployment, canonical domain, and canonical local
@@ -56,7 +58,7 @@ maintainer approval pending**.
 | [Theme-Ready Platform Shell Design](superpowers/specs/2026-07-13-theme-ready-platform-shell-design.md) | Implemented, Vercel Preview-verified, safe to release |
 | [Human-Friendly Math Expressions Design](superpowers/specs/2026-07-10-human-friendly-math-expressions-design.md) | Implemented and verified |
 | [Observed Convergence Order Experiment Design](superpowers/specs/2026-07-10-convergence-study-design.md) | Implemented, verified, release ready |
-| [Content-Agnostic Interactive Glossary Framework Design](superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md) | Approved design; Commit 1 accepted; readonly-math prerequisite locally verified; Commit 3 shared surfaces locally/browser verified with two lifecycle follow-ups; final conservative re-audit pending |
+| [Content-Agnostic Interactive Glossary Framework Design](superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md) | Approved design; four implementation phases complete locally; production content remains deferred; full framework release review pending |
 
 ## Implementation plans
 
@@ -64,7 +66,7 @@ maintainer approval pending**.
 |---|---|
 | [Theme-Ready Platform Shell Implementation Plan](superpowers/plans/2026-07-13-theme-ready-platform-shell-implementation-plan.md) | Implemented historical plan; check the final review and architecture map for current state |
 | [Numerical T-Lab Rename Migration Plan](superpowers/plans/2026-07-22-numerical-t-lab-rename-migration-plan.md) | Project Identity Migration completed and verified |
-| [Content-Agnostic Interactive Glossary Framework Implementation Plan](superpowers/plans/2026-07-23-content-agnostic-interactive-glossary-framework-implementation-plan.md) | Corrected and conservatively re-audited SAFE TO IMPLEMENT; Commit 1 accepted; readonly-math prerequisite locally verified; Commit 3 shared surfaces locally/browser verified with two lifecycle follow-ups; final conservative re-audit pending; no production content or visible behavior |
+| [Content-Agnostic Interactive Glossary Framework Implementation Plan](superpowers/plans/2026-07-23-content-agnostic-interactive-glossary-framework-implementation-plan.md) | Four planned implementation phases complete locally; Commit 3 follow-ups accepted; Commit 4 browser/build/production-exclusion evidence recorded; no production content or visible behavior; full framework release review pending |
 
 ## Reviews and release evidence
 
@@ -83,9 +85,10 @@ maintainer approval pending**.
   evidence-research continuation state.
 - [Content-Agnostic Interactive Glossary Framework handoff](glossary/HANDOFF.md)
   — approved design, corrected and re-audited implementation plan, accepted
-  Commit 1, locally verified readonly-math prerequisite, and locally/browser
-  verified Commit 3 continuation with two locally verified lifecycle audit
-  follow-ups pending final conservative re-audit.
+  Commit 1, locally verified readonly-math prerequisite, accepted Commit 3
+  lifecycle follow-ups, and the complete locally/browser-verified DEV
+  Playground with production-exclusion evidence; full framework release
+  review is next.
 - [Numerical terminology and teaching-language foundation handoff](content/HANDOFF.md)
   — 29-source draft synthesis, notation/terminology decisions, current-copy
   audit, validation evidence, and maintainer-review continuation state; no

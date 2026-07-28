@@ -56,6 +56,10 @@ describe("public route bundle ownership", () => {
       "tutor/tutorClient.ts",
       "aiTutor.ts",
       "math/ui/editableMathField.ts",
+      "dev/glossary/glossaryPlaygroundRoute.ts",
+      "dev/glossary/glossaryFixtures.ts",
+      "dev/glossary/glossaryDevelopmentControls.ts",
+      "dev/glossary/glossaryPlayground.css",
     ]) {
       expect(graph.has(forbidden), `${forbidden} leaked into ${[...graph].join(", ")}`).toBe(false);
     }
@@ -144,8 +148,20 @@ describe("public route bundle ownership", () => {
           path.includes("glossaryFixtures")
       )
     ).toBe(false);
+    expect(
+      [...entryGraph].filter((path) => path.startsWith("dev/"))
+    ).toEqual([]);
 
     const glossaryGraph = eagerGraph("glossary/glossaryController.ts");
     expect(glossaryGraph.has("app/appSessionStore.ts")).toBe(false);
+  });
+
+  it("keeps production About independent from DEV implementations", () => {
+    const about = source("pages/aboutPage.ts");
+    expect(about).not.toMatch(
+      /(?:from\s+|import\()\s*["'][^"']*dev\/glossary/
+    );
+    expect(about).not.toContain("glossaryDevelopmentControls");
+    expect(about).not.toContain("glossaryPlaygroundRoute");
   });
 });

@@ -78,6 +78,15 @@ describe("platform theme tokens", () => {
     expect(glossarySurface).toContain("forced-colors");
     expect(glossarySurface).toMatch(/max-height:\s*82dvh/);
     expect(glossarySurface).not.toMatch(literalColor);
+
+    const glossaryPlayground = readFileSync(
+      join(SRC_DIR, "dev", "glossary", "glossaryPlayground.css"),
+      "utf8"
+    );
+    expect(glossaryPlayground).toContain("prefers-reduced-motion");
+    expect(glossaryPlayground).toContain("forced-colors");
+    expect(glossaryPlayground).toMatch(/overflow-wrap:\s*anywhere/);
+    expect(glossaryPlayground).not.toMatch(literalColor);
   });
 
   it("keeps new platform runtime modules outside heavy ODE, Tutor, and math imports", () => {
