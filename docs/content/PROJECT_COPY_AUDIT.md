@@ -6,8 +6,9 @@ Group A ready records are accepted. Group B records `COPY-006` through
 Group D records `COPY-030` through `COPY-040` are accepted. Group F1
 implements and reviews `COPY-043` locally and classifies all twelve
 `COPY-NC-*` records without changing their product owners. `COPY-003` remains
-held. Group E remains unauthorized, and the final post-Glossary Group F2 review
-remains required.
+held. The five findings created by the Group F1 consistency scan are
+`CLOSED_VERIFIED` in the separately authorized pre-E repair. Group E remains
+unauthorized, and the final post-Glossary Group F2 review remains required.
 
 ## Purpose and boundary
 
@@ -1274,17 +1275,21 @@ truthful production-status statement.
 
 The consistency scan created five stable findings, not approved copy records:
 
-| Finding | Severity | Boundary |
-|---|---:|---|
-| `F1-LANG-001` | P2 | Residual Convergence teaching aliases for observed order and maximum global error |
-| `F1-LANG-002` | P2 | Solver-facing theoretical-order and LTE/global-error qualification |
-| `F1-LANG-003` | P2 | Residual Tutor order and maximum-global-error terminology |
-| `F1-LANG-004` | P2 | Numerical-approximation naming in the ODE chart and Tutor graph reply |
-| `F1-BEH-001` | P2 | Deterministic `unstable` → `table` substring-routing collision |
+| Finding | Severity | Boundary | Current status |
+|---|---:|---|---|
+| `F1-LANG-001` | P2 | Residual Convergence teaching aliases for observed order and maximum global error | `CLOSED_VERIFIED` |
+| `F1-LANG-002` | P2 | Solver-facing theoretical-order and LTE/global-error qualification | `CLOSED_VERIFIED` |
+| `F1-LANG-003` | P2 | Residual Tutor order and maximum-global-error terminology | `CLOSED_VERIFIED` |
+| `F1-LANG-004` | P2 | Numerical-approximation naming in the ODE chart and Tutor graph reply | `CLOSED_VERIFIED` |
+| `F1-BEH-001` | P2 | Deterministic `unstable` → `table` substring-routing collision | `CLOSED_VERIFIED` |
 
-All five require a separately authorized repair and acceptance checkpoint
-before Group E. No fix is implemented here. Group E remains unauthorized, and
-Group F2 remains required after Group E.
+No fix was implemented in the Group F1 review itself. The later, separately
+authorized
+[pre-Glossary repair](../reviews/2026-07-29-pre-glossary-repair-review.md)
+closes all five findings after tests-first gates, 161 cumulative focused tests,
+the 1,048-test full verification gate, desktop/mobile deterministic demo
+review, structural/numerical audit, and production artifact inspection. Group
+E remains unauthorized, and Group F2 remains required after Group E.
 
 ## Behavior-preservation contract
 
@@ -1306,7 +1311,9 @@ rollback points, and review gates are in the
 [Project Language Implementation Plan](PROJECT_LANGUAGE_IMPLEMENTATION_PLAN.md).
 Groups A through D are accepted; `COPY-003` remains held. Group F1 implements
 `COPY-043` and completes the pre-Glossary consistency review locally. Its
-verdict is **GROUP F1 COMPLETE — PRE-E FIXES REQUIRED**. The next gate is a
-separately authorized repair and acceptance checkpoint for `F1-LANG-001`
-through `F1-LANG-004` and `F1-BEH-001`. Group E remains unauthorized. The
-original full Group F is not complete; Group F2 remains required after Group E.
+historical verdict is **GROUP F1 COMPLETE — PRE-E FIXES REQUIRED**. The five
+resulting findings are now `CLOSED_VERIFIED` with repair verdict **PRE-E REPAIR
+COMPLETE — GROUP E MAY BE PLANNED**. The next gate is maintainer acceptance of
+both repair commits, followed by separate Production Glossary Wave 1 design and
+content authorization. Group E remains unauthorized. The original full Group F
+is not complete; Group F2 remains required after Group E.

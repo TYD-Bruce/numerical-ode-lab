@@ -344,7 +344,7 @@ function buildMockResponse(
       tMin,
       tMax,
     };
-  } else if (q.includes("table") || q.includes("summary")) {
+  } else if (/\btable\b/.test(q) || /\bsummary\b/.test(q)) {
     message = demoReply(
       `Table summary for ${methodName} on the current IVP:\n\n• Problem: ${equation}\n• Grid: t₀ = ${t0 ?? "?"}, t_end = ${tEnd ?? "?"}, h = ${h ?? "?"}\n• Grid points stored: ${pointCount ?? "?"}\n• Final: u ≈ ${finalY?.toFixed(6) ?? "?"} at t = ${finalT?.toFixed(6) ?? "?"}\n\nSee the “Last 12 values” table below the chart for step-by-step numbers.`
     );

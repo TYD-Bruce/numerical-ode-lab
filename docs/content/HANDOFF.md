@@ -2,8 +2,8 @@
 
 Status: Project Language Standard v1 approved; Glossary catalog, copy audit,
 implementation groups, and traceability reconciled; Groups A through D
-accepted; Group F1 pre-Glossary review completed locally with pre-E fixes
-required.
+accepted; Group F1 pre-Glossary review and its five separately authorized
+pre-E repairs completed locally.
 
 Runtime/content implementation tracked separately.
 
@@ -433,12 +433,51 @@ findings are recorded in the
 
 No finding is fixed in Group F1.
 
-## 14. Current review gate
+## 14. Historical pre-E gate
 
-Groups A through D are accepted. Group F1 is complete locally, but Group E
-remains unauthorized. The exact next gate is a separately authorized repair
+At the close of Group F1, Groups A through D were accepted and Group E
+remained unauthorized. The exact next gate was a separately authorized repair
 and maintainer-acceptance checkpoint for `F1-LANG-001` through
 `F1-LANG-004` and `F1-BEH-001`, including focused tests, full verification,
-desktop/mobile review, and artifact inspection. Only after that gate may the
-maintainer decide whether to plan Group E. A final Group F2 review remains
+desktop/mobile review, and artifact inspection. The accepted Group F1 review
+remains unchanged as historical evidence.
+
+## 15. Pre-E repair closure
+
+The separately authorized
+[pre-Glossary repair](../reviews/2026-07-29-pre-glossary-repair-review.md)
+created exactly two local commits:
+
+1. `Repair pre-Glossary language inconsistencies` closes
+   `F1-LANG-001` through `F1-LANG-004` with approved copy-only production
+   changes and direct tests.
+2. `Fix deterministic Tutor intent matching` closes `F1-BEH-001` with the
+   bounded `table`/`summary` predicate, its regressions, and final evidence and
+   status documentation.
+
+All five findings are `CLOSED_VERIFIED`. The language red gate failed exactly
+14 new assertions while 109 prior assertions passed, then all 123 tests
+passed. The behavior red gate failed only the exact `Why is this unstable?`
+regression while 35 other tests passed, then all 36 tests passed. The
+cumulative focused gate passed 10 files and 161 tests. `npm.cmd run verify`
+passed 73 files and 1,048 tests, both TypeScript checks, and the 79-module
+production build.
+
+Local deterministic demo review at 1440×900 and 390×844 confirmed the repaired
+Convergence, solver/method, chart, and Tutor language; retained table and
+summary behavior; corrected unstable routing; responsive containment; visible
+focus; and no console warning or error. Production retained eight JavaScript
+and seven CSS files and the same normalized 12-static/5-dynamic import graph.
+The existing Convergence and lazy IVP chunks changed only by bounded string
+deltas. Server-only Tutor strings remain outside browser assets. Production
+still contains no Glossary term, annotation, DEV fixture, or ODE binding.
+Nothing was pushed or deployed.
+
+## 16. Current review gate
+
+Groups A through D are accepted. Group F1 and its five pre-E repairs are
+locally complete with verdict **PRE-E REPAIR COMPLETE — GROUP E MAY BE
+PLANNED**. Group E remains unauthorized. The next gate is maintainer
+acceptance of both repair commits, followed by a separate Production Glossary
+Wave 1 design and content authorization. A final Group F2 review remains
 required after Group E.

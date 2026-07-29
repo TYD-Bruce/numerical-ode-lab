@@ -19,11 +19,13 @@ Group A records (`COPY-001`, `COPY-002`, `COPY-004`, and `COPY-005`) are
 accepted. Group B records `COPY-006` through `COPY-019` and Group C records
 `COPY-020` through `COPY-029` are accepted. Group D records `COPY-030` through
 `COPY-040` are accepted. Group F1 implements `COPY-043` locally and completes
-the pre-Glossary consistency review with verdict **GROUP F1 COMPLETE — PRE-E
-FIXES REQUIRED**. All twelve `COPY-NC-*` records remain review-only and have
-explicit classifications. Four language findings and one deterministic Tutor
-behavior finding require a separately authorized repair and acceptance
-checkpoint before Group E may be planned. `COPY-003` and
+the pre-Glossary consistency review. All twelve `COPY-NC-*` records remain
+review-only and have explicit classifications. The four language findings and
+one deterministic Tutor behavior finding from that review are now
+`CLOSED_VERIFIED` by the separately authorized two-commit
+[pre-Glossary repair](./reviews/2026-07-29-pre-glossary-repair-review.md), with
+verdict **PRE-E REPAIR COMPLETE — GROUP E MAY BE PLANNED**. Maintainer
+acceptance of both repair commits remains the next gate. `COPY-003` and
 `src/pages/homePage.ts` remain review-only and unchanged. These iterations
 changed approved visible copy, server-owned Tutor prompt policy, deterministic
 replies, and focused expectations only: calculations, classifications,
@@ -78,9 +80,10 @@ The 14 Group B IVP Method/Data/Output and preset records and the 10 Group C
 Convergence/error records are accepted. The 11 Group D Tutor numerical-language
 records are accepted. Group F1 implements `COPY-043`, classifies all twelve
 review-only records, and completes the pre-Glossary consistency review locally.
-Its five P2 findings require a separate pre-E repair and acceptance checkpoint.
-Production Glossary content and the ODE binding remain absent and unauthorized.
-The final Group F2 review remains required after Group E.
+Its five P2 findings are `CLOSED_VERIFIED`; maintainer acceptance of both
+repair commits remains the pre-E checkpoint. Production Glossary content and
+the ODE binding remain absent and unauthorized. The final Group F2 review
+remains required after Group E.
 
 ## 2. Verification baseline
 
@@ -195,6 +198,25 @@ the current handoff's truthful addition of the absent ODE binding. The
 [Group F1 review](./reviews/2026-07-29-pre-glossary-project-language-consistency-review.md)
 records four P2 language findings (`F1-LANG-001` through `F1-LANG-004`) and
 one P2 demo behavior finding (`F1-BEH-001`). No finding was fixed in F1.
+
+The separately authorized
+[pre-Glossary repair](./reviews/2026-07-29-pre-glossary-repair-review.md)
+closes all five findings as `CLOSED_VERIFIED` in two commits. The language red
+gate failed exactly 14 new assertions while 109 prior assertions passed; its
+green gate passed 123 tests. The behavior red gate failed only the exact
+`Why is this unstable?` regression while 35 other tests passed; its green gate
+passed all 36 tests. The cumulative focused gate passed 10 files and 161
+tests, and `npm.cmd run verify` passed 73 files and 1,048 tests, both
+TypeScript checks, and the 79-module production build. Local deterministic
+demo review at 1440×900 and 390×844 confirmed the repaired teaching, solver,
+chart, and Tutor language; retained table/summary behavior; corrected unstable
+routing; contained responsive layout; visible focus; and no console warning
+or error. Production retained eight JavaScript and seven CSS files and the
+same normalized 12-static/5-dynamic import graph. The directly affected
+existing Convergence and lazy IVP chunks changed by only `-3/-24` and `+126/+2`
+raw/deterministic-gzip bytes. Server-only Tutor strings and the bounded
+predicate remain outside browser assets; production still contains no Glossary
+term, DEV fixture, or ODE binding. Nothing was pushed or deployed.
 
 `npm run verify` passed on 2026-07-14:
 
@@ -410,9 +432,10 @@ Known limitations:
   catalog and project copy audit are reconciled planning documents, and the
   A–F implementation plan is complete. The four ready Group A
   Platform/overview copy records and Groups B through D are accepted;
-  `COPY-003` remains held. Group F1 is complete locally with a five-finding
-  pre-E repair gate. Group E and runtime Glossary content remain unauthorized,
-  and Group F2 remains required after Group E.
+  `COPY-003` remains held. Group F1 and its five pre-E repairs are locally
+  complete; maintainer acceptance of both repair commits remains the next
+  gate. Group E and runtime Glossary content remain unauthorized, and Group F2
+  remains required after Group E.
 
 Contributor rules:
 
@@ -433,10 +456,10 @@ Production still contains no Glossary terms, annotations, ODE binding,
 Playground, activatable surface, or visible behavior. All nine project-language
 decisions are recorded and the terminology, notation, and teaching-voice
 standards are approved as Version 1. The catalog and copy audit are reconciled;
-Groups A through D are accepted, Group F1 is complete locally with verdict
-**GROUP F1 COMPLETE — PRE-E FIXES REQUIRED**, and `COPY-003` plus
-`src/pages/homePage.ts` remain review-only and unchanged. The next gate is a
-separately authorized repair and maintainer-acceptance checkpoint for
-`F1-LANG-001` through `F1-LANG-004` and `F1-BEH-001`. Group E and Production
-Glossary content remain unauthorized; Group F2 remains required after Group
-E.*
+Groups A through D are accepted, Group F1 is complete locally, and its five
+pre-E findings are `CLOSED_VERIFIED` with verdict **PRE-E REPAIR COMPLETE —
+GROUP E MAY BE PLANNED**. `COPY-003` plus `src/pages/homePage.ts` remain
+review-only and unchanged. The next gate is maintainer acceptance of both
+repair commits, followed by a separate Production Glossary Wave 1 design and
+content authorization. Group E and Production Glossary content remain
+unauthorized; Group F2 remains required after Group E.*

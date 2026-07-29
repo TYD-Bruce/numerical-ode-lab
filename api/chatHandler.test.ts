@@ -392,6 +392,57 @@ describe("mock tutor approved numerical language", () => {
     expect(answer).not.toContain("Steps stored:");
   });
 
+  it("does not route an explicit unstable prompt to the table summary", async () => {
+    const response = await handleChatRequest({
+      messages: [{ role: "user", content: "Why is this unstable?" }],
+      context: context("explicit"),
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.body.demoMode).toBe(true);
+    expect(response.body.message).not.toContain("Table summary");
+    expect(response.body.message).toContain(
+      "You asked about “Why is this unstable?” for Forward Euler."
+    );
+    expect(response.body.chartInstruction).toBeUndefined();
+  });
+
+  it("retains the standalone table-intent response and shape", async () => {
+    const response = await handleChatRequest({
+      messages: [{ role: "user", content: "Show me the table." }],
+      context: context("explicit"),
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.body.message).toContain(
+      "Table summary for Forward Euler on the current IVP"
+    );
+    expect(response.body.chartInstruction).toEqual({
+      type: "error_table",
+      title: "Mock result summary",
+      tableRows: [
+        { t: 1, u: 0.001, method: "Forward Euler" },
+        { h: 0.1, points: 11, family: "forward_euler" },
+      ],
+    });
+  });
+
+  it("retains the standalone summary-intent response and shape", async () => {
+    const response = await handleChatRequest({
+      messages: [{ role: "user", content: "Give me a summary." }],
+      context: context("explicit"),
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.body.message).toContain(
+      "Table summary for Forward Euler on the current IVP"
+    );
+    expect(response.body.chartInstruction).toMatchObject({
+      type: "error_table",
+      title: "Mock result summary",
+    });
+  });
+
   it("keeps graph appearance separate from absolute stability and accuracy", async () => {
     const answer = await ask("How should I interpret the graph?", "explicit");
     expect(answer).toContain(

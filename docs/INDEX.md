@@ -44,10 +44,12 @@ catalog and project copy audit are reconciled across all 197 term IDs and 55
 copy records, with an A–F implementation plan and machine-checkable local
 traceability. Groups A through D are accepted; `COPY-003` remains held. Group
 F1 implements `COPY-043` locally and completes the pre-Glossary consistency
-review with verdict **GROUP F1 COMPLETE — PRE-E FIXES REQUIRED**. Four
-language findings and one deterministic Tutor behavior finding require a
-separate repair and acceptance checkpoint. Group E and production Glossary
-content remain unauthorized; Group F2 remains required after Group E.
+review. Its four language findings and one deterministic Tutor behavior
+finding are `CLOSED_VERIFIED` by the separately authorized two-commit repair
+with verdict **PRE-E REPAIR COMPLETE — GROUP E MAY BE PLANNED**. Maintainer
+acceptance of both repair commits remains the next gate. Group E and
+production Glossary content remain unauthorized; Group F2 remains required
+after Group E.
 
 ## Project-language standards and content drafts
 
@@ -56,7 +58,7 @@ The terminology, notation, and teaching-voice standards are
 evidence handling. The Glossary catalog and copy audit are reconciled planning
 documents, and the implementation plan separates ready copy work from the
 unauthorized production content wave. Groups A through D are accepted. Group
-F1 is complete locally, but its five P2 findings require a pre-E repair.
+F1 is complete locally, and its five P2 findings are `CLOSED_VERIFIED`.
 Production Glossary content remains unauthorized, and the post-Glossary F2
 review remains required.
 
@@ -102,6 +104,7 @@ review remains required.
 | [Content-Agnostic Interactive Glossary Framework Release Review](reviews/2026-07-28-content-agnostic-interactive-glossary-framework-review.md) | Historical verdict **RELEASE BLOCKED**; its P1/P2/P3 findings were later repaired and closed by the final review |
 | [Content-Agnostic Interactive Glossary Framework Final Review](reviews/2026-07-28-content-agnostic-interactive-glossary-framework-final-review.md) | Repeated independent verdict **APPROVED FOR LOCAL FRAMEWORK RELEASE**; all three historical findings closed; production content remains unauthorized |
 | [Pre-Glossary Project-Language Consistency Review](reviews/2026-07-29-pre-glossary-project-language-consistency-review.md) | Group F1 verdict **GROUP F1 COMPLETE — PRE-E FIXES REQUIRED**; `COPY-043` verified, twelve review-only records classified, five P2 findings recorded, Group E unauthorized, F2 still required |
+| [Pre-Glossary Repair Review](reviews/2026-07-29-pre-glossary-repair-review.md) | Verdict **PRE-E REPAIR COMPLETE — GROUP E MAY BE PLANNED**; all five Group F1 findings `CLOSED_VERIFIED`, Group E still unauthorized, F2 still required |
 
 ## Feature handoffs
 
@@ -118,9 +121,10 @@ review remains required.
 - [Numerical T-Lab project-language v1 handoff](content/HANDOFF.md) — 29-source
   evidence baseline, nine approved decisions, Version 1 standards, reconciled
   197-term catalog and 55-record copy audit, A–F implementation plan, and
-  validation evidence; Groups A through D are accepted, Group F1 is complete
-  locally with a required pre-E repair gate, and production content plus Group
-  E remain unauthorized.
+  validation evidence; Groups A through D are accepted, Group F1 and its five
+  pre-E repairs are locally complete, and production content plus Group E
+  remain unauthorized pending maintainer acceptance and separate
+  authorization.
 - [Project Rename handoff](project-rename/HANDOFF.md) — completed Project
   Identity Migration evidence, including the canonical local workspace reopen.
 

@@ -41,16 +41,17 @@ implementation groups, and local traceability/validation recorded. Group A
 ready records `COPY-001`, `COPY-002`, `COPY-004`, and `COPY-005` are accepted.
 Group B records `COPY-006` through `COPY-019` and Group C records `COPY-020`
 through `COPY-029` are accepted. Group D records `COPY-030` through `COPY-040`
-are accepted in `0a32939c6a0bd218003ba87181f66033695c233b`. Group F1 now
+are accepted in `0a32939c6a0bd218003ba87181f66033695c233b`. Group F1
 implements `COPY-043` locally and completes the pre-Glossary consistency
 review. All twelve `COPY-NC-*` records remain review-only and are classified.
-The F1 verdict is **GROUP F1 COMPLETE — PRE-E FIXES REQUIRED**: four
-language findings and one deterministic Tutor behavior finding require a
-separately authorized repair and acceptance checkpoint before Group E may be
-planned. `COPY-003` and `src/pages/homePage.ts` remain held and unchanged.
-Group E, production Glossary content, and an ODE binding remain unauthorized;
-the final Group F2 review remains required after Group E. Nothing was pushed
-or deployed.
+The four language findings and one deterministic Tutor behavior finding from
+that review are now `CLOSED_VERIFIED` in the separately authorized two-commit
+[pre-Glossary repair](docs/reviews/2026-07-29-pre-glossary-repair-review.md).
+The repair verdict is **PRE-E REPAIR COMPLETE — GROUP E MAY BE PLANNED**,
+subject to maintainer acceptance of both repair commits. `COPY-003` and
+`src/pages/homePage.ts` remain held and unchanged. Group E, production
+Glossary content, and an ODE binding remain unauthorized; the final Group F2
+review remains required after Group E. Nothing was pushed or deployed.
 
 ## Current released baseline
 
@@ -156,7 +157,8 @@ independent final review. No production content or ODE binding was added.**
     language and current behavior, and record the pre-E gate. Complete locally
     with verdict **GROUP F1 COMPLETE — PRE-E FIXES REQUIRED**.
 17. Repair and accept `F1-LANG-001` through `F1-LANG-004` and
-    `F1-BEH-001` in separately authorized focused work. Not started.
+    `F1-BEH-001` in separately authorized focused work. Repair complete and
+    locally verified in two commits; maintainer acceptance remains the gate.
 18. Add the reviewed ODE Glossary vertical slice only after the pre-E repair
     gate, separate content approval, and implementation authorization.
 19. Complete Group F2 after Group E.
@@ -164,13 +166,14 @@ independent final review. No production content or ODE binding was added.**
 
 ## Current next action
 
-Authorize and complete a narrow pre-E repair for `F1-LANG-001` through
-`F1-LANG-004` and `F1-BEH-001`, then review and accept its evidence. Group F1
-implemented `COPY-043`, classified every `COPY-NC-*` record, and completed the
-cross-surface review with 135 focused tests, the 1,042-test full verification
-gate, 1440×900 and 390×844 development/production-preview evidence, and an
-unchanged normalized production import graph. `COPY-003` remains deferred with
-the PDE module. Group E, production Glossary content, an ODE binding, and the
+Review and accept the two pre-E repair commits and their
+[evidence](docs/reviews/2026-07-29-pre-glossary-repair-review.md). All five
+Group F1 findings are `CLOSED_VERIFIED` after 161 cumulative focused tests,
+the 1,048-test full verification gate, 1440×900 and 390×844 localhost demo
+review, and an unchanged normalized production import graph. After maintainer
+acceptance, Group E may be planned only through a separate Production Glossary
+Wave 1 design and content authorization. `COPY-003` remains deferred with the
+PDE module. Group E, production Glossary content, an ODE binding, and the
 reviewed ODE vertical slice remain unauthorized. Group F2 remains required
 after Group E.
 
@@ -233,12 +236,12 @@ project-language approval gate is also closed: all nine choices are recorded
 and the three standards are approved as Version 1. The catalog/copy
 reconciliation gate is also closed with 197 stable IDs and 55 rescanned copy
 records. Groups A through D are accepted; `COPY-003` remains held. Group F1 is
-complete locally with verdict **GROUP F1 COMPLETE — PRE-E FIXES REQUIRED**.
-The next gate is a separately authorized repair and maintainer-acceptance
-checkpoint for `F1-LANG-001` through `F1-LANG-004` and `F1-BEH-001`.
-Production Glossary terms, annotations, an ODE binding, and visible Glossary
-behavior remain absent and unauthorized. Group E may not be planned until the
-repair gate closes, and Group F2 remains required after Group E.
+complete locally. Its five pre-E findings are `CLOSED_VERIFIED` with verdict
+**PRE-E REPAIR COMPLETE — GROUP E MAY BE PLANNED**. The next gate is
+maintainer acceptance of both repair commits, followed by separate Production
+Glossary Wave 1 design and content authorization. Production Glossary terms,
+annotations, an ODE binding, and visible Glossary behavior remain absent and
+unauthorized. Group F2 remains required after Group E.
 
 ## Update rule
 
