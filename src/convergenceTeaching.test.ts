@@ -118,6 +118,16 @@ describe("convergence teaching sections", () => {
       "warnings",
     ];
     expect(sections.map((section) => section.id)).toEqual(expectedIds);
+    expect(sections.map((section) => section.formula.latex)).toEqual([
+      "E(h)\\to 0\\quad\\text{as}\\quad h\\to 0",
+      "y'(t)=f(t,y(t)),\\qquad y(t_0)=y_0",
+      "h,\\;\\frac{h}{2},\\;\\frac{h}{4},\\;\\ldots",
+      "E_{\\mathrm{final}}(h)=|u_N-y(t_{\\mathrm{end}})|,\\qquad E_{\\infty}(h)=\\max_n|u_n-y(t_n)|",
+      "p_{\\mathrm{obs}}=\\log_2\\!\\left(\\frac{E(h)}{E(h/2)}\\right)",
+      "E_{\\mathrm{reference}}(h)=C h^p",
+      "|p_{\\mathrm{obs}}-p|",
+      "E(h)\\lesssim 100\\,\\varepsilon_{\\mathrm{machine}}\\,\\mathrm{scale}",
+    ]);
     for (const section of sections) {
       expect(section.title).not.toBe("");
       expect(section.plainLanguage).toMatch(/[.!?]$/);
@@ -140,7 +150,9 @@ describe("convergence teaching sections", () => {
     expect(observed.currentExample).toContain("15.94 times smaller");
     expect(observed.currentExample).toContain("3.995");
     expect(observed.currentExample).toContain("giving an observed order of 3.995");
+    expect(observed.currentExample).toContain("the maximum global error was");
     expect(observed.currentExample).not.toContain("measured order");
+    expect(observed.currentExample).not.toContain("the maximum error was");
     const exact = sections.find((section) => section.id === "exact_solution")!;
     expect(exact.plainLanguage).toBe(
       "An exact solution is a function that satisfies the stated initial value problem and supplies the reference values used to compute numerical error."
@@ -160,9 +172,23 @@ describe("convergence teaching sections", () => {
     expect(errors.formula.displayText).toBe(
       "final-time error equals the absolute endpoint difference; maximum global error is the largest absolute grid-point difference"
     );
+    expect(errors.plainLanguage).toBe(
+      "Final-time error checks one endpoint, while maximum global error checks every point on the numerical grid."
+    );
     const theory = sections.find((section) => section.id === "theory_difference")!;
-    expect(theory.plainLanguage).toContain("before the asymptotic region is reached");
+    expect(theory.plainLanguage).toBe(
+      "Observed order can differ from the theoretical order before the experiment reaches the asymptotic region or when other numerical effects influence the error data."
+    );
+    expect(theory.currentExample).toBe(
+      "The theoretical order is 4, while the primary observed order based on maximum global error is 3.995."
+    );
     expect(theory.plainLanguage).not.toContain("asymptotic range");
+    expect(theory.currentExample).not.toContain(
+      "primary measured maximum-error order"
+    );
+    expect(
+      sections.find((section) => section.id === "log_log")!.whyThisMatters
+    ).toContain("parallel measured and reference slopes");
     expect(JSON.stringify(sections)).not.toMatch(/\btotal error\b|\bactual order\b/);
   });
 
@@ -173,13 +199,17 @@ describe("convergence teaching sections", () => {
     });
     expect(
       sections.find((section) => section.id === "observed_order")!.currentExample
-    ).toContain("did not produce a reliable");
+    ).toContain(
+      "did not produce a reliable adjacent observed order based on maximum global error"
+    );
     expect(sections.find((section) => section.id === "log_log")!.currentExample).toContain(
       "maximum global error"
     );
     expect(
       sections.find((section) => section.id === "theory_difference")!.currentExample
-    ).toContain("no primary reliable");
+    ).toBe(
+      "The theoretical order is 4, but no primary reliable observed order based on maximum global error is available."
+    );
   });
 });
 

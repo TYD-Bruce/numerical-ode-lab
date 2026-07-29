@@ -92,8 +92,8 @@ export function buildConvergenceTeachingSections(
   const metricName = metric === "maximum_global" ? "maximum global error" : "final-time error";
   const reduction = pair ? pair.coarseError / pair.fineError : undefined;
   const orderExample = pair
-    ? `At h = ${formatTeachingNumber(pair.coarseH)}, the maximum error was ${formatTeachingNumber(pair.coarseError)}. At h = ${formatTeachingNumber(pair.fineH)}, it was ${formatTeachingNumber(pair.fineError)}. The error became about ${formatTeachingNumber(reduction!)} times smaller, giving an observed order of ${formatTeachingNumber(pair.assessment.value)}.`
-    : "This study did not produce a reliable adjacent maximum-error order pair.";
+    ? `At h = ${formatTeachingNumber(pair.coarseH)}, the maximum global error was ${formatTeachingNumber(pair.coarseError)}. At h = ${formatTeachingNumber(pair.fineH)}, it was ${formatTeachingNumber(pair.fineError)}. The error became about ${formatTeachingNumber(reduction!)} times smaller, giving an observed order of ${formatTeachingNumber(pair.assessment.value)}.`
+    : "This study did not produce a reliable adjacent observed order based on maximum global error.";
   const exactDescription = input.exactSolutionDisplayText
     ? `For this study, the supplied exact solution is described as ${input.exactSolutionDisplayText}.`
     : "The supplied exact solution was evaluated on every numerical grid point.";
@@ -126,7 +126,7 @@ export function buildConvergenceTeachingSections(
     {
       id: "errors",
       title: "How are final-time error and maximum global error calculated?",
-      plainLanguage: "Final-time error checks one endpoint, while maximum error checks every point on the numerical grid.",
+      plainLanguage: "Final-time error checks one endpoint, while maximum global error checks every point on the numerical grid.",
       formula: math(
         "E_{\\mathrm{final}}(h)=|u_N-y(t_{\\mathrm{end}})|,\\qquad E_{\\infty}(h)=\\max_n|u_n-y(t_n)|",
         "final-time error equals the absolute endpoint difference; maximum global error is the largest absolute grid-point difference"
@@ -153,11 +153,11 @@ export function buildConvergenceTeachingSections(
     {
       id: "theory_difference",
       title: "Why may observed and theoretical orders differ?",
-      plainLanguage: "Measured order can differ from theory before the asymptotic region is reached or after roundoff becomes important.",
+      plainLanguage: "Observed order can differ from the theoretical order before the experiment reaches the asymptotic region or when other numerical effects influence the error data.",
       formula: math("|p_{\\mathrm{obs}}-p|", "the absolute difference between observed order and theoretical order"),
       currentExample: result.interpretation.primaryObservedOrder === undefined
-        ? `The theoretical order is ${result.theoreticalOrder}, but no primary reliable maximum-error order is available.`
-        : `The theoretical order is ${result.theoreticalOrder}, while the primary measured maximum-error order is ${formatTeachingNumber(result.interpretation.primaryObservedOrder)}.`,
+        ? `The theoretical order is ${result.theoreticalOrder}, but no primary reliable observed order based on maximum global error is available.`
+        : `The theoretical order is ${result.theoreticalOrder}, while the primary observed order based on maximum global error is ${formatTeachingNumber(result.interpretation.primaryObservedOrder)}.`,
       whyThisMatters: "Why this matters: disagreement is evidence to investigate, not proof of one particular failure cause.",
     },
     {

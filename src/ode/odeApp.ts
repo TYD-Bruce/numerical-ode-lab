@@ -2205,7 +2205,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
         legend: { labels: { color: "#d8e2ff" } },
         title: {
           display: true,
-          text: "Approximate solution vs time",
+          text: "Numerical approximation vs time",
           color: "#f2f5ff",
           font: { size: 16, weight: "600" },
         },

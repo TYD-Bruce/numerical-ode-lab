@@ -355,6 +355,33 @@ const MULTISTEP_FAMILIES = [
 ] as const;
 
 describe("multistep minimum-grid contract", () => {
+  it("uses theoretical-order language without changing validation ownership", () => {
+    expect(() =>
+      integrateFirstOrder(
+        { family: "bdf", order: 2.5 },
+        { t0: 0, y0: 1, tEnd: 1, h: 0.1, f: (_t, y) => -y }
+      )
+    ).toThrow("The theoretical order p must be an integer.");
+  });
+
+  it("qualifies the multistep nodal-error order without changing metadata", () => {
+    const result = integrateFirstOrder(
+      { family: "adams_bashforth", order: 3 },
+      { t0: 0, y0: 1, tEnd: 1, h: 0.1, f: (_t, y) => -y }
+    );
+
+    expect(result.metadata.order).toBe(3);
+    expect(result.metadata.startupMethod).toBe("Runge-Kutta 4");
+    expect(result.metadata.notes).toContain(
+      "Under the usual regularity and stability assumptions, the method has theoretical order p, so its nodal error is O(h^p)."
+    );
+    expect(result.metadata.notes.join(" ")).not.toContain(
+      "If the local truncation error"
+    );
+    expect(result.points).toHaveLength(11);
+    expect(result.points.at(-1)!.t).toBeCloseTo(1, 12);
+  });
+
   it.each(MULTISTEP_FAMILIES)(
     "%s rejects N < p before bootstrap can create an internal grid error",
     (family, displayName) => {

@@ -221,7 +221,7 @@ function buildMockResponse(
   const orderLine =
     order !== undefined
       ? `The method metadata reports theoretical order p = ${order} for this run.`
-      : "Check the Method details panel for the order of accuracy p.";
+      : "Check the Method details panel for the theoretical order p.";
 
   let message = "";
   let chartInstruction: Record<string, unknown> | undefined;
@@ -272,16 +272,16 @@ function buildMockResponse(
     const status = latest ? ctxString(latest, ["status"]) : undefined;
     const detail = latest ? ctxString(latest, ["message"]) : undefined;
     message = demoReply(
-      `The primary maximum-error interpretation is ${interpretationTitle ?? interpretationKind ?? "not supplied"}. The latest supplied maximum-error status is ${status ?? "not supplied"}${detail ? `: ${detail}` : "."} Possible explanations include instability, roundoff, startup error, an invalid exact solution, or a grid that is not yet in the asymptotic region; the supplied evidence does not prove one specific cause.`
+      `The primary interpretation based on maximum global error is ${interpretationTitle ?? interpretationKind ?? "not supplied"}. The latest supplied primary maximum-global-error evidence status is ${status ?? "not supplied"}${detail ? `: ${detail}` : "."} Possible explanations include instability, roundoff, startup error, an invalid exact solution, or a grid that is not yet in the asymptotic region; the supplied evidence does not prove one specific cause.`
     );
   } else if (convergence && q.includes("asymptotic")) {
     message = demoReply(
-      `The supplied study classification is ${interpretationKind ?? "not supplied"}: ${interpretationTitle ?? "no title supplied"}. ${interpretationExplanation ?? "No additional explanation was supplied."}${primaryObservedOrder === undefined ? "" : ` The primary maximum-error observed order is ${finiteText(primaryObservedOrder)}.`} I am reporting the model's classification rather than recomputing it.`
+      `The supplied study classification is ${interpretationKind ?? "not supplied"}: ${interpretationTitle ?? "no title supplied"}. ${interpretationExplanation ?? "No additional explanation was supplied."}${primaryObservedOrder === undefined ? "" : ` The primary observed order based on maximum global error is ${finiteText(primaryObservedOrder)}.`} I am reporting the model's classification rather than recomputing it.`
     );
   } else if (convergence && (q.includes("observed order") || q.includes("not exactly") || q.includes("non-integer") || q.includes("non integer"))) {
     const observed = primaryObservedOrder === undefined
       ? "The primary observed order is unavailable, so I will not replace it with a guess."
-      : `The primary maximum-error observed order is ${finiteText(primaryObservedOrder)}, compared with theoretical order p = ${finiteText(theoreticalOrder)}.`;
+      : `The primary observed order based on maximum global error is ${finiteText(primaryObservedOrder)}, compared with theoretical order p = ${finiteText(theoreticalOrder)}.`;
     message = demoReply(
       `${observed} ${interpretationTitle ?? interpretationKind ?? "No interpretation title was supplied"}. ${interpretationExplanation ?? ""} Zero-based evidence level pairs: ${evidencePairsText(interpretation)}. An observed order need not be an integer because it comes from finite error ratios and may reflect pre-asymptotic behavior or roundoff; those are possibilities, not proven causes for this run.`
     );
@@ -397,7 +397,7 @@ function buildMockResponse(
     q.includes("plot")
   ) {
     message = demoReply(
-      `The chart shows the approximate solution uₙ versus t for ${methodName}. It contains ${pointCount ?? "?"} points from t₀ to about t = ${finalT?.toFixed(4) ?? "?"}.\n\nThe curve shows the computed approximations for this method and time-step size. Rapid growth or oscillation can motivate an absolute-stability check, but the plot alone does not prove instability or accuracy.`
+      `The chart shows the numerical approximation uₙ versus t for ${methodName}. It contains ${pointCount ?? "?"} points from t₀ to about t = ${finalT?.toFixed(4) ?? "?"}.\n\nThe curve shows the computed approximations for this method and time-step size. Rapid growth or oscillation can motivate an absolute-stability check, but the plot alone does not prove instability or accuracy.`
     );
   } else if (
     q.includes("smaller h") ||

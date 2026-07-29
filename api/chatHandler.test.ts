@@ -247,6 +247,23 @@ describe("mock tutor step-by-step nonlinear wording", () => {
     expect(answer.toLowerCase()).not.toContain("fixed-point");
     expect(answer.toLowerCase()).not.toContain("fixed point");
   });
+
+  it("uses theoretical-order language when order metadata is unavailable", async () => {
+    const missingOrderContext = context("explicit");
+    delete (missingOrderContext.method as Record<string, unknown>).order;
+    const response = await handleChatRequest({
+      messages: [
+        { role: "user", content: "Explain this method step by step." },
+      ],
+      context: missingOrderContext,
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.body.message).toContain(
+      "Check the Method details panel for the theoretical order p."
+    );
+    expect(response.body.message).not.toContain("order of accuracy p");
+  });
 });
 
 describe("mock tutor convergence grounding", () => {
@@ -266,13 +283,22 @@ describe("mock tutor convergence grounding", () => {
     expect(answer).toContain(kind);
     expect(answer).toContain(`Supplied explanation for ${kind}.`);
     if (kind === "order_unavailable") expect(answer).not.toContain("3.91827364");
-    else expect(answer).toContain("3.9182736");
+    else {
+      expect(answer).toContain("3.9182736");
+      expect(answer).toContain(
+        "The primary observed order based on maximum global error is 3.9182736."
+      );
+      expect(answer).not.toContain("primary maximum-error observed order");
+    }
   });
 
   it("uses actual observed-order evidence and does not fabricate unavailable values", async () => {
     const actual = await askConvergence("Why is my observed order not exactly 4?");
     expect(actual).toContain("3.9182736");
     expect(actual).toContain("4.0000000");
+    expect(actual).toContain(
+      "The primary observed order based on maximum global error is 3.9182736"
+    );
     expect(actual).toContain("Zero-based evidence level pairs: 1 to 2, 2 to 3");
     expect(actual).toContain("An observed order need not be an integer");
     expect(actual).not.toContain("A measured order need not be an integer");
@@ -317,6 +343,13 @@ describe("mock tutor convergence grounding", () => {
     );
     expect(answer).toContain("no_improvement");
     expect(answer).toContain("Maximum-order evidence for refinement_not_improving.");
+    expect(answer).toContain(
+      "The primary interpretation based on maximum global error is Interpretation refinement_not_improving."
+    );
+    expect(answer).toContain(
+      "The latest supplied primary maximum-global-error evidence status is no_improvement"
+    );
+    expect(answer).not.toContain("primary maximum-error");
     expect(answer.toLowerCase()).toContain("does not prove one specific cause");
   });
 
@@ -362,6 +395,9 @@ describe("mock tutor approved numerical language", () => {
   it("keeps graph appearance separate from absolute stability and accuracy", async () => {
     const answer = await ask("How should I interpret the graph?", "explicit");
     expect(answer).toContain(
+      "The chart shows the numerical approximation uₙ versus t for Forward Euler."
+    );
+    expect(answer).toContain(
       "The curve shows the computed approximations for this method and time-step size."
     );
     expect(answer).toContain(
@@ -371,6 +407,7 @@ describe("mock tutor approved numerical language", () => {
       "the plot alone does not prove instability or accuracy"
     );
     expect(answer).not.toContain("If it blows up");
+    expect(answer).not.toContain("the approximate solution uₙ");
   });
 
   it("uses the approved unscaled local-truncation convention for a smaller time-step size", async () => {

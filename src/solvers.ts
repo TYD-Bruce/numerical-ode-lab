@@ -262,7 +262,7 @@ function validateOrder(family: MethodFamily, order: number | undefined): number 
     return typeof cat.orderOfAccuracy === "number" ? cat.orderOfAccuracy : 1;
   }
   if (order === undefined || !Number.isInteger(order)) {
-    throw new Error(`${cat.displayName} requires an integer order of accuracy p.`);
+    throw new Error("The theoretical order p must be an integer.");
   }
   const min = cat.orderMin ?? 1;
   const max = cat.orderMax ?? 8;
@@ -328,7 +328,7 @@ function buildMetadata(
       "Multistep methods require previous solution values. This app generates startup values using Runge-Kutta 4."
     );
     notes.push(
-      "If the local truncation error is O(hᵖ⁺¹), then the global error is usually O(hᵖ), assuming stability."
+      "Under the usual regularity and stability assumptions, the method has theoretical order p, so its nodal error is O(h^p)."
     );
   }
 

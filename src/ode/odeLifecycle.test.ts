@@ -24,6 +24,7 @@ import { methodMathContent } from "../math/ui/methodMathContent";
 import { METHOD_CATALOG } from "../methodCatalog";
 
 const destroyChart = vi.fn();
+const chartConfigurations: unknown[] = [];
 const disposeConvergence = vi.fn();
 const mountConvergence = vi.fn(
   (
@@ -43,6 +44,9 @@ vi.mock("chart.js", () => {
   class ChartMock {
     static register = vi.fn();
     destroy = destroyChart;
+    constructor(_canvas: unknown, configuration: unknown) {
+      chartConfigurations.push(configuration);
+    }
   }
   return {
     Chart: ChartMock,
@@ -157,6 +161,7 @@ describe("mounted ODE lifecycle", () => {
   beforeEach(() => {
     document.body.innerHTML = "";
     destroyChart.mockClear();
+    chartConfigurations.length = 0;
     disposeConvergence.mockClear();
     mountConvergence.mockClear();
   });
@@ -184,6 +189,25 @@ describe("mounted ODE lifecycle", () => {
     expect(target.textContent).toContain("Theoretical order p");
     expect(target.textContent).not.toContain("Steps taken");
     expect(target.textContent).not.toContain("Order of accuracy p");
+    expect(chartConfigurations).toHaveLength(1);
+    expect(chartConfigurations[0]).toMatchObject({
+      data: {
+        labels: ["0.000", "0.200"],
+        datasets: [{ label: "y(t)", data: [1, 0.8] }],
+      },
+      options: {
+        plugins: {
+          title: {
+            display: true,
+            text: "Numerical approximation vs time",
+          },
+        },
+        scales: {
+          x: { title: { display: true, text: "t" } },
+          y: { title: { display: true, text: "y" } },
+        },
+      },
+    });
     expect(mountConvergence).toHaveBeenCalledTimes(1);
     expect(mountConvergence.mock.calls[0]?.[1].getState().drawerOpen).toBe(true);
     expect(mountConvergence.mock.calls[0]?.[1].getState().chartMetric).toBe(
