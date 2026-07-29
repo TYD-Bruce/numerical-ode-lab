@@ -1,7 +1,8 @@
 # Numerical T-Lab Project Language v1 Handoff
 
 Status: Project Language Standard v1 approved; Glossary catalog, copy audit,
-implementation groups, and traceability reconciled.
+implementation groups, and traceability reconciled; Group A ready copy
+implemented and locally verified.
 
 Runtime/content implementation tracked separately.
 
@@ -133,11 +134,13 @@ is directly governed by those same Version 1 decisions.
 The copy audit retains all 55 stable records: 40 are
 `READY_FOR_IMPLEMENTATION`, 2 `REQUIRES_CONTENT_WAVE`, 1
 `DEFERRED_BY_MODULE`, and 12 `NO_CHANGE`; none is obsolete or
-decision-blocked. No `COPY-*` recommendation is implemented here.
+decision-blocked. The original reconciliation implemented no recommendation.
+The separately authorized Group A iteration now implements `COPY-001`,
+`COPY-002`, `COPY-004`, and `COPY-005`; `COPY-003` remains held.
 
 ## 7. Runtime and numerical non-changes
 
-The approval and reconciliation iterations do not change:
+The original approval and reconciliation iterations did not change:
 
 - runtime TypeScript, API code, HTML behavior, CSS, tests, dependencies,
   package files, or deployment configuration;
@@ -154,6 +157,11 @@ The approval and reconciliation iterations do not change:
 The locally accepted Content-Agnostic Interactive Glossary Framework remains
 content-neutral. Production still contains no Glossary terms, annotations, ODE
 binding, or visible Glossary behavior.
+
+The Group A iteration changes only `README.md`, visible static-page strings,
+and focused copy expectations. It changes no route, link target, module
+availability, numerical behavior, session state, Tutor behavior, Store,
+persistence, lazy boundary, Glossary entry, annotation, or ODE binding.
 
 ## 8. Local artifacts and validation
 
@@ -182,14 +190,36 @@ No npm test, typecheck, build, browser run, bundle inspection, deployment,
 remote contact, push, or external access is required or claimed for this
 documentation-only iteration.
 
-## 9. Current review gate
+## 9. Group A implementation checkpoint
 
-The nine maintainer decisions are recorded and the Numerical T-Lab
-terminology, notation, and teaching-voice standards are approved as Version 1.
-The Glossary catalog and project copy audit are reconciled, and the A–F
-implementation plan is complete. No recommendation, runtime content, or
-production Glossary behavior has been implemented. The next authorized phase
-is a separately scoped implementation of Group A, Platform and overview copy,
-followed by focused tests and browser review. That phase covers ready records
-`COPY-001`, `COPY-002`, `COPY-004`, and `COPY-005`; `COPY-003` remains
-deferred with the PDE module.
+The exact ready records `COPY-001`, `COPY-002`, `COPY-004`, and `COPY-005`
+are `IMPLEMENTED_LOCALLY_COMMIT_PENDING`.
+
+- Product files changed: `README.md`, `src/pages/aboutPage.ts`, and
+  `src/pages/odeOverviewPage.ts`.
+- Focused test changed: `src/pages/pages.test.ts`.
+- `src/pages/homeResume.test.ts` remained unchanged and passed as a regression
+  check.
+- `COPY-003` and `src/pages/homePage.ts` remain review-only and unchanged.
+- The initial focused run failed only the two intended About/ODE copy
+  expectations; the final focused run passed 2 files and 9 tests.
+- The static source-graph regression passed 1 file and 7 tests.
+- `npm.cmd run verify` passed 73 files and 1,028 tests, application typecheck,
+  API typecheck, and the 79-module production build. Only the accepted large
+  deferred-chunk warning remained.
+- Isolated localhost review passed `/`, `/about`, `/ode`, `/linear-algebra`,
+  and `/pde` at 1440×900 and 390×844 with exact copy, truthful statuses,
+  visible focus, no clipped labels or horizontal overflow, and no console
+  warning or error.
+- Production inspection found an unchanged eight-JavaScript/seven-CSS chunk
+  inventory. The main entry increased by 90 raw bytes for the expected string
+  delta; every non-entry JavaScript chunk matched the accepted byte baseline.
+  Production About excludes Developer Tools, the empty core Glossary remains
+  empty, and no ODE Glossary binding exists.
+- Nothing was pushed or deployed.
+
+## 10. Current review gate
+
+Group A is implemented and locally verified. Group B remains unauthorized.
+The next gate is maintainer acceptance of the Group A commit and evidence
+package before IVP Method/Data/Output and preset language work begins.

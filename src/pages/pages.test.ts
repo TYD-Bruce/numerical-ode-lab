@@ -62,11 +62,12 @@ describe("static platform pages", () => {
     for (const item of [
       "Boundary Value Problems",
       "Adaptive Step Size",
-      "Stability Regions",
+      "Absolute-stability regions",
       "Stiff Systems",
     ]) {
       expect(target.textContent).toContain(item);
     }
+    expect(target.textContent).not.toContain("Stability Regions");
     expect(target.textContent).toContain("Planned");
     expect(target.textContent).toContain("Linear Algebra");
     expect(target.textContent).toContain("PDE");
@@ -99,9 +100,13 @@ describe("static platform pages", () => {
 
   it("distinguishes the released ODE product from the future platform on About", () => {
     const target = mount(aboutPage, "/about");
+    const theoryPillar = Array.from(target.querySelectorAll("li")).find(
+      (item) => item.querySelector("strong")?.textContent === "Theory"
+    );
     const teachingPillar = Array.from(target.querySelectorAll("li")).find(
       (item) => item.querySelector("strong")?.textContent === "Teaching"
     );
+    const theoryCopy = theoryPillar?.textContent ?? "";
     const teachingCopy = teachingPillar?.textContent ?? "";
     const currentTeachingCopy = teachingCopy.split("today.")[0];
 
@@ -120,9 +125,20 @@ describe("static platform pages", () => {
     expect(currentTeachingCopy).toContain("AI Tutor");
     expect(currentTeachingCopy).not.toContain("Interactive Glossary");
     expect(teachingCopy).toContain(
-      "approved Interactive Glossary framework"
+      "locally accepted Interactive Glossary framework"
     );
-    expect(teachingCopy).toContain("planned");
+    expect(teachingCopy).toContain("ready for reviewed content integration");
+    expect(teachingCopy).toContain(
+      "No production terms or definitions are published yet."
+    );
+    expect(teachingCopy).not.toContain(
+      "approved Interactive Glossary framework is planned"
+    );
+    expect(theoryCopy).toContain("relevant stability properties");
+    expect(theoryCopy).toContain("stated error measures");
+    expect(theoryCopy).not.toContain(
+      "limitations, stability, and error behavior"
+    );
     expect(target.textContent).not.toContain("Tian");
     expect(target.textContent).toContain("planned");
   });

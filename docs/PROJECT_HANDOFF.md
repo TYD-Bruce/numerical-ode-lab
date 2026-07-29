@@ -14,8 +14,12 @@ recorded all nine maintainer decisions on 2026-07-28, and the terminology,
 notation, and teaching-voice standards are approved as Version 1. That approval
 is documentation governance only. The Glossary catalog and project copy audit
 are now reconciled across all 197 stable IDs and 55 copy records, with six
-future implementation groups and local validation/traceability. No runtime
-content or product-copy change was made.
+future implementation groups and local validation/traceability. The four ready
+Group A records (`COPY-001`, `COPY-002`, `COPY-004`, and `COPY-005`) are now
+implemented and locally verified. `COPY-003` and `src/pages/homePage.ts` remain
+review-only and unchanged. This iteration changed visible copy only: no
+runtime behavior, numerical contract, production Glossary content, or binding
+changed, and nothing was pushed or deployed.
 
 ## 1. Product and public routes
 
@@ -58,10 +62,11 @@ Nothing was pushed or deployed by the repair or final review.
 The documentation-only project-language reconciliation is also complete. It
 retains all 197 candidate IDs, reports four required-ID gaps without adding
 them, prepares 10 Wave 1 and 13 high-priority Wave 2 rich drafts, and maps all
-55 copy records to Groups A–F. No recommendation was implemented. The next
-authorized phase is a separately scoped Group A Platform/overview copy change
-with focused tests and browser review; production Glossary content remains
-unauthorized.
+55 copy records to Groups A–F. The four ready Group A Platform/overview copy
+records are implemented and locally verified; deferred `COPY-003` remains held
+with the PDE module. The next gate is maintainer acceptance of the Group A
+commit and evidence package before Group B begins. Production Glossary content
+and binding remain unauthorized.
 
 ## 2. Verification baseline
 
@@ -86,6 +91,19 @@ npm run dev
 npm run dev:api
 npm run preview
 ```
+
+The Group A Platform/overview copy iteration passed its focused page suite
+(2 files, 9 tests), static route-bundle ownership suite (1 file, 7 tests), and
+full `npm.cmd run verify` gate (73 files, 1,028 tests, both TypeScript checks,
+and a 79-module production build). Browser review covered `/`, `/about`,
+`/ode`, `/linear-algebra`, and `/pde` at 1440 × 900 and 390 × 844. Approved
+copy rendered exactly; route status and links remained truthful; current-page
+and mobile-menu focus remained visible; and no clipping, horizontal overflow,
+malformed encoding, or console warning/error was observed. The entry chunk
+grew by 90 raw bytes for copy only, the accepted non-entry chunk inventory and
+sizes remained unchanged, and production artifacts still exclude the
+DEV-only Glossary Playground and content fixtures. No push or deployment was
+performed.
 
 `npm run verify` passed on 2026-07-14:
 
@@ -299,9 +317,10 @@ Known limitations:
 - The private-source-reviewed project-language foundation is approved as
   Version 1 after all nine maintainer decisions were recorded. The Glossary
   catalog and project copy audit are reconciled planning documents, and the
-  A–F implementation plan is complete. The next authorized phase is a
-  separately scoped Group A Platform/overview copy implementation; runtime
-  Glossary content remains unauthorized.
+  A–F implementation plan is complete. The four ready Group A
+  Platform/overview copy records are implemented and locally verified;
+  `COPY-003` remains held. Group B and runtime Glossary content remain
+  unauthorized pending maintainer acceptance of the Group A evidence.
 
 Contributor rules:
 
@@ -322,5 +341,8 @@ Production still contains no Glossary terms, annotations, ODE binding,
 Playground, activatable surface, or visible behavior. All nine project-language
 decisions are recorded and the terminology, notation, and teaching-voice
 standards are approved as Version 1. The catalog and copy audit are reconciled;
-no recommendation was implemented. The next gate is separately scoped Group A
-Platform and overview copy work with focused tests and browser review.*
+the four ready Group A records are implemented and locally verified, while
+`COPY-003` and `src/pages/homePage.ts` remain review-only and unchanged. The
+next gate is maintainer acceptance of the Group A commit and evidence package
+before IVP Method/Data/Output and preset language work begins. Group B remains
+unauthorized.*

@@ -44,7 +44,7 @@ export const odeOverviewPage: RouteModule = {
       for (const item of [
         "Boundary Value Problems",
         "Adaptive Step Size",
-        "Stability Regions",
+        "Absolute-stability regions",
         "Stiff Systems",
       ]) {
         const entry = document.createElement("li");

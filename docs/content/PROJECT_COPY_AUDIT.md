@@ -1,15 +1,17 @@
 # Numerical T-Lab Project Copy Audit
 
 Status: Reconciled against Project Language Standard v1.
-Recommendations remain unimplemented.
+Group A ready records are implemented locally and verified; `COPY-003`
+remains held. All other recommendations remain unimplemented.
 
 ## Purpose and boundary
 
 This is the implementation-ready, repository-grounded wording migration
 record for current non-historical user-facing English. It was rescanned at
 starting HEAD `b14bf1c7a2cb0f398ccd462dd8747ef76676b8d1` after the three
-language standards became Version 1. No runtime source, test, README,
-numerical contract, production content, or Tutor behavior is changed here.
+language standards became Version 1. This document now also records the
+separately authorized Group A implementation evidence. No numerical contract,
+production content, or Tutor behavior is changed.
 
 Exact candidate replacement copy is recorded for all 43 non-no-change
 records: 40 are ready for implementation, 2 require the content wave, and 1
@@ -22,6 +24,8 @@ inside the separately authorized implementation group.
 - Source files represented: **20**.
 - Expected focused test files represented: **21**.
 - Readiness counts: `{'DEFERRED_BY_MODULE': 1, 'NO_CHANGE': 12, 'READY_FOR_IMPLEMENTATION': 40, 'REQUIRES_CONTENT_WAVE': 2}`.
+- Implementation progress: 4 Group A ready records implemented locally;
+  `COPY-003` held; Groups B–F unimplemented.
 - Former decision-blocked records: **0**.
 - Numerical-behavior changes proposed: **0**.
 
@@ -66,7 +70,11 @@ Copy records use compact rule IDs defined by the approved documents:
 - Implementation group: `GROUP_A`
 - Readiness: `READY_FOR_IMPLEMENTATION`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Implementation status: `IMPLEMENTED_LOCALLY_GROUP_A_COMMIT_PENDING`
+- Source/test status: `EXACT_REPLACEMENT_IN_aboutPage; pages.test.ts final focused assertion passed`
+- Browser verification status: `PASSED_/_about_/_ode_/_linear-algebra_/_pde_AT_1440x900_AND_390x844`
+- Behavior status: `VISIBLE_TEXT_ONLY; no route, link, module-status, runtime, or Glossary-content change`
+- Notes: Implemented with the approved Group A wording; maintainer acceptance of the local commit remains pending.
 
 ### COPY-002 — `README.md` · `Current limitations / next milestone`
 
@@ -85,7 +93,11 @@ Copy records use compact rule IDs defined by the approved documents:
 - Implementation group: `GROUP_A`
 - Readiness: `READY_FOR_IMPLEMENTATION`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Implementation status: `IMPLEMENTED_LOCALLY_GROUP_A_COMMIT_PENDING`
+- Source/test status: `EXACT_REPLACEMENT_IN_README; no focused test owner; full verify and production build passed`
+- Browser verification status: `README_NOT_A_BROWSER_SURFACE; all five Group A route regressions passed at both viewports`
+- Behavior status: `PUBLIC_STATUS_TEXT_ONLY; no deployment claim, runtime behavior, or module-status change`
+- Notes: Implemented with the approved Group A wording; maintainer acceptance of the local commit remains pending.
 
 ### COPY-003 — `src/pages/homePage.ts` · `Numerical PDE module-card description`
 
@@ -104,6 +116,10 @@ Copy records use compact rule IDs defined by the approved documents:
 - Implementation group: `GROUP_A`
 - Readiness: `DEFERRED_BY_MODULE`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
+- Implementation status: `HELD_REVIEW_ONLY_UNCHANGED`
+- Source/test status: `homePage.ts unchanged; no new assertion forces implementation; pages.test.ts and homeResume.test.ts passed`
+- Browser verification status: `CURRENT_WORDING_CONFIRMED_UNCHANGED_AT_1440x900_AND_390x844`
+- Behavior status: `NO_CHANGE`
 - Notes: Deferred until the owning module has an approved content design.
 
 ### COPY-004 — `src/pages/odeOverviewPage.ts` · `ODE roadmap item`
@@ -123,7 +139,11 @@ Copy records use compact rule IDs defined by the approved documents:
 - Implementation group: `GROUP_A`
 - Readiness: `READY_FOR_IMPLEMENTATION`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Implementation status: `IMPLEMENTED_LOCALLY_GROUP_A_COMMIT_PENDING`
+- Source/test status: `EXACT_REPLACEMENT_IN_odeOverviewPage; pages.test.ts final focused assertion passed`
+- Browser verification status: `PASSED_ODE_ROADMAP_AT_1440x900_AND_390x844_WITH_NO_CLIPPING_OR_OVERFLOW`
+- Behavior status: `VISIBLE_TEXT_ONLY; route, link target, roadmap status, and static boundary unchanged`
+- Notes: Implemented with the approved Group A wording; maintainer acceptance of the local commit remains pending.
 
 ### COPY-005 — `src/pages/aboutPage.ts` · `aboutPage / Theory pillar`
 
@@ -142,7 +162,11 @@ Copy records use compact rule IDs defined by the approved documents:
 - Implementation group: `GROUP_A`
 - Readiness: `READY_FOR_IMPLEMENTATION`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Implementation status: `IMPLEMENTED_LOCALLY_GROUP_A_COMMIT_PENDING`
+- Source/test status: `EXACT_REPLACEMENT_IN_aboutPage; pages.test.ts final focused assertion passed`
+- Browser verification status: `PASSED_ABOUT_AT_1440x900_AND_390x844_WITH_NO_CLIPPING_OR_OVERFLOW`
+- Behavior status: `VISIBLE_TEXT_ONLY; no numerical claim, behavior, ownership, or accessible-structure change`
+- Notes: Implemented with the approved Group A wording; maintainer acceptance of the local commit remains pending.
 
 ### COPY-006 — `src/ode/odeApp.ts` · `DEFAULT_LEDE`
 
@@ -1112,4 +1136,6 @@ Copy records use compact rule IDs defined by the approved documents:
 The exact A–F boundaries, files, tests, browser checks, dependencies,
 rollback points, and review gates are in the
 [Project Language Implementation Plan](PROJECT_LANGUAGE_IMPLEMENTATION_PLAN.md).
-Group A is the next authorized phase only when separately scoped.
+Group A ready records are implemented locally and verified; `COPY-003` remains
+held. The next gate is maintainer acceptance of the Group A commit and evidence
+package. Group B remains unauthorized.

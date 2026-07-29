@@ -22,7 +22,7 @@ export function createAboutPage(): RouteModule {
         theory.append(
           createTextElement("strong", "Theory"),
           document.createTextNode(
-            " — explains why numerical methods work, including their assumptions, limitations, stability, and error behavior."
+            " — explains why numerical methods work, including their assumptions, limitations, relevant stability properties, and stated error measures."
           )
         );
         const tools = document.createElement("li");
@@ -36,7 +36,7 @@ export function createAboutPage(): RouteModule {
         teaching.append(
           createTextElement("strong", "Teaching"),
           document.createTextNode(
-            " — provides guided workflows, the AI Tutor, and beginner-oriented interpretation today. The approved Interactive Glossary framework is planned as the next shared learning capability."
+            " — provides guided workflows, the AI Tutor, and beginner-oriented interpretation today. The locally accepted Interactive Glossary framework is ready for reviewed content integration. No production terms or definitions are published yet."
           )
         );
         pillarList.append(theory, tools, teaching);

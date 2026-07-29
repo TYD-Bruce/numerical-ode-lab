@@ -133,11 +133,11 @@ Key locations:
 - Numerical Linear Algebra is in development; Numerical PDE is planned.
 - The final semantic theme is not a theme switch or final fantasy brand treatment.
 
-The active milestone is the **Content-Agnostic Interactive Glossary
-Framework**. Its four planned implementation phases are complete locally and
-await full framework release review. The complete Playground is development
-only, and no production terms, definitions, annotations, or visible Glossary
-behavior have been released. A **Linear Systems Lab** is a later milestone.
+The **Content-Agnostic Interactive Glossary Framework** is complete and locally
+accepted. **Numerical T-Lab Project Language Standard v1** is approved, while
+the reconciled catalog and copy plan remain non-runtime. Production still has
+no Glossary terms, definitions, annotations, ODE binding, or visible Glossary
+behavior. A **Linear Systems Lab** remains a later milestone.
 
 ## Project documentation
 
