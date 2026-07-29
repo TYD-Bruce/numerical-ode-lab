@@ -179,6 +179,11 @@ describe("mounted ODE lifecycle", () => {
     await Promise.resolve();
 
     expect(target.textContent).toContain("Forward Euler · results");
+    expect(target.textContent).toContain("Grid points stored");
+    expect(target.textContent).toContain("Final numerical approximation");
+    expect(target.textContent).toContain("Theoretical order p");
+    expect(target.textContent).not.toContain("Steps taken");
+    expect(target.textContent).not.toContain("Order of accuracy p");
     expect(mountConvergence).toHaveBeenCalledTimes(1);
     expect(mountConvergence.mock.calls[0]?.[1].getState().drawerOpen).toBe(true);
     expect(mountConvergence.mock.calls[0]?.[1].getState().chartMetric).toBe(
@@ -292,9 +297,65 @@ describe("mounted ODE lifecycle", () => {
     await Promise.resolve();
 
     expect(target.textContent).toContain("Forward Euler vs Runge-Kutta 4");
+    expect(target.textContent).toContain(
+      "Final numerical approximation — Forward Euler"
+    );
+    expect(target.textContent).toContain(
+      "Final numerical approximation — Runge-Kutta 4"
+    );
+    expect(target.textContent).toContain(
+      "Absolute difference between final numerical approximations"
+    );
+    expect(target.textContent).not.toContain("Final y —");
+    expect(target.textContent).not.toContain("|uₙ − yₙ| at final t");
     expect(mounted.getTutorBinding().getContext()).toEqual({ enabled: false });
     expect(mounted.getSession().output.single).toBeUndefined();
     expect(mounted.getSession().output.comparison?.resultB).toBe(second);
+    mounted.dispose();
+  });
+
+  it("explains a comparison time-grid length mismatch without plotting", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const base = outputSession();
+    const shorter = createReadonlySolverResult({
+      ...RAW_RESULT,
+      points: [{ t: 0, y: 1 }],
+      metadata: {
+        ...RAW_RESULT.metadata,
+        family: "rk4",
+        displayName: "Runge-Kutta 4",
+        order: 4,
+      },
+    });
+    const mounted = mountOdeApp({
+      target,
+      initialSession: {
+        ...base,
+        workflow: {
+          mode: "compare",
+          a: { family: "forward_euler" },
+          b: { family: "rk4" },
+        },
+        selectedMethod: null,
+        output: {
+          comparison: {
+            a: { family: "forward_euler" },
+            b: { family: "rk4" },
+            resultA: base.output.single.result,
+            resultB: shorter,
+            expression: base.output.single.expression,
+          },
+        },
+      },
+    });
+    await Promise.resolve();
+
+    expect(target.textContent).toContain(
+      "The two result series have different lengths, so the comparison plot was not created. Rerun both methods on the same aligned grid."
+    );
+    expect(target.querySelector("#plot")).toBeNull();
     mounted.dispose();
   });
 

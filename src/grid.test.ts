@@ -34,6 +34,16 @@ describe("fixed-step grid contract", () => {
     expect(() => validateFixedStepGrid(t0, tEnd, h)).toThrow("must be finite");
   });
 
+  it("names a non-finite computed time-step count precisely", () => {
+    expect(() =>
+      validateFixedStepGrid(
+        -Number.MAX_VALUE,
+        Number.MAX_VALUE,
+        Number.MIN_VALUE
+      )
+    ).toThrow("The computed number of time steps must be finite.");
+  });
+
   it.each([
     [0, 1, 0],
     [0, 1, -0.1],

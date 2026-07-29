@@ -102,6 +102,66 @@ describe("Initial Value Problems route", () => {
     second.dispose();
   });
 
+  it("uses the approved IVP Method and Data language without changing structure", async () => {
+    const { mount } = await import("./initialValueProblemsRoute");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const mounted = mount({
+      target,
+      session: createBeginnerStarterSession(),
+      navigate: vi.fn(),
+    });
+
+    expect(target.querySelector(".lede")?.textContent).toBe(
+      "Explore fixed-step methods for first-order initial value problems, then analyze numerical error, observed convergence, and method behavior as the step size changes."
+    );
+    const cards = [...target.querySelectorAll<HTMLButtonElement>(".card")];
+    const card = (name: string) =>
+      cards.find((button) => button.querySelector("h2")?.textContent === name)!;
+    expect(card("Forward Euler").textContent).toContain(
+      "Explicit first-order method. Its theoretical order is 1 under the method’s usual smoothness and stability assumptions."
+    );
+    expect(card("Backward Euler").textContent).toContain(
+      "Implicit first-order method. A-stable for the scalar test equation; each step solves for the next numerical approximation. Absolute stability does not by itself establish accuracy."
+    );
+    expect(card("Adams-Bashforth").textContent).toContain(
+      "Explicit multistep method; choose the theoretical order p below."
+    );
+    expect(target.textContent).not.toContain("Very stable");
+    expect(target.textContent).not.toContain("order of accuracy p below");
+
+    card("Backward Differentiation Formula").click();
+    const singleLabels = [
+      ...target.querySelectorAll<HTMLElement>(".field > span"),
+    ].map((label) => label.textContent);
+    expect(singleLabels).toContain("Theoretical order p");
+    expect(singleLabels).toContain("End time");
+    expect(singleLabels).toContain("Time-step size h");
+    expect(singleLabels).not.toContain("Order of accuracy p");
+    expect(singleLabels).not.toContain("End time t_end");
+    expect(singleLabels).not.toContain("Run step size h = Δt");
+
+    target
+      .querySelector<HTMLButtonElement>("[data-back-methods]")!
+      .click();
+    target.querySelector<HTMLButtonElement>("[data-compare]")!.click();
+    [...target.querySelectorAll<HTMLButtonElement>(".card")]
+      .find((button) => button.querySelector("h2")?.textContent === "Forward Euler")!
+      .click();
+    [...target.querySelectorAll<HTMLButtonElement>(".card")]
+      .find((button) => button.querySelector("h2")?.textContent === "Runge-Kutta 4")!
+      .click();
+    const compareLabels = [
+      ...target.querySelectorAll<HTMLElement>(".field > span"),
+    ].map((label) => label.textContent);
+    expect(compareLabels).toContain("End time");
+    expect(compareLabels).toContain("Time-step size h");
+    expect(compareLabels).not.toContain("End time t_end");
+    expect(compareLabels).not.toContain("Step size h");
+
+    mounted.dispose();
+  });
+
   it("hydrates configured method, order, form drafts, and compare errors", async () => {
     const { mount } = await import("./initialValueProblemsRoute");
     const target = document.createElement("div");

@@ -38,6 +38,9 @@ describe("Beginner Starter", () => {
         "exact_solution"
       )
     ).toBe(serializeMathAst(preset.exactSolution.canonicalAst, "exact_solution"));
+    expect(preset.teachingSummary).toBe(
+      "Basic decay and global error, with coarse-step behavior that can motivate absolute-stability analysis."
+    );
     expect(session.comparePickError).toBe("");
     expect(session.output).toEqual({});
     expect(session.convergenceByFingerprint).toEqual({});

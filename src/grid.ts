@@ -51,7 +51,7 @@ export function validateFixedStepGrid(
   const rawSteps = (tEnd - t0) / h;
   const roundedSteps = Math.round(rawSteps);
   if (!Number.isFinite(rawSteps) || !Number.isFinite(roundedSteps)) {
-    throw new Error("Fixed-step grid size must be finite.");
+    throw new Error("The computed number of time steps must be finite.");
   }
   if (
     !withinFloatingPointTolerance(rawSteps, roundedSteps) ||

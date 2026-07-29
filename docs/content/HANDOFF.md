@@ -1,7 +1,7 @@
 # Numerical T-Lab Project Language v1 Handoff
 
 Status: Project Language Standard v1 approved; Glossary catalog, copy audit,
-implementation groups, and traceability reconciled; Group A ready copy
+implementation groups, and traceability reconciled; Group A accepted; Group B
 implemented and locally verified.
 
 Runtime/content implementation tracked separately.
@@ -135,8 +135,9 @@ The copy audit retains all 55 stable records: 40 are
 `READY_FOR_IMPLEMENTATION`, 2 `REQUIRES_CONTENT_WAVE`, 1
 `DEFERRED_BY_MODULE`, and 12 `NO_CHANGE`; none is obsolete or
 decision-blocked. The original reconciliation implemented no recommendation.
-The separately authorized Group A iteration now implements `COPY-001`,
-`COPY-002`, `COPY-004`, and `COPY-005`; `COPY-003` remains held.
+The separately authorized Group A iteration implements and accepts `COPY-001`,
+`COPY-002`, `COPY-004`, and `COPY-005`; `COPY-003` remains held. The separately
+authorized Group B iteration implements `COPY-006` through `COPY-019`.
 
 ## 7. Runtime and numerical non-changes
 
@@ -162,6 +163,13 @@ The Group A iteration changes only `README.md`, visible static-page strings,
 and focused copy expectations. It changes no route, link target, module
 availability, numerical behavior, session state, Tutor behavior, Store,
 persistence, lazy boundary, Glossary entry, annotation, or ODE binding.
+
+The Group B iteration changes only approved IVP workflow, method-card,
+result-label, grid-error, and Exponential Decay preset-summary strings plus
+focused expectations. It changes no numerical literal or calculation, grid
+arithmetic or validation order, method/preset ID or ordering, default state,
+route, session, Tutor, Convergence teaching, Glossary content, annotation, or
+ODE binding.
 
 ## 8. Local artifacts and validation
 
@@ -193,7 +201,7 @@ documentation-only iteration.
 ## 9. Group A implementation checkpoint
 
 The exact ready records `COPY-001`, `COPY-002`, `COPY-004`, and `COPY-005`
-are `IMPLEMENTED_LOCALLY_COMMIT_PENDING`.
+are accepted.
 
 - Product files changed: `README.md`, `src/pages/aboutPage.ts`, and
   `src/pages/odeOverviewPage.ts`.
@@ -218,8 +226,52 @@ are `IMPLEMENTED_LOCALLY_COMMIT_PENDING`.
   empty, and no ODE Glossary binding exists.
 - Nothing was pushed or deployed.
 
-## 10. Current review gate
+## 10. Group B implementation checkpoint
 
-Group A is implemented and locally verified. Group B remains unauthorized.
-The next gate is maintainer acceptance of the Group A commit and evidence
-package before IVP Method/Data/Output and preset language work begins.
+The exact ready records `COPY-006` through `COPY-019` are
+`IMPLEMENTED_LOCALLY_COMMIT_PENDING`.
+
+- Product files changed: `src/grid.ts`, `src/methodCatalog.ts`,
+  `src/ode/odeApp.ts`, and `src/problemPresets.ts`.
+- Focused tests changed: `src/grid.test.ts`,
+  `src/ode/beginnerStarter.test.ts`,
+  `src/ode/initialValueProblemsRoute.test.ts`,
+  `src/ode/odeLifecycle.test.ts`, and `src/problemPresets.test.ts`.
+  `src/ode/newExperiment.test.ts` remained unchanged and passed as a
+  regression check.
+- The tests-first run failed only seven intended copy expectations. The final
+  focused run passed 6 files and 57 tests.
+- The copy-only numerical audit parsed the four production TypeScript files
+  before and after the change. With approved text literals ignored and the
+  authorized `COPY-016` template-to-static-label replacement normalized in
+  memory, syntax, identifiers, operators, and numeric literals matched.
+  Direct diff review confirmed unchanged solver/grid calculations, method and
+  preset IDs/order/values, validation branches, sessions, routes, imports,
+  Tutor, Convergence teaching, and Glossary ownership.
+- `npm.cmd run verify` passed 73 files and 1,031 tests, application typecheck,
+  API typecheck, and the 79-module production build. Only the accepted large
+  deferred-chunk warning remained.
+- Isolated localhost review passed `/ode/initial-value-problems` at 1440×900
+  and 390×844 through Beginner Starter, all method cards, Data and MathLive
+  labels, Exponential Decay and Stiff Relaxation presets, successful Run and
+  Output, Compare, native nonpositive-step validation, aligned-grid
+  validation, and the step-budget error. Successful output survived failed
+  reruns; visible values and result rows remained unchanged; focus remained
+  visible; and no clipping, horizontal overflow, malformed encoding, or
+  console warning/error appeared. A brief `/ode` navigation regression also
+  passed.
+- Production inspection found the unchanged eight-JavaScript/seven-CSS chunk
+  inventory and no new dynamic import. Approved strings occur only in the
+  existing shared ODE/Convergence chunk and lazy IVP route chunk. The shared
+  chunk changed from 58,680/17,377 raw/gzip bytes to 58,841/17,460
+  (`+161/+83`); the IVP route changed from 241,437/80,308 to
+  241,722/80,370 (`+285/+62`). Entry/Home, Tutor, Glossary, MathLive, and
+  readonly-math ownership remains unchanged; no production Glossary content,
+  ODE binding, or DEV fixture was added.
+- Nothing was pushed or deployed.
+
+## 11. Current review gate
+
+Group A is accepted. Group B is implemented and locally verified. Group C
+remains unauthorized. The next gate is maintainer acceptance of the Group B
+commit and evidence package before Convergence and error language work begins.

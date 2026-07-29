@@ -80,7 +80,7 @@ export const PROBLEM_PRESETS: readonly ProblemPreset[] = deepFreeze([
     y0: 1,
     tEnd: 5,
     recommendedRunStepSize: 0.2,
-    teachingSummary: "Basic decay, global error, and stability.",
+    teachingSummary: "Basic decay and global error, with coarse-step behavior that can motivate absolute-stability analysis.",
     observationGuidance: "Watch how the numerical solution approaches zero and how coarse explicit steps can distort the decay.",
     suggestedMethods: ["forward_euler", "taylor", "rk4", "backward_euler"],
     warning: "Unusually large explicit steps may distort the decay, create oscillations, or make values grow.",

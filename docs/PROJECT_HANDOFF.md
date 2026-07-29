@@ -15,10 +15,11 @@ notation, and teaching-voice standards are approved as Version 1. That approval
 is documentation governance only. The Glossary catalog and project copy audit
 are now reconciled across all 197 stable IDs and 55 copy records, with six
 future implementation groups and local validation/traceability. The four ready
-Group A records (`COPY-001`, `COPY-002`, `COPY-004`, and `COPY-005`) are now
-implemented and locally verified. `COPY-003` and `src/pages/homePage.ts` remain
-review-only and unchanged. This iteration changed visible copy only: no
-runtime behavior, numerical contract, production Glossary content, or binding
+Group A records (`COPY-001`, `COPY-002`, `COPY-004`, and `COPY-005`) are
+accepted. Group B records `COPY-006` through `COPY-019` are implemented and
+locally verified. `COPY-003` and `src/pages/homePage.ts` remain review-only and
+unchanged. These iterations changed approved visible copy only: no numerical,
+session, route, Tutor, Convergence, production Glossary, or binding behavior
 changed, and nothing was pushed or deployed.
 
 ## 1. Product and public routes
@@ -63,10 +64,11 @@ The documentation-only project-language reconciliation is also complete. It
 retains all 197 candidate IDs, reports four required-ID gaps without adding
 them, prepares 10 Wave 1 and 13 high-priority Wave 2 rich drafts, and maps all
 55 copy records to Groups A–F. The four ready Group A Platform/overview copy
-records are implemented and locally verified; deferred `COPY-003` remains held
-with the PDE module. The next gate is maintainer acceptance of the Group A
-commit and evidence package before Group B begins. Production Glossary content
-and binding remain unauthorized.
+records are accepted; deferred `COPY-003` remains held with the PDE module.
+The 14 Group B IVP Method/Data/Output and preset records are implemented and
+locally verified. The next gate is maintainer acceptance of the Group B commit
+and evidence package before Group C begins. Production Glossary content and
+the ODE binding remain absent and unauthorized.
 
 ## 2. Verification baseline
 
@@ -103,6 +105,23 @@ malformed encoding, or console warning/error was observed. The entry chunk
 grew by 90 raw bytes for copy only, the accepted non-entry chunk inventory and
 sizes remained unchanged, and production artifacts still exclude the
 DEV-only Glossary Playground and content fixtures. No push or deployment was
+performed.
+
+The Group B IVP workflow copy iteration passed its focused suite (6 files,
+57 tests) and full `npm.cmd run verify` gate (73 files, 1,031 tests, both
+TypeScript checks, and a 79-module production build). A TypeScript AST
+non-change audit and direct diff review confirmed that numerical literals,
+calculations, grid arithmetic, validation order, method/preset identity and
+values, default state, routes, sessions, imports, Tutor, Convergence teaching,
+and Glossary ownership did not change. Browser review covered
+`/ode/initial-value-problems` at 1440 × 900 and 390 × 844 through Method, Data,
+presets, Run, Output, Compare, and representative validation errors, plus a
+brief `/ode` regression. Numeric output stayed unchanged; failed reruns
+preserved the last successful output; and no clipping, horizontal overflow,
+malformed encoding, or console warning/error appeared. The existing shared
+ODE/Convergence and lazy IVP chunks grew only by plausible copy deltas
+(`+161/+83` and `+285/+62` raw/gzip bytes); no chunk, dynamic import, Glossary
+content, ODE binding, or DEV fixture was added. No push or deployment was
 performed.
 
 `npm run verify` passed on 2026-07-14:
@@ -318,9 +337,9 @@ Known limitations:
   Version 1 after all nine maintainer decisions were recorded. The Glossary
   catalog and project copy audit are reconciled planning documents, and the
   A–F implementation plan is complete. The four ready Group A
-  Platform/overview copy records are implemented and locally verified;
-  `COPY-003` remains held. Group B and runtime Glossary content remain
-  unauthorized pending maintainer acceptance of the Group A evidence.
+  Platform/overview copy records are accepted; `COPY-003` remains held. Group B
+  is implemented and locally verified. Group C and runtime Glossary content
+  remain unauthorized pending maintainer acceptance of the Group B evidence.
 
 Contributor rules:
 
@@ -333,7 +352,7 @@ Contributor rules:
 - Keep `beforeunload` minimal and synchronous.
 - Run `npm run verify` after changes and add focused tests first.
 
-*Last updated: 2026-07-28. Project Identity Migration and prior Production
+*Last updated: 2026-07-29. Project Identity Migration and prior Production
 verification remain complete. The Glossary framework is locally accepted as
 complete after all three historical blocked-review findings were repaired and
 closed by repeated independent final review. Nothing was pushed or deployed.
@@ -341,8 +360,8 @@ Production still contains no Glossary terms, annotations, ODE binding,
 Playground, activatable surface, or visible behavior. All nine project-language
 decisions are recorded and the terminology, notation, and teaching-voice
 standards are approved as Version 1. The catalog and copy audit are reconciled;
-the four ready Group A records are implemented and locally verified, while
-`COPY-003` and `src/pages/homePage.ts` remain review-only and unchanged. The
-next gate is maintainer acceptance of the Group A commit and evidence package
-before IVP Method/Data/Output and preset language work begins. Group B remains
+Group A is accepted, Group B is implemented and locally verified, and
+`COPY-003` plus `src/pages/homePage.ts` remain review-only and unchanged. The
+next gate is maintainer acceptance of the Group B commit and evidence package
+before Convergence and error language work begins. Group C remains
 unauthorized.*

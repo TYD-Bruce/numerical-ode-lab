@@ -1,8 +1,9 @@
 # Numerical T-Lab Project Copy Audit
 
 Status: Reconciled against Project Language Standard v1.
-Group A ready records are implemented locally and verified; `COPY-003`
-remains held. All other recommendations remain unimplemented.
+Group A ready records are accepted. Group B records `COPY-006` through
+`COPY-019` are implemented locally and verified; `COPY-003` remains held.
+Groups C–F remain unimplemented and unauthorized.
 
 ## Purpose and boundary
 
@@ -10,8 +11,8 @@ This is the implementation-ready, repository-grounded wording migration
 record for current non-historical user-facing English. It was rescanned at
 starting HEAD `b14bf1c7a2cb0f398ccd462dd8747ef76676b8d1` after the three
 language standards became Version 1. This document now also records the
-separately authorized Group A implementation evidence. No numerical contract,
-production content, or Tutor behavior is changed.
+separately authorized Group A and Group B implementation evidence. No
+numerical contract, production Glossary content, or Tutor behavior is changed.
 
 Exact candidate replacement copy is recorded for all 43 non-no-change
 records: 40 are ready for implementation, 2 require the content wave, and 1
@@ -24,8 +25,8 @@ inside the separately authorized implementation group.
 - Source files represented: **20**.
 - Expected focused test files represented: **21**.
 - Readiness counts: `{'DEFERRED_BY_MODULE': 1, 'NO_CHANGE': 12, 'READY_FOR_IMPLEMENTATION': 40, 'REQUIRES_CONTENT_WAVE': 2}`.
-- Implementation progress: 4 Group A ready records implemented locally;
-  `COPY-003` held; Groups B–F unimplemented.
+- Implementation progress: 4 Group A ready records accepted and 14 Group B
+  records implemented locally; `COPY-003` held; Groups C–F unimplemented.
 - Former decision-blocked records: **0**.
 - Numerical-behavior changes proposed: **0**.
 
@@ -70,11 +71,11 @@ Copy records use compact rule IDs defined by the approved documents:
 - Implementation group: `GROUP_A`
 - Readiness: `READY_FOR_IMPLEMENTATION`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Implementation status: `IMPLEMENTED_LOCALLY_GROUP_A_COMMIT_PENDING`
+- Implementation status: `IMPLEMENTED_AND_ACCEPTED_GROUP_A`
 - Source/test status: `EXACT_REPLACEMENT_IN_aboutPage; pages.test.ts final focused assertion passed`
 - Browser verification status: `PASSED_/_about_/_ode_/_linear-algebra_/_pde_AT_1440x900_AND_390x844`
 - Behavior status: `VISIBLE_TEXT_ONLY; no route, link, module-status, runtime, or Glossary-content change`
-- Notes: Implemented with the approved Group A wording; maintainer acceptance of the local commit remains pending.
+- Notes: Implemented with the approved Group A wording and accepted at commit `75b8539`.
 
 ### COPY-002 — `README.md` · `Current limitations / next milestone`
 
@@ -93,11 +94,11 @@ Copy records use compact rule IDs defined by the approved documents:
 - Implementation group: `GROUP_A`
 - Readiness: `READY_FOR_IMPLEMENTATION`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Implementation status: `IMPLEMENTED_LOCALLY_GROUP_A_COMMIT_PENDING`
+- Implementation status: `IMPLEMENTED_AND_ACCEPTED_GROUP_A`
 - Source/test status: `EXACT_REPLACEMENT_IN_README; no focused test owner; full verify and production build passed`
 - Browser verification status: `README_NOT_A_BROWSER_SURFACE; all five Group A route regressions passed at both viewports`
 - Behavior status: `PUBLIC_STATUS_TEXT_ONLY; no deployment claim, runtime behavior, or module-status change`
-- Notes: Implemented with the approved Group A wording; maintainer acceptance of the local commit remains pending.
+- Notes: Implemented with the approved Group A wording and accepted at commit `75b8539`.
 
 ### COPY-003 — `src/pages/homePage.ts` · `Numerical PDE module-card description`
 
@@ -139,11 +140,11 @@ Copy records use compact rule IDs defined by the approved documents:
 - Implementation group: `GROUP_A`
 - Readiness: `READY_FOR_IMPLEMENTATION`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Implementation status: `IMPLEMENTED_LOCALLY_GROUP_A_COMMIT_PENDING`
+- Implementation status: `IMPLEMENTED_AND_ACCEPTED_GROUP_A`
 - Source/test status: `EXACT_REPLACEMENT_IN_odeOverviewPage; pages.test.ts final focused assertion passed`
 - Browser verification status: `PASSED_ODE_ROADMAP_AT_1440x900_AND_390x844_WITH_NO_CLIPPING_OR_OVERFLOW`
 - Behavior status: `VISIBLE_TEXT_ONLY; route, link target, roadmap status, and static boundary unchanged`
-- Notes: Implemented with the approved Group A wording; maintainer acceptance of the local commit remains pending.
+- Notes: Implemented with the approved Group A wording and accepted at commit `75b8539`.
 
 ### COPY-005 — `src/pages/aboutPage.ts` · `aboutPage / Theory pillar`
 
@@ -162,11 +163,11 @@ Copy records use compact rule IDs defined by the approved documents:
 - Implementation group: `GROUP_A`
 - Readiness: `READY_FOR_IMPLEMENTATION`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Implementation status: `IMPLEMENTED_LOCALLY_GROUP_A_COMMIT_PENDING`
+- Implementation status: `IMPLEMENTED_AND_ACCEPTED_GROUP_A`
 - Source/test status: `EXACT_REPLACEMENT_IN_aboutPage; pages.test.ts final focused assertion passed`
 - Browser verification status: `PASSED_ABOUT_AT_1440x900_AND_390x844_WITH_NO_CLIPPING_OR_OVERFLOW`
 - Behavior status: `VISIBLE_TEXT_ONLY; no numerical claim, behavior, ownership, or accessible-structure change`
-- Notes: Implemented with the approved Group A wording; maintainer acceptance of the local commit remains pending.
+- Notes: Implemented with the approved Group A wording and accepted at commit `75b8539`.
 
 ### COPY-006 — `src/ode/odeApp.ts` · `DEFAULT_LEDE`
 
@@ -185,7 +186,11 @@ Copy records use compact rule IDs defined by the approved documents:
 - Implementation group: `GROUP_B`
 - Readiness: `READY_FOR_IMPLEMENTATION`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
+- Source/test status: `EXACT_REPLACEMENT_IN_src/ode/odeApp.ts::DEFAULT_LEDE; initialValueProblemsRoute.test.ts exact copy assertion and all focused regressions passed`
+- Browser verification status: `PASSED_IVP_METHOD_DATA_RUN_OUTPUT_COMPARE_PRESET_AND_ERROR_STATES_AT_1440x900_AND_390x844`
+- Numerical/behavior status: `TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_AND_NUMERIC_LITERALS_UNCHANGED_WHEN_APPROVED_TEXT_LITERALS_ARE_IGNORED; visible text only; no route, session, solver, grid, Tutor, Convergence, or Glossary behavior change`
+- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
 
 ### COPY-007 — `src/methodCatalog.ts` · `METHOD_CATALOG / backward_euler / blurb`
 
@@ -204,7 +209,11 @@ Copy records use compact rule IDs defined by the approved documents:
 - Implementation group: `GROUP_B`
 - Readiness: `READY_FOR_IMPLEMENTATION`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
+- Source/test status: `EXACT_REPLACEMENT_IN_src/methodCatalog.ts::METHOD_CATALOG/backward_euler/blurb; initialValueProblemsRoute.test.ts exact copy assertion and newExperiment.test.ts regression passed`
+- Browser verification status: `PASSED_ALL_METHOD_CARDS_AND_STABILITY_WORDING_AT_1440x900_AND_390x844`
+- Numerical/behavior status: `TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_AND_NUMERIC_LITERALS_UNCHANGED_WHEN_APPROVED_TEXT_LITERALS_ARE_IGNORED; catalog text only; method ID, order, solver selection, and workflow behavior unchanged`
+- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
 
 ### COPY-008 — `src/methodCatalog.ts` · `METHOD_CATALOG / forward_euler / blurb`
 
@@ -223,7 +232,11 @@ Copy records use compact rule IDs defined by the approved documents:
 - Implementation group: `GROUP_B`
 - Readiness: `READY_FOR_IMPLEMENTATION`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
+- Source/test status: `EXACT_REPLACEMENT_IN_src/methodCatalog.ts::METHOD_CATALOG/forward_euler/blurb; initialValueProblemsRoute.test.ts exact copy assertion and newExperiment.test.ts regression passed`
+- Browser verification status: `PASSED_ALL_METHOD_CARDS_AND_THEORETICAL_ORDER_WORDING_AT_1440x900_AND_390x844`
+- Numerical/behavior status: `TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_AND_NUMERIC_LITERALS_UNCHANGED_WHEN_APPROVED_TEXT_LITERALS_ARE_IGNORED; catalog text only; method ID, order, solver selection, and workflow behavior unchanged`
+- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
 
 ### COPY-009 — `src/methodCatalog.ts` · `METHOD_CATALOG / adams_bashforth / blurb`
 
@@ -242,7 +255,11 @@ Copy records use compact rule IDs defined by the approved documents:
 - Implementation group: `GROUP_B`
 - Readiness: `READY_FOR_IMPLEMENTATION`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
+- Source/test status: `EXACT_REPLACEMENT_IN_src/methodCatalog.ts::METHOD_CATALOG/adams_bashforth/blurb; initialValueProblemsRoute.test.ts exact copy assertion and newExperiment.test.ts regression passed`
+- Browser verification status: `PASSED_ALL_METHOD_CARDS_AND_THEORETICAL_ORDER_WORDING_AT_1440x900_AND_390x844`
+- Numerical/behavior status: `TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_AND_NUMERIC_LITERALS_UNCHANGED_WHEN_APPROVED_TEXT_LITERALS_ARE_IGNORED; catalog text only; method ID, order range, startup, solver selection, and workflow behavior unchanged`
+- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
 
 ### COPY-010 — `src/ode/odeApp.ts` · `orderFieldHtml and metadataPanelHtml`
 
@@ -261,7 +278,11 @@ Copy records use compact rule IDs defined by the approved documents:
 - Implementation group: `GROUP_B`
 - Readiness: `READY_FOR_IMPLEMENTATION`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
+- Source/test status: `EXACT_REPLACEMENTS_IN_src/ode/odeApp.ts::orderFieldHtml_AND_metadataPanelHtml; initialValueProblemsRoute.test.ts and odeLifecycle.test.ts exact copy assertions passed`
+- Browser verification status: `PASSED_CONFIGURED_AND_REPORTED_THEORETICAL_ORDER_WORDING_AT_1440x900_AND_390x844`
+- Numerical/behavior status: `TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_AND_NUMERIC_LITERALS_UNCHANGED_WHEN_APPROVED_TEXT_LITERALS_ARE_IGNORED; label text only; configured order, metadata, controls, and state unchanged`
+- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
 
 ### COPY-011 — `src/ode/odeApp.ts` · `renderForm / time inputs`
 
@@ -280,7 +301,11 @@ Copy records use compact rule IDs defined by the approved documents:
 - Implementation group: `GROUP_B`
 - Readiness: `READY_FOR_IMPLEMENTATION`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
+- Source/test status: `EXACT_REPLACEMENTS_IN_src/ode/odeApp.ts::renderForm_AND_renderCompareForm; initialValueProblemsRoute.test.ts exact label assertions and odeLifecycle.test.ts regressions passed`
+- Browser verification status: `PASSED_SINGLE_AND_COMPARE_END_TIME_LABELS_AND_ACCESSIBLE_NAMES_AT_1440x900_AND_390x844`
+- Numerical/behavior status: `TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_AND_NUMERIC_LITERALS_UNCHANGED_WHEN_APPROVED_TEXT_LITERALS_ARE_IGNORED; label text only; input name, value, parsing, validation, session, and grid behavior unchanged`
+- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
 
 ### COPY-012 — `src/ode/odeApp.ts` · `renderForm and renderCompareForm / step-size labels`
 
@@ -299,7 +324,11 @@ Copy records use compact rule IDs defined by the approved documents:
 - Implementation group: `GROUP_B`
 - Readiness: `READY_FOR_IMPLEMENTATION`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
+- Source/test status: `EXACT_REPLACEMENTS_IN_src/ode/odeApp.ts::renderForm_AND_renderCompareForm; initialValueProblemsRoute.test.ts exact label assertions and odeLifecycle.test.ts regressions passed`
+- Browser verification status: `PASSED_SINGLE_AND_COMPARE_TIME_STEP_LABELS_NATIVE_VALIDATION_AND_GRID_ERRORS_AT_1440x900_AND_390x844`
+- Numerical/behavior status: `TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_AND_NUMERIC_LITERALS_UNCHANGED_WHEN_APPROVED_TEXT_LITERALS_ARE_IGNORED; label text only; input constraints, values, validation precedence, session, and grid behavior unchanged`
+- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
 
 ### COPY-013 — `src/problemPresets.ts` · `PROBLEM_PRESETS / exponential_decay / teachingSummary`
 
@@ -318,7 +347,11 @@ Copy records use compact rule IDs defined by the approved documents:
 - Implementation group: `GROUP_B`
 - Readiness: `READY_FOR_IMPLEMENTATION`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
+- Source/test status: `EXACT_REPLACEMENT_IN_src/problemPresets.ts::PROBLEM_PRESETS/exponential_decay/teachingSummary; problemPresets.test.ts and beginnerStarter.test.ts exact assertions passed`
+- Browser verification status: `PASSED_EXPONENTIAL_DECAY_AND_STIFF_RELAXATION_PRESET_COPY_VALUES_AND_WRAPPING_AT_1440x900_AND_390x844`
+- Numerical/behavior status: `TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_AND_NUMERIC_LITERALS_UNCHANGED_WHEN_APPROVED_TEXT_LITERALS_ARE_IGNORED; preset summary text only; preset ID, order, values, expressions, recommended step, compatibility, and warnings unchanged`
+- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
 
 ### COPY-014 — `src/grid.ts` · `validateFixedStepGrid / non-finite step count`
 
@@ -337,7 +370,11 @@ Copy records use compact rule IDs defined by the approved documents:
 - Implementation group: `GROUP_B`
 - Readiness: `READY_FOR_IMPLEMENTATION`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
+- Source/test status: `EXACT_REPLACEMENT_IN_src/grid.ts::validateFixedStepGrid/non-finite-step-count; grid.test.ts focused branch assertion passed`
+- Browser verification status: `PASSED_REPRESENTATIVE_NATIVE_NONPOSITIVE_ALIGNED_GRID_AND_STEP_BUDGET_VALIDATION_AT_1440x900_AND_390x844`
+- Numerical/behavior status: `TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_NUMERIC_LITERALS_GRID_ARITHMETIC_AND_BRANCH_ORDER_UNCHANGED_WHEN_APPROVED_TEXT_LITERALS_ARE_IGNORED; error text only; failing condition, validation precedence, error ownership, and control flow unchanged`
+- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
 
 ### COPY-015 — `src/ode/odeApp.ts` · `mountResults / summary stat`
 
@@ -356,7 +393,11 @@ Copy records use compact rule IDs defined by the approved documents:
 - Implementation group: `GROUP_B`
 - Readiness: `READY_FOR_IMPLEMENTATION`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
+- Source/test status: `EXACT_REPLACEMENT_IN_src/ode/odeApp.ts::mountResults/summary-stat; odeLifecycle.test.ts exact assertion passed`
+- Browser verification status: `PASSED_BEGINNER_AND_STIFF_OUTPUT_STATS_WITH_26_AND_201_UNCHANGED_GRID_POINTS_AT_1440x900_AND_390x844`
+- Numerical/behavior status: `TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_AND_NUMERIC_LITERALS_UNCHANGED_WHEN_APPROVED_TEXT_LITERALS_ARE_IGNORED; result label only; result-series length, chart, table, session, and Convergence eligibility unchanged`
+- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
 
 ### COPY-016 — `src/ode/odeApp.ts` · `mountResults / final-value stat`
 
@@ -375,7 +416,11 @@ Copy records use compact rule IDs defined by the approved documents:
 - Implementation group: `GROUP_B`
 - Readiness: `READY_FOR_IMPLEMENTATION`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
+- Source/test status: `EXACT_REPLACEMENT_IN_src/ode/odeApp.ts::mountResults/final-value-stat; odeLifecycle.test.ts exact assertion passed`
+- Browser verification status: `PASSED_BEGINNER_AND_STIFF_FINAL_APPROXIMATION_LABELS_WITH_VALUES_0.00377789_AND_0.99500441_UNCHANGED_AT_1440x900_AND_390x844`
+- Numerical/behavior status: `APPROVED_TEMPLATE_TO_STATIC_LABEL_ONLY; TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_AND_NUMERIC_LITERALS_OTHERWISE_UNCHANGED; result label only; numerical value, exact solution, chart, table, session, and Convergence eligibility unchanged`
+- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
 
 ### COPY-017 — `src/ode/odeApp.ts` · `mountCompareResults / final-value stats`
 
@@ -394,7 +439,11 @@ Copy records use compact rule IDs defined by the approved documents:
 - Implementation group: `GROUP_B`
 - Readiness: `READY_FOR_IMPLEMENTATION`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
+- Source/test status: `EXACT_REPLACEMENTS_IN_src/ode/odeApp.ts::mountCompareResults/final-value-stats; odeLifecycle.test.ts exact assertions passed`
+- Browser verification status: `PASSED_COMPARE_LABELS_WITH_METHOD_NAMES_AND_VALUES_0.99500441_AND_0.99500416_UNCHANGED_AT_1440x900_AND_390x844`
+- Numerical/behavior status: `TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_AND_NUMERIC_LITERALS_UNCHANGED_WHEN_APPROVED_TEXT_LITERALS_ARE_IGNORED; result labels only; both solver results, pairing, chart, table, and session behavior unchanged`
+- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
 
 ### COPY-018 — `src/ode/odeApp.ts` · `mountCompareResults / final difference`
 
@@ -413,7 +462,11 @@ Copy records use compact rule IDs defined by the approved documents:
 - Implementation group: `GROUP_B`
 - Readiness: `READY_FOR_IMPLEMENTATION`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
+- Source/test status: `EXACT_REPLACEMENT_IN_src/ode/odeApp.ts::mountCompareResults/final-difference; odeLifecycle.test.ts exact assertion passed`
+- Browser verification status: `PASSED_COMPARE_DIFFERENCE_LABEL_WITH_2.4960e-7_VALUE_UNCHANGED_AT_1440x900_AND_390x844`
+- Numerical/behavior status: `TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_AND_NUMERIC_LITERALS_UNCHANGED_WHEN_APPROVED_TEXT_LITERALS_ARE_IGNORED; result label only; absolute-difference calculation, operands, formatting, chart, table, and session behavior unchanged`
+- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
 
 ### COPY-019 — `src/ode/odeApp.ts` · `mountCompareResults / length mismatch`
 
@@ -432,7 +485,11 @@ Copy records use compact rule IDs defined by the approved documents:
 - Implementation group: `GROUP_B`
 - Readiness: `READY_FOR_IMPLEMENTATION`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
+- Source/test status: `EXACT_REPLACEMENT_IN_src/ode/odeApp.ts::mountCompareResults/length-mismatch; odeLifecycle.test.ts focused mismatch-branch assertion passed`
+- Browser verification status: `PASSED_COMPARE_WORKFLOW_LAYOUT_AND_ALIGNED_GRID_VALIDATION_AT_1440x900_AND_390x844; synthetic mismatch remains focused-test-only`
+- Numerical/behavior status: `TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_NUMERIC_LITERALS_BRANCH_CONDITION_AND_RETURN_ORDER_UNCHANGED_WHEN_APPROVED_TEXT_LITERALS_ARE_IGNORED; error text only; mismatch condition, no-plot outcome, ownership, and control flow unchanged`
+- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
 
 ### COPY-020 — `src/convergenceStudyView.ts` · `renderConclusion / primary order label`
 
@@ -1136,6 +1193,8 @@ Copy records use compact rule IDs defined by the approved documents:
 The exact A–F boundaries, files, tests, browser checks, dependencies,
 rollback points, and review gates are in the
 [Project Language Implementation Plan](PROJECT_LANGUAGE_IMPLEMENTATION_PLAN.md).
-Group A ready records are implemented locally and verified; `COPY-003` remains
-held. The next gate is maintainer acceptance of the Group A commit and evidence
-package. Group B remains unauthorized.
+Group A ready records are accepted; `COPY-003` remains held. Group B records
+`COPY-006` through `COPY-019` are implemented locally and verified. The next
+gate is maintainer acceptance of the Group B commit and evidence package
+before Convergence and error language work begins. Group C remains
+unauthorized.

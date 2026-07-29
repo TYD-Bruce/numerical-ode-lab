@@ -53,6 +53,12 @@ describe("first-order problem presets", () => {
       expect(preset.suggestedMethods.length).toBeGreaterThan(0);
       expect(preset.warning).not.toBe("");
     }
+    expect(problemPresetById("exponential_decay").teachingSummary).toBe(
+      "Basic decay and global error, with coarse-step behavior that can motivate absolute-stability analysis."
+    );
+    expect(problemPresetById("stiff_relaxation").warning).toBe(
+      "Explicit methods require very small steps for the fast mode; this is stability guidance, not a guarantee of a particular run outcome."
+    );
   });
 
   it("stores validated RHS and exact-solution AST meaning", () => {
