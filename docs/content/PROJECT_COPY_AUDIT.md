@@ -2,9 +2,10 @@
 
 Status: Reconciled against Project Language Standard v1.
 Group A ready records are accepted. Group B records `COPY-006` through
-`COPY-019` are accepted. Group C records `COPY-020` through `COPY-029` are
-implemented locally, verified, and commit-pending; `COPY-003` remains held.
-Groups D–F remain unimplemented and unauthorized.
+`COPY-019` and Group C records `COPY-020` through `COPY-029` are accepted.
+Group D records `COPY-030` through `COPY-040` are implemented locally,
+verified, and commit-pending; `COPY-003` remains held. Groups E and F remain
+unimplemented and unauthorized.
 
 ## Purpose and boundary
 
@@ -12,7 +13,7 @@ This is the implementation-ready, repository-grounded wording migration
 record for current non-historical user-facing English. It was rescanned at
 starting HEAD `b14bf1c7a2cb0f398ccd462dd8747ef76676b8d1` after the three
 language standards became Version 1. This document now also records the
-separately authorized Group A and Group B implementation evidence. No
+separately authorized Group A through Group D implementation evidence. No
 numerical contract, production Glossary content, or Tutor behavior is changed.
 
 Exact candidate replacement copy is recorded for all 43 non-no-change
@@ -25,10 +26,10 @@ inside the separately authorized implementation group.
 - Records rescanned: **55**.
 - Source files represented: **20**.
 - Expected focused test files represented: **21**.
-- Readiness counts: `{'DEFERRED_BY_MODULE': 1, 'IMPLEMENTED_LOCALLY_COMMIT_PENDING': 10, 'NO_CHANGE': 12, 'READY_FOR_IMPLEMENTATION': 30, 'REQUIRES_CONTENT_WAVE': 2}`.
+- Readiness counts: `{'DEFERRED_BY_MODULE': 1, 'IMPLEMENTED_LOCALLY_COMMIT_PENDING': 21, 'NO_CHANGE': 12, 'READY_FOR_IMPLEMENTATION': 19, 'REQUIRES_CONTENT_WAVE': 2}`.
 - Implementation progress: 4 Group A ready records and 14 Group B records
-  accepted; 10 Group C records implemented locally and commit-pending;
-  `COPY-003` held; Groups D–F unimplemented.
+  plus 10 Group C records accepted; 11 Group D records implemented locally and
+  commit-pending; `COPY-003` held; Groups E and F unimplemented.
 - Former decision-blocked records: **0**.
 - Numerical-behavior changes proposed: **0**.
 
@@ -726,9 +727,9 @@ maintainer acceptance of its local commit.
 - Expected test files: `src/ode/odeTutorBinding.test.ts`
 - Browser review: After a successful run, review the AI Tutor on desktop and mobile; exercise suggested prompts and mock responses without changing transport or state.
 - Implementation group: `GROUP_D`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Notes: Implemented exactly in the authorized Group D iteration; focused binding tests, structural non-change audit, and desktop/mobile browser review passed; commit pending.
 
 ### COPY-031 — `src/ode/odeTutorBinding.ts` · `ODE_TUTOR_SUGGESTED_QUESTIONS`
 
@@ -745,9 +746,9 @@ maintainer acceptance of its local commit.
 - Expected test files: `src/ode/odeTutorBinding.test.ts`
 - Browser review: After a successful run, review the AI Tutor on desktop and mobile; exercise suggested prompts and mock responses without changing transport or state.
 - Implementation group: `GROUP_D`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Notes: Implemented exactly in the authorized Group D iteration; focused binding tests, structural non-change audit, and desktop/mobile browser review passed; commit pending.
 
 ### COPY-032 — `src/tutor/platformTutorPanel.ts` · `AI Tutor subtitle`
 
@@ -764,9 +765,9 @@ maintainer acceptance of its local commit.
 - Expected test files: `src/app/platformTutorHost.test.ts`, `src/app/tutorLazyBoundary.test.ts`
 - Browser review: After a successful run, review the AI Tutor on desktop and mobile; exercise suggested prompts and mock responses without changing transport or state.
 - Implementation group: `GROUP_D`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Notes: Implemented exactly in the authorized Group D iteration; Host/panel and lazy regression tests, structural non-change audit, and desktop/mobile browser review passed; commit pending.
 
 ### COPY-033 — `api/chatHandler.ts` · `mockTutorResponse / orderLine`
 
@@ -783,9 +784,9 @@ maintainer acceptance of its local commit.
 - Expected test files: `api/chatHandler.test.ts`, `api/chatPrompt.test.ts`
 - Browser review: After a successful run, review the AI Tutor on desktop and mobile; exercise suggested prompts and mock responses without changing transport or state.
 - Implementation group: `GROUP_D`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Notes: Implemented exactly in the authorized Group D iteration; focused API/prompt tests, structural non-change audit, and deterministic/browser demo review passed; commit pending.
 
 ### COPY-034 — `api/chatHandler.ts` · `mockTutorResponse / observed-order explanation`
 
@@ -802,9 +803,9 @@ maintainer acceptance of its local commit.
 - Expected test files: `api/chatHandler.test.ts`, `api/chatPrompt.test.ts`
 - Browser review: After a successful run, review the AI Tutor on desktop and mobile; exercise suggested prompts and mock responses without changing transport or state.
 - Implementation group: `GROUP_D`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Notes: Implemented exactly in the authorized Group D iteration; focused API/prompt tests, structural non-change audit, and deterministic/browser demo review passed; commit pending.
 
 ### COPY-035 — `api/chatHandler.ts` · `mockTutorResponse / table summary`
 
@@ -821,9 +822,9 @@ maintainer acceptance of its local commit.
 - Expected test files: `api/chatHandler.test.ts`, `api/chatPrompt.test.ts`
 - Browser review: After a successful run, review the AI Tutor on desktop and mobile; exercise suggested prompts and mock responses without changing transport or state.
 - Implementation group: `GROUP_D`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Notes: Implemented exactly in the authorized Group D iteration; focused API/prompt tests, structural non-change audit, and deterministic demo review passed; commit pending.
 
 ### COPY-036 — `api/chatHandler.ts` · `mockTutorResponse / step-by-step sketch`
 
@@ -840,9 +841,9 @@ maintainer acceptance of its local commit.
 - Expected test files: `api/chatHandler.test.ts`, `api/chatPrompt.test.ts`
 - Browser review: After a successful run, review the AI Tutor on desktop and mobile; exercise suggested prompts and mock responses without changing transport or state.
 - Implementation group: `GROUP_D`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Notes: Implemented exactly in the authorized Group D iteration; focused API/prompt tests, structural non-change audit, and deterministic demo review passed; commit pending.
 
 ### COPY-037 — `api/chatHandler.ts` · `mockTutorResponse / graph interpretation`
 
@@ -859,9 +860,9 @@ maintainer acceptance of its local commit.
 - Expected test files: `api/chatHandler.test.ts`, `api/chatPrompt.test.ts`
 - Browser review: After a successful run, review the AI Tutor on desktop and mobile; exercise suggested prompts and mock responses without changing transport or state.
 - Implementation group: `GROUP_D`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Notes: Implemented exactly in the authorized Group D iteration; focused API/prompt tests, structural non-change audit, and deterministic/browser demo review passed; commit pending.
 
 ### COPY-038 — `api/chatHandler.ts` · `mockTutorResponse / smaller-step reply`
 
@@ -878,9 +879,9 @@ maintainer acceptance of its local commit.
 - Expected test files: `api/chatHandler.test.ts`, `api/chatPrompt.test.ts`
 - Browser review: After a successful run, review the AI Tutor on desktop and mobile; exercise suggested prompts and mock responses without changing transport or state.
 - Implementation group: `GROUP_D`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Notes: Implemented exactly in the authorized Group D iteration; focused API/prompt tests, structural non-change audit, and deterministic/browser demo review passed; commit pending.
 
 ### COPY-039 — `api/chatHandler.ts` · `mockTutorResponse / truncation-error reply`
 
@@ -897,9 +898,9 @@ maintainer acceptance of its local commit.
 - Expected test files: `api/chatHandler.test.ts`, `api/chatPrompt.test.ts`
 - Browser review: After a successful run, review the AI Tutor on desktop and mobile; exercise suggested prompts and mock responses without changing transport or state.
 - Implementation group: `GROUP_D`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Notes: Implemented exactly in the authorized Group D iteration; focused API/prompt tests, structural non-change audit, and deterministic/browser demo review passed; commit pending.
 
 ### COPY-040 — `api/chatHandler.ts` · `mockTutorResponse / exam recap`
 
@@ -916,9 +917,42 @@ maintainer acceptance of its local commit.
 - Expected test files: `api/chatHandler.test.ts`, `api/chatPrompt.test.ts`
 - Browser review: After a successful run, review the AI Tutor on desktop and mobile; exercise suggested prompts and mock responses without changing transport or state.
 - Implementation group: `GROUP_D`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Notes: Implemented exactly in the authorized Group D iteration; focused API/prompt tests, structural non-change audit, and deterministic demo review passed; commit pending.
+
+#### Group D local implementation evidence
+
+The focused Group D suite passed 5 files and 52 tests. Tests cover the exact
+suggested questions and subtitle; theoretical/observed-order distinctions;
+named maximum-global-error evidence and status; grid-point language; unscaled
+LTE and qualified global-error language; graph/absolute-stability boundaries;
+smaller-step limitations; BDF nonlinear-iteration wording; unavailable
+evidence; compact real-model prompt policy; malformed-request JSON; the
+provider request/response contract; fresh binding reads; Host behavior; and the
+unchanged lazy boundary.
+
+A strict TypeScript AST comparison against starting HEAD
+`6e28ba493681a3a2d223724ba4b1688557848717` matched all 5,600 production nodes
+and found only 18 authorized text-fragment changes. Request schema, validation
+order, status/content types, provider/model, message roles/order, fetch options,
+response parsing and shape, chart instructions, demo routing, grounding fields
+and values, session/abort/transcript ownership, panel DOM/listeners/focus, and
+lazy imports were unchanged.
+
+`npm.cmd run verify` passed 73 files and 1,042 tests, both TypeScript checks, and
+the 79-module production build. Isolated localhost demo/browser review at
+1440×900 and 390×844 covered the approved questions and subtitle; smaller-step,
+graph, theoretical/observed-order, LTE, unavailable/current/stale-filtered
+Convergence, and nonlinear-diagnostic replies; Compare unavailability; focus
+and wrapping; and horizontal-overflow/console health. Stiffness,
+named-tolerance, step-normalized-defect, and real-provider policy remain
+deterministic-test evidence only because Group D adds no reply route or network
+behavior. Production retained eight JavaScript and seven CSS chunks, Tutor
+remained independently lazy, and server-only prompt/reply text did not enter
+browser assets. No production Glossary content, annotation, ODE binding, model
+call, push, or deployment was added. Group D remains pending maintainer
+acceptance of its local commit.
 
 ### COPY-041 — `src/glossary/surface/glossarySurfaceRuntime.ts` · `complete surface / alternate display label`
 
@@ -1223,8 +1257,9 @@ maintainer acceptance of its local commit.
 The exact A–F boundaries, files, tests, browser checks, dependencies,
 rollback points, and review gates are in the
 [Project Language Implementation Plan](PROJECT_LANGUAGE_IMPLEMENTATION_PLAN.md).
-Group A ready records and Group B are accepted; `COPY-003` remains held.
-Group C records `COPY-020` through `COPY-029` are implemented locally and
-verified, with the local commit pending. The next gate is maintainer
-acceptance of the Group C commit and evidence package before Group D Tutor
-language work begins. Groups D–F remain unauthorized.
+Groups A through C are accepted; `COPY-003` remains held. Group D records
+`COPY-030` through `COPY-040` are implemented locally and verified, with the
+local commit pending. The next gate is maintainer acceptance of the Group D
+commit and evidence package, followed by a separate decision on whether to
+begin Group F consistency review before authorizing Group E. Groups E and F
+remain unauthorized.

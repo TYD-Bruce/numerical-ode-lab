@@ -1,8 +1,8 @@
 # Numerical T-Lab Project Language v1 Handoff
 
 Status: Project Language Standard v1 approved; Glossary catalog, copy audit,
-implementation groups, and traceability reconciled; Groups A and B accepted;
-Group C implemented and locally verified.
+implementation groups, and traceability reconciled; Groups A through C
+accepted; Group D implemented and locally verified.
 
 Runtime/content implementation tracked separately.
 
@@ -137,7 +137,9 @@ The copy audit retains all 55 stable records: 40 are
 decision-blocked. The original reconciliation implemented no recommendation.
 The separately authorized Group A iteration implements and accepts `COPY-001`,
 `COPY-002`, `COPY-004`, and `COPY-005`; `COPY-003` remains held. The separately
-authorized Group B iteration implements `COPY-006` through `COPY-019`.
+authorized Group B iteration implements and accepts `COPY-006` through
+`COPY-019`; Group C implements and is accepted for `COPY-020` through
+`COPY-029`; and Group D locally implements `COPY-030` through `COPY-040`.
 
 ## 7. Runtime and numerical non-changes
 
@@ -272,8 +274,8 @@ accepted in commit `d2d2130c1ef7354e56497455ccadecd1f991eb59`.
 
 ## 11. Group C implementation checkpoint
 
-The exact authorized records `COPY-020` through `COPY-029` are
-`IMPLEMENTED_LOCALLY_COMMIT_PENDING`.
+The exact authorized records `COPY-020` through `COPY-029` are accepted in
+commit `6e28ba493681a3a2d223724ba4b1688557848717`.
 
 - Product files changed: `src/convergenceStudy.ts`,
   `src/convergenceStudyView.ts`, and `src/convergenceTeaching.ts`.
@@ -321,8 +323,73 @@ The exact authorized records `COPY-020` through `COPY-029` are
   content, annotation, ODE binding, or visible Glossary behavior.
 - Nothing was pushed or deployed.
 
-## 12. Current review gate
+## 12. Group D implementation checkpoint
 
-Groups A and B are accepted. Group C is implemented and locally verified.
-Group D remains unauthorized. The next gate is maintainer acceptance of the
-Group C commit and evidence package before Tutor language work begins.
+The exact authorized records `COPY-030` through `COPY-040` are
+`IMPLEMENTED_LOCALLY_COMMIT_PENDING`.
+
+- Product files changed: `api/chatHandler.ts`,
+  `src/ode/odeTutorBinding.ts`, and `src/tutor/platformTutorPanel.ts`.
+- Focused tests changed: `api/chatHandler.test.ts`, `api/chatPrompt.test.ts`,
+  `src/ode/odeTutorBinding.test.ts`, and
+  `src/app/platformTutorHost.test.ts`.
+  `src/app/tutorLazyBoundary.test.ts` remained unchanged and passed as the
+  lazy-boundary regression gate.
+- The untouched focused baseline passed 43 tests. The tests-first run then
+  failed only 10 intended language assertions while 42 behavioral,
+  validation, provider, Host/modal, and lazy assertions passed. The final
+  focused run passed 5 files and 52 tests.
+- Request/API regression evidence preserved the validation order and exact 400
+  JSON bodies, JSON content type, demo selection, provider URL,
+  `gpt-4o-mini`, POST headers, JSON-object response format, 1,200-token limit,
+  message roles/order, response parsing and shape, and chart-instruction shape.
+  Provider coverage used only the local fetch stub; no external model was
+  contacted.
+- Binding/Host evidence preserved fresh source reads per message, successful
+  output ownership, stale/current Convergence filtering, Compare
+  unavailability, conversation-reset ownership, panel DOM and accessible
+  controls, request lifecycle, focus/modal behavior, rendering, and
+  independent Tutor lazy loading.
+- A strict TypeScript AST comparison against starting HEAD
+  `6e28ba493681a3a2d223724ba4b1688557848717` matched all 5,600 production nodes
+  and found only 18 authorized text-fragment changes. Imports/exports, types,
+  function signatures, conditions, branch order, operators, numeric and status
+  literals, field names, request/response shapes, fetch logic, grounding
+  fields and values, DOM structure, listeners, focus behavior, and lazy
+  imports were unchanged.
+- `npm.cmd run verify` passed 73 files and 1,042 tests, application typecheck,
+  API typecheck, and the 79-module production build. Only the accepted large
+  deferred-chunk warning remained.
+- The deterministic localhost API returned the approved smaller-step,
+  observed-order, LTE/global-error, graph/absolute-stability, BDF iteration,
+  nonlinear residual/iteration, and unavailable-evidence language. A malformed
+  request retained status 400 and the exact JSON error body. The API and
+  browser used the existing demo path; no real key or model request was used.
+- Isolated browser review covered `/ode/initial-value-problems` at 1440×900 and
+  390×844. Browser-observed evidence included the approved subtitle and
+  suggested questions; smaller-step, graph, theoretical-order, LTE,
+  current-observed-order, unavailable-evidence, and implicit diagnostic
+  replies; a successful Convergence Study; stale-evidence exclusion after a
+  later successful Run; Compare Tutor unavailability; desktop/mobile wrapping,
+  focus restoration, internal transcript scrolling, and no horizontal page
+  overflow. The console remained free of warnings and errors.
+- Stiffness, named-tolerance, step-normalized-defect, provider, and compact
+  real-model prompt-policy distinctions remain deterministic-test evidence
+  only. No new deterministic reply branch or real-model call was authorized.
+- Production inspection retained eight JavaScript and seven CSS chunks with no
+  new import or dynamic import. The existing shared ODE/Convergence grounding
+  chunk remained 58,885/17,475 raw/gzip bytes. The lazy IVP route moved from
+  241,871/80,388 to 241,898/80,391 (`+27/+3`); the independently lazy Tutor
+  chunk moved from 11,697/4,449 to 11,705/4,442 (`+8/-7`); entry raw size
+  remained 52,815 bytes. Server prompt/reply strings do not appear in browser
+  assets. No Glossary content, ODE binding, DEV fixture, or new network
+  dependency was added.
+- Nothing was pushed or deployed.
+
+## 13. Current review gate
+
+Groups A through C are accepted. Group D is implemented and locally verified.
+Production Glossary Wave 1 remains unauthorized. The next gate is maintainer
+acceptance of the Group D commit and evidence package, followed by a separate
+decision on whether to begin Group F consistency review before authorizing
+Group E.

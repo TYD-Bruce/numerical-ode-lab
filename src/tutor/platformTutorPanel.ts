@@ -112,7 +112,7 @@ export function mountPlatformTutorPanel(
           <span class="ai-demo-badge" data-tutor-demo hidden>Demo mode</span>
           <button type="button" class="btn ghost ai-tutor-close" data-tutor-close aria-label="Close AI Tutor">Close</button>
         </div>
-        <p class="ai-tutor-sub">Ask about the method, variables, coefficients, stability, accuracy, or graph behavior.</p>
+        <p class="ai-tutor-sub">Ask about the method, variables, coefficients, error, convergence evidence, or graph behavior.</p>
       </header>
       <div class="ai-tutor-content" data-tutor-content></div>
     </aside>`;

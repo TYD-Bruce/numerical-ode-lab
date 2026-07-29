@@ -6,11 +6,11 @@ import type { ReadonlySolverResult } from "./odeSession";
 export const ODE_TUTOR_SUGGESTED_QUESTIONS = Object.freeze([
   "Explain this method step by step.",
   "What does each variable mean?",
-  "Why is the order of accuracy p?",
+  "Why is this method’s theoretical order p?",
   "Explain the coefficients.",
   "Explain the implicit solve diagnostics.",
   "How should I interpret the graph?",
-  "What would happen if I used a smaller h?",
+  "What could happen if I used a smaller time-step size h?",
   "Create a table summary of the result.",
 ] as const);
 

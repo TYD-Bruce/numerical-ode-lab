@@ -42,9 +42,9 @@ recorded all nine decisions on 2026-07-28, and the terminology, notation, and
 teaching-voice standards are maintainer-approved Version 1. The Glossary
 catalog and project copy audit are reconciled across all 197 term IDs and 55
 copy records, with an A–F implementation plan and machine-checkable local
-traceability. Groups A and B are accepted; `COPY-003` remains held. Group C
-records `COPY-020` through `COPY-029` are implemented and locally verified.
-Group D and production Glossary content remain unauthorized.
+traceability. Groups A through C are accepted; `COPY-003` remains held. Group D
+records `COPY-030` through `COPY-040` are implemented and locally verified.
+Group E and production Glossary content remain unauthorized.
 
 ## Project-language standards and content drafts
 
@@ -52,9 +52,10 @@ The terminology, notation, and teaching-voice standards are
 **maintainer-approved Version 1**. The source policy remains authoritative for
 evidence handling. The Glossary catalog and copy audit are reconciled planning
 documents, and the implementation plan separates ready copy work from the
-unauthorized production content wave. Groups A and B are accepted, and Group C
-Convergence/error copy is locally complete and awaiting maintainer acceptance.
-Production Glossary content and later copy groups remain unauthorized.
+unauthorized production content wave. Groups A through C are accepted, and
+Group D Tutor numerical language is locally complete and awaiting maintainer
+acceptance. Production Glossary content and later copy groups remain
+unauthorized.
 
 | Document | Purpose |
 |---|---|
@@ -63,12 +64,12 @@ Production Glossary content and later copy groups remain unauthorized.
 | [Numerical T-Lab Notation Standard v1](content/NUMERICAL_NOTATION_STANDARD.md) | Maintainer-approved notation for the nine project-language decisions |
 | [Numerical T-Lab Teaching Voice Standard v1](content/TEACHING_VOICE.md) | Maintainer-approved plain-first teaching rule, epistemic language, and examples |
 | [Glossary Catalog](content/GLOSSARY_CATALOG.md) | Reconciled 197-ID planning catalog with independent statuses, dependencies, waves, and 23 rich drafts; not runtime data |
-| [Project Copy Audit](content/PROJECT_COPY_AUDIT.md) | Reconciled 55-record audit with exact replacement copy and source/test/browser traceability; Groups A and B accepted, 10 Group C records implemented locally, and `COPY-003` held |
+| [Project Copy Audit](content/PROJECT_COPY_AUDIT.md) | Reconciled 55-record audit with exact replacement copy and source/test/browser traceability; Groups A–C accepted, 11 Group D records implemented locally, and `COPY-003` held |
 | [Project Language Implementation Plan](content/PROJECT_LANGUAGE_IMPLEMENTATION_PLAN.md) | Complete A–F future implementation boundaries; no group is authorized by the document alone |
 | [Terminology Decisions](content/TERMINOLOGY_DECISIONS.md) | Historical comparison plus the approved Version 1 resolution index |
 | [Maintainer Decision Packet](content/MAINTAINER_DECISION_PACKET.md) | Completed evidence cards and binding records for exactly nine decisions |
 | [Project Language Approval Checklist](content/PROJECT_LANGUAGE_APPROVAL_CHECKLIST.md) | Completed documentation-only approval and validation record |
-| [Project Language v1 Handoff](content/HANDOFF.md) | Approved choices, counts, Groups A/B acceptance, Group C implementation evidence, held scope, and next gate |
+| [Project Language v1 Handoff](content/HANDOFF.md) | Approved choices, counts, Groups A–C acceptance, Group D implementation evidence, held scope, and next gate |
 
 ## Product and feature specifications
 
@@ -113,8 +114,8 @@ Production Glossary content and later copy groups remain unauthorized.
 - [Numerical T-Lab project-language v1 handoff](content/HANDOFF.md) — 29-source
   evidence baseline, nine approved decisions, Version 1 standards, reconciled
   197-term catalog and 55-record copy audit, A–F implementation plan, and
-  validation evidence; Groups A and B are accepted and Group C is locally
-  implemented, while production content and Group D remain unauthorized.
+  validation evidence; Groups A through C are accepted and Group D is locally
+  implemented, while production content and Group E remain unauthorized.
 - [Project Rename handoff](project-rename/HANDOFF.md) — completed Project
   Identity Migration evidence, including the canonical local workspace reopen.
 

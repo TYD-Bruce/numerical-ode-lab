@@ -35,4 +35,29 @@ describe("AI Tutor controlled mathematics prompt", () => {
     expect(SYSTEM_PROMPT).toContain("Do not assert a specific cause");
     expect(SYSTEM_PROMPT).toContain("reference line compares slope only");
   });
+
+  it("enforces the approved numerical-language distinctions compactly", () => {
+    expect(SYSTEM_PROMPT).toContain("numerical approximation");
+    expect(SYSTEM_PROMPT).toContain("time-step size");
+    expect(SYSTEM_PROMPT).toContain(
+      "Distinguish theoretical method order from observed order"
+    );
+    expect(SYSTEM_PROMPT).toContain(
+      "local truncation error is \\(O(h^{p+1})\\)"
+    );
+    expect(SYSTEM_PROMPT).toContain("step-normalized local defect");
+    expect(SYSTEM_PROMPT).toContain(
+      "Distinguish absolute stability from accuracy"
+    );
+    expect(SYSTEM_PROMPT).toContain("fast and slow behavior");
+    expect(SYSTEM_PROMPT).toContain("nonlinear residual");
+    expect(SYSTEM_PROMPT).toContain(
+      "nonlinear iteration count as diagnostic evidence"
+    );
+    expect(SYSTEM_PROMPT).toContain(
+      "Name the algorithm and controlled quantity for every tolerance"
+    );
+    expect(SYSTEM_PROMPT).toContain("Reliable evidence is not proof");
+    expect(SYSTEM_PROMPT).toContain("never invent values or guarantees");
+  });
 });

@@ -1,7 +1,26 @@
 import { describe, expect, it, vi } from "vitest";
-import { createOdeTutorBinding } from "./odeTutorBinding";
+import {
+  createOdeTutorBinding,
+  ODE_TUTOR_SUGGESTED_QUESTIONS,
+} from "./odeTutorBinding";
 
 describe("Lab-owned ODE Tutor binding", () => {
+  it("uses theoretical-order and qualified time-step-size questions", () => {
+    expect(ODE_TUTOR_SUGGESTED_QUESTIONS).toContain(
+      "Why is this method’s theoretical order p?"
+    );
+    expect(ODE_TUTOR_SUGGESTED_QUESTIONS).toContain(
+      "What could happen if I used a smaller time-step size h?"
+    );
+    expect(ODE_TUTOR_SUGGESTED_QUESTIONS).not.toContain(
+      "Why is the order of accuracy p?"
+    );
+    expect(ODE_TUTOR_SUGGESTED_QUESTIONS).not.toContain(
+      "What would happen if I used a smaller h?"
+    );
+    expect(Object.isFrozen(ODE_TUTOR_SUGGESTED_QUESTIONS)).toBe(true);
+  });
+
   it("reads fresh source state, hides the math keyboard, and owns no conversation", () => {
     let source: { readonly enabled: boolean } = { enabled: false };
     const prepare = vi.fn();

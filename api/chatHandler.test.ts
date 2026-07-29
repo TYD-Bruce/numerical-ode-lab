@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { buildUserContextBlock, handleChatRequest } from "./chatHandler";
 
@@ -204,6 +204,12 @@ describe("mock tutor step-by-step nonlinear wording", () => {
 
     expect(answer).toContain("G(u) = 0");
     expect(answer).toContain("Newton iteration");
+    expect(answer).toContain("with time-step size h");
+    expect(answer).toContain(
+      "The method metadata reports theoretical order p = 1 for this run."
+    );
+    expect(answer).not.toContain("with h = Δt");
+    expect(answer).not.toContain("method is treated as order");
     expect(answer.toLowerCase()).not.toContain("fixed-point");
     expect(answer.toLowerCase()).not.toContain("fixed point");
   });
@@ -268,6 +274,8 @@ describe("mock tutor convergence grounding", () => {
     expect(actual).toContain("3.9182736");
     expect(actual).toContain("4.0000000");
     expect(actual).toContain("Zero-based evidence level pairs: 1 to 2, 2 to 3");
+    expect(actual).toContain("An observed order need not be an integer");
+    expect(actual).not.toContain("A measured order need not be an integer");
 
     const unavailable = await askConvergence(
       "Why is my observed order not exactly 4?",
@@ -330,5 +338,189 @@ describe("mock tutor convergence grounding", () => {
     expect(first).toContain('"convergenceStudy"');
     expect(first).toContain('"primaryObservedOrder":3.91827364');
     expect(first).not.toContain("lastAttemptError");
+  });
+});
+
+describe("mock tutor approved numerical language", () => {
+  const previousMock = process.env.AI_TUTOR_MOCK;
+
+  beforeEach(() => {
+    process.env.AI_TUTOR_MOCK = "true";
+  });
+
+  afterEach(() => {
+    if (previousMock === undefined) delete process.env.AI_TUTOR_MOCK;
+    else process.env.AI_TUTOR_MOCK = previousMock;
+  });
+
+  it("names grid points rather than time steps in the table summary", async () => {
+    const answer = await ask("Create a table summary of the result.");
+    expect(answer).toContain("Grid points stored: 11");
+    expect(answer).not.toContain("Steps stored:");
+  });
+
+  it("keeps graph appearance separate from absolute stability and accuracy", async () => {
+    const answer = await ask("How should I interpret the graph?", "explicit");
+    expect(answer).toContain(
+      "The curve shows the computed approximations for this method and time-step size."
+    );
+    expect(answer).toContain(
+      "Rapid growth or oscillation can motivate an absolute-stability check"
+    );
+    expect(answer).toContain(
+      "the plot alone does not prove instability or accuracy"
+    );
+    expect(answer).not.toContain("If it blows up");
+  });
+
+  it("uses the approved unscaled local-truncation convention for a smaller time-step size", async () => {
+    const answer = await ask(
+      "What could happen if I used a smaller time-step size h?",
+      "explicit"
+    );
+    expect(answer).toContain(
+      "With a smaller time-step size \\(h\\), the fixed interval contains more steps."
+    );
+    expect(answer).toContain(
+      "the unscaled local truncation error is \\(O(h^{p+1})\\)"
+    );
+    expect(answer).toContain(
+      "whether its observed-order status is reliable"
+    );
+    expect(answer).not.toContain("Expect a smoother plot");
+    expect(answer).not.toContain("shrinks like O(hᵖ)");
+  });
+
+  it("distinguishes unscaled local truncation error from propagated global error", async () => {
+    const answer = await ask("Explain local truncation error.", "explicit");
+    expect(answer).toContain(
+      "Using the unscaled convention, local truncation error is the one-step defect produced by inserting exact data into the update"
+    );
+    expect(answer).toContain(
+      "local truncation error \\(O(h^{p+1})\\)"
+    );
+    expect(answer).toContain(
+      "Global error is the propagated nodal-error family"
+    );
+    expect(answer).toContain(
+      "requires the method’s stability and regularity assumptions and a named error metric"
+    );
+    expect(answer).not.toContain("global error is typically");
+  });
+
+  it("qualifies the BDF implementation's nonlinear iteration", async () => {
+    const bdfContext = context("newton");
+    (bdfContext.method as Record<string, unknown>).family = "bdf";
+    const response = await handleChatRequest({
+      messages: [{ role: "user", content: "Give me an exam recap." }],
+      context: bdfContext,
+    });
+    const answer = String(response.body.message);
+    expect(answer).toContain(
+      "explain why this implementation uses nonlinear iteration to solve each implicit BDF step"
+    );
+    expect(answer).not.toContain("explain why BDF needs iteration");
+  });
+});
+
+describe("chat request and provider contract", () => {
+  const previousMock = process.env.AI_TUTOR_MOCK;
+  const previousKey = process.env.OPENAI_API_KEY;
+
+  afterEach(() => {
+    if (previousMock === undefined) delete process.env.AI_TUTOR_MOCK;
+    else process.env.AI_TUTOR_MOCK = previousMock;
+    if (previousKey === undefined) delete process.env.OPENAI_API_KEY;
+    else process.env.OPENAI_API_KEY = previousKey;
+    vi.unstubAllGlobals();
+  });
+
+  it("preserves request validation status and JSON body shapes", async () => {
+    expect(await handleChatRequest({ messages: [], context: {} })).toEqual({
+      status: 400,
+      body: { error: "messages array is required." },
+    });
+    expect(
+      await handleChatRequest({
+        messages: [{ role: "user", content: "Question" }],
+        context: undefined as unknown as Record<string, unknown>,
+      })
+    ).toEqual({
+      status: 400,
+      body: { error: "context object is required." },
+    });
+    expect(
+      await handleChatRequest({
+        messages: [{ role: "assistant", content: "Answer" }],
+        context: {},
+      })
+    ).toEqual({
+      status: 400,
+      body: { error: "Last message must be from the user." },
+    });
+  });
+
+  it("preserves provider, model, message order, request options, and response shape", async () => {
+    delete process.env.AI_TUTOR_MOCK;
+    process.env.OPENAI_API_KEY = "test-server-key";
+    const fetchMock = vi.fn(
+      async (_url: string, _init?: RequestInit) => ({
+        ok: true,
+        json: async () => ({
+          output_text: JSON.stringify({
+            message: "Grounded response",
+            chartInstruction: { type: "line_chart", title: "Current result" },
+          }),
+        }),
+      })
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const response = await handleChatRequest({
+      messages: [
+        { role: "user", content: "First question" },
+        { role: "assistant", content: "First answer" },
+        { role: "user", content: "Current question" },
+      ],
+      context: context("explicit"),
+    });
+
+    expect(response).toEqual({
+      status: 200,
+      body: {
+        message: "Grounded response",
+        chartInstruction: { type: "line_chart", title: "Current result" },
+      },
+    });
+    expect(fetchMock).toHaveBeenCalledOnce();
+    const [url, init] = fetchMock.mock.calls[0]!;
+    expect(init).toBeDefined();
+    if (!init) throw new Error("Expected provider request options.");
+    expect(url).toBe("https://api.openai.com/v1/responses");
+    expect(init).toMatchObject({
+      method: "POST",
+      headers: {
+        Authorization: "Bearer test-server-key",
+        "Content-Type": "application/json",
+      },
+    });
+    const requestBody = JSON.parse(String(init.body)) as {
+      model: string;
+      instructions: string;
+      input: Array<{ role: string; content: string }>;
+      text: { format: { type: string } };
+      max_output_tokens: number;
+    };
+    expect(requestBody.model).toBe("gpt-4o-mini");
+    expect(requestBody.text).toEqual({ format: { type: "json_object" } });
+    expect(requestBody.max_output_tokens).toBe(1200);
+    expect(requestBody.input.map((item) => item.role)).toEqual([
+      "user",
+      "assistant",
+      "user",
+      "assistant",
+      "user",
+    ]);
+    expect(requestBody.input.at(-1)?.content).toBe("Current question");
   });
 });

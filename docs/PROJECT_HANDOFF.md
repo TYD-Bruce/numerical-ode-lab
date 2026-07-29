@@ -2,7 +2,7 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
-**Status (2026-07-28):** Numerical T-Lab is locally verified and
+**Status (2026-07-29):** Numerical T-Lab is locally verified and
 Production-verified at `https://numerical-t-lab.vercel.app/`. The GitHub
 repositories, Git remotes, existing Vercel project, Git integration, and
 canonical domain use the Numerical T-Lab identity. The local workspace rename
@@ -16,12 +16,14 @@ is documentation governance only. The Glossary catalog and project copy audit
 are now reconciled across all 197 stable IDs and 55 copy records, with six
 future implementation groups and local validation/traceability. The four ready
 Group A records (`COPY-001`, `COPY-002`, `COPY-004`, and `COPY-005`) are
-accepted. Group B records `COPY-006` through `COPY-019` are accepted. Group C
-records `COPY-020` through `COPY-029` are implemented and locally verified.
-`COPY-003` and `src/pages/homePage.ts` remain review-only and unchanged. These
-iterations changed approved visible copy only: Group C calculations,
-classifications, stored results, and lifecycle remain unchanged; no Tutor,
-production Glossary, or binding behavior changed; and nothing was pushed or
+accepted. Group B records `COPY-006` through `COPY-019` and Group C records
+`COPY-020` through `COPY-029` are accepted. Group D records `COPY-030` through
+`COPY-040` are implemented and locally verified. `COPY-003` and
+`src/pages/homePage.ts` remain review-only and unchanged. These iterations
+changed approved visible copy, server-owned Tutor prompt policy, deterministic
+replies, and focused expectations only: calculations, classifications,
+grounding values, request/API/session behavior, and lifecycle remain unchanged;
+no production Glossary or binding behavior changed; and nothing was pushed or
 deployed.
 
 ## 1. Product and public routes
@@ -67,11 +69,13 @@ retains all 197 candidate IDs, reports four required-ID gaps without adding
 them, prepares 10 Wave 1 and 13 high-priority Wave 2 rich drafts, and maps all
 55 copy records to Groups A–F. The four ready Group A Platform/overview copy
 records are accepted; deferred `COPY-003` remains held with the PDE module.
-The 14 Group B IVP Method/Data/Output and preset records are accepted. The 10
-Group C Convergence/error records are implemented and locally verified. The
-next gate is maintainer acceptance of the Group C commit and evidence package
-before Group D Tutor language work begins. Production Glossary content and the
-ODE binding remain absent and unauthorized.
+The 14 Group B IVP Method/Data/Output and preset records and the 10 Group C
+Convergence/error records are accepted. The 11 Group D Tutor numerical-language
+records are implemented and locally verified. The next gate is maintainer
+acceptance of the Group D commit and evidence package, followed by a separate
+decision on whether to begin Group F consistency review before authorizing
+Group E. Production Glossary content and the ODE binding remain absent and
+unauthorized.
 
 ## 2. Verification baseline
 
@@ -140,6 +144,27 @@ shared ODE/Convergence and lazy IVP chunks changed only by bounded copy deltas
 (`+44/+15` and `+149/+18` raw/gzip bytes). Calculations, classifications,
 precedence, tolerances, eligibility, chart data, stored results, Tutor, and
 Glossary behavior remain unchanged. No push or deployment was performed.
+
+The Group D Tutor numerical-language iteration passed its focused suite (5
+files, 52 tests) and full `npm.cmd run verify` gate (73 files, 1,042 tests, both
+TypeScript checks, and a 79-module production build). A strict TypeScript AST
+comparison against starting HEAD matched 5,600 nodes and found only 18
+authorized text-fragment changes across the three production owners. Request
+validation, status/content types, provider URL, `gpt-4o-mini` model, message
+roles/order, fetch options, response parsing and shape, demo routing, chart
+instructions, session access, grounding values, abort/cancellation, transcript,
+panel DOM/listeners/focus, and lazy ownership remain unchanged. Isolated
+localhost review at 1440×900 and 390×844 covered the updated questions and
+subtitle; smaller-step, graph, theoretical-order, LTE, current/unavailable
+Convergence, and nonlinear-diagnostic replies; stale-evidence exclusion after a
+new Run; Compare unavailability; focus restoration; wrapping; and page overflow.
+The console remained clean. Prompt-only stiffness/tolerance policy and provider
+contract cases remain deterministic-test evidence because no new demo route or
+real-model request was authorized. The existing Tutor chunk changed by
+`+8/-7` raw/gzip bytes, the lazy IVP route by `+27/+3`, and entry raw size
+remained unchanged; no chunk, import, dynamic import, network dependency,
+Glossary content, or ODE binding was added. No push or deployment was
+performed.
 
 `npm run verify` passed on 2026-07-14:
 
@@ -354,10 +379,10 @@ Known limitations:
   Version 1 after all nine maintainer decisions were recorded. The Glossary
   catalog and project copy audit are reconciled planning documents, and the
   A–F implementation plan is complete. The four ready Group A
-  Platform/overview copy records and Group B are accepted; `COPY-003` remains
-  held. Group C is implemented and locally verified. Group D and runtime
-  Glossary content remain unauthorized pending maintainer acceptance of the
-  Group C evidence.
+  Platform/overview copy records and Groups B and C are accepted; `COPY-003`
+  remains held. Group D is implemented and locally verified. Group E and
+  runtime Glossary content remain unauthorized pending maintainer acceptance
+  of the Group D evidence.
 
 Contributor rules:
 
@@ -378,7 +403,9 @@ Production still contains no Glossary terms, annotations, ODE binding,
 Playground, activatable surface, or visible behavior. All nine project-language
 decisions are recorded and the terminology, notation, and teaching-voice
 standards are approved as Version 1. The catalog and copy audit are reconciled;
-Groups A and B are accepted, Group C is implemented and locally verified, and
-`COPY-003` plus `src/pages/homePage.ts` remain review-only and unchanged. The
-next gate is maintainer acceptance of the Group C commit and evidence package
-before Tutor language work begins. Group D remains unauthorized.*
+Groups A through C are accepted, Group D is implemented and locally verified,
+and `COPY-003` plus `src/pages/homePage.ts` remain review-only and unchanged.
+The next gate is maintainer acceptance of the Group D commit and evidence
+package, followed by a separate decision on whether to begin Group F
+consistency review before authorizing Group E. Production Glossary content
+remains unauthorized.*

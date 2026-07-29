@@ -17,11 +17,19 @@ export const SYSTEM_PROMPT = `You are an AI tutor inside the Initial Value Probl
 
 Notation (use in answers):
 - y′ = f(t, y), y(t₀) = y₀
-- h = Δt, tₙ = t₀ + nh
+- h is the time-step size, tₙ = t₀ + nh
 - uₙ ≈ yₙ, fₙ = f(tₙ, uₙ)
 - Multistep: uₙ₊₁, fₙ₋ⱼ, αⱼ, βⱼ
 
-Scope: Only discuss the current ODE problem, the selected numerical method, numerical ODE concepts (truncation error, stability, convergence, order of accuracy), coefficients, and graph interpretation for this run. Do not solve unrelated math.
+Scope: Only discuss the current ODE problem, the selected numerical method, numerical ODE concepts (truncation error, absolute stability, convergence, theoretical and observed order), coefficients, and graph interpretation for this run. Do not solve unrelated math.
+
+Numerical language rules:
+- Call computed output a numerical approximation. Use exact solution only when supplied grounding establishes exactness; otherwise say reference solution.
+- Distinguish theoretical method order from observed order computed from a named error metric and evidence status. Reliable evidence is not proof.
+- Under the unscaled convention, local truncation error is \\(O(h^{p+1})\\); the divided-by-\\(h\\) quantity is the step-normalized local defect \\(O(h^p)\\).
+- Distinguish absolute stability from accuracy and nonlinear-solver convergence. Use A-stability only for the supported scalar test-equation property. Describe stiffness using fast and slow behavior plus a stability-driven time-step-size restriction.
+- Call equation mismatch a nonlinear residual and treat the nonlinear iteration count as diagnostic evidence, not solution error or proof of accuracy. Name the algorithm and controlled quantity for every tolerance.
+- Stay evidence-bounded: identify unavailable information and never invent values or guarantees.
 
 Implicit-solve rules:
 - Distinguish nonlinear-solver convergence from absolute stability of the numerical method. A Newton or fixed-point failure does not by itself mean the time-stepping scheme is unstable.
@@ -212,7 +220,7 @@ function buildMockResponse(
 
   const orderLine =
     order !== undefined
-      ? `For this run, the method is treated as order p = ${order}.`
+      ? `The method metadata reports theoretical order p = ${order} for this run.`
       : "Check the Method details panel for the order of accuracy p.";
 
   let message = "";
@@ -275,7 +283,7 @@ function buildMockResponse(
       ? "The primary observed order is unavailable, so I will not replace it with a guess."
       : `The primary maximum-error observed order is ${finiteText(primaryObservedOrder)}, compared with theoretical order p = ${finiteText(theoreticalOrder)}.`;
     message = demoReply(
-      `${observed} ${interpretationTitle ?? interpretationKind ?? "No interpretation title was supplied"}. ${interpretationExplanation ?? ""} Zero-based evidence level pairs: ${evidencePairsText(interpretation)}. A measured order need not be an integer because it comes from finite error ratios and may reflect pre-asymptotic behavior or roundoff; those are possibilities, not proven causes for this run.`
+      `${observed} ${interpretationTitle ?? interpretationKind ?? "No interpretation title was supplied"}. ${interpretationExplanation ?? ""} Zero-based evidence level pairs: ${evidencePairsText(interpretation)}. An observed order need not be an integer because it comes from finite error ratios and may reflect pre-asymptotic behavior or roundoff; those are possibilities, not proven causes for this run.`
     );
   } else if (asksImplicitDiagnostics) {
     if (!nonlinearMethod) {
@@ -338,7 +346,7 @@ function buildMockResponse(
     };
   } else if (q.includes("table") || q.includes("summary")) {
     message = demoReply(
-      `Table summary for ${methodName} on the current IVP:\n\n• Problem: ${equation}\n• Grid: t₀ = ${t0 ?? "?"}, t_end = ${tEnd ?? "?"}, h = ${h ?? "?"}\n• Steps stored: ${pointCount ?? "?"}\n• Final: u ≈ ${finalY?.toFixed(6) ?? "?"} at t = ${finalT?.toFixed(6) ?? "?"}\n\nSee the “Last 12 values” table below the chart for step-by-step numbers.`
+      `Table summary for ${methodName} on the current IVP:\n\n• Problem: ${equation}\n• Grid: t₀ = ${t0 ?? "?"}, t_end = ${tEnd ?? "?"}, h = ${h ?? "?"}\n• Grid points stored: ${pointCount ?? "?"}\n• Final: u ≈ ${finalY?.toFixed(6) ?? "?"} at t = ${finalT?.toFixed(6) ?? "?"}\n\nSee the “Last 12 values” table below the chart for step-by-step numbers.`
     );
     chartInstruction = {
       type: "error_table",
@@ -381,7 +389,7 @@ function buildMockResponse(
         "Because the method is implicit, each step requires solving an equation for uₙ₊₁.";
     }
     message = demoReply(
-      `Step-by-step sketch for ${methodName}:\n\n1. Start from the IVP ${equation} with h = Δt.\n2. At each step, form tₙ = t₀ + nh and approximate values uₙ ≈ y(tₙ).\n3. Apply the update: ${formula}\n4. ${stepFour}\n5. After ${pointCount ?? "N"} points, the run ends near t = ${finalT?.toFixed(4) ?? "?"} with u ≈ ${finalY?.toFixed(6) ?? "?"}.\n\n${orderLine}`
+      `Step-by-step sketch for ${methodName}:\n\n1. Start from the IVP ${equation} with time-step size h.\n2. At each step, form tₙ = t₀ + nh and approximate values uₙ ≈ y(tₙ).\n3. Apply the update: ${formula}\n4. ${stepFour}\n5. After ${pointCount ?? "N"} points, the run ends near t = ${finalT?.toFixed(4) ?? "?"} with u ≈ ${finalY?.toFixed(6) ?? "?"}.\n\n${orderLine}`
     );
   } else if (
     q.includes("graph") ||
@@ -389,7 +397,7 @@ function buildMockResponse(
     q.includes("plot")
   ) {
     message = demoReply(
-      `The chart shows the approximate solution uₙ versus t for ${methodName}. With ${pointCount ?? "?"} points from t₀ to about t = ${finalT?.toFixed(4) ?? "?"}, the curve reflects how your chosen f and h affect stability and accuracy.\n\nIf the graph looks jagged, try smaller h. If it blows up, the method may be unstable for this step size.`
+      `The chart shows the approximate solution uₙ versus t for ${methodName}. It contains ${pointCount ?? "?"} points from t₀ to about t = ${finalT?.toFixed(4) ?? "?"}.\n\nThe curve shows the computed approximations for this method and time-step size. Rapid growth or oscillation can motivate an absolute-stability check, but the plot alone does not prove instability or accuracy.`
     );
   } else if (
     q.includes("smaller h") ||
@@ -397,7 +405,7 @@ function buildMockResponse(
     q.includes("refine")
   ) {
     message = demoReply(
-      `With smaller h = Δt, you take more steps over [${t0 ?? "?"}, ${tEnd ?? "?"}], so the local truncation error per step shrinks like O(hᵖ) for order p. Expect a smoother plot and a final value closer to the exact solution (when one exists).\n\nYour current run used h = ${h ?? "?"} and p ≈ ${order ?? "?"}.`
+      `With a smaller time-step size \\(h\\), the fixed interval contains more steps. For a method of theoretical order \\(p\\), the unscaled local truncation error is \\(O(h^{p+1})\\) under the stated smoothness assumptions. Use the Convergence Study to check whether the selected error metric decreases and whether its observed-order status is reliable.\n\nFor this run, the fixed interval is [${t0 ?? "?"}, ${tEnd ?? "?"}], the current time-step size is ${h ?? "?"}, and the method metadata reports theoretical order p = ${order ?? "?"}.`
     );
   } else if (
     q.includes("startup") ||
@@ -413,7 +421,7 @@ function buildMockResponse(
     q.includes("local error")
   ) {
     message = demoReply(
-      `Local truncation error (LTE) measures one step’s mismatch with the exact flow; global error is the accumulated effect over many steps. For a consistent method of order p, LTE is O(hᵖ⁺¹) and global error is typically O(hᵖ) on a fixed interval.\n\n${orderLine}`
+      `Using the unscaled convention, local truncation error is the one-step defect produced by inserting exact data into the update, and a method of theoretical order \\(p\\) has local truncation error \\(O(h^{p+1})\\) under the stated smoothness assumptions. Global error is the propagated nodal-error family; a rate \\(O(h^p)\\) requires the method’s stability and regularity assumptions and a named error metric.\n\n${orderLine}`
     );
   } else if (q.includes("variable") || q.includes("what does") || q.includes("mean")) {
     message = demoReply(
@@ -421,7 +429,7 @@ function buildMockResponse(
     );
   } else if (q.includes("exam") || q.includes("review")) {
     message = demoReply(
-      `Exam-style recap: You solved ${equation} with ${methodName} on [${t0 ?? "?"}, ${tEnd ?? "?"}] using h = ${h ?? "?"}. The method is ${isImplicit ? "implicit" : "explicit"}. ${orderLine} Final computed value u ≈ ${finalY?.toFixed(6) ?? "?"} at t = ${finalT?.toFixed(6) ?? "?"}.\n\nBe ready to state the update formula, define LTE vs global error, and explain why ${family.includes("bdf") ? "BDF needs iteration" : "this scheme behaves as it does"} for order p.`
+      `Exam-style recap: You solved ${equation} with ${methodName} on [${t0 ?? "?"}, ${tEnd ?? "?"}] using h = ${h ?? "?"}. The method is ${isImplicit ? "implicit" : "explicit"}. ${orderLine} Final computed value u ≈ ${finalY?.toFixed(6) ?? "?"} at t = ${finalT?.toFixed(6) ?? "?"}.\n\nBe ready to state the update formula, define LTE vs global error, and ${family.includes("bdf") ? "explain why this implementation uses nonlinear iteration to solve each implicit BDF step" : "explain why this scheme behaves as it does"} for order p.`
     );
   } else {
     message = demoReply(

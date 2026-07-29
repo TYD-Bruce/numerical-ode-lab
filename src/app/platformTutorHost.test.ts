@@ -69,6 +69,12 @@ describe("Platform Tutor Host", () => {
     await host.open(target.querySelector<HTMLElement>("[data-tutor-open]")!);
     const firstPanel = target.querySelector<HTMLElement>(".ai-tutor-panel")!;
     expect(firstPanel.querySelector(".ai-tutor-content > .ai-compose")).not.toBeNull();
+    expect(firstPanel.textContent).toContain(
+      "Ask about the method, variables, coefficients, error, convergence evidence, or graph behavior."
+    );
+    expect(firstPanel.textContent).not.toContain(
+      "Ask about the method, variables, coefficients, stability, accuracy, or graph behavior."
+    );
     expect(target.querySelectorAll(".ai-tutor-panel")).toHaveLength(1);
 
     host.close();
