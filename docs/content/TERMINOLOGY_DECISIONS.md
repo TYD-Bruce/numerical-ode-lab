@@ -6,6 +6,12 @@ Status: Private-source-reviewed draft; maintainer approval pending.
 
 This log records draft alignments, source-priority recommendations, and unresolved questions. `PRIORITY_RESOLVED_DRAFT` does not mean maintainer-approved. `DECISION_REQUIRED` items block production wording or notation that depends on the unresolved choice.
 
+The nine unresolved items now have full review cards in the
+[Maintainer Decision Packet](MAINTAINER_DECISION_PACKET.md). Record final
+choices only in the blank
+[Project Language Approval Checklist](PROJECT_LANGUAGE_APPROVAL_CHECKLIST.md).
+The packet's recommendations are advisory; none is an approval.
+
 | ID | Concept | Competing wording or notation | Mathematical significance | Project impact | Draft recommendation | Status | Sources |
 |---|---|---|---|---|---|---|---|
 | `signed_error_orientation` | signed error orientation | exact minus approximation; approximation minus exact | A sign convention changes formulas but not absolute magnitudes. | Affects Tutor explanations and any future signed-error display. | Keep magnitudes in current product copy; require maintainer choice before publishing a signed convention. | `DECISION_REQUIRED` | NOTES-2025 outline-006 (pp. 10-14); CHENEY 8.5 (pp. 516-523) |
@@ -60,15 +66,20 @@ This log records draft alignments, source-priority recommendations, and unresolv
 
 ## Unresolved maintainer decisions
 
-- `signed_error_orientation` — signed error orientation
-- `relative_error_denominator` — relative error denominator and zero reference
-- `local_truncation_scaling` — local truncation error scaling
-- `global_error_scope` — scope of global error
-- `a_stability_boundary` — A-stability and absolute-stability region notation
-- `observed_order_reliability` — observed order and the asymptotic region
-- `stiffness_definition` — minimum definition of stiffness
-- `tolerance_scopes` — tolerance scopes
-- `matrix_vector_typography` — scalar, vector, and matrix typography
+Review the decisions in dependency order. Every status remains
+`DECISION_REQUIRED`.
+
+| Review order | ID | Decision | Depends on |
+|---:|---|---|---|
+| 1 | `signed_error_orientation` | signed error orientation | — |
+| 2 | `global_error_scope` | scope of global error | `signed_error_orientation` |
+| 3 | `local_truncation_scaling` | local truncation error scaling | — |
+| 4 | `observed_order_reliability` | observed order and the asymptotic region | `global_error_scope`; `local_truncation_scaling` |
+| 5 | `a_stability_boundary` | A-stability and absolute-stability region notation | — |
+| 6 | `stiffness_definition` | minimum definition of stiffness | `a_stability_boundary` |
+| 7 | `relative_error_denominator` | relative error denominator and zero reference | — |
+| 8 | `tolerance_scopes` | tolerance scopes | — |
+| 9 | `matrix_vector_typography` | scalar, vector, and matrix typography | — |
 
 ## Distinctions that must not be collapsed
 
@@ -85,13 +96,8 @@ This log records draft alignments, source-priority recommendations, and unresolv
 
 ## Maintainer review checklist
 
-- [ ] Choose a signed-error orientation if signed error will be published.
-- [ ] Approve relative-error denominator and zero-reference behavior.
-- [ ] Choose the local-truncation-error normalization.
-- [ ] Approve the scope of the umbrella phrase “global error.”
-- [ ] Approve vector and matrix typography.
-- [ ] Approve stability-function and stability-region notation.
-- [ ] Approve the minimum introductory stiffness definition.
-- [ ] Approve observed-order and asymptotic-region wording.
-- [ ] Approve tolerance scopes and explicit qualifiers.
-- [ ] Approve or revise every proposed production term before runtime integration.
+Use the
+[Project Language Approval Checklist](PROJECT_LANGUAGE_APPROVAL_CHECKLIST.md)
+as the sole blank choice form for this gate. Approval records a documentation
+decision only; it does not itself promote standards, rewrite product copy, add
+Glossary content, or change runtime.

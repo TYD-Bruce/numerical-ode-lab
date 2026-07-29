@@ -37,14 +37,16 @@ Preview, Production deployment, canonical domain, and canonical local
 workspace are migrated and verified.
 
 A parallel private-source-reviewed terminology and teaching-language
-foundation is now drafted for maintainer review. It does not change the active
-Glossary framework review gate, publish production terms, or authorize runtime
-copy changes.
+foundation is now drafted, and its nine-decision maintainer packet is complete.
+All choices remain maintainer-pending. This does not publish production terms
+or authorize runtime copy changes.
 
 ## Content foundation drafts
 
-All documents in this section have status **Private-source-reviewed draft;
-maintainer approval pending**.
+The standards, voice, catalog, copy audit, and conflict log remain
+**Private-source-reviewed draft; maintainer approval pending**. The decision
+packet is complete but all choices remain maintainer-pending, and the approval
+checklist is blank.
 
 | Document | Purpose |
 |---|---|
@@ -55,6 +57,8 @@ maintainer approval pending**.
 | [Glossary Catalog](content/GLOSSARY_CATALOG.md) | Planning catalog for reviewed candidate terms; not runtime data |
 | [Project Copy Audit](content/PROJECT_COPY_AUDIT.md) | Current-copy evidence and staged A–F rewrite plan |
 | [Terminology Decisions](content/TERMINOLOGY_DECISIONS.md) | Aligned distinctions, provisional resolutions, and nine maintainer decisions |
+| [Maintainer Decision Packet](content/MAINTAINER_DECISION_PACKET.md) | Source comparisons, options, recommendations, migration effects, dependencies, and blank choice forms for exactly nine decisions |
+| [Project Language Approval Checklist](content/PROJECT_LANGUAGE_APPROVAL_CHECKLIST.md) | Blank approval record and gate checklist; checking it does not itself change runtime |
 | [Content Foundation Handoff](content/HANDOFF.md) | Coverage, counts, validation, limitations, and continuation gate |
 
 ## Product and feature specifications

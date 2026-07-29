@@ -1,6 +1,6 @@
 # Numerical Terminology and Teaching-Language Foundation Handoff
 
-Status: Private-source-reviewed draft; maintainer approval pending.
+Status: Decision packet complete; all choices remain maintainer-pending.
 
 ## 1. Iteration boundary
 
@@ -33,6 +33,11 @@ The iteration created:
   staged A–F rewrite plan.
 - [Terminology Decisions](TERMINOLOGY_DECISIONS.md) — aligned distinctions,
   source-priority draft resolutions, and unresolved maintainer decisions.
+- [Maintainer Decision Packet](MAINTAINER_DECISION_PACKET.md) — source
+  comparisons, viable options, advisory recommendations, migration effects,
+  dependencies, scenarios, and blank choice forms for exactly nine decisions.
+- [Project Language Approval Checklist](PROJECT_LANGUAGE_APPROVAL_CHECKLIST.md)
+  — the blank gate record for maintainer choices and later standards promotion.
 
 Every document is a draft pending maintainer approval. None is runtime data or
 a production content source.
@@ -110,6 +115,18 @@ denominator behavior, local-truncation-error normalization, the scope of
 global error, stability-function/region notation, observed-order reliability
 and asymptotic-region language, the minimum stiffness definition, tolerance
 scopes, and vector/matrix typography.
+
+The decision packet resolves the earlier 18-versus-9 counting ambiguity:
+18 candidate rows roll up into exactly nine conflict records. It gives every
+record a three-source comparison (including explicit source silence), three
+viable options, one advisory recommendation with confidence, per-option
+migration effects, a proposed-but-unapproved Version 1 rule, examples, and a
+blank maintainer form. The dependency order is signed-error orientation,
+global-error scope, local-truncation scaling, observed-order reliability,
+A-stability notation, stiffness definition, relative-error behavior, tolerance
+scopes, then matrix/vector typography. The recommendation set has five
+high-confidence, three medium-confidence, and one low-confidence choice. No
+recommendation was accepted automatically.
 
 ## 5. Current-copy audit result
 
@@ -216,12 +233,14 @@ This iteration did not change:
 
 ## 10. Next review gates
 
-The active runtime gate is unchanged: complete the final conservative re-audit
-of Glossary Commit 3 plus both lifecycle follow-ups. Commit 4 remains
-unauthorized.
+The framework gate is already closed with **APPROVED FOR LOCAL FRAMEWORK
+RELEASE**. The active content gate is maintainer review of the
+[decision packet](MAINTAINER_DECISION_PACKET.md) in dependency order and
+recording all required choices in the
+[approval checklist](PROJECT_LANGUAGE_APPROVAL_CHECKLIST.md).
 
-The parallel content gate is maintainer review of this package, beginning with
-the nine `DECISION_REQUIRED` conflicts. After those choices are recorded, a
-separate repository-grounded content-integration plan may select a narrow ODE
-vertical slice and one or more copy groups. Production terms, annotations, and
-Tutor Glossary content remain deferred until that plan is approved.
+After all nine choices are recorded, a separate standards-promotion commit may
+update the terminology and notation standards. That approval step does not
+itself rewrite product copy, add production Glossary terms or annotations,
+change runtime, or authorize an ODE vertical slice. Those later actions still
+require their own repository-grounded plan and review gate.

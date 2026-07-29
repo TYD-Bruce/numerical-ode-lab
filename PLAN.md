@@ -120,24 +120,31 @@ independent final review. No production content or ODE binding was added.**
 
 ## Current next action
 
-Obtain maintainer resolution of the nine `DECISION_REQUIRED` terminology and
-notation items in the private-source-reviewed content foundation, then approve
-the project language standard. Do not publish production Glossary content,
-add the ODE vertical slice, or integrate terminology/notation into runtime
-before those decisions and approval.
+Review the completed
+[Maintainer Decision Packet](docs/content/MAINTAINER_DECISION_PACKET.md) in its
+documented dependency order and record all nine choices in the
+[Project Language Approval Checklist](docs/content/PROJECT_LANGUAGE_APPROVAL_CHECKLIST.md).
+All choices remain maintainer-pending. A later, separate standards-promotion
+commit may begin only after the required choices are recorded. The terminology
+and notation standards remain drafts. Do not publish production Glossary
+content, add the ODE vertical slice, or integrate terminology/notation into
+runtime before that approval.
 
 ## Parallel content foundation
 
 A private-source-reviewed terminology, notation, teaching-voice, Glossary
 candidate, and current-copy foundation is drafted under
 [`docs/content/`](docs/content/). It processed all 29 admitted sources and now
-awaits maintainer review, beginning with nine explicit decision-required
-conflicts. The package is planning evidence only: it publishes no production
-term, definition, annotation, or notation migration and authorizes no runtime
-copy change.
+has a complete maintainer decision packet for the nine explicit
+decision-required conflicts. The companion approval checklist remains blank.
+The package is planning evidence only: it publishes no production term,
+definition, annotation, or notation migration and authorizes no runtime copy
+change. The packet was completed locally; nothing from this content iteration
+was pushed or deployed.
 
 This draft is now the input to the current maintainer-decision gate. It remains
-planning evidence only. Its continuation state is
+planning evidence only. The decision packet and checklist are indexed below,
+and its continuation state is
 [the content-foundation handoff](docs/content/HANDOFF.md).
 
 ## Current production behavior
@@ -170,8 +177,9 @@ planning evidence only. Its continuation state is
 The framework release gate is closed with
 **APPROVED FOR LOCAL FRAMEWORK RELEASE**. The prior **RELEASE BLOCKED** review
 remains historical evidence and all three of its findings are closed. The next
-gate is maintainer resolution of the nine `DECISION_REQUIRED` terminology and
-notation items, followed by approval of the project language standard.
+gate is maintainer review of the complete decision packet in dependency order,
+followed by a separate standards-promotion commit after all nine required
+choices are recorded.
 Production Glossary terms, annotations, an ODE binding, and visible runtime
 behavior remain absent.
 
