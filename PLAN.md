@@ -35,9 +35,10 @@ Glossary behavior. Nothing was pushed or deployed by the repair or final
 review. The separate project-language gate is also complete: Yiding (Bruce)
 Tian recorded all nine maintainer decisions on 2026-07-28, and the terminology,
 notation, and teaching-voice standards are approved as Version 1. This approval
-is documentation governance only; the Glossary catalog and project copy audit
-still require reconciliation, and no runtime content or product copy is
-authorized.
+is documentation governance only. The Glossary catalog and project copy audit
+are now reconciled against Version 1, with all 197 IDs, 55 copy records, six
+implementation groups, and local traceability/validation recorded. No runtime
+content or product copy was changed.
 
 ## Current released baseline
 
@@ -122,18 +123,26 @@ independent final review. No production content or ODE binding was added.**
 10. Resolve and approve the separate notation and definition foundation.
     Complete; all nine decisions are recorded and the three language standards
     are maintainer-approved Version 1.
-11. Add the reviewed ODE vertical slice.
-12. Push only when explicitly requested by the maintainer.
+11. Reconcile the Glossary catalog and project copy audit and create the
+    repository-grounded project-language implementation plan. Complete as a
+    documentation-only iteration; no recommendation was implemented.
+12. Implement Group A, Platform and overview copy, only in a separately scoped
+    task with focused tests and browser review.
+13. Add the reviewed ODE Glossary vertical slice only after separate content
+    approval and implementation authorization.
+14. Push only when explicitly requested by the maintainer.
 
 ## Current next action
 
-Prepare a documentation-only reconciliation of
-[Glossary Catalog](docs/content/GLOSSARY_CATALOG.md) and
-[Project Copy Audit](docs/content/PROJECT_COPY_AUDIT.md) against the approved
-Version 1 terminology, notation, and teaching-voice standards. Do not change
-runtime source or product copy in that phase. Production Glossary content, an
-ODE binding, the reviewed ODE vertical slice, and any implementation of copy
-recommendations remain unauthorized.
+Prepare a separately scoped implementation of Group A, Platform and overview
+copy, from the
+[Project Language Implementation Plan](docs/content/PROJECT_LANGUAGE_IMPLEMENTATION_PLAN.md).
+That task covers ready records `COPY-001`, `COPY-002`, `COPY-004`, and
+`COPY-005`; `COPY-003` remains deferred with the PDE module. It must update
+only the exact Group A copy owners and expected-copy tests, preserve all
+numerical/runtime behavior and lazy-loading boundaries, and stop after focused
+tests and wide/mobile browser review. Production Glossary content, an ODE
+binding, and the reviewed ODE vertical slice remain unauthorized.
 
 ## Parallel content foundation
 
@@ -145,11 +154,16 @@ explicit conflicts on 2026-07-28. The terminology, notation, and teaching-voice
 documents are now maintainer-approved Version 1 standards; no decision is
 deferred.
 
-The Glossary catalog and copy audit intentionally remain pre-reconciliation
-drafts. The standards publish no production term, definition, annotation, or
-notation migration and authorize no runtime copy change. The continuation
-state is [the project-language handoff](docs/content/HANDOFF.md). Nothing from
-this content iteration was pushed or deployed.
+The [Glossary catalog](docs/content/GLOSSARY_CATALOG.md) and
+[project copy audit](docs/content/PROJECT_COPY_AUDIT.md) are reconciled against
+Version 1. The catalog retains exactly 197 IDs, separates language approval,
+product relevance, runtime readiness, and rollout wave, and includes rich
+planning drafts for 10 Wave 1 and 13 high-priority Wave 2 terms. The copy audit
+rescans 55 records and maps exact replacements to Groups A–F. The standards and
+reconciliation publish no production term, definition, annotation, notation
+migration, or runtime copy change. The continuation state is
+[the project-language handoff](docs/content/HANDOFF.md). Nothing from this
+content iteration was pushed or deployed.
 
 ## Current production behavior
 
@@ -182,10 +196,12 @@ The framework release gate is closed with
 **APPROVED FOR LOCAL FRAMEWORK RELEASE**. The prior **RELEASE BLOCKED** review
 remains historical evidence and all three of its findings are closed. The
 project-language approval gate is also closed: all nine choices are recorded
-and the three standards are approved as Version 1. The next gate is
-documentation-only catalog and copy-audit reconciliation. Production Glossary
-terms, annotations, an ODE binding, copy changes, and visible runtime behavior
-remain absent and unauthorized.
+and the three standards are approved as Version 1. The catalog/copy
+reconciliation gate is also closed with 197 stable IDs and 55 rescanned copy
+records. The next authorized phase is a separately scoped implementation of
+Group A, Platform and overview copy, followed by focused tests and browser
+review. Production Glossary terms, annotations, an ODE binding, and visible
+Glossary behavior remain absent and unauthorized.
 
 ## Update rule
 

@@ -13,8 +13,9 @@ The separate project-language gate is also complete: Yiding (Bruce) Tian
 recorded all nine maintainer decisions on 2026-07-28, and the terminology,
 notation, and teaching-voice standards are approved as Version 1. That approval
 is documentation governance only. The Glossary catalog and project copy audit
-remain pending reconciliation, and no runtime content or product-copy change
-is authorized.
+are now reconciled across all 197 stable IDs and 55 copy records, with six
+future implementation groups and local validation/traceability. No runtime
+content or product-copy change was made.
 
 ## 1. Product and public routes
 
@@ -53,6 +54,14 @@ unchanged as history. Production still has no Glossary terms, annotations,
 ODE binding, or visible Glossary behavior, and production excludes the
 Playground. Production content and the ODE vertical slice remain unauthorized.
 Nothing was pushed or deployed by the repair or final review.
+
+The documentation-only project-language reconciliation is also complete. It
+retains all 197 candidate IDs, reports four required-ID gaps without adding
+them, prepares 10 Wave 1 and 13 high-priority Wave 2 rich drafts, and maps all
+55 copy records to Groups A–F. No recommendation was implemented. The next
+authorized phase is a separately scoped Group A Platform/overview copy change
+with focused tests and browser review; production Glossary content remains
+unauthorized.
 
 ## 2. Verification baseline
 
@@ -289,9 +298,10 @@ Known limitations:
   Glossary behavior.
 - The private-source-reviewed project-language foundation is approved as
   Version 1 after all nine maintainer decisions were recorded. The Glossary
-  catalog and project copy audit remain unreconciled drafts. The next gate is
-  their documentation-only reconciliation; runtime content remains
-  unauthorized.
+  catalog and project copy audit are reconciled planning documents, and the
+  A–F implementation plan is complete. The next authorized phase is a
+  separately scoped Group A Platform/overview copy implementation; runtime
+  Glossary content remains unauthorized.
 
 Contributor rules:
 
@@ -311,5 +321,6 @@ closed by repeated independent final review. Nothing was pushed or deployed.
 Production still contains no Glossary terms, annotations, ODE binding,
 Playground, activatable surface, or visible behavior. All nine project-language
 decisions are recorded and the terminology, notation, and teaching-voice
-standards are approved as Version 1. The next gate is documentation-only
-reconciliation of the Glossary catalog and project copy audit.*
+standards are approved as Version 1. The catalog and copy audit are reconciled;
+no recommendation was implemented. The next gate is separately scoped Group A
+Platform and overview copy work with focused tests and browser review.*

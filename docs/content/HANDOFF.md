@@ -1,14 +1,14 @@
 # Numerical T-Lab Project Language v1 Handoff
 
-Status: Nine maintainer decisions recorded; terminology, notation, and
-teaching-voice standards approved as Version 1.
+Status: Project Language Standard v1 approved; Glossary catalog, copy audit,
+implementation groups, and traceability reconciled.
 
 Runtime/content implementation tracked separately.
 
 ## 1. Iteration boundary
 
 Yiding (Bruce) Tian approved all nine project-language decisions on
-2026-07-28. This documentation-only iteration promotes:
+2026-07-28. The first documentation-only iteration promoted:
 
 - [Numerical T-Lab Terminology Standard v1](NUMERICAL_TERMINOLOGY_STANDARD.md);
 - [Numerical T-Lab Notation Standard v1](NUMERICAL_NOTATION_STANDARD.md); and
@@ -19,9 +19,20 @@ The binding choices and completion evidence are in the
 [Approval Checklist](PROJECT_LANGUAGE_APPROVAL_CHECKLIST.md), and
 [Terminology Decisions](TERMINOLOGY_DECISIONS.md).
 
-This iteration does not publish a production Glossary term, definition,
+The follow-up documentation-only reconciliation now completes:
+
+- all 197 rows in the [Glossary Catalog](GLOSSARY_CATALOG.md), with separate
+  language, relevance, runtime-readiness, and wave dimensions;
+- all 55 records in the [Project Copy Audit](PROJECT_COPY_AUDIT.md), with exact
+  replacement copy, source/test/browser traceability, and no decision block;
+- rich planning drafts for all 10 Wave 1 terms and 13 high-priority Wave 2
+  terms; and
+- the six-group
+  [Project Language Implementation Plan](PROJECT_LANGUAGE_IMPLEMENTATION_PLAN.md).
+
+Neither iteration publishes a production Glossary term, definition,
 annotation, formula, Tutor card, notation migration, or product-copy change.
-It changes no runtime source, tests, CSS, packages, configuration, numerical
+They change no runtime source, tests, CSS, packages, configuration, numerical
 contract, deployment, or remote state.
 
 ## 2. Approved decisions
@@ -94,24 +105,39 @@ Tracked documentation uses abstract source keys and bounded locators only. No
 private path, basename, hash, screenshot, raw extraction, or substantial
 quotation is published. Private PDFs were not reopened for this promotion.
 
-## 6. Deliberately unreconciled documents
+## 6. Reconciled catalog and copy audit
 
-[Content Source Policy](CONTENT_SOURCE_POLICY.md),
-[Glossary Catalog](GLOSSARY_CATALOG.md), and
-[Project Copy Audit](PROJECT_COPY_AUDIT.md) are unchanged in this commit.
+[Content Source Policy](CONTENT_SOURCE_POLICY.md) remains unchanged and
+authoritative for evidence handling. The catalog and copy audit are now
+reconciled against Project Language Standard v1.
 
-The catalog therefore remains a pre-approval planning draft and can
-temporarily contain old `DECISION_REQUIRED` readiness values. That is an
-explicit phase boundary, not an alternate standard. The copy audit retains its
-43 recommended changes and 12 representative no-change decisions; no
-`COPY-*` recommendation is implemented or promoted here.
+The catalog:
 
-The next phase must reconcile the catalog and copy audit against the approved
-Version 1 standards without creating runtime content.
+- retains exactly 197 stable IDs;
+- has zero decision-blocked rows;
+- records 27 `V1_APPROVED`, 158 `DRAFT_UNAFFECTED`, 8 `DEFERRED`, and
+  4 `OUT_OF_SCOPE` language statuses;
+- preserves relevance counts of 63 core, 91 module, 31 future, 8 deferred, and
+  4 out of scope;
+- maps every row to a runtime-readiness status and one planned wave without
+  authorizing runtime; and
+- reports four required-ID gaps without adding them:
+  `step_normalized_local_defect`, `test_equation`, and
+  `scaled_stability_parameter`, plus the future Linear Systems prerequisite
+  `positive_definite_matrix`.
+
+The 27 `V1_APPROVED` catalog rows include the 18 formerly decision-blocked
+rows plus 9 already-ready terms whose approved wording, formula, or distinction
+is directly governed by those same Version 1 decisions.
+
+The copy audit retains all 55 stable records: 40 are
+`READY_FOR_IMPLEMENTATION`, 2 `REQUIRES_CONTENT_WAVE`, 1
+`DEFERRED_BY_MODULE`, and 12 `NO_CHANGE`; none is obsolete or
+decision-blocked. No `COPY-*` recommendation is implemented here.
 
 ## 7. Runtime and numerical non-changes
 
-This iteration does not change:
+The approval and reconciliation iterations do not change:
 
 - runtime TypeScript, API code, HTML behavior, CSS, tests, dependencies,
   package files, or deployment configuration;
@@ -131,20 +157,24 @@ binding, or visible Glossary behavior.
 
 ## 8. Local artifacts and validation
 
-The ignored decision artifact records the nine maintainer choices and the
-ignored validation report records deterministic checks. Neither is a runtime
-dependency or tracked source of public truth.
+Ignored structured reconciliation artifacts record the complete catalog, wave
+plan, copy audit, implementation groups, traceability, and deterministic
+validation report. They extend the earlier decision artifacts but remain local
+review aids, not runtime dependencies or tracked sources of public truth.
 
-Documentation validation for this promotion covers:
+Documentation validation for this reconciliation covers:
 
-- exactly nine approved decisions and no deferrals;
-- all 18 affected terminology rows resolved;
-- 197 terminology IDs with the status counts above;
-- exact formulas and boundary language for the nine choices;
-- completed approval metadata;
-- cross-document relative links;
-- privacy and unfinished-marker scans;
-- allowed-path and forbidden-path checks;
+- exactly 197 stable IDs and no duplicate/invalid alias;
+- zero decision-blocked catalog or copy rows;
+- all Version 1 affected terms, formulas, status dimensions, dependencies, and
+  planned waves;
+- all Wave 1 and selected Wave 2 rich drafts;
+- all 55 copy records, exact replacements, rule/term/file/test/group
+  references, and browser requirements;
+- six complete implementation groups and machine-checkable traceability;
+- approved-standard byte integrity, relative links, privacy,
+  unfinished-marker, and cross-document consistency scans;
+- allowed tracked paths and the absence of runtime/test changes;
 - `git diff --check`; and
 - final branch, commit, and clean-worktree evidence.
 
@@ -156,6 +186,10 @@ documentation-only iteration.
 
 The nine maintainer decisions are recorded and the Numerical T-Lab
 terminology, notation, and teaching-voice standards are approved as Version 1.
-No runtime or production Glossary content has been authorized. The next phase
-is a documentation-only reconciliation of the Glossary catalog and project
-copy audit against the approved standards.
+The Glossary catalog and project copy audit are reconciled, and the A–F
+implementation plan is complete. No recommendation, runtime content, or
+production Glossary behavior has been implemented. The next authorized phase
+is a separately scoped implementation of Group A, Platform and overview copy,
+followed by focused tests and browser review. That phase covers ready records
+`COPY-001`, `COPY-002`, `COPY-004`, and `COPY-005`; `COPY-003` remains
+deferred with the PDE module.
