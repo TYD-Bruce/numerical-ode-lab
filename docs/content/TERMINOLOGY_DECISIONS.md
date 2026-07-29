@@ -1,16 +1,23 @@
 # Terminology Decisions
 
-Status: Private-source-reviewed draft; maintainer approval pending.
+Status: Version 1 maintainer decisions recorded.
 
 ## Decision status
 
-This log records draft alignments, source-priority recommendations, and unresolved questions. `PRIORITY_RESOLVED_DRAFT` does not mean maintainer-approved. `DECISION_REQUIRED` items block production wording or notation that depends on the unresolved choice.
+Yiding (Bruce) Tian approved the nine project-language decisions on 2026-07-28.
+The completed
+[Maintainer Decision Packet](MAINTAINER_DECISION_PACKET.md) and
+[Project Language Approval Checklist](PROJECT_LANGUAGE_APPROVAL_CHECKLIST.md)
+are the binding records. The terminology, notation, and teaching-voice
+standards are approved as Version 1. Runtime, product copy, the draft Glossary
+catalog, and production Glossary content remain separate and unauthorized.
 
-The nine unresolved items now have full review cards in the
-[Maintainer Decision Packet](MAINTAINER_DECISION_PACKET.md). Record final
-choices only in the blank
-[Project Language Approval Checklist](PROJECT_LANGUAGE_APPROVAL_CHECKLIST.md).
-The packet's recommendations are advisory; none is an approval.
+The large table below is retained as a **historical pre-approval evidence
+record**. Its `DECISION_REQUIRED` and `PRIORITY_RESOLVED_DRAFT` cells describe
+the state in which the comparison was prepared; they are not current decision
+statuses and must not override the Version 1 resolution index in this document.
+
+## Historical pre-approval comparison
 
 | ID | Concept | Competing wording or notation | Mathematical significance | Project impact | Draft recommendation | Status | Sources |
 |---|---|---|---|---|---|---|---|
@@ -64,22 +71,22 @@ The packet's recommendations are advisory; none is an approval.
 - `norm_notation` — vector and matrix norm notation
 - `svd_naming` — SVD terminology
 
-## Unresolved maintainer decisions
+## Approved Version 1 resolution index
 
-Review the decisions in dependency order. Every status remains
-`DECISION_REQUIRED`.
+The dependency order remains useful for review, but all nine decisions are now
+`MAINTAINER_APPROVED_V1`; none is deferred.
 
-| Review order | ID | Decision | Depends on |
-|---:|---|---|---|
-| 1 | `signed_error_orientation` | signed error orientation | — |
-| 2 | `global_error_scope` | scope of global error | `signed_error_orientation` |
-| 3 | `local_truncation_scaling` | local truncation error scaling | — |
-| 4 | `observed_order_reliability` | observed order and the asymptotic region | `global_error_scope`; `local_truncation_scaling` |
-| 5 | `a_stability_boundary` | A-stability and absolute-stability region notation | — |
-| 6 | `stiffness_definition` | minimum definition of stiffness | `a_stability_boundary` |
-| 7 | `relative_error_denominator` | relative error denominator and zero reference | — |
-| 8 | `tolerance_scopes` | tolerance scopes | — |
-| 9 | `matrix_vector_typography` | scalar, vector, and matrix typography | — |
+| Review order | ID | Recorded choice | Binding result | Approved by/date |
+|---:|---|---|---|---|
+| 1 | `signed_error_orientation` | Option A | \(e_n=u_n-y(t_n)\); absolute aggregates retain their released formulas | Yiding (Bruce) Tian, 2026-07-28 |
+| 2 | `global_error_scope` | Option A | Propagated nodal-error family; every concrete scalar names its node or aggregation | Yiding (Bruce) Tian, 2026-07-28 |
+| 3 | `local_truncation_scaling` | Option A | Unscaled LTE is \(O(h^{p+1})\); divided quantity is the step-normalized local defect \(O(h^p)\) | Yiding (Bruce) Tian, 2026-07-28 |
+| 4 | `observed_order_reliability` | Option A | Metric, adjacent pair, value, and status travel together; only reliable values drive the primary summary | Yiding (Bruce) Tian, 2026-07-28 |
+| 5 | `a_stability_boundary` | Custom Option AB | \(z=h\lambda\), \(u_{n+1}=R(z)u_n\), \(\mathcal S=\{z\in\mathbb C:|R(z)|\le1\}\), and \(\{z\in\mathbb C:\operatorname{Re}(z)\le0\}\subseteq\mathcal S\) | Yiding (Bruce) Tian, 2026-07-28 |
+| 6 | `stiffness_definition` | Option A | Fast and slow behavior plus a stability-driven step restriction; plain-first teaching modifier | Yiding (Bruce) Tian, 2026-07-28 |
+| 7 | `relative_error_denominator` | Option A | Nonzero reference magnitude; unavailable at zero; percent is \(100\%\) | Yiding (Bruce) Tian, 2026-07-28 |
+| 8 | `tolerance_scopes` | Option A | Always name the algorithm and controlled quantity; adaptive wording reserved | Yiding (Bruce) Tian, 2026-07-28 |
+| 9 | `matrix_vector_typography` | Option A | Italic lowercase scalars/vectors and italic uppercase matrices; prose and dimensions authoritative | Yiding (Bruce) Tian, 2026-07-28 |
 
 ## Distinctions that must not be collapsed
 
@@ -94,10 +101,10 @@ Review the decisions in dependency order. Every status remains
 - LU and PLU factorization;
 - model, discretization, and roundoff error.
 
-## Maintainer review checklist
+## Approval boundary
 
-Use the
+The completed
 [Project Language Approval Checklist](PROJECT_LANGUAGE_APPROVAL_CHECKLIST.md)
-as the sole blank choice form for this gate. Approval records a documentation
-decision only; it does not itself promote standards, rewrite product copy, add
+confirms this documentation-only gate. It promotes standards but does not
+rewrite product copy, reconcile the Glossary catalog or copy audit, add
 Glossary content, or change runtime.

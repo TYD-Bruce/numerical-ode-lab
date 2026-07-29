@@ -32,7 +32,12 @@ review of exact repair commit
 unchanged, while the framework is now locally accepted as complete. Production
 still contains no Glossary terms, annotations, ODE binding, or visible
 Glossary behavior. Nothing was pushed or deployed by the repair or final
-review.
+review. The separate project-language gate is also complete: Yiding (Bruce)
+Tian recorded all nine maintainer decisions on 2026-07-28, and the terminology,
+notation, and teaching-voice standards are approved as Version 1. This approval
+is documentation governance only; the Glossary catalog and project copy audit
+still require reconciliation, and no runtime content or product copy is
+authorized.
 
 ## Current released baseline
 
@@ -115,37 +120,36 @@ independent final review. No production content or ODE binding was added.**
    independent release review. Complete locally; repeated verdict
    **APPROVED FOR LOCAL FRAMEWORK RELEASE**.
 10. Resolve and approve the separate notation and definition foundation.
+    Complete; all nine decisions are recorded and the three language standards
+    are maintainer-approved Version 1.
 11. Add the reviewed ODE vertical slice.
 12. Push only when explicitly requested by the maintainer.
 
 ## Current next action
 
-Review the completed
-[Maintainer Decision Packet](docs/content/MAINTAINER_DECISION_PACKET.md) in its
-documented dependency order and record all nine choices in the
-[Project Language Approval Checklist](docs/content/PROJECT_LANGUAGE_APPROVAL_CHECKLIST.md).
-All choices remain maintainer-pending. A later, separate standards-promotion
-commit may begin only after the required choices are recorded. The terminology
-and notation standards remain drafts. Do not publish production Glossary
-content, add the ODE vertical slice, or integrate terminology/notation into
-runtime before that approval.
+Prepare a documentation-only reconciliation of
+[Glossary Catalog](docs/content/GLOSSARY_CATALOG.md) and
+[Project Copy Audit](docs/content/PROJECT_COPY_AUDIT.md) against the approved
+Version 1 terminology, notation, and teaching-voice standards. Do not change
+runtime source or product copy in that phase. Production Glossary content, an
+ODE binding, the reviewed ODE vertical slice, and any implementation of copy
+recommendations remain unauthorized.
 
 ## Parallel content foundation
 
 A private-source-reviewed terminology, notation, teaching-voice, Glossary
-candidate, and current-copy foundation is drafted under
-[`docs/content/`](docs/content/). It processed all 29 admitted sources and now
-has a complete maintainer decision packet for the nine explicit
-decision-required conflicts. The companion approval checklist remains blank.
-The package is planning evidence only: it publishes no production term,
-definition, annotation, or notation migration and authorizes no runtime copy
-change. The packet was completed locally; nothing from this content iteration
-was pushed or deployed.
+candidate, and current-copy foundation exists under
+[`docs/content/`](docs/content/). It processed all 29 admitted sources. Yiding
+(Bruce) Tian completed the decision packet and approval checklist for the nine
+explicit conflicts on 2026-07-28. The terminology, notation, and teaching-voice
+documents are now maintainer-approved Version 1 standards; no decision is
+deferred.
 
-This draft is now the input to the current maintainer-decision gate. It remains
-planning evidence only. The decision packet and checklist are indexed below,
-and its continuation state is
-[the content-foundation handoff](docs/content/HANDOFF.md).
+The Glossary catalog and copy audit intentionally remain pre-reconciliation
+drafts. The standards publish no production term, definition, annotation, or
+notation migration and authorize no runtime copy change. The continuation
+state is [the project-language handoff](docs/content/HANDOFF.md). Nothing from
+this content iteration was pushed or deployed.
 
 ## Current production behavior
 
@@ -160,28 +164,28 @@ and its continuation state is
   controls, About entry, shortcut, and route stylesheet are excluded from the
   production build.
 - Commits 1 through 4 add no visible production Glossary behavior.
-- Canonical notation and production definitions are intentionally deferred.
+- Project notation is approved as a documentation standard; production
+  definitions, formula migration, and visible content remain deferred.
 
 ## Explicit non-goals
 
 - No production Glossary content.
-- No canonical notation standard yet.
+- No runtime notation migration or notation profile.
 - No real Tutor Glossary queue.
 - No ODE annotations.
 - No Linear Algebra or PDE Glossary content.
 - No private-reference processing in runtime or CI.
-- No runtime notation profiles or selector.
 
 ## Review gate
 
 The framework release gate is closed with
 **APPROVED FOR LOCAL FRAMEWORK RELEASE**. The prior **RELEASE BLOCKED** review
-remains historical evidence and all three of its findings are closed. The next
-gate is maintainer review of the complete decision packet in dependency order,
-followed by a separate standards-promotion commit after all nine required
-choices are recorded.
-Production Glossary terms, annotations, an ODE binding, and visible runtime
-behavior remain absent.
+remains historical evidence and all three of its findings are closed. The
+project-language approval gate is also closed: all nine choices are recorded
+and the three standards are approved as Version 1. The next gate is
+documentation-only catalog and copy-audit reconciliation. Production Glossary
+terms, annotations, an ODE binding, copy changes, and visible runtime behavior
+remain absent and unauthorized.
 
 ## Update rule
 

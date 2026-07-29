@@ -37,29 +37,32 @@ Preview, Production deployment, canonical domain, and canonical local
 workspace are migrated and verified.
 
 A parallel private-source-reviewed terminology and teaching-language
-foundation is now drafted, and its nine-decision maintainer packet is complete.
-All choices remain maintainer-pending. This does not publish production terms
-or authorize runtime copy changes.
+foundation is complete through project-language approval. Yiding (Bruce) Tian
+recorded all nine decisions on 2026-07-28, and the terminology, notation, and
+teaching-voice standards are maintainer-approved Version 1. The Glossary
+catalog and project copy audit remain pending documentation-only
+reconciliation. No production term or runtime copy change is authorized.
 
-## Content foundation drafts
+## Project-language standards and content drafts
 
-The standards, voice, catalog, copy audit, and conflict log remain
-**Private-source-reviewed draft; maintainer approval pending**. The decision
-packet is complete but all choices remain maintainer-pending, and the approval
-checklist is blank.
+The terminology, notation, and teaching-voice standards are
+**maintainer-approved Version 1**. The source policy remains authoritative for
+evidence handling. The Glossary catalog and copy audit remain unchanged
+planning drafts awaiting reconciliation. Approval is documentation governance;
+runtime implementation and production Glossary content remain unauthorized.
 
 | Document | Purpose |
 |---|---|
 | [Content Source Policy](content/CONTENT_SOURCE_POLICY.md) | Abstract source keys, evidence priority, conflicts, locators, copyright, and approval lifecycle |
-| [Numerical Terminology Standard](content/NUMERICAL_TERMINOLOGY_STANDARD.md) | Complete merged candidate set admitted by the bounded review |
-| [Numerical Notation Standard](content/NUMERICAL_NOTATION_STANDARD.md) | Proposed notation conventions and unresolved choices |
-| [Teaching Voice](content/TEACHING_VOICE.md) | Learner-facing language, warnings, errors, results, and Tutor tone |
-| [Glossary Catalog](content/GLOSSARY_CATALOG.md) | Planning catalog for reviewed candidate terms; not runtime data |
-| [Project Copy Audit](content/PROJECT_COPY_AUDIT.md) | Current-copy evidence and staged A–F rewrite plan |
-| [Terminology Decisions](content/TERMINOLOGY_DECISIONS.md) | Aligned distinctions, provisional resolutions, and nine maintainer decisions |
-| [Maintainer Decision Packet](content/MAINTAINER_DECISION_PACKET.md) | Source comparisons, options, recommendations, migration effects, dependencies, and blank choice forms for exactly nine decisions |
-| [Project Language Approval Checklist](content/PROJECT_LANGUAGE_APPROVAL_CHECKLIST.md) | Blank approval record and gate checklist; checking it does not itself change runtime |
-| [Content Foundation Handoff](content/HANDOFF.md) | Coverage, counts, validation, limitations, and continuation gate |
+| [Numerical T-Lab Terminology Standard v1](content/NUMERICAL_TERMINOLOGY_STANDARD.md) | Maintainer-approved terminology; 197 stable IDs and no decision-blocked terminology row |
+| [Numerical T-Lab Notation Standard v1](content/NUMERICAL_NOTATION_STANDARD.md) | Maintainer-approved notation for the nine project-language decisions |
+| [Numerical T-Lab Teaching Voice Standard v1](content/TEACHING_VOICE.md) | Maintainer-approved plain-first teaching rule, epistemic language, and examples |
+| [Glossary Catalog](content/GLOSSARY_CATALOG.md) | Unchanged pre-reconciliation planning catalog; not runtime data |
+| [Project Copy Audit](content/PROJECT_COPY_AUDIT.md) | Unchanged pre-reconciliation copy evidence and staged A–F plan |
+| [Terminology Decisions](content/TERMINOLOGY_DECISIONS.md) | Historical comparison plus the approved Version 1 resolution index |
+| [Maintainer Decision Packet](content/MAINTAINER_DECISION_PACKET.md) | Completed evidence cards and binding records for exactly nine decisions |
+| [Project Language Approval Checklist](content/PROJECT_LANGUAGE_APPROVAL_CHECKLIST.md) | Completed documentation-only approval and validation record |
+| [Project Language v1 Handoff](content/HANDOFF.md) | Approved choices, counts, boundaries, validation, and next gate |
 
 ## Product and feature specifications
 
@@ -101,10 +104,10 @@ checklist is blank.
   lifecycle follow-ups, and the complete locally/browser-verified DEV
   Playground with production-exclusion evidence; all three blocked-review
   findings are closed and the framework is locally accepted as complete.
-- [Numerical terminology and teaching-language foundation handoff](content/HANDOFF.md)
-  — 29-source draft synthesis, notation/terminology decisions, current-copy
-  audit, validation evidence, and maintainer-review continuation state; no
-  production content or runtime change.
+- [Numerical T-Lab project-language v1 handoff](content/HANDOFF.md) — 29-source
+  evidence baseline, nine approved decisions, Version 1 standards, validation
+  evidence, and the catalog/copy-audit reconciliation gate; no production
+  content or runtime change.
 - [Project Rename handoff](project-rename/HANDOFF.md) — completed Project
   Identity Migration evidence, including the canonical local workspace reopen.
 

@@ -9,6 +9,12 @@ canonical domain use the Numerical T-Lab identity. The local workspace rename
 and reopen are complete at `D:\numerical-t-lab`; Project Identity Migration is
 complete. See
 [the rename review](./reviews/2026-07-22-numerical-t-lab-rename-review.md).
+The separate project-language gate is also complete: Yiding (Bruce) Tian
+recorded all nine maintainer decisions on 2026-07-28, and the terminology,
+notation, and teaching-voice standards are approved as Version 1. That approval
+is documentation governance only. The Glossary catalog and project copy audit
+remain pending reconciliation, and no runtime content or product-copy change
+is authorized.
 
 ## 1. Product and public routes
 
@@ -281,9 +287,11 @@ Known limitations:
   Production initializes an inert Host but contains no Glossary terms,
   annotations, ODE binding, activatable surface, Playground, or visible
   Glossary behavior.
-- The private-source-reviewed content foundation remains a draft. The next gate
-  is maintainer resolution of nine `DECISION_REQUIRED` terminology and
-  notation items, followed by project-language approval.
+- The private-source-reviewed project-language foundation is approved as
+  Version 1 after all nine maintainer decisions were recorded. The Glossary
+  catalog and project copy audit remain unreconciled drafts. The next gate is
+  their documentation-only reconciliation; runtime content remains
+  unauthorized.
 
 Contributor rules:
 
@@ -301,5 +309,7 @@ verification remain complete. The Glossary framework is locally accepted as
 complete after all three historical blocked-review findings were repaired and
 closed by repeated independent final review. Nothing was pushed or deployed.
 Production still contains no Glossary terms, annotations, ODE binding,
-Playground, activatable surface, or visible behavior. The next gate is the nine
-content decisions and project-language approval.*
+Playground, activatable surface, or visible behavior. All nine project-language
+decisions are recorded and the terminology, notation, and teaching-voice
+standards are approved as Version 1. The next gate is documentation-only
+reconciliation of the Glossary catalog and project copy audit.*

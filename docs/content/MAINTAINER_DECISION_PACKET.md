@@ -1,33 +1,34 @@
 # Numerical T-Lab Project Language - Maintainer Decision Packet
 
-Status: Decision packet complete; all choices remain maintainer-pending.
+Status: All nine decisions recorded; Numerical T-Lab project language v1
+approved.
 
 ## Executive summary
 
-This packet prepares, but does not approve, the nine unresolved terminology and
-notation choices in the Numerical T-Lab content foundation. The nine conflict
-records account for all 18 `DECISION_REQUIRED` term and notation rows: several
-rows roll up to one decision, and no hidden tenth conflict was found.
+On 2026-07-28, Yiding (Bruce) Tian recorded all nine binding choices in this
+packet and approved the corresponding terminology, notation, and teaching-voice
+standards as Version 1. The nine records account for all 18 formerly
+`DECISION_REQUIRED` terminology rows: several rows roll up to one decision, and
+no hidden tenth conflict was found.
 
-The recommended set favors explicit mathematical objects, metric-specific
-labels, qualified stability and tolerance language, and preservation of the
-released Convergence contract. Five recommendations have High confidence,
-three Medium confidence, and one Low confidence. Every recommendation is
-advisory. The standards, catalog, copy audit, runtime, and production Glossary
-remain unchanged.
+The approved set favors explicit mathematical objects, metric-specific labels,
+qualified stability and tolerance language, plain-first teaching, and
+preservation of the released Convergence contract. This approval changes
+documentation governance only. The Glossary catalog and project copy audit
+remain unreconciled drafts; runtime, product copy, tests, and production
+Glossary content remain unchanged and unauthorized.
 
 ## How to use this packet
 
-1. Review cards in the documented order.
-2. Select one option or Defer in each blank decision form.
-3. Record exceptions and rationale, especially when choosing against the
-   source-priority recommendation.
-4. Complete the separate
+1. Read each card as the evidence and options considered before approval.
+2. Use the completed decision form as the binding record.
+3. Read each proposed-rule section as the approved Version 1 rule.
+4. Confirm the completed
    [Project Language Approval Checklist](PROJECT_LANGUAGE_APPROVAL_CHECKLIST.md).
-5. Authorize a separate standards-promotion commit only after the required
-   choices are recorded.
+5. Reconcile the Glossary catalog and project copy audit in the next
+   documentation-only phase.
 
-An approval recorded here is a content-governance decision. It does not itself
+The approval recorded here is a content-governance decision. It does not itself
 change runtime behavior, product copy, tests, or production Glossary content.
 
 ## Source and evidence policy
@@ -112,7 +113,7 @@ independent of the other choices.
 - **Category:** notation choice; definition-scope choice; Tutor language policy
 - **Urgency:** High
 - **Dependency position:** Foundational; `global_error_scope` uses its result
-- **Current status:** `DECISION_REQUIRED`
+- **Current status:** `MAINTAINER_APPROVED_V1`
 
 #### Precise question
 
@@ -197,9 +198,9 @@ Options A and B have no Convergence runtime impact because current metrics are
 absolute. Option C is costly later because each signed derivation needs a local
 exception and separate test wording.
 
-#### Proposed v1 rule
+#### Approved v1 rule
 
-**Proposed; not approved.** When a signed ODE nodal error is needed, Numerical
+**Approved Version 1 rule.** When a signed ODE nodal error is needed, Numerical
 T-Lab writes \(e_n=u_n-y(t_n)\), where \(u_n\) is the numerical approximation
 and \(y(t_n)\) is the exact reference value. The orientation must be stated at
 first use. Final-time error, maximum global error, and other reported
@@ -224,18 +225,19 @@ Avoided:
 
 ```text
 Maintainer choice:
-[ ] Option A
+[x] Option A
 [ ] Option B
 [ ] Option C
 [ ] Defer
 
-Chosen preferred term/notation:
-Accepted aliases:
-Avoided wording:
-Module-specific exceptions:
-Rationale:
-Approved by:
-Approval date:
+Chosen preferred term/notation: e_n = u_n - y(t_n)
+Accepted aliases: signed nodal error
+Avoided wording: undeclared signed error; signed aggregate error
+Module-specific exceptions: none; every surface declares the orientation
+Rationale: follows the primary internal source and leaves released absolute
+  aggregate metrics unchanged
+Approved by: Yiding (Bruce) Tian
+Approval date: 2026-07-28
 ```
 
 ### 2. `global_error_scope` - Scope of global ODE error
@@ -249,7 +251,7 @@ Approval date:
 - **Urgency:** High
 - **Dependency position:** Depends on signed-error orientation; precedes
   observed-order reliability
-- **Current status:** `DECISION_REQUIRED`
+- **Current status:** `MAINTAINER_APPROVED_V1`
 
 #### Precise question
 
@@ -335,11 +337,11 @@ Option B would force the largest UI and teaching rewrite because current
 “maximum global error” treats global as a modifier, not as the sequence alone.
 Option C is cheap initially but increases future review cost.
 
-#### Proposed v1 rule
+#### Approved v1 rule
 
-**Proposed; not approved.** In ODE analysis, global error is the nodal error
-that remains after numerical errors have propagated across steps. When a
-specific scalar is reported, name its scope: “nodal error at \(t_n\),”
+**Approved Version 1 rule.** In ODE analysis, global error names the family of
+nodal errors that remains after numerical errors have propagated across steps.
+When a specific scalar is reported, name its scope: “nodal error at \(t_n\),”
 “final-time error,” or “maximum global error.” Never use “total error” for
 these quantities, and never compare observed orders without naming the error
 metric used.
@@ -363,18 +365,21 @@ Avoided:
 
 ```text
 Maintainer choice:
-[ ] Option A
+[x] Option A
 [ ] Option B
 [ ] Option C
 [ ] Defer
 
-Chosen preferred term/notation:
-Accepted aliases:
-Avoided wording:
-Module-specific exceptions:
-Rationale:
-Approved by:
-Approval date:
+Chosen preferred term/notation: global error is the propagated nodal-error
+  family; concrete scalars use named node or aggregation labels
+Accepted aliases: global nodal error in analysis
+Avoided wording: total error; bare global error for a reported scalar
+Module-specific exceptions: future PDE norms must be named by their spatial
+  and temporal scope
+Rationale: preserves the mathematical family and released metric-specific
+  formulas without redefining any numerical result
+Approved by: Yiding (Bruce) Tian
+Approval date: 2026-07-28
 ```
 
 ### 3. `local_truncation_scaling` - Local truncation error normalization
@@ -386,7 +391,7 @@ Approval date:
 - **Category:** notation choice; definition-scope choice; Tutor language policy
 - **Urgency:** High
 - **Dependency position:** Feeds observed-order and local-versus-global teaching
-- **Current status:** `DECISION_REQUIRED`
+- **Current status:** `MAINTAINER_APPROVED_V1`
 
 #### Precise question
 
@@ -470,9 +475,9 @@ material using normalized LTE must be relabeled.
 The Convergence numerical implementation is unaffected under every option;
 only explanations connecting local and global rates change.
 
-#### Proposed v1 rule
+#### Approved v1 rule
 
-**Proposed; not approved.** Numerical T-Lab uses “local truncation error” for
+**Approved Version 1 rule.** Numerical T-Lab uses “local truncation error” for
 the unscaled one-step defect obtained by inserting exact data into a discrete
 update. For a method of theoretical order \(p\), this defect is described as
 \(O(h^{p+1})\) under the stated smoothness assumptions. If the defect is
@@ -499,18 +504,21 @@ Avoided:
 
 ```text
 Maintainer choice:
-[ ] Option A
+[x] Option A
 [ ] Option B
 [ ] Option C
 [ ] Defer
 
-Chosen preferred term/notation:
-Accepted aliases:
-Avoided wording:
-Module-specific exceptions:
-Rationale:
-Approved by:
-Approval date:
+Chosen preferred term/notation: unscaled local truncation error O(h^(p+1));
+  step-normalized local defect O(h^p)
+Accepted aliases: local defect after its normalization is defined
+Avoided wording: local error; unqualified LTE is O(h^p)
+Module-specific exceptions: PDE spatial truncation error remains
+  module-specific
+Rationale: adopts the directly supported ODE convention and removes the
+  normalization ambiguity without changing Convergence behavior
+Approved by: Yiding (Bruce) Tian
+Approval date: 2026-07-28
 ```
 ### 4. `observed_order_reliability` - Observed order and asymptotic evidence
 
@@ -523,7 +531,7 @@ Approval date:
 - **Urgency:** High
 - **Dependency position:** Uses the error metric selected under
   `global_error_scope`; local-error wording affects its explanation
-- **Current status:** `DECISION_REQUIRED`
+- **Current status:** `MAINTAINER_APPROVED_V1`
 
 #### Precise question
 
@@ -618,9 +626,9 @@ Option A's Medium Convergence rating is copy and label reconciliation only.
 Options B and C would change visible evidence behavior and require a separate
 runtime design, so approval here would not authorize implementation.
 
-#### Proposed v1 rule
+#### Approved v1 rule
 
-**Proposed; not approved.** Numerical T-Lab computes adjacent observed-order
+**Approved Version 1 rule.** Numerical T-Lab computes adjacent observed-order
 estimates from a stated error metric and refinement ratio. Every pair carries
 an evidence status. A finite value may be displayed with its status, but only
 values classified as reliable may contribute to the primary observed-order
@@ -647,18 +655,21 @@ Avoided:
 
 ```text
 Maintainer choice:
-[ ] Option A
+[x] Option A
 [ ] Option B
 [ ] Option C
 [ ] Defer
 
-Chosen preferred term/notation:
-Accepted aliases:
-Avoided wording:
-Module-specific exceptions:
-Rationale:
-Approved by:
-Approval date:
+Chosen preferred term/notation: adjacent observed-order estimate reported
+  with metric, refinement pair, finite value when useful, and evidence status
+Accepted aliases: empirical order estimate; asymptotic regime in analysis
+Avoided wording: actual order; reliable as proof
+Module-specific exceptions: only released reliable values drive the primary
+  summary; prefer reliable asymptotic-region evidence when available
+Rationale: preserves all released classifications and keeps finite diagnostic
+  evidence distinct from the headline interpretation
+Approved by: Yiding (Bruce) Tian
+Approval date: 2026-07-28
 ```
 
 ### 5. `a_stability_boundary` - A-stability and region notation
@@ -671,7 +682,7 @@ Approval date:
   policy
 - **Urgency:** High
 - **Dependency position:** Foundation for `stiffness_definition`
-- **Current status:** `DECISION_REQUIRED`
+- **Current status:** `MAINTAINER_APPROVED_V1`
 
 #### Precise question
 
@@ -750,6 +761,10 @@ introducing a region symbol before the product has a real stability plot. The
 tradeoff is a deliberate, modest departure from the primary source's
 method-specific notation.
 
+**Recorded maintainer choice: Custom Option AB.** The approved rule retains
+Option A's explicit \(\mathcal S\) and Option B's closed-boundary,
+plain-language emphasis.
+
 #### Migration impact
 
 | Option | Terminology | Notation | Voice | Catalog | Copy audit | Platform | IVP | Convergence | Tutor | Tests | Future NLA | Future PDE |
@@ -761,15 +776,21 @@ method-specific notation.
 The IVP ratings are copy and teaching work only. No option authorizes a new
 stability plot or changes a solver.
 
-#### Proposed v1 rule
+#### Approved v1 rule
 
-**Proposed; not approved.** For the scalar test equation
-\(y'=\lambda y\), set \(z=h\lambda\) and define the method's stability function
-by \(u_{n+1}=R(z)u_n\). The absolute-stability region is the set of \(z\) for
-which \(|R(z)|\le1\); no project-wide symbol for this set is required in v1. A
-method is A-stable when the closed nonpositive half-plane
-\(\{z\mid\operatorname{Re}z\le0\}\) lies in that region. Absolute stability does
-not by itself establish accuracy.
+**Approved Version 1 rule.** For the scalar test equation
+\(y'=\lambda y\), set \(z=h\lambda\) and define the stated method's stability
+function by \(u_{n+1}=R(z)u_n\). Denote its absolute-stability region by
+\[
+\mathcal S=\{z\in\mathbb C:|R(z)|\le1\}.
+\]
+A method is A-stable when
+\[
+\{z\in\mathbb C:\operatorname{Re}(z)\le0\}\subseteq\mathcal S.
+\]
+The boundary is included. Define every symbol in plain language, use
+\(R_M,\mathcal S_M\) when a method qualifier is needed, and do not infer
+accuracy from absolute stability.
 
 #### Acceptance examples
 
@@ -793,15 +814,19 @@ Maintainer choice:
 [ ] Option A
 [ ] Option B
 [ ] Option C
+[x] Custom Option AB
 [ ] Defer
 
-Chosen preferred term/notation:
-Accepted aliases:
-Avoided wording:
-Module-specific exceptions:
-Rationale:
-Approved by:
-Approval date:
+Chosen preferred term/notation: z = h lambda; u_(n+1) = R(z)u_n;
+  S = {z in C : |R(z)| <= 1}; {z in C : Re(z) <= 0} subseteq S
+Accepted aliases: region of absolute stability
+Avoided wording: stable region; very stable; stable for every problem
+Module-specific exceptions: use R_M and S_M, or another declared method
+  qualifier, when multiple methods share a surface
+Rationale: combines Option A's explicit reusable region symbol with Option B's
+  closed-boundary teaching language
+Approved by: Yiding (Bruce) Tian
+Approval date: 2026-07-28
 ```
 
 ### 6. `stiffness_definition` - Minimum introductory definition of stiffness
@@ -813,7 +838,7 @@ Approval date:
   override
 - **Urgency:** High
 - **Dependency position:** Uses the approved absolute-stability language
-- **Current status:** `DECISION_REQUIRED`
+- **Current status:** `MAINTAINER_APPROVED_V1`
 
 #### Precise question
 
@@ -895,14 +920,24 @@ than a one-line coefficient test.
 Future PDE impact is largest for the one-clause alternatives because diffusion
 and semi-discrete systems need both scale and stability context.
 
-#### Proposed v1 rule
+#### Approved v1 rule
 
-**Proposed; not approved.** Stiffness is a property of a differential problem
-with relevant behavior on widely separated time scales for which stability
-requirements can force otherwise suitable methods to use step sizes much
-smaller than accuracy or the resolved slow behavior alone would require.
-Stiffness does not mean “implicit,” and successful nonlinear iteration does not
-establish that a method is suitable for a stiff problem.
+**Approved Version 1 rule.** Use this canonical plain definition:
+
+> A problem is stiff when it contains both fast and slow behavior, and
+> stability forces a numerical method to use a much smaller step size than
+> accuracy alone would require.
+
+Apply this binding cross-project teaching modifier:
+
+> Explain the core idea first in the plainest correct language. Add notation,
+> assumptions, and exceptions only where they prevent a real mathematical
+> misunderstanding.
+
+The preferred teaching sequence is plain core, why it matters, formula, then
+limits and confusions. Stiffness does not mean “implicit,” and successful
+nonlinear iteration does not establish that a method is suitable for a stiff
+problem.
 
 #### Acceptance examples
 
@@ -924,18 +959,21 @@ Avoided:
 
 ```text
 Maintainer choice:
-[ ] Option A
+[x] Option A
 [ ] Option B
 [ ] Option C
 [ ] Defer
 
-Chosen preferred term/notation:
-Accepted aliases:
-Avoided wording:
-Module-specific exceptions:
-Rationale:
-Approved by:
-Approval date:
+Chosen preferred term/notation: stiffness combines fast and slow behavior with
+  a stability-driven step restriction relative to accuracy alone
+Accepted aliases: stiff problem; stiff equation; stiff system
+Avoided wording: large coefficient; hard problem; nonlinear problem; implicit
+  method as the definition
+Module-specific exceptions: none; teach plain core, why, formula, then limits
+Rationale: captures both required mathematical strands and establishes the
+  cross-project plain-first teaching modifier
+Approved by: Yiding (Bruce) Tian
+Approval date: 2026-07-28
 ```
 
 ### 7. `relative_error_denominator` - Relative-error reference and zero policy
@@ -946,7 +984,7 @@ Approval date:
 - **Category:** definition-scope choice; notation choice; UI label choice
 - **Urgency:** Medium
 - **Dependency position:** Independent
-- **Current status:** `DECISION_REQUIRED`
+- **Current status:** `MAINTAINER_APPROVED_V1`
 
 #### Precise question
 
@@ -1030,13 +1068,14 @@ Option C's distinct name.
 Current Convergence does not report relative error, so all ratings there are
 future content or formula-help work, not a change to released metrics.
 
-#### Proposed v1 rule
+#### Approved v1 rule
 
-**Proposed; not approved.** Relative error is the absolute error divided by the
+**Approved Version 1 rule.** Relative error is the absolute error divided by the
 magnitude of a stated nonzero exact or reference quantity. When that reference
 is zero, report the relative error as unavailable and use absolute error or a
 separately defined scaled error. Never insert a denominator floor while
-retaining the unqualified label “relative error.”
+retaining the unqualified label “relative error.” Percent error is \(100\%\)
+times the relative error and inherits the same nonzero-reference requirement.
 
 #### Acceptance examples
 
@@ -1057,18 +1096,22 @@ Avoided:
 
 ```text
 Maintainer choice:
-[ ] Option A
+[x] Option A
 [ ] Option B
 [ ] Option C
 [ ] Defer
 
-Chosen preferred term/notation:
-Accepted aliases:
-Avoided wording:
-Module-specific exceptions:
-Rationale:
-Approved by:
-Approval date:
+Chosen preferred term/notation: absolute error divided by the magnitude of a
+  stated nonzero exact or reference quantity
+Accepted aliases: percent error after multiplication by 100 percent
+Avoided wording: silent denominator floor; relative error of zero at a zero
+  reference
+Module-specific exceptions: at zero, use absolute error or a separately named
+  scaled error; name norms in normwise ratios
+Rationale: keeps the denominator explicit and exposes, rather than hides, the
+  zero-reference limitation
+Approved by: Yiding (Bruce) Tian
+Approval date: 2026-07-28
 ```
 
 ### 8. `tolerance_scopes` - Qualified tolerance language
@@ -1080,7 +1123,7 @@ Approval date:
   language policy
 - **Urgency:** Medium
 - **Dependency position:** Independent
-- **Current status:** `DECISION_REQUIRED`
+- **Current status:** `MAINTAINER_APPROVED_V1`
 
 #### Precise question
 
@@ -1143,7 +1186,7 @@ prevents High confidence even though the product need is clear.
 
 | Option | Preferred rule | Aliases and avoided wording | Context rule | Benefits | Drawbacks and learner risk | Cost and future impact |
 |---|---|---|---|---|---|---|
-| A | Always qualify: nonlinear update tolerance, nonlinear residual tolerance, exact-solution consistency threshold, Convergence interpretation tolerance | Accept “tolerance” only inside an already named control; avoid “solver tolerance” as a universal term | Adaptive error-control tolerance remains reserved future language | Precisely matches current ownership; prevents numerical contract leakage | Longer labels | Medium docs/Tutor work; strong cross-module governance |
+| A | Always qualify: nonlinear update tolerance, nonlinear residual tolerance, exact-solution consistency tolerance, Convergence interpretation tolerance | Accept “tolerance” only inside an already named control; avoid “solver tolerance” as a universal term | Adaptive error-control tolerance remains reserved future language | Precisely matches current ownership; prevents numerical contract leakage | Longer labels | Medium docs/Tutor work; strong cross-module governance |
 | B | Qualify on first use, then allow “tolerance” within a tightly bounded panel or paragraph | Same preferred qualified terms | Scope ends at the component or lesson boundary | More natural prose and compact UI | Context can be lost in Tutor transcripts and Glossary lookup | Small migration; Medium ambiguity risk |
 | C | Standardize symbols such as \(\mathrm{atol}\), \(\mathrm{rtol}\), \(\tau_{\mathrm{res}}\), and \(\tau_{\mathrm{upd}}\) project-wide | Accept expanded names; avoid bare \(\tau\) | Every algorithm maps its test to the symbol family | Formula precision and implementation mapping | Premature for hidden controls; symbols do not unify semantics | Large notation/tests/docs; future solver design constraint |
 
@@ -1166,11 +1209,11 @@ repository-grounded governance recommendation.
 Option C would create a cross-algorithm notation contract that the current
 design has not approved. Option A changes labels and explanations only.
 
-#### Proposed v1 rule
+#### Approved v1 rule
 
-**Proposed; not approved.** A tolerance must be named by the quantity and
+**Approved Version 1 rule.** A tolerance must be named by the quantity and
 algorithm it controls. Use “nonlinear update tolerance,” “nonlinear residual
-tolerance,” “exact-solution consistency threshold,” and “Convergence
+tolerance,” “exact-solution consistency tolerance,” and “Convergence
 interpretation tolerance” for the current scopes. Reserve “adaptive
 error-control tolerance” for a future adaptive solver design. Display
 precision is formatting, not a tolerance.
@@ -1194,18 +1237,20 @@ Avoided:
 
 ```text
 Maintainer choice:
-[ ] Option A
+[x] Option A
 [ ] Option B
 [ ] Option C
 [ ] Defer
 
-Chosen preferred term/notation:
-Accepted aliases:
-Avoided wording:
-Module-specific exceptions:
-Rationale:
-Approved by:
-Approval date:
+Chosen preferred term/notation: name the algorithm and controlled quantity
+Accepted aliases: tolerance only inside an already named control
+Avoided wording: solver tolerance as a universal term; precision tolerance
+Module-specific exceptions: reserve adaptive error-control tolerance for a
+  future adaptive algorithm
+Rationale: maps to the four independent current controls without creating a
+  false shared numerical contract
+Approved by: Yiding (Bruce) Tian
+Approval date: 2026-07-28
 ```
 
 ### 9. `matrix_vector_typography` - Scalar, vector, and matrix typography
@@ -1217,7 +1262,7 @@ Approval date:
 - **Category:** notation choice; module-specific override; pedagogical wording
 - **Urgency:** Low for the current scalar Lab; High before Linear Algebra
 - **Dependency position:** Independent and future-facing
-- **Current status:** `DECISION_REQUIRED`
+- **Current status:** `MAINTAINER_APPROVED_V1`
 
 #### Precise question
 
@@ -1304,9 +1349,9 @@ Current IVP and Convergence formulas are scalar and remain unchanged under all
 options. The large ratings are future formula, rendering, and accessible-text
 work.
 
-#### Proposed v1 rule
+#### Approved v1 rule
 
-**Proposed; not approved.** Display scalar and vector variables in italic
+**Approved Version 1 rule.** Display scalar and vector variables in italic
 lowercase and matrices in italic uppercase, using case, dimensions, and
 explicit prose to identify object type. For example, write \(Ax=b\) after
 introducing \(A\) as a matrix and \(x,b\) as vectors. Accessible text and Tutor
@@ -1332,18 +1377,21 @@ Avoided:
 
 ```text
 Maintainer choice:
-[ ] Option A
+[x] Option A
 [ ] Option B
 [ ] Option C
 [ ] Defer
 
-Chosen preferred term/notation:
-Accepted aliases:
-Avoided wording:
-Module-specific exceptions:
-Rationale:
-Approved by:
-Approval date:
+Chosen preferred term/notation: italic lowercase scalars and vectors; italic
+  uppercase matrices; type established by dimensions and prose
+Accepted aliases: established domain symbols after their type is declared
+Avoided wording: mixed bold/plain styles; typography as the only type cue
+Module-specific exceptions: none in Version 1; future module designs may
+  propose a new reviewed decision
+Rationale: follows the full reviewed corpus and keeps accessible prose
+  authoritative
+Approved by: Yiding (Bruce) Tian
+Approval date: 2026-07-28
 ```
 
 ## Cross-decision implications
@@ -1375,7 +1423,7 @@ Approval date:
 
 ### Consistency scenarios
 
-| Surface | Recommended-set example |
+| Surface | Approved-set example |
 |---|---|
 | Home or overview | “Explore error, observed convergence, and absolute-stability behavior as the time-step size changes.” |
 | IVP Method/Data/Output | “Time-step size \(h\)”; “Final-time error”; “Maximum global error.” |
@@ -1385,15 +1433,15 @@ Approval date:
 | Future Linear Algebra | “For matrix \(A\) and vectors \(x,b\), the residual is \(r=b-Ax\).” |
 | Future PDE | “Name the spatial grid spacing separately from the ODE time-step size, and qualify the relevant stability property.” |
 
-### Recommended option set
+### Recorded option set
 
-| Decision | Recommendation | Confidence | Main tradeoff |
+| Decision | Recorded choice | Prior recommendation confidence | Main tradeoff |
 |---|---|---|---|
 | `signed_error_orientation` | Option A - numerical minus exact | Medium | Secondary textbook uses the reverse sign |
 | `global_error_scope` | Option A - nodal error family with named aggregates | High | The umbrella still needs qualifiers |
 | `local_truncation_scaling` | Option A - unscaled one-step defect | High | Imported normalized conventions need relabeling |
 | `observed_order_reliability` | Option A - status every pair; reliable values drive summary | High | Reliability is empirical, not proof |
-| `a_stability_boundary` | Option B - \(R(z)\), unnamed region, closed half-plane | Medium | Modest departure from primary-source notation |
+| `a_stability_boundary` | Custom Option AB - \(R(z)\), \(\mathcal S\), closed half-plane | Medium | Introduces a reusable region symbol with a plain-language boundary |
 | `stiffness_definition` | Option A - time-scale and stability-restriction definition | High | Longer than a one-clause slogan |
 | `relative_error_denominator` | Option A - nonzero reference denominator; unavailable at zero | High | Requires an explicit unavailable state |
 | `tolerance_scopes` | Option A - always qualify the controlled quantity | Medium | Longer compact labels |
@@ -1412,7 +1460,7 @@ One cross-decision incompatibility is material:
 Other apparent conflicts are within one decision, not cross-decision
 combinations. For example, the two local-truncation orders cannot share one
 unqualified label, and open-versus-closed half-plane language cannot be mixed
-inside the A-stability rule. No pair among the nine recommended options is
+inside the A-stability rule. No pair among the nine recorded choices is
 incompatible.
 
 ## Minimal approval set
@@ -1426,16 +1474,16 @@ incompatible.
 | Production Glossary Wave 1 | Every decision governing a selected Wave 1 term or formula | `matrix_vector_typography` only if Wave 1 excludes vector/matrix formulas; `relative_error_denominator` and `tolerance_scopes` only if those terms are excluded |
 | Full standards promotion | All nine | None |
 
-The repository's current gate remains stricter than these theoretical minimums:
-record all nine maintainer choices before the standards-promotion commit.
-Targeted runtime or copy work still requires a separate authorized plan and
-commit.
+The full standards-promotion gate is satisfied: all nine choices are recorded.
+Targeted catalog reconciliation, copy work, or runtime implementation still
+requires a separate authorized phase and commit.
 
 ## Migration sequencing
 
 1. Record all nine choices in this packet and the approval checklist.
+   **Complete.**
 2. Promote terminology, notation, and teaching-voice rules in one
-   documentation-only standards commit.
+   documentation-only standards commit. **Complete in this commit.**
 3. Reconcile the Glossary catalog and project copy audit without publishing
    runtime content.
 4. Plan separate copy groups: Platform/overview, IVP, Convergence, Tutor, then
@@ -1465,17 +1513,17 @@ commit.
 
 | Decision | Choice | Approved by | Approval date | Notes |
 |---|---|---|---|---|
-| `signed_error_orientation` |  |  |  |  |
-| `global_error_scope` |  |  |  |  |
-| `local_truncation_scaling` |  |  |  |  |
-| `observed_order_reliability` |  |  |  |  |
-| `a_stability_boundary` |  |  |  |  |
-| `stiffness_definition` |  |  |  |  |
-| `relative_error_denominator` |  |  |  |  |
-| `tolerance_scopes` |  |  |  |  |
-| `matrix_vector_typography` |  |  |  |  |
+| `signed_error_orientation` | Option A | Yiding (Bruce) Tian | 2026-07-28 | \(e_n=u_n-y(t_n)\); aggregates stay absolute |
+| `global_error_scope` | Option A | Yiding (Bruce) Tian | 2026-07-28 | Nodal family; concrete aggregates named |
+| `local_truncation_scaling` | Option A | Yiding (Bruce) Tian | 2026-07-28 | Unscaled LTE; normalized defect separately named |
+| `observed_order_reliability` | Option A | Yiding (Bruce) Tian | 2026-07-28 | Every pair keeps status; only reliable drives summary |
+| `a_stability_boundary` | Custom Option AB | Yiding (Bruce) Tian | 2026-07-28 | \(R(z)\), \(\mathcal S\), closed half-plane |
+| `stiffness_definition` | Option A | Yiding (Bruce) Tian | 2026-07-28 | Fast/slow behavior plus stability restriction; plain-first modifier |
+| `relative_error_denominator` | Option A | Yiding (Bruce) Tian | 2026-07-28 | Nonzero reference; unavailable at zero |
+| `tolerance_scopes` | Option A | Yiding (Bruce) Tian | 2026-07-28 | Algorithm and controlled quantity always named |
+| `matrix_vector_typography` | Option A | Yiding (Bruce) Tian | 2026-07-28 | Plain italic; prose and dimensions authoritative |
 
-No blank in this summary is an approval. Record choices in the individual
-forms first, then use the
+The completed
 [Project Language Approval Checklist](PROJECT_LANGUAGE_APPROVAL_CHECKLIST.md)
-to authorize a separate standards-promotion commit.
+records the standards-promotion boundary. No runtime or production Glossary
+content is authorized.

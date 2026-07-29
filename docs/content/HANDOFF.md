@@ -1,246 +1,161 @@
-# Numerical Terminology and Teaching-Language Foundation Handoff
+# Numerical T-Lab Project Language v1 Handoff
 
-Status: Decision packet complete; all choices remain maintainer-pending.
+Status: Nine maintainer decisions recorded; terminology, notation, and
+teaching-voice standards approved as Version 1.
+
+Runtime/content implementation tracked separately.
 
 ## 1. Iteration boundary
 
-This handoff records the completed draft content foundation built in parallel
-with the active Content-Agnostic Interactive Glossary Framework milestone.
-The work is research, synthesis, and current-copy audit only. It does not
-publish a production Glossary term, definition, annotation, formula, Tutor
-card, or notation migration.
+Yiding (Bruce) Tian approved all nine project-language decisions on
+2026-07-28. This documentation-only iteration promotes:
 
-The repository started this iteration on local `main` with a clean worktree.
-The exact starting and final commit IDs are reported by the task’s post-commit
-evidence rather than embedded self-referentially here.
+- [Numerical T-Lab Terminology Standard v1](NUMERICAL_TERMINOLOGY_STANDARD.md);
+- [Numerical T-Lab Notation Standard v1](NUMERICAL_NOTATION_STANDARD.md); and
+- [Numerical T-Lab Teaching Voice Standard v1](TEACHING_VOICE.md).
 
-## 2. Public draft package
+The binding choices and completion evidence are in the
+[Maintainer Decision Packet](MAINTAINER_DECISION_PACKET.md),
+[Approval Checklist](PROJECT_LANGUAGE_APPROVAL_CHECKLIST.md), and
+[Terminology Decisions](TERMINOLOGY_DECISIONS.md).
 
-The iteration created:
+This iteration does not publish a production Glossary term, definition,
+annotation, formula, Tutor card, notation migration, or product-copy change.
+It changes no runtime source, tests, CSS, packages, configuration, numerical
+contract, deployment, or remote state.
 
-- [Content Source Policy](CONTENT_SOURCE_POLICY.md) — abstract source keys,
-  priority, conflict handling, locators, copyright boundaries, and approval
-  lifecycle.
-- [Numerical Terminology Standard](NUMERICAL_TERMINOLOGY_STANDARD.md) — the
-  complete merged candidate set admitted by the bounded review method.
-- [Numerical Notation Standard](NUMERICAL_NOTATION_STANDARD.md) — proposed
-  cross-domain notation and explicit unresolved choices.
-- [Teaching Voice](TEACHING_VOICE.md) — learner-facing style, epistemic
-  language, warnings, errors, results, and Tutor tone.
-- [Glossary Catalog](GLOSSARY_CATALOG.md) — compact planning metadata for all
-  merged candidates plus richer drafts for current-product concepts.
-- [Project Copy Audit](PROJECT_COPY_AUDIT.md) — current-copy evidence and the
-  staged A–F rewrite plan.
-- [Terminology Decisions](TERMINOLOGY_DECISIONS.md) — aligned distinctions,
-  source-priority draft resolutions, and unresolved maintainer decisions.
-- [Maintainer Decision Packet](MAINTAINER_DECISION_PACKET.md) — source
-  comparisons, viable options, advisory recommendations, migration effects,
-  dependencies, scenarios, and blank choice forms for exactly nine decisions.
-- [Project Language Approval Checklist](PROJECT_LANGUAGE_APPROVAL_CHECKLIST.md)
-  — the blank gate record for maintainer choices and later standards promotion.
+## 2. Approved decisions
 
-Every document is a draft pending maintainer approval. None is runtime data or
-a production content source.
+| Decision | Recorded choice | Version 1 result |
+|---|---|---|
+| Signed error | Option A | \(e_n=u_n-y(t_n)\); declare the orientation; aggregates remain absolute |
+| Global error | Option A | Propagated nodal-error family; concrete scalars use named nodes or aggregations; no “total error” |
+| Local truncation error | Option A | Unscaled LTE is \(O(h^{p+1})\); divided quantity is the step-normalized local defect \(O(h^p)\) |
+| Observed order | Option A | Metric, adjacent pair, finite value, and status travel together; only reliable values drive the primary summary |
+| A-stability | Custom Option AB | \(z=h\lambda\), \(u_{n+1}=R(z)u_n\), \(\mathcal S=\{z\in\mathbb C:|R(z)|\le1\}\), closed nonpositive half-plane contained in \(\mathcal S\) |
+| Stiffness | Option A | Fast and slow behavior plus a stability-driven step restriction; binding plain-first teaching modifier |
+| Relative error | Option A | Nonzero reference magnitude; unavailable at zero; separately name scaled metrics; percent is \(100\%\) |
+| Tolerance | Option A | Name the algorithm and controlled quantity; adaptive error-control wording remains future |
+| Typography | Option A | Italic lowercase scalars/vectors and italic uppercase matrices; dimensions and prose are authoritative |
 
-## 3. Coverage result
+No decision is deferred. The recorded set is internally compatible. Released
+final-time and maximum-global-error formulas, observed-order classifications,
+tolerances, and numerical behavior are unchanged.
 
-The admitted corpus was processed 29/29:
+## 3. Teaching modifier
 
-| Source key | Pages | Mapped sections | Processing method | Result |
-|---|---:|---:|---|---|
-| `NOTES-2025` | 80 | 47 | Embedded outline plus text-layer page metadata | Processed |
-| `NLA-CH01` | 12 | 7 | Text layer with font-size heading detection | Processed |
-| `NLA-CH02` | 11 | 8 | Text layer with font-size heading detection | Processed |
-| `NLA-CH03` | 9 | 4 | Text layer with font-size heading detection | Processed |
-| `NLA-CH04` | 11 | 6 | Text layer with font-size heading detection | Processed |
-| `NLA-CH05` | 6 | 4 | Text layer with font-size heading detection | Processed |
-| `NLA-CH06` | 10 | 7 | Text layer with font-size heading detection | Processed |
-| `NLA-CH07` | 8 | 4 | Text layer with font-size heading detection | Processed |
-| `NLA-CH08` | 10 | 5 | Text layer with font-size heading detection | Processed |
-| `NLA-CH09` | 10 | 4 | Text layer with font-size heading detection | Processed |
-| `NLA-CH10` | 13 | 4 | Text layer with font-size heading detection | Processed |
-| `NLA-CH11` | 5 | 2 | Text layer with font-size heading detection | Processed |
-| `NLA-CH12` | 7 | 3 | Text layer with font-size heading detection | Processed |
-| `NLA-CH13` | 8 | 2 | Text layer with font-size heading detection | Processed |
-| `NLA-CH14` | 14 | 5 | Text layer with font-size heading detection | Processed |
-| `NLA-CH15` | 9 | 4 | Text layer with font-size heading detection | Processed |
-| `NLA-CH16` | 17 | 5 | Text layer with font-size heading detection | Processed |
-| `NLA-CH17` | 17 | 4 | Text layer with font-size heading detection | Processed |
-| `NLA-CH18` | 10 | 2 | Text layer with font-size heading detection | Processed |
-| `NLA-CH19` | 6 | 4 | Text layer with font-size heading detection | Processed |
-| `NLA-CH20` | 18 | 6 | Text layer with font-size heading detection | Processed |
-| `NLA-CH21` | 8 | 3 | Text layer with font-size heading detection | Processed |
-| `NLA-CH22` | 13 | 6 | Text layer with font-size heading detection | Processed |
-| `NLA-CH23` | 7 | 3 | Text layer with font-size heading detection | Processed |
-| `NLA-CH24` | 19 | 7 | Text layer with font-size heading detection | Processed |
-| `NLA-CH25` | 10 | 2 | Text layer with font-size heading detection | Processed |
-| `NLA-CH26` | 12 | 2 | Text layer with font-size heading detection | Processed |
-| `NLA-CH27` | 13 | 4 | Text layer with font-size heading detection | Processed |
-| `CHENEY` | 700 | 70 | Image-only contents mapping plus bounded visual review | Processed with stated limitation |
-| **Total** | **1,073** | **234** | — | **29/29 processed** |
+The binding cross-project rule is:
 
-No admitted source was unreadable or blocked. The ignored manifest retains the
-local basenames and extraction details; tracked documents use abstract source
-keys only.
+> Explain the core idea first in the plainest correct language. Add notation,
+> assumptions, and exceptions only where they prevent a real mathematical
+> misunderstanding.
 
-## 4. Candidate and decision results
+The preferred sequence is plain core → why it matters → formula → limits and
+confusions.
 
-The section-level pass produced 523 source-level candidate occurrences. After
-cross-source merging and project-need completion, the draft contains 197
-unique stable candidate IDs with no preferred-name or alias collision.
+## 4. Terminology result
 
-Candidate readiness:
+The terminology standard retains 197 stable candidate IDs. The 18 rows that
+previously rolled up to the nine maintainer decisions are no longer
+`DECISION_REQUIRED`.
 
-| Readiness | Count | Meaning |
-|---|---:|---|
-| `CORE_PROJECT_DRAFT` | 47 | Relevant to current shared or ODE language after review |
-| `MODULE_DRAFT` | 89 | Reserved for later Linear Algebra or PDE module work |
-| `FUTURE_CANDIDATE` | 31 | Valid later approximation/nonlinear-equation content |
-| `DECISION_REQUIRED` | 18 | Candidate wording or scope depends on maintainer choice |
-| `DEFERRED` | 8 | Source topic retained without a standalone term proposal |
-| `OUT_OF_SCOPE` | 4 | Valid subject outside the current product roadmap |
-| **Total** | **197** | — |
-
-The conflict log contains 26 records:
-
-| Conflict status | Count |
+| Readiness | Count after promotion |
 |---|---:|
-| `ALIGNED` | 13 |
-| `PRIORITY_RESOLVED_DRAFT` | 4 |
-| `DECISION_REQUIRED` | 9 |
-| **Total** | **26** |
+| `CORE_PROJECT_DRAFT` | 63 |
+| `MODULE_DRAFT` | 91 |
+| `FUTURE_CANDIDATE` | 31 |
+| `DECISION_REQUIRED` | 0 |
+| `DEFERRED` | 8 |
+| `OUT_OF_SCOPE` | 4 |
+| **Total** | **197** |
 
-The nine maintainer decisions concern signed-error orientation, relative-error
-denominator behavior, local-truncation-error normalization, the scope of
-global error, stability-function/region notation, observed-order reliability
-and asymptotic-region language, the minimum stiffness definition, tolerance
-scopes, and vector/matrix typography.
+These statuses describe content readiness, not approval of the language
+standard and not runtime implementation. Stable IDs and unrelated readiness
+rows remain unchanged.
 
-The decision packet resolves the earlier 18-versus-9 counting ambiguity:
-18 candidate rows roll up into exactly nine conflict records. It gives every
-record a three-source comparison (including explicit source silence), three
-viable options, one advisory recommendation with confidence, per-option
-migration effects, a proposed-but-unapproved Version 1 rule, examples, and a
-blank maintainer form. The dependency order is signed-error orientation,
-global-error scope, local-truncation scaling, observed-order reliability,
-A-stability notation, stiffness definition, relative-error behavior, tolerance
-scopes, then matrix/vector typography. The recommendation set has five
-high-confidence, three medium-confidence, and one low-confidence choice. No
-recommendation was accepted automatically.
+The historical conflict comparison retains 26 records:
 
-## 5. Current-copy audit result
+- 13 already-aligned distinctions;
+- 4 source-priority draft resolutions; and
+- 9 formerly decision-required records now superseded by the approved
+  resolution index.
 
-The audit covered all current non-historical user-facing English copy owners in
-the platform pages and shell, IVP Lab, method and preset metadata, grid and
-exact-solution messages, Convergence runtime and teaching, Tutor UI and mock
-responses, mathematical-input UI, Glossary framework shell, README, and
-current behavior/status documents.
+## 5. Evidence baseline retained
 
-It records:
+The bounded content review admitted and processed 29/29 sources:
 
-- 43 recommended changes;
-- 12 representative no-change decisions;
-- no modification to any audited source file.
+- 1,073 pages;
+- 234 mapped sections;
+- 523 source-level candidate occurrences;
+- 197 merged stable candidate IDs; and
+- 26 conflict records.
 
-The highest-risk findings are:
+Tracked documentation uses abstract source keys and bounded locators only. No
+private path, basename, hash, screenshot, raw extraction, or substantial
+quotation is published. Private PDFs were not reopened for this promotion.
 
-1. The Tutor currently gives two incompatible local-truncation-error orders
-   without declaring whether the one-step defect is divided by the step size.
-2. Backward Euler is described as “Very stable” without naming the
-   absolute-stability scope or test equation.
-3. A Compare result uses symbols that resemble numerical-versus-exact error
-   while actually comparing two numerical approximations.
-4. Result and Tutor point counts are labeled as steps even though the displayed
-   value includes the initial grid point.
-5. Several Convergence labels shorten metric names or blur theoretical and
-   observed order.
+## 6. Deliberately unreconciled documents
 
-The audit is a plan, not authorization. Its implementation groups remain:
+[Content Source Policy](CONTENT_SOURCE_POLICY.md),
+[Glossary Catalog](GLOSSARY_CATALOG.md), and
+[Project Copy Audit](PROJECT_COPY_AUDIT.md) are unchanged in this commit.
 
-- A. Platform and overview copy
-- B. Initial Value Problems Lab copy
-- C. Convergence/error language
-- D. Tutor terminology and voice
-- E. Production Glossary content
-- F. Final consistency/browser audit
+The catalog therefore remains a pre-approval planning draft and can
+temporarily contain old `DECISION_REQUIRED` readiness values. That is an
+explicit phase boundary, not an alternate standard. The copy audit retains its
+43 recommended changes and 12 representative no-change decisions; no
+`COPY-*` recommendation is implemented or promoted here.
 
-## 6. Private derived evidence
+The next phase must reconcile the catalog and copy audit against the approved
+Version 1 standards without creating runtime content.
 
-Ignored resumability artifacts retain:
+## 7. Runtime and numerical non-changes
 
-- the 29-source manifest and checkpoint progress;
-- the 234-record section map;
-- the 197 merged candidate records;
-- the 26 conflict records;
-- the 55 current-copy evidence records;
-- aggregate coverage and limitation counts;
-- deterministic draft-generation and validation helpers.
+This iteration does not change:
 
-They contain no full raw corpus, persistent page image, source hash, or public
-runtime dependency. Temporary visual-review images were removed after the
-bounded review.
+- runtime TypeScript, API code, HTML behavior, CSS, tests, dependencies,
+  package files, or deployment configuration;
+- solver methods, coefficients, startup rules, grid/alignment rules,
+  tolerances, budgets, exact-solution checks, error metrics, Convergence
+  classifications, or solver metadata;
+- App, Lab, Tutor, Store, Router, or Glossary ownership and lifecycle;
+- Glossary registry entries, ODE annotations, Lab Glossary binding, Tutor
+  queue behavior, Keep/Replace behavior, or notation profiles;
+- Platform, IVP, Convergence, preset, method-card, Tutor, or other product copy;
+- README, approved framework specs/plans/reviews, or private source policy; or
+- branches, remotes, Preview, Production, or deployment state.
 
-## 7. Validation evidence
+The locally accepted Content-Agnostic Interactive Glossary Framework remains
+content-neutral. Production still contains no Glossary terms, annotations, ODE
+binding, or visible Glossary behavior.
 
-The deterministic content-foundation validator passed with:
+## 8. Local artifacts and validation
 
-- sources: 29;
-- pages: 1,073;
-- sections: 234;
-- unique candidates: 197;
-- conflicts: 26;
-- decision-required conflicts: 9;
-- copy records: 55;
-- unknown candidate IDs: 0;
-- unknown source keys: 0;
-- preferred-name or alias collisions: 0;
-- broken relative links: 0;
-- privacy-pattern matches: 0;
-- unfinished-marker matches: 0;
-- malformed mid-word punctuation findings: 0.
+The ignored decision artifact records the nine maintainer choices and the
+ignored validation report records deterministic checks. Neither is a runtime
+dependency or tracked source of public truth.
 
-The final Git verification for this documentation-only iteration is recorded
-in the task report. No npm test, typecheck, build, browser run, bundle
-inspection, deployment, remote contact, or push is required or claimed.
+Documentation validation for this promotion covers:
 
-## 8. Limitations
+- exactly nine approved decisions and no deferrals;
+- all 18 affected terminology rows resolved;
+- 197 terminology IDs with the status counts above;
+- exact formulas and boundary language for the nine choices;
+- completed approval metadata;
+- cross-document relative links;
+- privacy and unfinished-marker scans;
+- allowed-path and forbidden-path checks;
+- `git diff --check`; and
+- final branch, commit, and clean-worktree evidence.
 
-- `CHENEY` is image-only. All 70 contents sections were mapped, and four
-  conflict-relevant areas received bounded visual review. No bulk OCR was run,
-  so secondary concepts that appear only in body pages may be absent.
-- Text-layer sources were mapped by headings and scanned with a controlled
-  numerical-analysis lexicon. This supports systematic coverage but does not
-  replace human line-by-line interpretation of every page.
-- Draft definitions are compact original paraphrases. They are not a
-  chapter-by-chapter substitute for any source.
-- Source priority selected provisional project wording; it did not silently
-  resolve mathematically meaningful disagreements.
-- No term, notation choice, or copy recommendation becomes product truth
-  without maintainer review.
+No npm test, typecheck, build, browser run, bundle inspection, deployment,
+remote contact, push, or external access is required or claimed for this
+documentation-only iteration.
 
-## 9. Explicit non-changes
+## 9. Current review gate
 
-This iteration did not change:
-
-- runtime TypeScript, HTML behavior, CSS, tests, package or deployment files;
-- numerical methods, coefficients, grid rules, tolerances, budgets, error
-  metrics, Convergence classifications, or solver metadata;
-- App/Lab/Tutor/Glossary ownership, lazy-loading, accessibility, or lifecycle;
-- README or historical specs, plans, reviews, and released evidence;
-- production Glossary content, ODE annotations, Tutor queue behavior, or
-  notation profiles;
-- remotes, branches, deployment state, or production.
-
-## 10. Next review gates
-
-The framework gate is already closed with **APPROVED FOR LOCAL FRAMEWORK
-RELEASE**. The active content gate is maintainer review of the
-[decision packet](MAINTAINER_DECISION_PACKET.md) in dependency order and
-recording all required choices in the
-[approval checklist](PROJECT_LANGUAGE_APPROVAL_CHECKLIST.md).
-
-After all nine choices are recorded, a separate standards-promotion commit may
-update the terminology and notation standards. That approval step does not
-itself rewrite product copy, add production Glossary terms or annotations,
-change runtime, or authorize an ODE vertical slice. Those later actions still
-require their own repository-grounded plan and review gate.
+The nine maintainer decisions are recorded and the Numerical T-Lab
+terminology, notation, and teaching-voice standards are approved as Version 1.
+No runtime or production Glossary content has been authorized. The next phase
+is a documentation-only reconciliation of the Glossary catalog and project
+copy audit against the approved standards.

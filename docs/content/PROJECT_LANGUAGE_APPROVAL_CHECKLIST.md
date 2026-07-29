@@ -1,186 +1,149 @@
-# Numerical T-Lab Project Language Approval Checklist
+# Numerical T-Lab Project Language v1 Approval Checklist
 
-Status: Maintainer sign-off template; no decision is approved by this file.
+Status: Completed maintainer approval record.
 
-Approval records content-governance choices only. Completing this checklist
-does not modify runtime behavior, product copy, tests, numerical contracts, or
-production Glossary content. Every implementation or copy change requires a
-separate authorized task and commit.
+Yiding (Bruce) Tian completed this checklist on 2026-07-28. Approval records
+content-governance choices only. It does not modify runtime behavior, product
+copy, tests, numerical contracts, or production Glossary content.
 
 ## 1. Preconditions
 
-- [ ] The
-  [Maintainer Decision Packet](MAINTAINER_DECISION_PACKET.md) has been reviewed
-  in dependency order.
-- [ ] Exactly nine decision forms contain an explicit maintainer choice.
-- [ ] No decision remains internally split across incompatible options.
-- [ ] Module-specific exceptions are written narrowly.
-- [ ] Source priority was considered without treating majority vote as
-  mathematical proof.
-- [ ] Numerical contracts and current solver behavior remain unchanged.
-- [ ] Production Glossary content and an ODE Glossary binding remain
+- [x] The
+  [Maintainer Decision Packet](MAINTAINER_DECISION_PACKET.md) was reviewed in
+  dependency order.
+- [x] Exactly nine decision forms contain an explicit maintainer choice.
+- [x] No decision is split across incompatible options.
+- [x] Module-specific exceptions are narrow and explicit.
+- [x] Source priority informed the choices without substituting for
+  mathematical judgment.
+- [x] Numerical contracts and current solver behavior remain unchanged.
+- [x] Production Glossary content and an ODE Glossary binding remain
   unauthorized.
 
-## 2. Nine-decision sign-off table
+## 2. Nine-decision sign-off
 
-| Order | Decision ID | Selected option or Defer | Preferred term/notation recorded | Exceptions recorded | Maintainer initials | Date |
+| Order | Decision ID | Selected choice | Binding rule recorded | Exception or boundary | Maintainer | Date |
 |---:|---|---|---|---|---|---|
-| 1 | `signed_error_orientation` |  |  |  |  |  |
-| 2 | `global_error_scope` |  |  |  |  |  |
-| 3 | `local_truncation_scaling` |  |  |  |  |  |
-| 4 | `observed_order_reliability` |  |  |  |  |  |
-| 5 | `a_stability_boundary` |  |  |  |  |  |
-| 6 | `stiffness_definition` |  |  |  |  |  |
-| 7 | `relative_error_denominator` |  |  |  |  |  |
-| 8 | `tolerance_scopes` |  |  |  |  |  |
-| 9 | `matrix_vector_typography` |  |  |  |  |  |
+| 1 | `signed_error_orientation` | Option A | \(e_n=u_n-y(t_n)\) | Aggregate metrics remain absolute | Yiding (Bruce) Tian | 2026-07-28 |
+| 2 | `global_error_scope` | Option A | Propagated nodal-error family; scalars named | No “total error”; PDE norms stay module-specific | Yiding (Bruce) Tian | 2026-07-28 |
+| 3 | `local_truncation_scaling` | Option A | Unscaled LTE \(O(h^{p+1})\); normalized defect \(O(h^p)\) | PDE spatial truncation remains module-specific | Yiding (Bruce) Tian | 2026-07-28 |
+| 4 | `observed_order_reliability` | Option A | Metric, pair, value, and status travel together | Only reliable values drive the summary | Yiding (Bruce) Tian | 2026-07-28 |
+| 5 | `a_stability_boundary` | Custom Option AB | \(z\), \(R\), \(\mathcal S\), closed half-plane | Qualify symbols by method when needed | Yiding (Bruce) Tian | 2026-07-28 |
+| 6 | `stiffness_definition` | Option A | Fast/slow behavior plus stability restriction | Plain-first teaching modifier is binding | Yiding (Bruce) Tian | 2026-07-28 |
+| 7 | `relative_error_denominator` | Option A | Nonzero reference magnitude | Unavailable at zero; separately name scaled metrics | Yiding (Bruce) Tian | 2026-07-28 |
+| 8 | `tolerance_scopes` | Option A | Name algorithm and controlled quantity | Adaptive error-control remains future | Yiding (Bruce) Tian | 2026-07-28 |
+| 9 | `matrix_vector_typography` | Option A | Plain italic; case, dimensions, and prose | Accessibility never relies on typography alone | Yiding (Bruce) Tian | 2026-07-28 |
 
-- [ ] Every selected option matches the corresponding completed card.
-- [ ] No checkbox was treated as selected merely because it is the Codex
-  recommendation.
-- [ ] Every Defer choice states which publication or implementation gates it
-  blocks.
+- [x] Every selected choice matches its completed decision card.
+- [x] The custom A-stability choice is recorded as Custom Option AB rather
+  than silently recast as a packet recommendation.
+- [x] No decision is deferred.
 
-## 3. Cross-decision consistency check
+## 3. Cross-decision consistency
 
-- [ ] A chosen signed-error orientation is compatible with the global-error
-  formula.
-- [ ] Final-time and maximum global errors remain absolute, separately named
+- [x] The signed-error orientation and global-error rule are compatible.
+- [x] Final-time and maximum global errors remain absolute, separately named
   metrics.
-- [ ] Local truncation order matches the chosen normalization.
-- [ ] Observed-order copy names its error metric and preserves reliability
-  status.
-- [ ] A-stability boundary wording matches the chosen region definition.
-- [ ] The stiffness definition does not equate stiffness with implicitness.
-- [ ] Relative-error zero behavior does not silently change the denominator.
-- [ ] Tolerance labels name the controlled quantity and algorithm.
-- [ ] Vector/matrix formulas and accessible text use the same object-type
+- [x] Local-truncation order matches its normalization.
+- [x] Observed-order language names the error metric and preserves the released
+  reliability status.
+- [x] A-stability uses the closed nonpositive half-plane and an explicitly
+  defined \(\mathcal S\).
+- [x] Stiffness is not equated with implicitness or reduced to A-stability.
+- [x] Relative-error zero behavior does not silently change the denominator.
+- [x] Tolerance labels name the controlled quantity and algorithm.
+- [x] Vector/matrix formulas and accessible text use the same object-type
   policy.
-- [ ] Already-aligned distinctions - error/residual,
-  conditioning/stability, ODE/PDE spacing, and LU/PLU - remain intact.
-- [ ] The incompatible combination documented in the packet was not adopted.
+- [x] Error/residual, conditioning/stability, ODE/PDE spacing, and LU/PLU
+  distinctions remain intact.
+- [x] The documented incompatible signed-error combination was not adopted.
 
-## 4. Terminology-standard promotion checklist
+## 4. Standards promotion
 
-- [ ] Update only affected rows in
-  `docs/content/NUMERICAL_TERMINOLOGY_STANDARD.md`.
-- [ ] Replace `DECISION_REQUIRED` only where the recorded choice fully resolves
-  the affected term.
-- [ ] Preserve stable term IDs and accepted aliases.
-- [ ] Add avoided wording and module-specific context rules from the approved
-  cards.
-- [ ] Keep unrelated draft, deferred, future, and out-of-scope rows unchanged.
-- [ ] Mark the standard's new lifecycle status precisely; do not call runtime
-  content implemented.
+- [x] Only affected terminology rows were changed.
+- [x] All 18 formerly blocked terminology rows were resolved without changing
+  stable term IDs.
+- [x] Accepted aliases, avoided wording, and context boundaries were promoted.
+- [x] Unrelated draft, future, deferred, and out-of-scope terminology rows
+  retain their readiness status.
+- [x] Signed/global error, LTE, observed order, stability, relative error,
+  tolerance, and typography rules appear in the notation standard.
+- [x] Released final-time and maximum-global-error formulas remain unchanged.
+- [x] The teaching standard contains the binding plain-language principle and
+  the preferred plain core → why → formula → limits/confusions sequence.
+- [x] Preferred and avoided teaching examples cover all nine decisions.
+- [x] The three standards are labeled maintainer-approved Version 1 without
+  claiming runtime implementation.
 
-## 5. Notation-standard promotion checklist
+## 5. Deferred reconciliation boundary
 
-- [ ] Apply the selected signed-error orientation.
-- [ ] Apply the selected global-error object and aggregate symbols.
-- [ ] Apply the selected local-truncation normalization.
-- [ ] Apply the selected observed-order and asymptotic-region policy.
-- [ ] Apply the selected stability-function, region, and half-plane rule.
-- [ ] Apply the selected scalar/vector/matrix typography.
-- [ ] Keep released final-time and maximum-global-error formulas unchanged
-  unless a separately approved numerical-contract task exists.
-- [ ] Keep source-code identifiers outside the display-notation contract.
-
-## 6. Teaching-voice promotion checklist
-
-- [ ] Add preferred and avoided examples from each approved card.
-- [ ] Keep exact, approximate, theoretical, observed, and heuristic claims
-  distinct.
-- [ ] Keep residual and solution error distinct.
-- [ ] Use qualified stability and tolerance language.
-- [ ] Ensure compact UI labels have longer accessible explanations where
-  needed.
-- [ ] Keep Tutor language evidence-bounded and free of automatic guarantees.
-
-## 7. Glossary-catalog promotion checklist
-
-- [ ] Promote only term rows whose governing decisions are approved.
-- [ ] Keep every production candidate tied to a stable term ID and explicit
-  scope.
-- [ ] Reconcile formulas, aliases, related terms, misconceptions, and
-  prerequisites against the promoted standards.
-- [ ] Do not convert draft rows directly into runtime registry data.
-- [ ] Do not add unreviewed production definitions, notation profiles, or
-  source-audit runtime.
-- [ ] Require a separate Production Glossary Wave 1 content plan and
+- [x] `GLOSSARY_CATALOG.md` is intentionally unchanged in this commit.
+- [x] Its draft rows may temporarily retain pre-approval decision statuses
+  until the next documentation-only reconciliation.
+- [x] No draft catalog row was converted into runtime registry data.
+- [x] Production Glossary Wave 1 still requires a separate content plan and
   authorization.
+- [x] `PROJECT_COPY_AUDIT.md` is intentionally unchanged in this commit.
+- [x] No `COPY-*` record was marked ready and no source copy was changed.
+- [x] The next phase will reconcile the catalog and copy audit against the
+  approved standards before any implementation task.
 
-## 8. Project-copy audit reconciliation
+## 6. Runtime-content authorization boundary
 
-- [ ] Map each approved rule to the affected `COPY-*` records.
-- [ ] Mark recommendations ready only when every governing decision is
-  approved.
-- [ ] Re-scan current source at the implementation starting commit.
-- [ ] Separate Platform/overview, IVP, Convergence, Tutor, and Glossary copy
-  into coherent reviewable commits.
-- [ ] Update expected-copy tests only with the corresponding approved copy
-  change.
-- [ ] Preserve current numerical classifications, tolerances, and solver
-  metadata.
-
-## 9. Runtime-content authorization boundary
-
-- [ ] This approval is understood to be documentation-only.
-- [ ] No runtime registry entry is authorized by this checklist.
-- [ ] No ODE annotation or Glossary binding is authorized.
-- [ ] No Tutor prompt, response, queue, Keep/Replace, or model behavior is
+- [x] This approval is documentation-only.
+- [x] No runtime registry entry, ODE annotation, or Glossary binding is
   authorized.
-- [ ] No Platform, IVP, Convergence, or method-card copy change is authorized.
-- [ ] No solver, grid, error metric, tolerance, classification, or numerical
+- [x] No Tutor prompt, response, queue, Keep/Replace, or model behavior is
+  authorized.
+- [x] No Platform, IVP, Convergence, preset, method-card, or other product copy
+  change is authorized.
+- [x] No solver, grid, error metric, tolerance, classification, or numerical
   contract change is authorized.
-- [ ] No persistence, Store, package, configuration, deployment, push, or
-  external access is authorized.
+- [x] No persistence, Store, package, configuration, deployment, push, remote
+  contact, or external access is authorized.
 
-## 10. Required validation
+## 7. Validation
 
-- [ ] Exactly nine approved/deferred decision records are present.
-- [ ] All affected term IDs and notation rules resolve to tracked records.
-- [ ] Cross-document links resolve.
-- [ ] No private path, basename, hash, screenshot, raw extraction, or long
-  quotation appears in tracked files.
-- [ ] No decision is described as runtime behavior.
-- [ ] Standards, catalog, and voice statuses agree.
-- [ ] `git diff --check` passes.
-- [ ] The diff contains only files authorized by the standards-promotion task.
-- [ ] Verification is proportional to the later touched files; documentation
-  approval alone does not claim browser or runtime evidence.
+- [x] Exactly nine approved decision records are present and none is deferred.
+- [x] All affected term IDs and notation rules resolve to tracked records.
+- [x] Cross-document relative links resolve.
+- [x] No private path, basename, hash, screenshot, raw extraction, or
+  substantial private quotation appears in the tracked diff.
+- [x] No approved decision is described as implemented runtime behavior.
+- [x] Standards and teaching voice are approved; the unchanged catalog and copy
+  audit are explicitly identified as pending reconciliation.
+- [x] `git diff --check` passes.
+- [x] The diff contains only files authorized by the standards-promotion task.
+- [x] Documentation-only validation makes no browser, build, test-suite, or
+  deployment claim.
 
-## 11. Approval metadata
+## 8. Approval metadata
 
 ```text
-Approval scope:
-Approved decision IDs:
-Deferred decision IDs:
-Module-specific exceptions:
-Maintainer:
-Review date:
-Starting commit:
-Standards-promotion commit:
-Notes:
+Approval scope: Documentation governance — Numerical T-Lab project language v1
+Approved decision IDs: signed_error_orientation, global_error_scope,
+  local_truncation_scaling, observed_order_reliability, a_stability_boundary,
+  stiffness_definition, relative_error_denominator, tolerance_scopes,
+  matrix_vector_typography
+Deferred decision IDs: none
+Module-specific exceptions: PDE truncation and norms remain module-specific;
+  adaptive error-control tolerance remains future; method stability symbols
+  are qualified when needed
+Maintainer: Yiding (Bruce) Tian
+Review date: 2026-07-28
+Starting commit: 15eeb427fc42ae378db7dc696ac3047fdcc0b84d
+Standards-promotion commit: pending this commit
+Notes: No runtime or production Glossary content authorized
 ```
 
-- [ ] The metadata names the exact repository commit reviewed.
-- [ ] Any deferred decision has an explicit blocked gate and follow-up owner.
-- [ ] The approval record does not contain private-source paths or hashes.
+- [x] The metadata names the exact starting commit reviewed.
+- [x] No decision is deferred.
+- [x] The approval record contains no private-source path or hash.
 
-## 12. Next implementation commits
+## 9. Next phase
 
-After the separate standards-promotion commit is accepted, prepare explicit
-tasks in this order:
-
-1. Glossary-catalog and copy-audit reconciliation, documentation only.
-2. Platform and overview copy.
-3. IVP Method/Data/Output and preset copy.
-4. Convergence labels, explanations, and focused tests.
-5. Tutor language, grounding expectations, and focused tests.
-6. Production Glossary Wave 1 design/content integration.
-7. Future Linear Algebra/PDE notation work only when the owning module design
-   authorizes it.
-
-Each task must define its own scope, tests, numerical non-changes, browser
-evidence where applicable, commit boundary, and review gate. Nothing in this
-checklist authorizes those commits automatically.
+The next task is a documentation-only reconciliation of
+`GLOSSARY_CATALOG.md` and `PROJECT_COPY_AUDIT.md` against the approved Version 1
+standards. Platform, IVP, Convergence, Tutor, and production Glossary changes
+remain separate future tasks, each requiring its own scope, tests,
+numerical-non-change checks, commit boundary, and review gate.

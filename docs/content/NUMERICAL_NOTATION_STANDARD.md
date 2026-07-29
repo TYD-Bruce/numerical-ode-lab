@@ -1,91 +1,260 @@
-# Numerical Notation Standard
+# Numerical T-Lab Notation Standard v1
 
-Status: Private-source-reviewed draft; maintainer approval pending.
+Status: Maintainer-approved language standard.
+
+Runtime/content implementation tracked separately.
+
+Approved by Yiding (Bruce) Tian on 2026-07-28 through the nine decisions
+recorded in the
+[Maintainer Decision Packet](MAINTAINER_DECISION_PACKET.md). This standard
+governs project notation. It does not alter a released formula, solver,
+tolerance, metric, classification, or production surface.
 
 ## Purpose and scope
 
-This document proposes a coherent notation foundation for Numerical T-Lab. It
-is a review draft, not a production contract. Existing numerical contracts and
-implemented formulas remain unchanged until a separate maintainer-authorized
-migration.
+This document defines the Version 1 notation used when Numerical T-Lab
+documentation and future content describe cross-cutting numerical analysis,
+scalar fixed-step ODEs, and foundational linear-algebra objects. Symbols remain
+context-sensitive: a symbol must be introduced before use, and prose or
+dimensions—not typography alone—must identify its mathematical type.
 
-Notation is context-sensitive. The draft does not force one symbol to carry
-the same meaning across linear algebra, ODEs, PDEs, approximation, and
-iteration when those contexts describe different mathematical objects.
+## General conventions
 
-## General principles
+- Scalars and vectors use italic lowercase variables, such as \(a\), \(h\),
+  \(x\), and \(u_n\).
+- Matrices use italic uppercase variables, such as \(A\).
+- Do not mix bold and plain styles to distinguish vectors or matrices.
+- Identify a scalar, vector, matrix, function, grid, or sequence in prose and,
+  when useful, by dimensions.
+- Use subscripts on norms when the choice affects interpretation.
+- Distinguish exact quantities, numerical approximations, signed errors,
+  absolute error metrics, and residuals.
+- State the refinement variable, metric, and refinement pair before
+  interpreting observed order.
+- Define each stability symbol and qualify it by method when more than one
+  method is present.
+- Keep display notation and accessible text semantically aligned.
 
-- Define every symbol before relying on it.
-- Distinguish exact quantities, numerical approximations, errors, and residuals.
-- Put a subscript on a norm when the choice affects interpretation.
-- State the refinement variable before discussing convergence or order.
-- Use qualified stability terms.
-- Preserve conventional domain notation when it avoids unnecessary cognitive
-  translation.
-- Keep display notation and accessible text synchronized.
+## Exact and approximate ODE quantities
 
-## Draft conventions
+For the scalar fixed-step ODE context:
 
-| Topic | Draft convention | Context | Competing convention | Evidence rationale | Project migration impact | Decision status |
-|---|---|---|---|---|---|---|
-| Scalars | Italic lowercase, such as \(a\), \(h\), \(t\), \(x\), or \(y\) | All modules | Plain or context-only typography | Separates scalar quantities from future vector and matrix state | Low for current scalar ODE UI; documentation and accessible text review | `PRIORITY_RESOLVED_DRAFT` |
-| Vectors | Bold lowercase, such as \(\mathbf{x}\) or \(\mathbf{u}_n\) | Linear Algebra, systems of ODEs, PDE state vectors | Arrow notation or plain lowercase | Visually separates component collections from scalars | Future-facing; current scalar ODE formulas stay scalar | `DECISION_REQUIRED` |
-| Matrices | Bold uppercase, such as \(\mathbf{A}\) | Linear Algebra and systems | Plain uppercase | Pairs naturally with bold vector notation | Future-facing; current source identifiers are unaffected | `DECISION_REQUIRED` |
-| Linear systems | \(\mathbf{A}\mathbf{x}=\mathbf{b}\) | Linear Algebra and algebraic subproblems | \(Ax=b\) without typographic distinction | Makes object types visible to beginners | Future copy and formula migration only | `DECISION_REQUIRED` |
-| Exact scalar solution | \(y(t)\) | Scalar ODE | \(x(t)\), \(u(t)\), or problem-specific symbols | Matches the implemented first-order ODE teaching boundary | Current display mostly aligned; audit generic Output labels | `PRIORITY_RESOLVED_DRAFT` |
-| Numerical ODE approximation | \(u_n\approx y(t_n)\) | Scalar fixed-step ODE | \(y_n\), \(Y_n\), or \(x_n\) | Keeps exact function and computed sequence visibly distinct | Current Convergence teaching is largely aligned; generic result labels need review | `PRIORITY_RESOLVED_DRAFT` |
-| Time grid | \(t_n=t_0+nh\) | Fixed-step ODE | \(x_n=x_0+nh\) or \(\Delta t\)-only notation | Supported across the primary corpus and current numerical contract | Low; preserve the released fixed-grid rule | `PRIORITY_RESOLVED_DRAFT` |
-| ODE step size | \(h>0\) | ODE time stepping | \(\Delta t\) | Primary-source preference and current Convergence formulas use \(h\) | Audit Run labels that currently show equivalent forms | `PRIORITY_RESOLVED_DRAFT` |
-| Spatial grid spacing | \(\Delta x\), \(\Delta y\), or \(h_x\), \(h_y\) when multiple directions matter | PDE | Reusing unqualified \(h\) everywhere | Avoids confusing time-step and spatial-spacing roles | Future PDE module only | `PRIORITY_RESOLVED_DRAFT` |
-| Grid index | Integer subscripts \(n\) for time and \(i,j\) for space | ODE/PDE | Context-free \(k\) for every index | Keeps iteration count and grid location distinguishable | Future PDE and iterative-solver copy | `PRIORITY_RESOLVED_DRAFT` |
-| Absolute error | \(E_{\mathrm{abs}}=|q_{\mathrm{approx}}-q_{\mathrm{ref}}|\) | Cross-cutting reporting | Signed error presented as “absolute error” | Magnitude is invariant under the unresolved signed-error orientation | Current metric copy can align without numerical change | `ALIGNED` |
-| Signed nodal error | Declare either \(e_n=u_n-y(t_n)\) or its negative before use | ODE analysis | Assuming the sign from context | Source conventions differ, while magnitudes do not | No production signed-error display until reviewed | `DECISION_REQUIRED` |
-| Relative error | \(E_{\mathrm{rel}}=|q_{\mathrm{approx}}-q_{\mathrm{ref}}|/|q_{\mathrm{ref}}|\) only when the reference denominator is valid | Cross-cutting | Protected denominator or percent-only definition | Makes the reference quantity and zero limitation explicit | Future helper/error text requires a zero-reference policy | `DECISION_REQUIRED` |
-| Linear-system residual | \(\mathbf{r}=\mathbf{b}-\mathbf{A}\widehat{\mathbf{x}}\) | Linear Algebra | Opposite sign | Residual must be separate from solution error; sign has little effect on norm-only reporting | Future Linear Algebra diagnostics | `PRIORITY_RESOLVED_DRAFT` |
-| Nonlinear residual | \(G(\widehat{u})\) with the stopping test stated separately | Implicit scalar solves | Calling the update or solution error a residual | Matches the current algebraic solve boundary without changing tolerances | Copy-only future clarification; numerical contract unchanged | `PRIORITY_RESOLVED_DRAFT` |
-| Local truncation error | Show the defining one-step defect and state whether it is divided by \(h\) | ODE methods | Unqualified \(O(h^{p+1})\) or \(O(h^p)\) claims | Sources use both unscaled and step-normalized conventions | Tutor and Glossary wording blocked pending review | `DECISION_REQUIRED` |
-| Global ODE error | \(e_n=u_n-y(t_n)\) for a declared sign; aggregate metrics receive separate symbols | ODE convergence | Calling endpoint or maximum error simply “the global error” | Separates nodal, endpoint, and maximum objects | Current Convergence labels should remain metric-specific | `DECISION_REQUIRED` |
-| Final-time error | \(E_{\mathrm{final}}(h)=|u_N-y(t_{\mathrm{end}})|\) | Current Convergence Study | Endpoint error without a defined endpoint | Matches the released numerical contract | No numerical change; terminology-only audit | `ALIGNED` |
-| Maximum global error | \(E_\infty(h)=\max_n|u_n-y(t_n)|\) | Current Convergence Study | RMS or endpoint metric under the same symbol | Matches the released numerical contract and names the aggregation | No numerical change | `ALIGNED` |
-| Vector norms | \(\|\mathbf{x}\|_p\), with \(p\) explicit when material | Linear Algebra and systems | Bare double bars | Prevents silent switching among Euclidean, maximum, and other norms | Future modules and accessible text | `PRIORITY_RESOLVED_DRAFT` |
-| Matrix norms | \(\|\mathbf{A}\|_p\) for induced norms; \(\|\mathbf{A}\|_F\) for Frobenius norm | Linear Algebra | Bare double bars or \(|A|\) | Distinguishes induced and entrywise constructions | Future Linear Algebra module | `PRIORITY_RESOLVED_DRAFT` |
-| Condition number | \(\kappa_p(\mathbf{A})=\|\mathbf{A}\|_p\|\mathbf{A}^{-1}\|_p\) when \(\mathbf{A}\) is invertible | Linear Algebra | Unsubscripted \(\kappa\) without a norm | The norm choice is part of the quantity | Future Linear Algebra module | `PRIORITY_RESOLVED_DRAFT` |
-| Derivatives | \(y'(t)\), \(y''(t)\), and partial-derivative notation appropriate to PDEs | ODE/PDE | Dot notation without a declared time variable | Keeps independent variables explicit | Current ODE formulas mostly aligned | `PRIORITY_RESOLVED_DRAFT` |
-| Finite differences | Name forward, backward, or central difference and display its stencil | Approximation/PDE | Calling every stencil “the finite difference” | Direction and accuracy depend on the stencil | Future content only | `ALIGNED` |
-| Theoretical order | \(p\) | Method metadata and analysis | “Order” without qualification | Matches current method metadata while keeping observed order separate | Current method cards largely aligned | `PRIORITY_RESOLVED_DRAFT` |
-| Observed order | \(p_{\mathrm{obs}}=\log(E(h)/E(h/r))/\log r\), with \(r=2\) for binary refinement | Convergence experiments | A base-two formula presented as universal | Preserves the current halving case and exposes the general refinement ratio | Formula wording only; classification contract unchanged | `DECISION_REQUIRED` |
-| Stability test equation | \(y'=\lambda y\), \(z=h\lambda\) | ODE absolute stability | Different dependent-variable letters | The object is standard; letter choice is notation-only | Future Glossary/Tutor formula | `PRIORITY_RESOLVED_DRAFT` |
-| Stability function | \(R(z)\) only after defining it for the method | ODE absolute stability | Method-specific amplification factors without a named function | A general symbol aids comparison but is not uniform across sources | Blocked pending maintainer notation review | `DECISION_REQUIRED` |
-| Stability region | \(\mathcal{S}=\{z:|R(z)|\le 1\}\) as a candidate | ODE absolute stability | Other region symbols or an unnamed set | Makes the set explicit; the symbol itself varies | Blocked pending maintainer notation review | `DECISION_REQUIRED` |
-| Factorizations | \(\mathbf{P}\mathbf{A}=\mathbf{L}\mathbf{U}\) for a row-permuted LU convention, with the permutation orientation declared | Linear Algebra | \(\mathbf{A}=\mathbf{P}\mathbf{L}\mathbf{U}\) or \(\mathbf{A}=\mathbf{P}^{T}\mathbf{L}\mathbf{U}\) | Equivalent conventions move the permutation and cannot be mixed silently | Future Linear Algebra plan must choose one orientation | `DECISION_REQUIRED` |
-| QR factorization | \(\mathbf{A}=\mathbf{Q}\mathbf{R}\), with dimensions and reduced/full form stated | Linear Algebra | Unqualified “QR decomposition” | Dimensions affect uniqueness and storage | Future Linear Algebra module | `PRIORITY_RESOLVED_DRAFT` |
-| SVD | \(\mathbf{A}=\mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^{T}\) over real data, with dimensions stated | Linear Algebra | \(\mathbf{V}^{*}\) or economy-size factors without context | Transpose/conjugate transpose and shape depend on the field and form | Future Linear Algebra module | `PRIORITY_RESOLVED_DRAFT` |
+\[
+y(t) \quad\text{is the exact solution},\qquad
+u_n \approx y(t_n) \quad\text{is the numerical approximation},
+\]
 
-## Context rules
+\[
+t_n=t_0+nh,\qquad h>0.
+\]
 
-### ODE and PDE spacing
+Here, \(h\) is the ODE time-step size. A PDE spatial grid spacing uses
+\(\Delta x\), \(\Delta y\), or directional symbols such as \(h_x\) and \(h_y\)
+when time and space occur together.
 
-An ODE time step and a PDE spatial grid spacing may both be denoted by \(h\) in
-source material. Numerical T-Lab should qualify the quantity in prose and use
-directional spatial symbols when both time and space appear together.
+## Signed nodal and global error
 
-### Error and residual
+Numerical T-Lab uses the signed nodal-error orientation
 
-Error compares an approximation with a reference quantity. A residual measures
-failure to satisfy an equation. A small residual does not automatically imply a
-small solution error; conditioning controls part of that relationship.
+\[
+e_n=u_n-y(t_n).
+\]
 
-### Stability
+The symbol \(e_n\) belongs to the propagated nodal-error family. “Global
+error” names that family, not one universal aggregate and not a quantity called
+“total error.” Concrete reported scalars use separate, explicit names:
 
-The draft never uses one formula as the definition of every stability sense.
-Algorithmic numerical stability, ODE absolute stability, multistep
-zero-stability, and stability of equilibria retain separate term IDs and
-context.
+\[
+E_{\mathrm{final}}(h)=\left|u_N-y(t_{\mathrm{end}})\right|,
+\]
 
-## Migration rule
+\[
+E_{\infty}(h)=\max_n\left|u_n-y(t_n)\right|.
+\]
 
-No notation in this draft changes a released solver coefficient, evaluation
-order, tolerance, grid rule, error metric, Convergence classification, Tutor
-contract, accessible formula, or user-facing label. Each production migration
-requires a separate copy/formula plan, focused tests, accessible-text review,
-and browser verification.
+These absolute aggregates do not inherit the sign of \(e_n\). A residual is a
+separate equation defect and must not be presented as solution error.
+
+## Absolute and relative error
+
+For an approximation \(q_{\mathrm{approx}}\) and stated reference
+\(q_{\mathrm{ref}}\),
+
+\[
+E_{\mathrm{abs}}
+=\left|q_{\mathrm{approx}}-q_{\mathrm{ref}}\right|.
+\]
+
+When \(q_{\mathrm{ref}}\ne0\),
+
+\[
+E_{\mathrm{rel}}
+=\frac{\left|q_{\mathrm{approx}}-q_{\mathrm{ref}}\right|}
+       {\left|q_{\mathrm{ref}}\right|}.
+\]
+
+Relative error is unavailable when the reference is zero. In that case,
+report absolute error or define a separately named scaled error. Percent error
+is \(100\%\,E_{\mathrm{rel}}\) and inherits the same nonzero-reference
+requirement. Normwise relative error must name the norm.
+
+## Local truncation error
+
+For an order-\(p\) ODE method, “local truncation error” means the unscaled
+one-step defect obtained by inserting exact data into the discrete update:
+
+\[
+\tau_{n+1}=O(h^{p+1}).
+\]
+
+The defining update-specific expression must accompany the symbol when it is
+introduced. Dividing that defect by \(h\) produces the distinct
+step-normalized local defect:
+
+\[
+\frac{\tau_{n+1}}{h}=O(h^p).
+\]
+
+Do not call both normalizations “local truncation error” without qualification.
+PDE spatial truncation-error notation and scaling remain module-specific and
+are not set by this ODE convention.
+
+## Theoretical and observed order
+
+Theoretical order is denoted by \(p\). For a named positive error metric
+\(E\), step size \(h\), and refinement ratio \(r>1\), the adjacent-refinement
+estimate is
+
+\[
+p_{\mathrm{obs}}
+=\frac{\log\!\bigl(E(h)/E(h/r)\bigr)}{\log r}.
+\]
+
+Binary refinement uses \(r=2\). Every displayed estimate must remain associated
+with:
+
+- the named error metric;
+- the adjacent refinement pair;
+- the finite value, when available; and
+- its evidence status.
+
+Useful finite values may be displayed, but only values classified as reliable
+by the released Convergence contract may drive the primary summary.
+Reliability is finite experimental evidence, not proof that an asymptotic
+region has been reached. Prefer reliable evidence from the asymptotic region
+when the available experiment supports that interpretation. This standard
+does not alter released reliability statuses, precedence, or classification.
+
+## Absolute stability and A-stability
+
+Use the scalar test equation
+
+\[
+y'=\lambda y
+\]
+
+and define the scaled parameter
+
+\[
+z=h\lambda.
+\]
+
+For a stated time-stepping method, define its stability function by
+
+\[
+u_{n+1}=R(z)u_n.
+\]
+
+Its absolute-stability region is denoted by
+
+\[
+\mathcal S
+=\left\{z\in\mathbb C:\left|R(z)\right|\le1\right\}.
+\]
+
+A method is A-stable when
+
+\[
+\left\{z\in\mathbb C:\operatorname{Re}(z)\le0\right\}
+\subseteq \mathcal S.
+\]
+
+The boundary is included. Say “the closed nonpositive half-plane is contained
+in the absolute-stability region”; do not replace the set relation with vague
+claims such as “very stable” or “stable for every problem.” When several
+methods share a surface, qualify the symbols, for example \(R_M\) and
+\(\mathcal S_M\).
+
+## Tolerance naming
+
+Never use an unqualified “solver tolerance.” Name both the algorithm and the
+controlled quantity. Current preferred names are:
+
+- nonlinear update tolerance;
+- nonlinear residual tolerance;
+- exact-solution consistency tolerance; and
+- Convergence interpretation tolerance.
+
+“Adaptive error-control tolerance” is reserved for a future adaptive method
+and is not a current runtime capability. A tolerance is not an accuracy
+guarantee and must not be substituted for a global-error metric.
+
+## Linear-algebra notation
+
+Use plain italic variables and declare object types:
+
+\[
+Ax=b,
+\]
+
+where \(A\) is a matrix and \(x\) and \(b\) are vectors. Examples include
+
+\[
+r=b-A\widehat{x},
+\qquad
+\lVert x\rVert_p,
+\qquad
+\lVert A\rVert_p,
+\]
+
+and, for an invertible matrix under a stated induced norm,
+
+\[
+\kappa_p(A)=\lVert A\rVert_p\lVert A^{-1}\rVert_p.
+\]
+
+The residual orientation above is a future Linear Algebra content convention;
+it does not change current runtime behavior.
+
+## Other aligned conventions
+
+| Topic | Version 1 convention | Boundary |
+|---|---|---|
+| Grid indices | \(n\) for time and \(i,j\) for space | State when another index denotes an algorithm iteration |
+| Derivatives | \(y'(t)\), \(y''(t)\), and variable-explicit partial derivatives | Dot notation requires a declared time variable |
+| Finite differences | Name forward, backward, or central difference and show its stencil | Do not use one unqualified stencil name |
+| QR factorization | \(A=QR\), with dimensions and reduced/full form stated | Future Linear Algebra content |
+| Singular value decomposition | \(A=U\Sigma V^T\) for real data, with dimensions and form stated | Use conjugate transpose when the field requires it |
+
+The row-permuted LU orientation remains a future, module-specific decision.
+Until that decision is made, state the permutation orientation wherever a
+factorization is shown. It is not one of the nine Version 1 project-language
+decisions.
+
+## Context and migration boundaries
+
+- Error compares an approximation with a reference; a residual measures
+  failure to satisfy an equation.
+- Conditioning, algorithmic numerical stability, ODE absolute stability,
+  zero-stability, and equilibrium stability remain distinct.
+- Stiffness is a problem property involving fast and slow behavior plus a
+  stability-driven step restriction; it is not defined by \(R\) or
+  \(\mathcal S\) alone.
+- Source identifiers and locator syntax are evidence metadata, not runtime
+  notation.
+- Existing solver coefficients, evaluation order, grid rules, budgets,
+  tolerances, error metrics, Convergence classifications, and Tutor contracts
+  remain unchanged.
+- Production copy, accessible formulas, and Glossary content require a
+  separate reconciliation and implementation plan with focused tests and
+  browser review.
