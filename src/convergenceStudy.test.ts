@@ -368,6 +368,10 @@ describe("consistency permission and pure convergence scope", () => {
     const source = ["./exactSolution.ts", "./convergenceStudy.ts"]
       .map((path) => readFileSync(new URL(path, import.meta.url), "utf8"))
       .join("\n");
+    expect(source).toContain(
+      "The recent maximum-global-error observed orders are consistent across levels"
+    );
+    expect(source).not.toContain("The recent maximum-error orders are stable");
     expect(source).not.toMatch(/chart\.js|mathlive|Mathfield|document\.|window\.|innerHTML/);
     expect(source).not.toMatch(/aiTutor|Convergence Study drawer/);
     expect(source).not.toMatch(/\bnew\s+Function\b|\beval\s*\(/);

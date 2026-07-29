@@ -727,7 +727,7 @@ export function interpretConvergence(
       kind: "consistent_with_theory",
       title: "Observed order is consistent with theory",
       explanation:
-        `The recent maximum-error orders are stable and the latest value is within ${tolerance.toFixed(3)} of the theoretical order.`,
+        `The recent maximum-global-error observed orders are consistent across levels, and the latest reliable value is within ${tolerance.toFixed(3)} of the theoretical order.`,
       primaryObservedOrder: final.value,
       evidencePairs,
     };

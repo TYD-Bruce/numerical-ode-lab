@@ -139,9 +139,31 @@ describe("convergence teaching sections", () => {
     expect(observed.currentExample).toContain("3.200e-7");
     expect(observed.currentExample).toContain("15.94 times smaller");
     expect(observed.currentExample).toContain("3.995");
+    expect(observed.currentExample).toContain("giving an observed order of 3.995");
+    expect(observed.currentExample).not.toContain("measured order");
     const exact = sections.find((section) => section.id === "exact_solution")!;
+    expect(exact.plainLanguage).toBe(
+      "An exact solution is a function that satisfies the stated initial value problem and supplies the reference values used to compute numerical error."
+    );
     expect(exact.currentExample).toContain("user supplied exact display");
     expect(exact.formula.latex).not.toContain("user supplied");
+  });
+
+  it("uses the approved error metric names, accessible formula text, and asymptotic language", () => {
+    const sections = buildConvergenceTeachingSections(result(), {
+      methodName: "RK4",
+    });
+    const errors = sections.find((section) => section.id === "errors")!;
+    expect(errors.title).toBe(
+      "How are final-time error and maximum global error calculated?"
+    );
+    expect(errors.formula.displayText).toBe(
+      "final-time error equals the absolute endpoint difference; maximum global error is the largest absolute grid-point difference"
+    );
+    const theory = sections.find((section) => section.id === "theory_difference")!;
+    expect(theory.plainLanguage).toContain("before the asymptotic region is reached");
+    expect(theory.plainLanguage).not.toContain("asymptotic range");
+    expect(JSON.stringify(sections)).not.toMatch(/\btotal error\b|\bactual order\b/);
   });
 
   it("reports unavailable order honestly and distinguishes the selected metric", () => {

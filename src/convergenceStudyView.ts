@@ -265,8 +265,8 @@ function renderConclusion(container: HTMLElement, state: ConvergenceUiState, met
   appendDefinition(list, "Theoretical order", String(conclusion.theoreticalOrder));
   appendDefinition(
     list,
-    "Primary maximum-error observed order",
-    conclusion.primaryObservedOrder === undefined ? "No reliable order available" : numeric(conclusion.primaryObservedOrder)
+    "Primary observed order (maximum global error)",
+    conclusion.primaryObservedOrder === undefined ? "No reliable observed order available" : numeric(conclusion.primaryObservedOrder)
   );
   appendDefinition(list, "Interpretation", conclusion.interpretationTitle);
   card.append(list, element("p", undefined, conclusion.explanation));
@@ -283,8 +283,8 @@ function renderErrorTable(container: HTMLElement, result: ConvergenceStudyResult
   const table = element("table");
   const caption = element("caption", "sr-only", "Convergence study errors and observed orders");
   const headers = [
-    "Level", "h", "Steps", "Final numerical", "Final exact", "Final-time error",
-    "Maximum global error", "Maximum-error time", "Final observed order", "Maximum observed order",
+    "Level", "h", "Steps", "Final numerical approximation", "Final exact value", "Final-time error",
+    "Maximum global error", "Maximum-error time", "Observed order (final-time error)", "Observed order (maximum global error)",
   ];
   const thead = element("thead");
   const headerRow = element("tr");

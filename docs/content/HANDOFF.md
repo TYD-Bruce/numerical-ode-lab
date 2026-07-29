@@ -1,8 +1,8 @@
 # Numerical T-Lab Project Language v1 Handoff
 
 Status: Project Language Standard v1 approved; Glossary catalog, copy audit,
-implementation groups, and traceability reconciled; Group A accepted; Group B
-implemented and locally verified.
+implementation groups, and traceability reconciled; Groups A and B accepted;
+Group C implemented and locally verified.
 
 Runtime/content implementation tracked separately.
 
@@ -229,7 +229,7 @@ are accepted.
 ## 10. Group B implementation checkpoint
 
 The exact ready records `COPY-006` through `COPY-019` are
-`IMPLEMENTED_LOCALLY_COMMIT_PENDING`.
+accepted in commit `d2d2130c1ef7354e56497455ccadecd1f991eb59`.
 
 - Product files changed: `src/grid.ts`, `src/methodCatalog.ts`,
   `src/ode/odeApp.ts`, and `src/problemPresets.ts`.
@@ -270,8 +270,59 @@ The exact ready records `COPY-006` through `COPY-019` are
   ODE binding, or DEV fixture was added.
 - Nothing was pushed or deployed.
 
-## 11. Current review gate
+## 11. Group C implementation checkpoint
 
-Group A is accepted. Group B is implemented and locally verified. Group C
-remains unauthorized. The next gate is maintainer acceptance of the Group B
-commit and evidence package before Convergence and error language work begins.
+The exact authorized records `COPY-020` through `COPY-029` are
+`IMPLEMENTED_LOCALLY_COMMIT_PENDING`.
+
+- Product files changed: `src/convergenceStudy.ts`,
+  `src/convergenceStudyView.ts`, and `src/convergenceTeaching.ts`.
+- Focused tests changed: `src/convergenceStudy.test.ts`,
+  `src/convergenceStudyOrder.test.ts`, `src/convergenceStudyView.test.ts`, and
+  `src/convergenceTeaching.test.ts`.
+  `src/mainConvergenceIntegration.test.ts` remained unchanged and passed as a
+  regression check.
+- The tests-first run failed only six intended copy assertions; 87 existing
+  assertions still passed. The final focused run passed 5 files and 93 tests.
+- A TypeScript AST comparison against starting HEAD matched all 8,573
+  production nodes with string contents ignored: imports/exports, identifiers,
+  operators, numeric literals, status literals, conditions, branch order,
+  calls, object fields, loops, and return shapes were unchanged.
+- Baseline and final focused evidence preserved eligibility and blocking
+  reasons, three-to-six binary refinement levels, step counts, final-time
+  error, maximum global error, observed-order values, the six released status
+  values and precedence, maximum-global primary ownership, selected chart
+  metric, interpretation selection, stale/current state, chart data, stored
+  results, and teaching accordion state.
+- `npm.cmd run verify` passed 73 files and 1,033 tests, application typecheck,
+  API typecheck, and the 79-module production build. Only the accepted large
+  deferred-chunk warning remained.
+- Isolated localhost review covered `/ode/initial-value-problems` and `/ode` at
+  1440×900 and 390×844. Forward Euler produced reliable primary evidence
+  (`1.031`); metric switching preserved table values and kept the primary
+  maximum-global metric explicitly named. A real six-level RK4 study at
+  `h=0.0125` displayed below-resolution pairs without promoting them and kept
+  earlier finite reliable values visible. Browser review also covered stale
+  settings, missing exact solution, Compare ineligibility, expanded teaching
+  sections, navigation away/back, semantic headers, one accessible owner per
+  formula, visible focus, contained mobile table/chart scrolling, no page
+  overflow, and no console warning or error.
+- Negative, near-zero, no-improvement, and synthetic unavailable status cases
+  remain deterministic-test evidence only. Current Convergence teaching has no
+  local-truncation-error section, so this exact-copy group added none; source
+  scan found no contradictory LTE normalization.
+- Production inspection retained eight JavaScript and seven CSS chunks with no
+  new import or dynamic import. The existing shared ODE/Convergence chunk moved
+  from 58,841/17,460 to 58,885/17,475 raw/gzip bytes (`+44/+15`); the lazy IVP
+  route moved from 241,722/80,370 to 241,871/80,388 (`+149/+18`). The deltas
+  are bounded copy only. Entry/Home, Tutor, Glossary, readonly math, MathLive,
+  and editable-math boundaries did not change.
+- No Tutor or Glossary source changed. Production still has no Glossary
+  content, annotation, ODE binding, or visible Glossary behavior.
+- Nothing was pushed or deployed.
+
+## 12. Current review gate
+
+Groups A and B are accepted. Group C is implemented and locally verified.
+Group D remains unauthorized. The next gate is maintainer acceptance of the
+Group C commit and evidence package before Tutor language work begins.

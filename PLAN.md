@@ -39,10 +39,11 @@ is documentation governance only. The Glossary catalog and project copy audit
 are now reconciled against Version 1, with all 197 IDs, 55 copy records, six
 implementation groups, and local traceability/validation recorded. Group A
 ready records `COPY-001`, `COPY-002`, `COPY-004`, and `COPY-005` are accepted.
-Group B records `COPY-006` through `COPY-019` are implemented locally and
-verified. `COPY-003` and `src/pages/homePage.ts` remain held and unchanged.
-These iterations change approved visible copy and focused expectations only;
-Group C, production Glossary content, and an ODE binding remain unauthorized.
+Group B records `COPY-006` through `COPY-019` are accepted. Group C records
+`COPY-020` through `COPY-029` are implemented locally and verified.
+`COPY-003` and `src/pages/homePage.ts` remain held and unchanged. These
+iterations change approved visible copy and focused expectations only;
+Group D, production Glossary content, and an ODE binding remain unauthorized.
 Nothing was pushed or deployed.
 
 ## Current released baseline
@@ -135,21 +136,24 @@ independent final review. No production content or ODE binding was added.**
     task with focused tests and browser review. Complete and accepted;
     `COPY-003` remained held.
 13. Implement Group B, IVP Method/Data/Output and preset language, only in a
-    separately scoped task with focused tests and browser review. Complete
-    locally and awaiting maintainer acceptance.
-14. Add the reviewed ODE Glossary vertical slice only after separate content
+    separately scoped task with focused tests and browser review. Complete and
+    accepted.
+14. Implement Group C, Convergence and error language, only in a separately
+    scoped task with focused tests, numerical/structural audit, browser review,
+    and build inspection. Complete locally and awaiting maintainer acceptance.
+15. Add the reviewed ODE Glossary vertical slice only after separate content
     approval and implementation authorization.
-15. Push only when explicitly requested by the maintainer.
+16. Push only when explicitly requested by the maintainer.
 
 ## Current next action
 
-Review and accept the local Group B commit and evidence package. The exact
-records `COPY-006` through `COPY-019` are implemented; focused tests, both
-TypeScript checks, full verification, 1440×900 and 390×844 localhost review,
-and production artifact inspection passed. `COPY-003` remains deferred with
-the PDE module. Group C Convergence and error language, production Glossary
-content, an ODE binding, and the reviewed ODE vertical slice remain
-unauthorized.
+Review and accept the local Group C commit and evidence package. The exact
+records `COPY-020` through `COPY-029` are implemented; focused tests, both
+TypeScript checks, full verification, AST/numerical non-change audit,
+1440×900 and 390×844 localhost review, and production artifact inspection
+passed. `COPY-003` remains deferred with the PDE module. Group D Tutor
+language, production Glossary content, an ODE binding, and the reviewed ODE
+vertical slice remain unauthorized.
 
 ## Parallel content foundation
 
@@ -168,8 +172,9 @@ product relevance, runtime readiness, and rollout wave, and includes rich
 planning drafts for 10 Wave 1 and 13 high-priority Wave 2 terms. The copy audit
 rescans 55 records and maps exact replacements to Groups A–F. The standards and
 reconciliation publish no production term, definition, annotation, or notation
-migration. Group A is accepted, and Group B implements only its 14 authorized
-IVP workflow records. `COPY-003` remains held; Groups C–F remain unimplemented.
+migration. Groups A and B are accepted, and Group C implements only its 10
+authorized Convergence/error records. `COPY-003` remains held; Groups D–F
+remain unimplemented.
 The continuation state is
 [the project-language handoff](docs/content/HANDOFF.md). Nothing from these
 copy iterations was pushed or deployed.
@@ -207,10 +212,10 @@ remains historical evidence and all three of its findings are closed. The
 project-language approval gate is also closed: all nine choices are recorded
 and the three standards are approved as Version 1. The catalog/copy
 reconciliation gate is also closed with 197 stable IDs and 55 rescanned copy
-records. Group A is accepted; `COPY-003` remains held. Group B is implemented
-and locally verified. The next gate is maintainer acceptance of the Group B
-commit and evidence package before Convergence and error language work begins.
-Group C remains unauthorized. Production Glossary terms, annotations, an ODE
+records. Groups A and B are accepted; `COPY-003` remains held. Group C is
+implemented and locally verified. The next gate is maintainer acceptance of
+the Group C commit and evidence package before Tutor language work begins.
+Group D remains unauthorized. Production Glossary terms, annotations, an ODE
 binding, and visible Glossary behavior remain absent and unauthorized.
 
 ## Update rule

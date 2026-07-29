@@ -133,9 +133,13 @@ describe("observed-order assessment", () => {
 
 describe("maximum-error interpretation", () => {
   it("covers all five categories", () => {
-    expect(interpretConvergence(interpretationLevels([
+    const consistent = interpretConvergence(interpretationLevels([
       { status: "reliable", value: 3.9 }, { status: "reliable", value: 4.05 },
-    ]), 4).kind).toBe("consistent_with_theory");
+    ]), 4);
+    expect(consistent.kind).toBe("consistent_with_theory");
+    expect(consistent.explanation).toBe(
+      "The recent maximum-global-error observed orders are consistent across levels, and the latest reliable value is within 0.400 of the theoretical order."
+    );
     expect(interpretConvergence(interpretationLevels([
       { status: "reliable", value: 2 }, { status: "reliable", value: 3 },
     ]), 4).kind).toBe("approaching_theory");

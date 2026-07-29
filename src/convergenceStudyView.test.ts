@@ -316,13 +316,56 @@ describe("Convergence Study results", () => {
     expect(value.host.textContent).toContain("What this experiment found");
     expect(value.host.textContent).toContain("Runge-Kutta 4");
     expect(value.host.textContent).toContain("Stale result");
-    expect(value.host.textContent).toContain("Final numerical");
+    expect(
+      [...value.host.querySelectorAll(".convergence-conclusion dt")].map(
+        (term) => term.textContent
+      )
+    ).toContain("Primary observed order (maximum global error)");
+    expect(value.host.textContent).toContain("Final numerical approximation");
     expect(value.host.textContent).toContain("Below resolution");
+    expect(
+      [...value.host.querySelectorAll(".convergence-results-table th")].map(
+        (header) => header.textContent
+      )
+    ).toEqual([
+      "Level",
+      "h",
+      "Steps",
+      "Final numerical approximation",
+      "Final exact value",
+      "Final-time error",
+      "Maximum global error",
+      "Maximum-error time",
+      "Observed order (final-time error)",
+      "Observed order (maximum global error)",
+    ]);
+    expect(
+      value.host.querySelector(".convergence-results-table td[title='Too close to resolution.']")
+    ).not.toBeNull();
     expect(value.chartFactory.create).toHaveBeenCalledTimes(1);
     expect(value.host.textContent).toContain("Moving right means using a smaller step size");
     expect(value.host.querySelectorAll("[data-teaching-id]")).toHaveLength(8);
     expect(value.host.querySelector(".convergence-table-scroll")).not.toBeNull();
     expect(value.host.querySelector(".convergence-chart-scroll")).not.toBeNull();
+  });
+
+  it("names an unavailable primary quantity as observed order", () => {
+    const run = snapshot();
+    let state = createConvergenceUiState(run);
+    const unavailable = study(state);
+    state = setConvergenceDrawerOpen(recordConvergenceSuccess(state, {
+      ...unavailable,
+      interpretation: {
+        kind: "order_unavailable",
+        title: "Observed order is unavailable",
+        explanation: "The available pairs are below resolution.",
+        evidencePairs: [],
+      },
+    }), true);
+    const value = harness(state, run);
+
+    expect(value.host.textContent).toContain("No reliable observed order available");
+    expect(value.host.textContent).not.toContain("No reliable order available");
   });
 
   it("changes metric without running and destroys the prior chart", async () => {

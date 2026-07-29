@@ -2,8 +2,9 @@
 
 Status: Reconciled against Project Language Standard v1.
 Group A ready records are accepted. Group B records `COPY-006` through
-`COPY-019` are implemented locally and verified; `COPY-003` remains held.
-Groups C–F remain unimplemented and unauthorized.
+`COPY-019` are accepted. Group C records `COPY-020` through `COPY-029` are
+implemented locally, verified, and commit-pending; `COPY-003` remains held.
+Groups D–F remain unimplemented and unauthorized.
 
 ## Purpose and boundary
 
@@ -24,9 +25,10 @@ inside the separately authorized implementation group.
 - Records rescanned: **55**.
 - Source files represented: **20**.
 - Expected focused test files represented: **21**.
-- Readiness counts: `{'DEFERRED_BY_MODULE': 1, 'NO_CHANGE': 12, 'READY_FOR_IMPLEMENTATION': 40, 'REQUIRES_CONTENT_WAVE': 2}`.
-- Implementation progress: 4 Group A ready records accepted and 14 Group B
-  records implemented locally; `COPY-003` held; Groups C–F unimplemented.
+- Readiness counts: `{'DEFERRED_BY_MODULE': 1, 'IMPLEMENTED_LOCALLY_COMMIT_PENDING': 10, 'NO_CHANGE': 12, 'READY_FOR_IMPLEMENTATION': 30, 'REQUIRES_CONTENT_WAVE': 2}`.
+- Implementation progress: 4 Group A ready records and 14 Group B records
+  accepted; 10 Group C records implemented locally and commit-pending;
+  `COPY-003` held; Groups D–F unimplemented.
 - Former decision-blocked records: **0**.
 - Numerical-behavior changes proposed: **0**.
 
@@ -190,7 +192,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Source/test status: `EXACT_REPLACEMENT_IN_src/ode/odeApp.ts::DEFAULT_LEDE; initialValueProblemsRoute.test.ts exact copy assertion and all focused regressions passed`
 - Browser verification status: `PASSED_IVP_METHOD_DATA_RUN_OUTPUT_COMPARE_PRESET_AND_ERROR_STATES_AT_1440x900_AND_390x844`
 - Numerical/behavior status: `TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_AND_NUMERIC_LITERALS_UNCHANGED_WHEN_APPROVED_TEXT_LITERALS_ARE_IGNORED; visible text only; no route, session, solver, grid, Tutor, Convergence, or Glossary behavior change`
-- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
+- Notes: Implemented with the exact approved Group B wording and accepted in commit `d2d2130c1ef7354e56497455ccadecd1f991eb59`.
 
 ### COPY-007 — `src/methodCatalog.ts` · `METHOD_CATALOG / backward_euler / blurb`
 
@@ -213,7 +215,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Source/test status: `EXACT_REPLACEMENT_IN_src/methodCatalog.ts::METHOD_CATALOG/backward_euler/blurb; initialValueProblemsRoute.test.ts exact copy assertion and newExperiment.test.ts regression passed`
 - Browser verification status: `PASSED_ALL_METHOD_CARDS_AND_STABILITY_WORDING_AT_1440x900_AND_390x844`
 - Numerical/behavior status: `TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_AND_NUMERIC_LITERALS_UNCHANGED_WHEN_APPROVED_TEXT_LITERALS_ARE_IGNORED; catalog text only; method ID, order, solver selection, and workflow behavior unchanged`
-- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
+- Notes: Implemented with the exact approved Group B wording and accepted in commit `d2d2130c1ef7354e56497455ccadecd1f991eb59`.
 
 ### COPY-008 — `src/methodCatalog.ts` · `METHOD_CATALOG / forward_euler / blurb`
 
@@ -236,7 +238,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Source/test status: `EXACT_REPLACEMENT_IN_src/methodCatalog.ts::METHOD_CATALOG/forward_euler/blurb; initialValueProblemsRoute.test.ts exact copy assertion and newExperiment.test.ts regression passed`
 - Browser verification status: `PASSED_ALL_METHOD_CARDS_AND_THEORETICAL_ORDER_WORDING_AT_1440x900_AND_390x844`
 - Numerical/behavior status: `TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_AND_NUMERIC_LITERALS_UNCHANGED_WHEN_APPROVED_TEXT_LITERALS_ARE_IGNORED; catalog text only; method ID, order, solver selection, and workflow behavior unchanged`
-- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
+- Notes: Implemented with the exact approved Group B wording and accepted in commit `d2d2130c1ef7354e56497455ccadecd1f991eb59`.
 
 ### COPY-009 — `src/methodCatalog.ts` · `METHOD_CATALOG / adams_bashforth / blurb`
 
@@ -259,7 +261,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Source/test status: `EXACT_REPLACEMENT_IN_src/methodCatalog.ts::METHOD_CATALOG/adams_bashforth/blurb; initialValueProblemsRoute.test.ts exact copy assertion and newExperiment.test.ts regression passed`
 - Browser verification status: `PASSED_ALL_METHOD_CARDS_AND_THEORETICAL_ORDER_WORDING_AT_1440x900_AND_390x844`
 - Numerical/behavior status: `TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_AND_NUMERIC_LITERALS_UNCHANGED_WHEN_APPROVED_TEXT_LITERALS_ARE_IGNORED; catalog text only; method ID, order range, startup, solver selection, and workflow behavior unchanged`
-- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
+- Notes: Implemented with the exact approved Group B wording and accepted in commit `d2d2130c1ef7354e56497455ccadecd1f991eb59`.
 
 ### COPY-010 — `src/ode/odeApp.ts` · `orderFieldHtml and metadataPanelHtml`
 
@@ -282,7 +284,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Source/test status: `EXACT_REPLACEMENTS_IN_src/ode/odeApp.ts::orderFieldHtml_AND_metadataPanelHtml; initialValueProblemsRoute.test.ts and odeLifecycle.test.ts exact copy assertions passed`
 - Browser verification status: `PASSED_CONFIGURED_AND_REPORTED_THEORETICAL_ORDER_WORDING_AT_1440x900_AND_390x844`
 - Numerical/behavior status: `TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_AND_NUMERIC_LITERALS_UNCHANGED_WHEN_APPROVED_TEXT_LITERALS_ARE_IGNORED; label text only; configured order, metadata, controls, and state unchanged`
-- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
+- Notes: Implemented with the exact approved Group B wording and accepted in commit `d2d2130c1ef7354e56497455ccadecd1f991eb59`.
 
 ### COPY-011 — `src/ode/odeApp.ts` · `renderForm / time inputs`
 
@@ -305,7 +307,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Source/test status: `EXACT_REPLACEMENTS_IN_src/ode/odeApp.ts::renderForm_AND_renderCompareForm; initialValueProblemsRoute.test.ts exact label assertions and odeLifecycle.test.ts regressions passed`
 - Browser verification status: `PASSED_SINGLE_AND_COMPARE_END_TIME_LABELS_AND_ACCESSIBLE_NAMES_AT_1440x900_AND_390x844`
 - Numerical/behavior status: `TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_AND_NUMERIC_LITERALS_UNCHANGED_WHEN_APPROVED_TEXT_LITERALS_ARE_IGNORED; label text only; input name, value, parsing, validation, session, and grid behavior unchanged`
-- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
+- Notes: Implemented with the exact approved Group B wording and accepted in commit `d2d2130c1ef7354e56497455ccadecd1f991eb59`.
 
 ### COPY-012 — `src/ode/odeApp.ts` · `renderForm and renderCompareForm / step-size labels`
 
@@ -328,7 +330,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Source/test status: `EXACT_REPLACEMENTS_IN_src/ode/odeApp.ts::renderForm_AND_renderCompareForm; initialValueProblemsRoute.test.ts exact label assertions and odeLifecycle.test.ts regressions passed`
 - Browser verification status: `PASSED_SINGLE_AND_COMPARE_TIME_STEP_LABELS_NATIVE_VALIDATION_AND_GRID_ERRORS_AT_1440x900_AND_390x844`
 - Numerical/behavior status: `TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_AND_NUMERIC_LITERALS_UNCHANGED_WHEN_APPROVED_TEXT_LITERALS_ARE_IGNORED; label text only; input constraints, values, validation precedence, session, and grid behavior unchanged`
-- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
+- Notes: Implemented with the exact approved Group B wording and accepted in commit `d2d2130c1ef7354e56497455ccadecd1f991eb59`.
 
 ### COPY-013 — `src/problemPresets.ts` · `PROBLEM_PRESETS / exponential_decay / teachingSummary`
 
@@ -351,7 +353,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Source/test status: `EXACT_REPLACEMENT_IN_src/problemPresets.ts::PROBLEM_PRESETS/exponential_decay/teachingSummary; problemPresets.test.ts and beginnerStarter.test.ts exact assertions passed`
 - Browser verification status: `PASSED_EXPONENTIAL_DECAY_AND_STIFF_RELAXATION_PRESET_COPY_VALUES_AND_WRAPPING_AT_1440x900_AND_390x844`
 - Numerical/behavior status: `TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_AND_NUMERIC_LITERALS_UNCHANGED_WHEN_APPROVED_TEXT_LITERALS_ARE_IGNORED; preset summary text only; preset ID, order, values, expressions, recommended step, compatibility, and warnings unchanged`
-- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
+- Notes: Implemented with the exact approved Group B wording and accepted in commit `d2d2130c1ef7354e56497455ccadecd1f991eb59`.
 
 ### COPY-014 — `src/grid.ts` · `validateFixedStepGrid / non-finite step count`
 
@@ -374,7 +376,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Source/test status: `EXACT_REPLACEMENT_IN_src/grid.ts::validateFixedStepGrid/non-finite-step-count; grid.test.ts focused branch assertion passed`
 - Browser verification status: `PASSED_REPRESENTATIVE_NATIVE_NONPOSITIVE_ALIGNED_GRID_AND_STEP_BUDGET_VALIDATION_AT_1440x900_AND_390x844`
 - Numerical/behavior status: `TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_NUMERIC_LITERALS_GRID_ARITHMETIC_AND_BRANCH_ORDER_UNCHANGED_WHEN_APPROVED_TEXT_LITERALS_ARE_IGNORED; error text only; failing condition, validation precedence, error ownership, and control flow unchanged`
-- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
+- Notes: Implemented with the exact approved Group B wording and accepted in commit `d2d2130c1ef7354e56497455ccadecd1f991eb59`.
 
 ### COPY-015 — `src/ode/odeApp.ts` · `mountResults / summary stat`
 
@@ -397,7 +399,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Source/test status: `EXACT_REPLACEMENT_IN_src/ode/odeApp.ts::mountResults/summary-stat; odeLifecycle.test.ts exact assertion passed`
 - Browser verification status: `PASSED_BEGINNER_AND_STIFF_OUTPUT_STATS_WITH_26_AND_201_UNCHANGED_GRID_POINTS_AT_1440x900_AND_390x844`
 - Numerical/behavior status: `TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_AND_NUMERIC_LITERALS_UNCHANGED_WHEN_APPROVED_TEXT_LITERALS_ARE_IGNORED; result label only; result-series length, chart, table, session, and Convergence eligibility unchanged`
-- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
+- Notes: Implemented with the exact approved Group B wording and accepted in commit `d2d2130c1ef7354e56497455ccadecd1f991eb59`.
 
 ### COPY-016 — `src/ode/odeApp.ts` · `mountResults / final-value stat`
 
@@ -420,7 +422,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Source/test status: `EXACT_REPLACEMENT_IN_src/ode/odeApp.ts::mountResults/final-value-stat; odeLifecycle.test.ts exact assertion passed`
 - Browser verification status: `PASSED_BEGINNER_AND_STIFF_FINAL_APPROXIMATION_LABELS_WITH_VALUES_0.00377789_AND_0.99500441_UNCHANGED_AT_1440x900_AND_390x844`
 - Numerical/behavior status: `APPROVED_TEMPLATE_TO_STATIC_LABEL_ONLY; TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_AND_NUMERIC_LITERALS_OTHERWISE_UNCHANGED; result label only; numerical value, exact solution, chart, table, session, and Convergence eligibility unchanged`
-- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
+- Notes: Implemented with the exact approved Group B wording and accepted in commit `d2d2130c1ef7354e56497455ccadecd1f991eb59`.
 
 ### COPY-017 — `src/ode/odeApp.ts` · `mountCompareResults / final-value stats`
 
@@ -443,7 +445,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Source/test status: `EXACT_REPLACEMENTS_IN_src/ode/odeApp.ts::mountCompareResults/final-value-stats; odeLifecycle.test.ts exact assertions passed`
 - Browser verification status: `PASSED_COMPARE_LABELS_WITH_METHOD_NAMES_AND_VALUES_0.99500441_AND_0.99500416_UNCHANGED_AT_1440x900_AND_390x844`
 - Numerical/behavior status: `TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_AND_NUMERIC_LITERALS_UNCHANGED_WHEN_APPROVED_TEXT_LITERALS_ARE_IGNORED; result labels only; both solver results, pairing, chart, table, and session behavior unchanged`
-- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
+- Notes: Implemented with the exact approved Group B wording and accepted in commit `d2d2130c1ef7354e56497455ccadecd1f991eb59`.
 
 ### COPY-018 — `src/ode/odeApp.ts` · `mountCompareResults / final difference`
 
@@ -466,7 +468,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Source/test status: `EXACT_REPLACEMENT_IN_src/ode/odeApp.ts::mountCompareResults/final-difference; odeLifecycle.test.ts exact assertion passed`
 - Browser verification status: `PASSED_COMPARE_DIFFERENCE_LABEL_WITH_2.4960e-7_VALUE_UNCHANGED_AT_1440x900_AND_390x844`
 - Numerical/behavior status: `TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_AND_NUMERIC_LITERALS_UNCHANGED_WHEN_APPROVED_TEXT_LITERALS_ARE_IGNORED; result label only; absolute-difference calculation, operands, formatting, chart, table, and session behavior unchanged`
-- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
+- Notes: Implemented with the exact approved Group B wording and accepted in commit `d2d2130c1ef7354e56497455ccadecd1f991eb59`.
 
 ### COPY-019 — `src/ode/odeApp.ts` · `mountCompareResults / length mismatch`
 
@@ -489,7 +491,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Source/test status: `EXACT_REPLACEMENT_IN_src/ode/odeApp.ts::mountCompareResults/length-mismatch; odeLifecycle.test.ts focused mismatch-branch assertion passed`
 - Browser verification status: `PASSED_COMPARE_WORKFLOW_LAYOUT_AND_ALIGNED_GRID_VALIDATION_AT_1440x900_AND_390x844; synthetic mismatch remains focused-test-only`
 - Numerical/behavior status: `TYPESCRIPT_AST_STRUCTURE_IDENTIFIERS_NUMERIC_LITERALS_BRANCH_CONDITION_AND_RETURN_ORDER_UNCHANGED_WHEN_APPROVED_TEXT_LITERALS_ARE_IGNORED; error text only; mismatch condition, no-plot outcome, ownership, and control flow unchanged`
-- Notes: Implemented with the exact approved Group B wording; maintainer acceptance of the local commit remains pending.
+- Notes: Implemented with the exact approved Group B wording and accepted in commit `d2d2130c1ef7354e56497455ccadecd1f991eb59`.
 
 ### COPY-020 — `src/convergenceStudyView.ts` · `renderConclusion / primary order label`
 
@@ -506,9 +508,9 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/convergenceStudyView.test.ts`
 - Browser review: Review eligible, blocked, and unavailable Convergence Study states at 1440×900 and 390×844; check table headers, formulas, chart labels, and evidence wording.
 - Implementation group: `GROUP_C`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Notes: Implemented exactly in the authorized Group C iteration; commit pending.
 
 ### COPY-021 — `src/convergenceStudyView.ts` · `renderConclusion / unavailable order`
 
@@ -525,9 +527,9 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/convergenceStudyView.test.ts`
 - Browser review: Review eligible, blocked, and unavailable Convergence Study states at 1440×900 and 390×844; check table headers, formulas, chart labels, and evidence wording.
 - Implementation group: `GROUP_C`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Notes: Implemented exactly in the authorized Group C iteration; commit pending.
 
 ### COPY-022 — `src/convergenceStudyView.ts` · `renderErrorTable / value headers`
 
@@ -544,9 +546,9 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/convergenceStudyView.test.ts`
 - Browser review: Review eligible, blocked, and unavailable Convergence Study states at 1440×900 and 390×844; check table headers, formulas, chart labels, and evidence wording.
 - Implementation group: `GROUP_C`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Notes: Implemented exactly in the authorized Group C iteration; commit pending.
 
 ### COPY-023 — `src/convergenceStudyView.ts` · `renderErrorTable / order headers`
 
@@ -563,9 +565,9 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/convergenceStudyView.test.ts`
 - Browser review: Review eligible, blocked, and unavailable Convergence Study states at 1440×900 and 390×844; check table headers, formulas, chart labels, and evidence wording.
 - Implementation group: `GROUP_C`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Notes: Implemented exactly in the authorized Group C iteration; commit pending.
 
 ### COPY-024 — `src/convergenceTeaching.ts` · `buildConvergenceTeachingSections / errors section`
 
@@ -582,9 +584,9 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/convergenceTeaching.test.ts`
 - Browser review: Review eligible, blocked, and unavailable Convergence Study states at 1440×900 and 390×844; check table headers, formulas, chart labels, and evidence wording.
 - Implementation group: `GROUP_C`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Notes: Implemented exactly in the authorized Group C iteration; commit pending.
 
 ### COPY-025 — `src/convergenceTeaching.ts` · `buildConvergenceTeachingSections / order example`
 
@@ -601,9 +603,9 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/convergenceTeaching.test.ts`
 - Browser review: Review eligible, blocked, and unavailable Convergence Study states at 1440×900 and 390×844; check table headers, formulas, chart labels, and evidence wording.
 - Implementation group: `GROUP_C`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Notes: Implemented exactly in the authorized Group C iteration; commit pending.
 
 ### COPY-026 — `src/convergenceTeaching.ts` · `buildConvergenceTeachingSections / theory_difference`
 
@@ -620,9 +622,9 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/convergenceTeaching.test.ts`
 - Browser review: Review eligible, blocked, and unavailable Convergence Study states at 1440×900 and 390×844; check table headers, formulas, chart labels, and evidence wording.
 - Implementation group: `GROUP_C`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Notes: Implemented exactly in the authorized Group C iteration; commit pending.
 
 ### COPY-027 — `src/convergenceTeaching.ts` · `buildConvergenceTeachingSections / exact_solution`
 
@@ -639,9 +641,9 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/convergenceTeaching.test.ts`
 - Browser review: Review eligible, blocked, and unavailable Convergence Study states at 1440×900 and 390×844; check table headers, formulas, chart labels, and evidence wording.
 - Implementation group: `GROUP_C`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Notes: Implemented exactly in the authorized Group C iteration; commit pending.
 
 ### COPY-028 — `src/convergenceTeaching.ts` · `buildConvergenceTeachingSections / accessible error formula`
 
@@ -658,9 +660,9 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/convergenceTeaching.test.ts`
 - Browser review: Review eligible, blocked, and unavailable Convergence Study states at 1440×900 and 390×844; check table headers, formulas, chart labels, and evidence wording.
 - Implementation group: `GROUP_C`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Notes: Implemented exactly in the authorized Group C iteration; commit pending.
 
 ### COPY-029 — `src/convergenceStudy.ts` · `classifyConvergence / near-theory explanation`
 
@@ -677,9 +679,37 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/convergenceStudy.test.ts`, `src/convergenceStudyOrder.test.ts`
 - Browser review: Review eligible, blocked, and unavailable Convergence Study states at 1440×900 and 390×844; check table headers, formulas, chart labels, and evidence wording.
 - Implementation group: `GROUP_C`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Notes: Implemented exactly in the authorized Group C iteration; commit pending.
+
+#### Group C local implementation evidence
+
+| Record | Exact source owner | Focused evidence | Browser and accessibility evidence |
+|---|---|---|---|
+| `COPY-020` | `src/convergenceStudyView.ts` · `renderConclusion` | `src/convergenceStudyView.test.ts` asserts the complete primary observed-order label. | Eligible desktop and mobile states exposed the full metric-qualified term; the long label remained contained. |
+| `COPY-021` | `src/convergenceStudyView.ts` · `renderConclusion` | `src/convergenceStudyView.test.ts` asserts the unavailable observed-order value and rejects the ambiguous predecessor. | A real RK4 resolution-limited study showed `No reliable observed order available` without promoting non-reliable evidence. |
+| `COPY-022` | `src/convergenceStudyView.ts` · `renderErrorTable` | `src/convergenceStudyView.test.ts` asserts both exact value headers and their semantic order. | Desktop and 390×844 review confirmed semantic headers, wrapping, and contained horizontal table scrolling. |
+| `COPY-023` | `src/convergenceStudyView.ts` · `renderErrorTable` | `src/convergenceStudyView.test.ts` asserts both metric-qualified order headers and visible status descriptions. | Browser review confirmed full headers, adjacent-pair title text, reliable values, and `Below resolution` states. |
+| `COPY-024` | `src/convergenceTeaching.ts` · `buildConvergenceTeachingSections / errors` | `src/convergenceTeaching.test.ts` asserts the exact approved section title. | The expanded teaching section rendered the approved title at both viewports. |
+| `COPY-025` | `src/convergenceTeaching.ts` · `buildConvergenceTeachingSections / order example` | `src/convergenceTeaching.test.ts` asserts `giving an observed order` and rejects `measured order` in that example. | The expanded real-data example displayed the adjacent refinement values and approved observed-order wording. |
+| `COPY-026` | `src/convergenceTeaching.ts` · `buildConvergenceTeachingSections / theory_difference` | `src/convergenceTeaching.test.ts` asserts `asymptotic region` and rejects `asymptotic range`. | The expanded section showed the approved learner-facing region wording and retained the non-proof limitation. |
+| `COPY-027` | `src/convergenceTeaching.ts` · `buildConvergenceTeachingSections / exact_solution` | `src/convergenceTeaching.test.ts` asserts the exact approved function/problem/reference sentence. | Eligible browser states rendered the plain explanation before the existing formula. |
+| `COPY-028` | `src/convergenceTeaching.ts` · `buildConvergenceTeachingSections / accessible error formula` | `src/convergenceTeaching.test.ts` asserts both complete metric names in accessible formula text. | Every teaching formula retained exactly one `aria-label` owner through desktop and mobile review. |
+| `COPY-029` | `src/convergenceStudy.ts` · `interpretConvergence / consistent_with_theory` | `src/convergenceStudy.test.ts` and `src/convergenceStudyOrder.test.ts` assert the approved explanation while retaining exact classifications and thresholds. | Forward Euler rendered the new consistent-with-theory explanation with unchanged primary values and evidence pairs; the RK4 resolution-limited state retained its separate non-reliable explanation. |
+
+The focused Group C suite passed 5 files and 93 tests. A TypeScript AST
+comparison against starting HEAD matched all 8,573 production AST nodes after
+ignoring string contents; identifiers, operators, numeric literals, statuses,
+branches, calls, object fields, and return shapes were unchanged. Baseline and
+final focused runs preserved eligibility, level counts and step sizes, both
+error streams, observed-order values, all six status values, precedence,
+primary-metric ownership, stale/current state, and chart data. Browser review
+covered reliable, below-resolution, stale, missing-exact, and Compare states;
+negative, near-zero, no-improvement, and synthetic unavailable classifications
+remain deterministic-test evidence only. No Tutor or Glossary source,
+integration, content, annotation, or binding changed. Group C remains pending
+maintainer acceptance of its local commit.
 
 ### COPY-030 — `src/ode/odeTutorBinding.ts` · `ODE_TUTOR_SUGGESTED_QUESTIONS`
 
@@ -1193,8 +1223,8 @@ Copy records use compact rule IDs defined by the approved documents:
 The exact A–F boundaries, files, tests, browser checks, dependencies,
 rollback points, and review gates are in the
 [Project Language Implementation Plan](PROJECT_LANGUAGE_IMPLEMENTATION_PLAN.md).
-Group A ready records are accepted; `COPY-003` remains held. Group B records
-`COPY-006` through `COPY-019` are implemented locally and verified. The next
-gate is maintainer acceptance of the Group B commit and evidence package
-before Convergence and error language work begins. Group C remains
-unauthorized.
+Group A ready records and Group B are accepted; `COPY-003` remains held.
+Group C records `COPY-020` through `COPY-029` are implemented locally and
+verified, with the local commit pending. The next gate is maintainer
+acceptance of the Group C commit and evidence package before Group D Tutor
+language work begins. Groups D–F remain unauthorized.
