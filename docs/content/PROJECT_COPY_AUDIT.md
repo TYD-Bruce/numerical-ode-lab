@@ -3,9 +3,11 @@
 Status: Reconciled against Project Language Standard v1.
 Group A ready records are accepted. Group B records `COPY-006` through
 `COPY-019` and Group C records `COPY-020` through `COPY-029` are accepted.
-Group D records `COPY-030` through `COPY-040` are implemented locally,
-verified, and commit-pending; `COPY-003` remains held. Groups E and F remain
-unimplemented and unauthorized.
+Group D records `COPY-030` through `COPY-040` are accepted. Group F1
+implements and reviews `COPY-043` locally and classifies all twelve
+`COPY-NC-*` records without changing their product owners. `COPY-003` remains
+held. Group E remains unauthorized, and the final post-Glossary Group F2 review
+remains required.
 
 ## Purpose and boundary
 
@@ -26,10 +28,11 @@ inside the separately authorized implementation group.
 - Records rescanned: **55**.
 - Source files represented: **20**.
 - Expected focused test files represented: **21**.
-- Readiness counts: `{'DEFERRED_BY_MODULE': 1, 'IMPLEMENTED_LOCALLY_COMMIT_PENDING': 21, 'NO_CHANGE': 12, 'READY_FOR_IMPLEMENTATION': 19, 'REQUIRES_CONTENT_WAVE': 2}`.
-- Implementation progress: 4 Group A ready records and 14 Group B records
-  plus 10 Group C records accepted; 11 Group D records implemented locally and
-  commit-pending; `COPY-003` held; Groups E and F unimplemented.
+- Readiness counts: `{'DEFERRED_BY_MODULE': 1, 'IMPLEMENTED_ACCEPTED': 39, 'IMPLEMENTED_LOCALLY_GROUP_F1': 1, 'NO_CHANGE': 12, 'REQUIRES_CONTENT_WAVE': 2}`.
+- Implementation progress: 4 Group A ready records, 14 Group B records,
+  10 Group C records, and 11 Group D records accepted; `COPY-043` implemented
+  and reviewed locally in Group F1; `COPY-003` held; Group E unauthorized;
+  Group F2 required after Group E.
 - Former decision-blocked records: **0**.
 - Numerical-behavior changes proposed: **0**.
 
@@ -72,7 +75,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/pages/pages.test.ts`
 - Browser review: Review /, /about, /ode, /linear-algebra, and /pde at 1440×900 and 390×844; check wrapping, status truth, and keyboard focus.
 - Implementation group: `GROUP_A`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Implementation status: `IMPLEMENTED_AND_ACCEPTED_GROUP_A`
 - Source/test status: `EXACT_REPLACEMENT_IN_aboutPage; pages.test.ts final focused assertion passed`
@@ -95,7 +98,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: —
 - Browser review: Review /, /about, /ode, /linear-algebra, and /pde at 1440×900 and 390×844; check wrapping, status truth, and keyboard focus.
 - Implementation group: `GROUP_A`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Implementation status: `IMPLEMENTED_AND_ACCEPTED_GROUP_A`
 - Source/test status: `EXACT_REPLACEMENT_IN_README; no focused test owner; full verify and production build passed`
@@ -141,7 +144,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/pages/pages.test.ts`
 - Browser review: Review /, /about, /ode, /linear-algebra, and /pde at 1440×900 and 390×844; check wrapping, status truth, and keyboard focus.
 - Implementation group: `GROUP_A`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Implementation status: `IMPLEMENTED_AND_ACCEPTED_GROUP_A`
 - Source/test status: `EXACT_REPLACEMENT_IN_odeOverviewPage; pages.test.ts final focused assertion passed`
@@ -164,7 +167,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/pages/pages.test.ts`
 - Browser review: Review /, /about, /ode, /linear-algebra, and /pde at 1440×900 and 390×844; check wrapping, status truth, and keyboard focus.
 - Implementation group: `GROUP_A`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Implementation status: `IMPLEMENTED_AND_ACCEPTED_GROUP_A`
 - Source/test status: `EXACT_REPLACEMENT_IN_aboutPage; pages.test.ts final focused assertion passed`
@@ -187,7 +190,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/ode/initialValueProblemsRoute.test.ts`, `src/ode/odeLifecycle.test.ts`
 - Browser review: Review /ode/initial-value-problems at 1440×900 and 390×844 through Method, Data, Run, Output, Compare, preset, and error states.
 - Implementation group: `GROUP_B`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
 - Source/test status: `EXACT_REPLACEMENT_IN_src/ode/odeApp.ts::DEFAULT_LEDE; initialValueProblemsRoute.test.ts exact copy assertion and all focused regressions passed`
@@ -210,7 +213,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/ode/initialValueProblemsRoute.test.ts`, `src/ode/newExperiment.test.ts`
 - Browser review: Review /ode/initial-value-problems at 1440×900 and 390×844 through Method, Data, Run, Output, Compare, preset, and error states.
 - Implementation group: `GROUP_B`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
 - Source/test status: `EXACT_REPLACEMENT_IN_src/methodCatalog.ts::METHOD_CATALOG/backward_euler/blurb; initialValueProblemsRoute.test.ts exact copy assertion and newExperiment.test.ts regression passed`
@@ -233,7 +236,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/ode/initialValueProblemsRoute.test.ts`, `src/ode/newExperiment.test.ts`
 - Browser review: Review /ode/initial-value-problems at 1440×900 and 390×844 through Method, Data, Run, Output, Compare, preset, and error states.
 - Implementation group: `GROUP_B`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
 - Source/test status: `EXACT_REPLACEMENT_IN_src/methodCatalog.ts::METHOD_CATALOG/forward_euler/blurb; initialValueProblemsRoute.test.ts exact copy assertion and newExperiment.test.ts regression passed`
@@ -256,7 +259,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/ode/initialValueProblemsRoute.test.ts`, `src/ode/newExperiment.test.ts`
 - Browser review: Review /ode/initial-value-problems at 1440×900 and 390×844 through Method, Data, Run, Output, Compare, preset, and error states.
 - Implementation group: `GROUP_B`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
 - Source/test status: `EXACT_REPLACEMENT_IN_src/methodCatalog.ts::METHOD_CATALOG/adams_bashforth/blurb; initialValueProblemsRoute.test.ts exact copy assertion and newExperiment.test.ts regression passed`
@@ -279,7 +282,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/ode/initialValueProblemsRoute.test.ts`, `src/ode/odeLifecycle.test.ts`
 - Browser review: Review /ode/initial-value-problems at 1440×900 and 390×844 through Method, Data, Run, Output, Compare, preset, and error states.
 - Implementation group: `GROUP_B`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
 - Source/test status: `EXACT_REPLACEMENTS_IN_src/ode/odeApp.ts::orderFieldHtml_AND_metadataPanelHtml; initialValueProblemsRoute.test.ts and odeLifecycle.test.ts exact copy assertions passed`
@@ -302,7 +305,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/ode/initialValueProblemsRoute.test.ts`, `src/ode/odeLifecycle.test.ts`
 - Browser review: Review /ode/initial-value-problems at 1440×900 and 390×844 through Method, Data, Run, Output, Compare, preset, and error states.
 - Implementation group: `GROUP_B`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
 - Source/test status: `EXACT_REPLACEMENTS_IN_src/ode/odeApp.ts::renderForm_AND_renderCompareForm; initialValueProblemsRoute.test.ts exact label assertions and odeLifecycle.test.ts regressions passed`
@@ -325,7 +328,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/ode/initialValueProblemsRoute.test.ts`, `src/ode/odeLifecycle.test.ts`
 - Browser review: Review /ode/initial-value-problems at 1440×900 and 390×844 through Method, Data, Run, Output, Compare, preset, and error states.
 - Implementation group: `GROUP_B`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
 - Source/test status: `EXACT_REPLACEMENTS_IN_src/ode/odeApp.ts::renderForm_AND_renderCompareForm; initialValueProblemsRoute.test.ts exact label assertions and odeLifecycle.test.ts regressions passed`
@@ -348,7 +351,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/problemPresets.test.ts`, `src/ode/beginnerStarter.test.ts`
 - Browser review: Review /ode/initial-value-problems at 1440×900 and 390×844 through Method, Data, Run, Output, Compare, preset, and error states.
 - Implementation group: `GROUP_B`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
 - Source/test status: `EXACT_REPLACEMENT_IN_src/problemPresets.ts::PROBLEM_PRESETS/exponential_decay/teachingSummary; problemPresets.test.ts and beginnerStarter.test.ts exact assertions passed`
@@ -371,7 +374,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/grid.test.ts`
 - Browser review: Review /ode/initial-value-problems at 1440×900 and 390×844 through Method, Data, Run, Output, Compare, preset, and error states.
 - Implementation group: `GROUP_B`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
 - Source/test status: `EXACT_REPLACEMENT_IN_src/grid.ts::validateFixedStepGrid/non-finite-step-count; grid.test.ts focused branch assertion passed`
@@ -394,7 +397,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/ode/initialValueProblemsRoute.test.ts`, `src/ode/odeLifecycle.test.ts`
 - Browser review: Review /ode/initial-value-problems at 1440×900 and 390×844 through Method, Data, Run, Output, Compare, preset, and error states.
 - Implementation group: `GROUP_B`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
 - Source/test status: `EXACT_REPLACEMENT_IN_src/ode/odeApp.ts::mountResults/summary-stat; odeLifecycle.test.ts exact assertion passed`
@@ -417,7 +420,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/ode/initialValueProblemsRoute.test.ts`, `src/ode/odeLifecycle.test.ts`
 - Browser review: Review /ode/initial-value-problems at 1440×900 and 390×844 through Method, Data, Run, Output, Compare, preset, and error states.
 - Implementation group: `GROUP_B`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
 - Source/test status: `EXACT_REPLACEMENT_IN_src/ode/odeApp.ts::mountResults/final-value-stat; odeLifecycle.test.ts exact assertion passed`
@@ -440,7 +443,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/ode/initialValueProblemsRoute.test.ts`, `src/ode/odeLifecycle.test.ts`
 - Browser review: Review /ode/initial-value-problems at 1440×900 and 390×844 through Method, Data, Run, Output, Compare, preset, and error states.
 - Implementation group: `GROUP_B`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
 - Source/test status: `EXACT_REPLACEMENTS_IN_src/ode/odeApp.ts::mountCompareResults/final-value-stats; odeLifecycle.test.ts exact assertions passed`
@@ -463,7 +466,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/ode/initialValueProblemsRoute.test.ts`, `src/ode/odeLifecycle.test.ts`
 - Browser review: Review /ode/initial-value-problems at 1440×900 and 390×844 through Method, Data, Run, Output, Compare, preset, and error states.
 - Implementation group: `GROUP_B`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
 - Source/test status: `EXACT_REPLACEMENT_IN_src/ode/odeApp.ts::mountCompareResults/final-difference; odeLifecycle.test.ts exact assertion passed`
@@ -486,7 +489,7 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/ode/initialValueProblemsRoute.test.ts`, `src/ode/odeLifecycle.test.ts`
 - Browser review: Review /ode/initial-value-problems at 1440×900 and 390×844 through Method, Data, Run, Output, Compare, preset, and error states.
 - Implementation group: `GROUP_B`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Implementation status: `IMPLEMENTED_LOCALLY_GROUP_B_COMMIT_PENDING`
 - Source/test status: `EXACT_REPLACEMENT_IN_src/ode/odeApp.ts::mountCompareResults/length-mismatch; odeLifecycle.test.ts focused mismatch-branch assertion passed`
@@ -509,9 +512,9 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/convergenceStudyView.test.ts`
 - Browser review: Review eligible, blocked, and unavailable Convergence Study states at 1440×900 and 390×844; check table headers, formulas, chart labels, and evidence wording.
 - Implementation group: `GROUP_C`
-- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Implemented exactly in the authorized Group C iteration; commit pending.
+- Notes: Implemented exactly in the authorized Group C iteration and accepted in `6e28ba493681a3a2d223724ba4b1688557848717`.
 
 ### COPY-021 — `src/convergenceStudyView.ts` · `renderConclusion / unavailable order`
 
@@ -528,9 +531,9 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/convergenceStudyView.test.ts`
 - Browser review: Review eligible, blocked, and unavailable Convergence Study states at 1440×900 and 390×844; check table headers, formulas, chart labels, and evidence wording.
 - Implementation group: `GROUP_C`
-- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Implemented exactly in the authorized Group C iteration; commit pending.
+- Notes: Implemented exactly in the authorized Group C iteration and accepted in `6e28ba493681a3a2d223724ba4b1688557848717`.
 
 ### COPY-022 — `src/convergenceStudyView.ts` · `renderErrorTable / value headers`
 
@@ -547,9 +550,9 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/convergenceStudyView.test.ts`
 - Browser review: Review eligible, blocked, and unavailable Convergence Study states at 1440×900 and 390×844; check table headers, formulas, chart labels, and evidence wording.
 - Implementation group: `GROUP_C`
-- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Implemented exactly in the authorized Group C iteration; commit pending.
+- Notes: Implemented exactly in the authorized Group C iteration and accepted in `6e28ba493681a3a2d223724ba4b1688557848717`.
 
 ### COPY-023 — `src/convergenceStudyView.ts` · `renderErrorTable / order headers`
 
@@ -566,9 +569,9 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/convergenceStudyView.test.ts`
 - Browser review: Review eligible, blocked, and unavailable Convergence Study states at 1440×900 and 390×844; check table headers, formulas, chart labels, and evidence wording.
 - Implementation group: `GROUP_C`
-- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Implemented exactly in the authorized Group C iteration; commit pending.
+- Notes: Implemented exactly in the authorized Group C iteration and accepted in `6e28ba493681a3a2d223724ba4b1688557848717`.
 
 ### COPY-024 — `src/convergenceTeaching.ts` · `buildConvergenceTeachingSections / errors section`
 
@@ -585,9 +588,9 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/convergenceTeaching.test.ts`
 - Browser review: Review eligible, blocked, and unavailable Convergence Study states at 1440×900 and 390×844; check table headers, formulas, chart labels, and evidence wording.
 - Implementation group: `GROUP_C`
-- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Implemented exactly in the authorized Group C iteration; commit pending.
+- Notes: Implemented exactly in the authorized Group C iteration and accepted in `6e28ba493681a3a2d223724ba4b1688557848717`.
 
 ### COPY-025 — `src/convergenceTeaching.ts` · `buildConvergenceTeachingSections / order example`
 
@@ -604,9 +607,9 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/convergenceTeaching.test.ts`
 - Browser review: Review eligible, blocked, and unavailable Convergence Study states at 1440×900 and 390×844; check table headers, formulas, chart labels, and evidence wording.
 - Implementation group: `GROUP_C`
-- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Implemented exactly in the authorized Group C iteration; commit pending.
+- Notes: Implemented exactly in the authorized Group C iteration and accepted in `6e28ba493681a3a2d223724ba4b1688557848717`.
 
 ### COPY-026 — `src/convergenceTeaching.ts` · `buildConvergenceTeachingSections / theory_difference`
 
@@ -617,15 +620,15 @@ Copy records use compact rule IDs defined by the approved documents:
 - Affected term IDs: `asymptotic_region`, `observed_order`
 - Exact recommended replacement: “before the asymptotic region is reached”
 - Optional helper/accessibility copy: —
-- Rationale: The draft terminology uses “asymptotic region,” but the final choice remains explicitly pending maintainer review.
+- Rationale: Version 1 uses the learner-facing term “asymptotic region.”
 - Numerical-behavior risk: `NONE_COPY_ONLY; released calculations, coefficients, grids, tolerances, classifications, and solver behavior must remain unchanged`
 - Runtime-behavior risk: `VISIBLE_TEXT_ONLY; no behavior or ownership change`
 - Expected test files: `src/convergenceTeaching.test.ts`
 - Browser review: Review eligible, blocked, and unavailable Convergence Study states at 1440×900 and 390×844; check table headers, formulas, chart labels, and evidence wording.
 - Implementation group: `GROUP_C`
-- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Implemented exactly in the authorized Group C iteration; commit pending.
+- Notes: Implemented exactly in the authorized Group C iteration and accepted in `6e28ba493681a3a2d223724ba4b1688557848717`.
 
 ### COPY-027 — `src/convergenceTeaching.ts` · `buildConvergenceTeachingSections / exact_solution`
 
@@ -642,9 +645,9 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/convergenceTeaching.test.ts`
 - Browser review: Review eligible, blocked, and unavailable Convergence Study states at 1440×900 and 390×844; check table headers, formulas, chart labels, and evidence wording.
 - Implementation group: `GROUP_C`
-- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Implemented exactly in the authorized Group C iteration; commit pending.
+- Notes: Implemented exactly in the authorized Group C iteration and accepted in `6e28ba493681a3a2d223724ba4b1688557848717`.
 
 ### COPY-028 — `src/convergenceTeaching.ts` · `buildConvergenceTeachingSections / accessible error formula`
 
@@ -661,9 +664,9 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/convergenceTeaching.test.ts`
 - Browser review: Review eligible, blocked, and unavailable Convergence Study states at 1440×900 and 390×844; check table headers, formulas, chart labels, and evidence wording.
 - Implementation group: `GROUP_C`
-- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Implemented exactly in the authorized Group C iteration; commit pending.
+- Notes: Implemented exactly in the authorized Group C iteration and accepted in `6e28ba493681a3a2d223724ba4b1688557848717`.
 
 ### COPY-029 — `src/convergenceStudy.ts` · `classifyConvergence / near-theory explanation`
 
@@ -680,9 +683,9 @@ Copy records use compact rule IDs defined by the approved documents:
 - Expected test files: `src/convergenceStudy.test.ts`, `src/convergenceStudyOrder.test.ts`
 - Browser review: Review eligible, blocked, and unavailable Convergence Study states at 1440×900 and 390×844; check table headers, formulas, chart labels, and evidence wording.
 - Implementation group: `GROUP_C`
-- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Implemented exactly in the authorized Group C iteration; commit pending.
+- Notes: Implemented exactly in the authorized Group C iteration and accepted in `6e28ba493681a3a2d223724ba4b1688557848717`.
 
 #### Group C local implementation evidence
 
@@ -709,8 +712,8 @@ primary-metric ownership, stale/current state, and chart data. Browser review
 covered reliable, below-resolution, stale, missing-exact, and Compare states;
 negative, near-zero, no-improvement, and synthetic unavailable classifications
 remain deterministic-test evidence only. No Tutor or Glossary source,
-integration, content, annotation, or binding changed. Group C remains pending
-maintainer acceptance of its local commit.
+integration, content, annotation, or binding changed. Group C is accepted in
+`6e28ba493681a3a2d223724ba4b1688557848717`.
 
 ### COPY-030 — `src/ode/odeTutorBinding.ts` · `ODE_TUTOR_SUGGESTED_QUESTIONS`
 
@@ -727,9 +730,9 @@ maintainer acceptance of its local commit.
 - Expected test files: `src/ode/odeTutorBinding.test.ts`
 - Browser review: After a successful run, review the AI Tutor on desktop and mobile; exercise suggested prompts and mock responses without changing transport or state.
 - Implementation group: `GROUP_D`
-- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Implemented exactly in the authorized Group D iteration; focused binding tests, structural non-change audit, and desktop/mobile browser review passed; commit pending.
+- Notes: Implemented exactly in the authorized Group D iteration; focused binding tests, structural non-change audit, and desktop/mobile browser review passed; accepted in `0a32939c6a0bd218003ba87181f66033695c233b`.
 
 ### COPY-031 — `src/ode/odeTutorBinding.ts` · `ODE_TUTOR_SUGGESTED_QUESTIONS`
 
@@ -746,9 +749,9 @@ maintainer acceptance of its local commit.
 - Expected test files: `src/ode/odeTutorBinding.test.ts`
 - Browser review: After a successful run, review the AI Tutor on desktop and mobile; exercise suggested prompts and mock responses without changing transport or state.
 - Implementation group: `GROUP_D`
-- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Implemented exactly in the authorized Group D iteration; focused binding tests, structural non-change audit, and desktop/mobile browser review passed; commit pending.
+- Notes: Implemented exactly in the authorized Group D iteration; focused binding tests, structural non-change audit, and desktop/mobile browser review passed; accepted in `0a32939c6a0bd218003ba87181f66033695c233b`.
 
 ### COPY-032 — `src/tutor/platformTutorPanel.ts` · `AI Tutor subtitle`
 
@@ -765,9 +768,9 @@ maintainer acceptance of its local commit.
 - Expected test files: `src/app/platformTutorHost.test.ts`, `src/app/tutorLazyBoundary.test.ts`
 - Browser review: After a successful run, review the AI Tutor on desktop and mobile; exercise suggested prompts and mock responses without changing transport or state.
 - Implementation group: `GROUP_D`
-- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Implemented exactly in the authorized Group D iteration; Host/panel and lazy regression tests, structural non-change audit, and desktop/mobile browser review passed; commit pending.
+- Notes: Implemented exactly in the authorized Group D iteration; Host/panel and lazy regression tests, structural non-change audit, and desktop/mobile browser review passed; accepted in `0a32939c6a0bd218003ba87181f66033695c233b`.
 
 ### COPY-033 — `api/chatHandler.ts` · `mockTutorResponse / orderLine`
 
@@ -784,9 +787,9 @@ maintainer acceptance of its local commit.
 - Expected test files: `api/chatHandler.test.ts`, `api/chatPrompt.test.ts`
 - Browser review: After a successful run, review the AI Tutor on desktop and mobile; exercise suggested prompts and mock responses without changing transport or state.
 - Implementation group: `GROUP_D`
-- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Implemented exactly in the authorized Group D iteration; focused API/prompt tests, structural non-change audit, and deterministic/browser demo review passed; commit pending.
+- Notes: Implemented exactly in the authorized Group D iteration; focused API/prompt tests, structural non-change audit, and deterministic/browser demo review passed; accepted in `0a32939c6a0bd218003ba87181f66033695c233b`.
 
 ### COPY-034 — `api/chatHandler.ts` · `mockTutorResponse / observed-order explanation`
 
@@ -803,9 +806,9 @@ maintainer acceptance of its local commit.
 - Expected test files: `api/chatHandler.test.ts`, `api/chatPrompt.test.ts`
 - Browser review: After a successful run, review the AI Tutor on desktop and mobile; exercise suggested prompts and mock responses without changing transport or state.
 - Implementation group: `GROUP_D`
-- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Implemented exactly in the authorized Group D iteration; focused API/prompt tests, structural non-change audit, and deterministic/browser demo review passed; commit pending.
+- Notes: Implemented exactly in the authorized Group D iteration; focused API/prompt tests, structural non-change audit, and deterministic/browser demo review passed; accepted in `0a32939c6a0bd218003ba87181f66033695c233b`.
 
 ### COPY-035 — `api/chatHandler.ts` · `mockTutorResponse / table summary`
 
@@ -822,9 +825,9 @@ maintainer acceptance of its local commit.
 - Expected test files: `api/chatHandler.test.ts`, `api/chatPrompt.test.ts`
 - Browser review: After a successful run, review the AI Tutor on desktop and mobile; exercise suggested prompts and mock responses without changing transport or state.
 - Implementation group: `GROUP_D`
-- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Implemented exactly in the authorized Group D iteration; focused API/prompt tests, structural non-change audit, and deterministic demo review passed; commit pending.
+- Notes: Implemented exactly in the authorized Group D iteration; focused API/prompt tests, structural non-change audit, and deterministic demo review passed; accepted in `0a32939c6a0bd218003ba87181f66033695c233b`.
 
 ### COPY-036 — `api/chatHandler.ts` · `mockTutorResponse / step-by-step sketch`
 
@@ -841,9 +844,9 @@ maintainer acceptance of its local commit.
 - Expected test files: `api/chatHandler.test.ts`, `api/chatPrompt.test.ts`
 - Browser review: After a successful run, review the AI Tutor on desktop and mobile; exercise suggested prompts and mock responses without changing transport or state.
 - Implementation group: `GROUP_D`
-- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Implemented exactly in the authorized Group D iteration; focused API/prompt tests, structural non-change audit, and deterministic demo review passed; commit pending.
+- Notes: Implemented exactly in the authorized Group D iteration; focused API/prompt tests, structural non-change audit, and deterministic demo review passed; accepted in `0a32939c6a0bd218003ba87181f66033695c233b`.
 
 ### COPY-037 — `api/chatHandler.ts` · `mockTutorResponse / graph interpretation`
 
@@ -860,9 +863,9 @@ maintainer acceptance of its local commit.
 - Expected test files: `api/chatHandler.test.ts`, `api/chatPrompt.test.ts`
 - Browser review: After a successful run, review the AI Tutor on desktop and mobile; exercise suggested prompts and mock responses without changing transport or state.
 - Implementation group: `GROUP_D`
-- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Implemented exactly in the authorized Group D iteration; focused API/prompt tests, structural non-change audit, and deterministic/browser demo review passed; commit pending.
+- Notes: Implemented exactly in the authorized Group D iteration; focused API/prompt tests, structural non-change audit, and deterministic/browser demo review passed; accepted in `0a32939c6a0bd218003ba87181f66033695c233b`.
 
 ### COPY-038 — `api/chatHandler.ts` · `mockTutorResponse / smaller-step reply`
 
@@ -879,9 +882,9 @@ maintainer acceptance of its local commit.
 - Expected test files: `api/chatHandler.test.ts`, `api/chatPrompt.test.ts`
 - Browser review: After a successful run, review the AI Tutor on desktop and mobile; exercise suggested prompts and mock responses without changing transport or state.
 - Implementation group: `GROUP_D`
-- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Implemented exactly in the authorized Group D iteration; focused API/prompt tests, structural non-change audit, and deterministic/browser demo review passed; commit pending.
+- Notes: Implemented exactly in the authorized Group D iteration; focused API/prompt tests, structural non-change audit, and deterministic/browser demo review passed; accepted in `0a32939c6a0bd218003ba87181f66033695c233b`.
 
 ### COPY-039 — `api/chatHandler.ts` · `mockTutorResponse / truncation-error reply`
 
@@ -898,9 +901,9 @@ maintainer acceptance of its local commit.
 - Expected test files: `api/chatHandler.test.ts`, `api/chatPrompt.test.ts`
 - Browser review: After a successful run, review the AI Tutor on desktop and mobile; exercise suggested prompts and mock responses without changing transport or state.
 - Implementation group: `GROUP_D`
-- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Implemented exactly in the authorized Group D iteration; focused API/prompt tests, structural non-change audit, and deterministic/browser demo review passed; commit pending.
+- Notes: Implemented exactly in the authorized Group D iteration; focused API/prompt tests, structural non-change audit, and deterministic/browser demo review passed; accepted in `0a32939c6a0bd218003ba87181f66033695c233b`.
 
 ### COPY-040 — `api/chatHandler.ts` · `mockTutorResponse / exam recap`
 
@@ -917,9 +920,9 @@ maintainer acceptance of its local commit.
 - Expected test files: `api/chatHandler.test.ts`, `api/chatPrompt.test.ts`
 - Browser review: After a successful run, review the AI Tutor on desktop and mobile; exercise suggested prompts and mock responses without changing transport or state.
 - Implementation group: `GROUP_D`
-- Readiness: `IMPLEMENTED_LOCALLY_COMMIT_PENDING`
+- Readiness: `IMPLEMENTED_ACCEPTED`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Implemented exactly in the authorized Group D iteration; focused API/prompt tests, structural non-change audit, and deterministic demo review passed; commit pending.
+- Notes: Implemented exactly in the authorized Group D iteration; focused API/prompt tests, structural non-change audit, and deterministic demo review passed; accepted in `0a32939c6a0bd218003ba87181f66033695c233b`.
 
 #### Group D local implementation evidence
 
@@ -951,8 +954,8 @@ deterministic-test evidence only because Group D adds no reply route or network
 behavior. Production retained eight JavaScript and seven CSS chunks, Tutor
 remained independently lazy, and server-only prompt/reply text did not enter
 browser assets. No production Glossary content, annotation, ODE binding, model
-call, push, or deployment was added. Group D remains pending maintainer
-acceptance of its local commit.
+call, push, or deployment was added. Group D is accepted in
+`0a32939c6a0bd218003ba87181f66033695c233b`.
 
 ### COPY-041 — `src/glossary/surface/glossarySurfaceRuntime.ts` · `complete surface / alternate display label`
 
@@ -1007,9 +1010,9 @@ acceptance of its local commit.
 - Expected test files: `src/math/ui/editableMathField.test.ts`
 - Browser review: Repeat cross-surface desktop/mobile terminology, accessibility-name, wrapping, focus, console, and stale-copy review.
 - Implementation group: `GROUP_F`
-- Readiness: `READY_FOR_IMPLEMENTATION`
+- Readiness: `IMPLEMENTED_LOCALLY_GROUP_F1`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Notes: Implemented exactly as “Interpreted expression” in the separately authorized Group F1 iteration. The tests-first assertion failed only on the prior label; the final focused and cross-surface suites, full verification, desktop/mobile browser review, and production artifact audit passed. DOM, MathLive, parsing, validation, focus, virtual-keyboard ownership, and accessibility ownership remain unchanged.
 
 ### COPY-NC-001 — `src/pages/homePage.ts` · `Numerical ODE module-card description`
 
@@ -1027,6 +1030,7 @@ acceptance of its local commit.
 - Browser review: Repeat cross-surface desktop/mobile terminology, accessibility-name, wrapping, focus, console, and stale-copy review.
 - Implementation group: `GROUP_F`
 - Readiness: `NO_CHANGE`
+- F1 classification: `CONSISTENT_NO_CHANGE`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Notes: Sample retained to show reviewed language that already agrees.
 
@@ -1046,6 +1050,7 @@ acceptance of its local commit.
 - Browser review: Repeat cross-surface desktop/mobile terminology, accessibility-name, wrapping, focus, console, and stale-copy review.
 - Implementation group: `GROUP_F`
 - Readiness: `NO_CHANGE`
+- F1 classification: `CONSISTENT_NO_CHANGE`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Notes: Sample retained to show reviewed language that already agrees.
 
@@ -1065,6 +1070,7 @@ acceptance of its local commit.
 - Browser review: Repeat cross-surface desktop/mobile terminology, accessibility-name, wrapping, focus, console, and stale-copy review.
 - Implementation group: `GROUP_F`
 - Readiness: `NO_CHANGE`
+- F1 classification: `CONSISTENT_NO_CHANGE`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Notes: Sample retained to show reviewed language that already agrees.
 
@@ -1084,6 +1090,7 @@ acceptance of its local commit.
 - Browser review: Repeat cross-surface desktop/mobile terminology, accessibility-name, wrapping, focus, console, and stale-copy review.
 - Implementation group: `GROUP_F`
 - Readiness: `NO_CHANGE`
+- F1 classification: `CONSISTENT_NO_CHANGE`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Notes: Sample retained to show reviewed language that already agrees.
 
@@ -1103,6 +1110,7 @@ acceptance of its local commit.
 - Browser review: Repeat cross-surface desktop/mobile terminology, accessibility-name, wrapping, focus, console, and stale-copy review.
 - Implementation group: `GROUP_F`
 - Readiness: `NO_CHANGE`
+- F1 classification: `CONSISTENT_WITH_LOCAL_CONTEXT`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Notes: Sample retained to show reviewed language that already agrees.
 
@@ -1122,6 +1130,7 @@ acceptance of its local commit.
 - Browser review: Repeat cross-surface desktop/mobile terminology, accessibility-name, wrapping, focus, console, and stale-copy review.
 - Implementation group: `GROUP_F`
 - Readiness: `NO_CHANGE`
+- F1 classification: `CONSISTENT_WITH_LOCAL_CONTEXT`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Notes: Sample retained to show reviewed language that already agrees.
 
@@ -1141,6 +1150,7 @@ acceptance of its local commit.
 - Browser review: Repeat cross-surface desktop/mobile terminology, accessibility-name, wrapping, focus, console, and stale-copy review.
 - Implementation group: `GROUP_F`
 - Readiness: `NO_CHANGE`
+- F1 classification: `CONSISTENT_NO_CHANGE`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Notes: Sample retained to show reviewed language that already agrees.
 
@@ -1160,6 +1170,7 @@ acceptance of its local commit.
 - Browser review: Repeat cross-surface desktop/mobile terminology, accessibility-name, wrapping, focus, console, and stale-copy review.
 - Implementation group: `GROUP_F`
 - Readiness: `NO_CHANGE`
+- F1 classification: `CONSISTENT_WITH_LOCAL_CONTEXT`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Notes: Sample retained to show reviewed language that already agrees.
 
@@ -1179,6 +1190,7 @@ acceptance of its local commit.
 - Browser review: Repeat cross-surface desktop/mobile terminology, accessibility-name, wrapping, focus, console, and stale-copy review.
 - Implementation group: `GROUP_F`
 - Readiness: `NO_CHANGE`
+- F1 classification: `CONSISTENT_WITH_LOCAL_CONTEXT`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Notes: Sample retained to show reviewed language that already agrees.
 
@@ -1198,6 +1210,7 @@ acceptance of its local commit.
 - Browser review: Repeat cross-surface desktop/mobile terminology, accessibility-name, wrapping, focus, console, and stale-copy review.
 - Implementation group: `GROUP_F`
 - Readiness: `NO_CHANGE`
+- F1 classification: `CONSISTENT_NO_CHANGE`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Notes: Sample retained to show reviewed language that already agrees.
 
@@ -1217,6 +1230,7 @@ acceptance of its local commit.
 - Browser review: Repeat cross-surface desktop/mobile terminology, accessibility-name, wrapping, focus, console, and stale-copy review.
 - Implementation group: `GROUP_F`
 - Readiness: `NO_CHANGE`
+- F1 classification: `CONSISTENT_WITH_LOCAL_CONTEXT`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Notes: Sample retained to show reviewed language that already agrees.
 
@@ -1236,8 +1250,41 @@ acceptance of its local commit.
 - Browser review: Repeat cross-surface desktop/mobile terminology, accessibility-name, wrapping, focus, console, and stale-copy review.
 - Implementation group: `GROUP_F`
 - Readiness: `NO_CHANGE`
+- F1 classification: `STALE_BUT_NON_BLOCKING`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Notes: Sample retained to show reviewed language that already agrees.
+
+#### Group F1 local implementation and review evidence
+
+Group F1 implements only `COPY-043`. Its tests-first run failed exactly the
+new label assertion while the other 12 editable-field tests passed; the final
+focused file passed 13 tests. The required cross-surface run passed 13 files
+and 135 tests. `npm.cmd run verify` passed 73 files and 1,042 tests, both
+TypeScript checks, and the 79-module production build. Desktop/mobile
+development and production-preview review confirmed the exact new label,
+native disclosure focus, contained layout, accepted A–D copy, production DEV
+exclusion, and no console warning or error.
+
+The twelve `COPY-NC-*` records remain review-only. Their exact F1
+classifications are recorded above and detailed in the
+[pre-Glossary consistency review](../reviews/2026-07-29-pre-glossary-project-language-consistency-review.md).
+No reviewed product owner was edited. The status-document owner of
+`COPY-NC-012` receives only current milestone updates outside its retained,
+truthful production-status statement.
+
+The consistency scan created five stable findings, not approved copy records:
+
+| Finding | Severity | Boundary |
+|---|---:|---|
+| `F1-LANG-001` | P2 | Residual Convergence teaching aliases for observed order and maximum global error |
+| `F1-LANG-002` | P2 | Solver-facing theoretical-order and LTE/global-error qualification |
+| `F1-LANG-003` | P2 | Residual Tutor order and maximum-global-error terminology |
+| `F1-LANG-004` | P2 | Numerical-approximation naming in the ODE chart and Tutor graph reply |
+| `F1-BEH-001` | P2 | Deterministic `unstable` → `table` substring-routing collision |
+
+All five require a separately authorized repair and acceptance checkpoint
+before Group E. No fix is implemented here. Group E remains unauthorized, and
+Group F2 remains required after Group E.
 
 ## Behavior-preservation contract
 
@@ -1257,9 +1304,9 @@ acceptance of its local commit.
 The exact A–F boundaries, files, tests, browser checks, dependencies,
 rollback points, and review gates are in the
 [Project Language Implementation Plan](PROJECT_LANGUAGE_IMPLEMENTATION_PLAN.md).
-Groups A through C are accepted; `COPY-003` remains held. Group D records
-`COPY-030` through `COPY-040` are implemented locally and verified, with the
-local commit pending. The next gate is maintainer acceptance of the Group D
-commit and evidence package, followed by a separate decision on whether to
-begin Group F consistency review before authorizing Group E. Groups E and F
-remain unauthorized.
+Groups A through D are accepted; `COPY-003` remains held. Group F1 implements
+`COPY-043` and completes the pre-Glossary consistency review locally. Its
+verdict is **GROUP F1 COMPLETE — PRE-E FIXES REQUIRED**. The next gate is a
+separately authorized repair and acceptance checkpoint for `F1-LANG-001`
+through `F1-LANG-004` and `F1-BEH-001`. Group E remains unauthorized. The
+original full Group F is not complete; Group F2 remains required after Group E.

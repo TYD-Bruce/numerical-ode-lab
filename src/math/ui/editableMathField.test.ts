@@ -132,6 +132,9 @@ describe("editable MathLive field controller", () => {
     const details = handle.element.querySelector<HTMLDetailsElement>("details")!;
     details.open = true;
     details.dispatchEvent(new Event("toggle"));
+    expect(
+      [...handle.element.querySelectorAll("dt")].map((label) => label.textContent)
+    ).toEqual(["LaTeX", "Interpreted expression"]);
     expect(handle.element.querySelector("[data-expression-latex]")?.textContent).toBe("y(1-y)");
     expect(handle.element.querySelector("[data-expression-parsed]")?.textContent)
       .toBe("y * (1 - y)");

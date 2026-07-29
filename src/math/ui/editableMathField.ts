@@ -212,7 +212,7 @@ export function mountEditableMathField(
   latexCode.dataset.expressionLatex = "";
   latexValue.append(latexCode);
   const parsedLabel = document.createElement("dt");
-  parsedLabel.textContent = "Parsed expression";
+  parsedLabel.textContent = "Interpreted expression";
   const parsedValue = document.createElement("dd");
   const parsedCode = document.createElement("code");
   parsedCode.dataset.expressionParsed = "";

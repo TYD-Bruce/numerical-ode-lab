@@ -1,8 +1,9 @@
 # Numerical T-Lab Project Language v1 Handoff
 
 Status: Project Language Standard v1 approved; Glossary catalog, copy audit,
-implementation groups, and traceability reconciled; Groups A through C
-accepted; Group D implemented and locally verified.
+implementation groups, and traceability reconciled; Groups A through D
+accepted; Group F1 pre-Glossary review completed locally with pre-E fixes
+required.
 
 Runtime/content implementation tracked separately.
 
@@ -131,15 +132,18 @@ The 27 `V1_APPROVED` catalog rows include the 18 formerly decision-blocked
 rows plus 9 already-ready terms whose approved wording, formula, or distinction
 is directly governed by those same Version 1 decisions.
 
-The copy audit retains all 55 stable records: 40 are
-`READY_FOR_IMPLEMENTATION`, 2 `REQUIRES_CONTENT_WAVE`, 1
-`DEFERRED_BY_MODULE`, and 12 `NO_CHANGE`; none is obsolete or
-decision-blocked. The original reconciliation implemented no recommendation.
+The copy audit retains all 55 stable records: 39 accepted implementation
+records, 1 locally implemented Group F1 record, 2
+`REQUIRES_CONTENT_WAVE`, 1 `DEFERRED_BY_MODULE`, and 12 `NO_CHANGE`; none is
+obsolete or decision-blocked. The original reconciliation implemented no
+recommendation.
 The separately authorized Group A iteration implements and accepts `COPY-001`,
 `COPY-002`, `COPY-004`, and `COPY-005`; `COPY-003` remains held. The separately
 authorized Group B iteration implements and accepts `COPY-006` through
 `COPY-019`; Group C implements and is accepted for `COPY-020` through
-`COPY-029`; and Group D locally implements `COPY-030` through `COPY-040`.
+`COPY-029`; Group D is accepted for `COPY-030` through `COPY-040`; and Group
+F1 implements `COPY-043` locally while preserving all twelve `COPY-NC-*`
+owners as review-only.
 
 ## 7. Runtime and numerical non-changes
 
@@ -326,7 +330,7 @@ commit `6e28ba493681a3a2d223724ba4b1688557848717`.
 ## 12. Group D implementation checkpoint
 
 The exact authorized records `COPY-030` through `COPY-040` are
-`IMPLEMENTED_LOCALLY_COMMIT_PENDING`.
+accepted in `0a32939c6a0bd218003ba87181f66033695c233b`.
 
 - Product files changed: `api/chatHandler.ts`,
   `src/ode/odeTutorBinding.ts`, and `src/tutor/platformTutorPanel.ts`.
@@ -386,10 +390,55 @@ The exact authorized records `COPY-030` through `COPY-040` are
   dependency was added.
 - Nothing was pushed or deployed.
 
-## 13. Current review gate
+## 13. Group F1 pre-Glossary consistency checkpoint
 
-Groups A through C are accepted. Group D is implemented and locally verified.
-Production Glossary Wave 1 remains unauthorized. The next gate is maintainer
-acceptance of the Group D commit and evidence package, followed by a separate
-decision on whether to begin Group F consistency review before authorizing
-Group E.
+Group F1 implements only `COPY-043`, changing “Parsed expression” to
+“Interpreted expression” in `src/math/ui/editableMathField.ts` and adding the
+exact focused `dt`-label assertion. The tests-first run failed only that new
+assertion; the final editable-field run passed 13 tests. Direct diff review
+confirmed no DOM, MathLive, parsing, validation, focus, virtual-keyboard,
+accessibility-ownership, import, or cleanup change.
+
+All twelve `COPY-NC-*` records were inspected without changing their product
+owners. Their classifications are:
+
+- `CONSISTENT_NO_CHANGE`: `COPY-NC-001`, `002`, `003`, `004`, `007`, and
+  `010`;
+- `CONSISTENT_WITH_LOCAL_CONTEXT`: `COPY-NC-005`, `006`, `008`, `009`, and
+  `011`; and
+- `STALE_BUT_NON_BLOCKING`: `COPY-NC-012`, whose captured audit quotation
+  predates the current handoff's truthful addition of the absent ODE binding.
+
+The required cross-surface suite passed 13 files and 135 tests.
+`npm.cmd run verify` passed 73 files and 1,042 tests, both TypeScript checks,
+and the 79-module production build. Development and production-preview review
+covered the public routes and IVP Lab at 1440×900 and 390×844, including
+accepted A–D copy, `COPY-043`, Convergence, Tutor demo, generic Glossary
+surfaces, focus/modal containment, page overflow, and console health.
+Production retained eight JavaScript and seven CSS files and an identical
+normalized import graph. The existing editable-math chunk grew by only
+`+5/+4` raw/deterministic-gzip bytes. Production still excludes DEV routes and
+fixtures, contains no Glossary term, and has no ODE binding.
+
+The review verdict is **GROUP F1 COMPLETE — PRE-E FIXES REQUIRED**. Five P2
+findings are recorded in the
+[pre-Glossary consistency review](../reviews/2026-07-29-pre-glossary-project-language-consistency-review.md):
+
+- `F1-LANG-001` — residual Convergence measured-order/maximum-error aliases;
+- `F1-LANG-002` — solver-facing theoretical-order and LTE/global-error
+  qualification;
+- `F1-LANG-003` — residual Tutor order/maximum-global-error aliases;
+- `F1-LANG-004` — numerical-approximation naming in the chart and Tutor; and
+- `F1-BEH-001` — deterministic `unstable` → `table` substring routing.
+
+No finding is fixed in Group F1.
+
+## 14. Current review gate
+
+Groups A through D are accepted. Group F1 is complete locally, but Group E
+remains unauthorized. The exact next gate is a separately authorized repair
+and maintainer-acceptance checkpoint for `F1-LANG-001` through
+`F1-LANG-004` and `F1-BEH-001`, including focused tests, full verification,
+desktop/mobile review, and artifact inspection. Only after that gate may the
+maintainer decide whether to plan Group E. A final Group F2 review remains
+required after Group E.

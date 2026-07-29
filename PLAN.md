@@ -41,11 +41,16 @@ implementation groups, and local traceability/validation recorded. Group A
 ready records `COPY-001`, `COPY-002`, `COPY-004`, and `COPY-005` are accepted.
 Group B records `COPY-006` through `COPY-019` and Group C records `COPY-020`
 through `COPY-029` are accepted. Group D records `COPY-030` through `COPY-040`
-are implemented locally and verified. `COPY-003` and `src/pages/homePage.ts`
-remain held and unchanged. These iterations change approved visible copy,
-prompt policy, deterministic replies, and focused expectations only; Group E,
-production Glossary content, and an ODE binding remain unauthorized. Nothing
-was pushed or deployed.
+are accepted in `0a32939c6a0bd218003ba87181f66033695c233b`. Group F1 now
+implements `COPY-043` locally and completes the pre-Glossary consistency
+review. All twelve `COPY-NC-*` records remain review-only and are classified.
+The F1 verdict is **GROUP F1 COMPLETE — PRE-E FIXES REQUIRED**: four
+language findings and one deterministic Tutor behavior finding require a
+separately authorized repair and acceptance checkpoint before Group E may be
+planned. `COPY-003` and `src/pages/homePage.ts` remain held and unchanged.
+Group E, production Glossary content, and an ODE binding remain unauthorized;
+the final Group F2 review remains required after Group E. Nothing was pushed
+or deployed.
 
 ## Current released baseline
 
@@ -145,20 +150,29 @@ independent final review. No production content or ODE binding was added.**
 15. Implement Group D, Tutor numerical language, only in a separately scoped
     task with focused API/prompt/Host/lazy tests, structural audit, localhost
     demo/browser review, and production artifact inspection. Complete locally
-    and awaiting maintainer acceptance.
-16. Add the reviewed ODE Glossary vertical slice only after separate content
-    approval and implementation authorization.
-17. Push only when explicitly requested by the maintainer.
+    and accepted.
+16. Complete Group F1 before production Glossary integration: implement only
+    `COPY-043`, classify all twelve `COPY-NC-*` records, audit accepted A–D
+    language and current behavior, and record the pre-E gate. Complete locally
+    with verdict **GROUP F1 COMPLETE — PRE-E FIXES REQUIRED**.
+17. Repair and accept `F1-LANG-001` through `F1-LANG-004` and
+    `F1-BEH-001` in separately authorized focused work. Not started.
+18. Add the reviewed ODE Glossary vertical slice only after the pre-E repair
+    gate, separate content approval, and implementation authorization.
+19. Complete Group F2 after Group E.
+20. Push only when explicitly requested by the maintainer.
 
 ## Current next action
 
-Review and accept the local Group D commit and evidence package. The exact
-records `COPY-030` through `COPY-040` are implemented; 52 focused tests, both
-TypeScript checks, the 1,042-test full verification gate, a 5,600-node
-text-only structural audit, 1440×900 and 390×844 localhost demo/browser review,
-and production artifact inspection passed. `COPY-003` remains deferred with
+Authorize and complete a narrow pre-E repair for `F1-LANG-001` through
+`F1-LANG-004` and `F1-BEH-001`, then review and accept its evidence. Group F1
+implemented `COPY-043`, classified every `COPY-NC-*` record, and completed the
+cross-surface review with 135 focused tests, the 1,042-test full verification
+gate, 1440×900 and 390×844 development/production-preview evidence, and an
+unchanged normalized production import graph. `COPY-003` remains deferred with
 the PDE module. Group E, production Glossary content, an ODE binding, and the
-reviewed ODE vertical slice remain unauthorized.
+reviewed ODE vertical slice remain unauthorized. Group F2 remains required
+after Group E.
 
 ## Parallel content foundation
 
@@ -177,9 +191,10 @@ product relevance, runtime readiness, and rollout wave, and includes rich
 planning drafts for 10 Wave 1 and 13 high-priority Wave 2 terms. The copy audit
 rescans 55 records and maps exact replacements to Groups A–F. The standards and
 reconciliation publish no production term, definition, annotation, or notation
-migration. Groups A through C are accepted, and Group D implements only its 11
-authorized Tutor records. `COPY-003` remains held; Groups E and F remain
-unimplemented.
+migration. Groups A through D are accepted. Group F1 implements only
+`COPY-043` and records the pre-Glossary review; it does not complete Group F.
+`COPY-003` remains held; Group E remains unauthorized, and Group F2 remains
+required after Group E.
 The continuation state is
 [the project-language handoff](docs/content/HANDOFF.md). Nothing from these
 copy iterations was pushed or deployed.
@@ -217,12 +232,13 @@ remains historical evidence and all three of its findings are closed. The
 project-language approval gate is also closed: all nine choices are recorded
 and the three standards are approved as Version 1. The catalog/copy
 reconciliation gate is also closed with 197 stable IDs and 55 rescanned copy
-records. Groups A through C are accepted; `COPY-003` remains held. Group D is
-implemented and locally verified. The next gate is maintainer acceptance of
-the Group D commit and evidence package, followed by a separate decision on
-whether to begin Group F consistency review before authorizing Group E.
+records. Groups A through D are accepted; `COPY-003` remains held. Group F1 is
+complete locally with verdict **GROUP F1 COMPLETE — PRE-E FIXES REQUIRED**.
+The next gate is a separately authorized repair and maintainer-acceptance
+checkpoint for `F1-LANG-001` through `F1-LANG-004` and `F1-BEH-001`.
 Production Glossary terms, annotations, an ODE binding, and visible Glossary
-behavior remain absent and unauthorized.
+behavior remain absent and unauthorized. Group E may not be planned until the
+repair gate closes, and Group F2 remains required after Group E.
 
 ## Update rule
 
