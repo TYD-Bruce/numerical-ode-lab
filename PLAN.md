@@ -88,10 +88,18 @@ entries, two ODE context-only overrides, and an exact ten-card composition.
 The production registry remains empty, no production importer exists, and no
 annotation, ODE binding, or visible Glossary behavior was added. The
 [E1 content review](docs/reviews/2026-07-29-ode-glossary-wave-1-e1-content-review.md)
-records the local evidence and awaits maintainer acceptance.
-`COPY-003` and `src/pages/homePage.ts` remain held and unchanged. E2, E3,
-production activation, annotations, and an ODE binding remain
-unauthorized; the final Group F2 review remains mandatory after E3.
+records the local evidence. The maintainer accepted E1 at
+`08b80522283438a233974456a026a6dbc2a96746`. The first E2 integration pass
+stopped before source/test changes because its Method helper and Compare
+Output contracts conflicted or lacked exact copy. The documentation-only
+[E2 Runtime Contract](docs/content/ODE_GLOSSARY_WAVE_1_E2_RUNTIME_CONTRACT.md)
+now records `E2-CONTRACT-01` and `E2-CONTRACT-02`, reconciles all ten
+annotation records, and is the sole implementation authority for E2
+interaction details. E2 source implementation remains incomplete and requires
+fresh maintainer reauthorization. `COPY-003` and `src/pages/homePage.ts`
+remain held and unchanged. E3, production activation, annotations, and an ODE
+binding remain unauthorized; the final Group F2 review remains mandatory after
+E3.
 Nothing was pushed or deployed.
 
 ## Current released baseline
@@ -103,7 +111,7 @@ locally verified, Preview-verified, and Production-verified at
 
 ## Active milestone
 
-**ODE Glossary Wave 1 E1 — Maintainer Acceptance Gate**
+**ODE Glossary Wave 1 E2 — Implementation Reauthorization Gate**
 
 The content-agnostic framework and pre-E repairs are accepted prerequisites.
 Group E0 design and content governance is complete and maintainer-approved.
@@ -114,7 +122,11 @@ restart point. E1 is now locally implemented and verified as inert content:
 two Core entries, eight ODE entries, two context-only overrides, and ten
 composed cards exist in source while the production registry, production
 importer count, annotation count, and ODE binding count all remain zero.
-Maintainer acceptance of the E1 commit and evidence package is pending.
+E1 is accepted at `08b80522283438a233974456a026a6dbc2a96746`. The canonical
+E2 Runtime Contract fixes all ten exact owners, trigger texts, DOM
+compositions, state/mode rules, lifecycle rules, duplicates, and direct test
+ownership. E2 source/test implementation has not begun and requires fresh
+maintainer reauthorization.
 
 ## Completed Project Identity Migration
 
@@ -148,8 +160,9 @@ loading while keeping formal mathematical content separate.
 [ODE Glossary Wave 1 Design](docs/superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md)
 
 Status: **D01–D18, ten revised cards, and ten annotation records are
-maintainer-approved; E1 is locally implemented and inert pending maintainer
-acceptance, while E2, E3, and F2 remain separately gated and unauthorized.**
+maintainer-approved; E1 is accepted and inert; the E2 runtime contract is
+complete, while E2 source implementation requires fresh reauthorization and
+E3/F2 remain unauthorized.**
 
 [Rich Glossary Content Model and Complete Surface Design](docs/superpowers/specs/2026-07-29-rich-glossary-content-model-design.md)
 
@@ -244,18 +257,20 @@ independent final review. No production content or ODE binding was added.**
     maintainer authorization. Complete and accepted in
     `6ef085d0b0271a5e7ed5a9f64ef4e6a05b5f257e`.
 23. Restart E1 from the beginning against the accepted rich model after a new
-    explicit gate. Complete locally with inert source content and evidence;
-    maintainer acceptance pending.
-24. Implement E2 annotations and the ODE binding only after accepted E1 and a
-    separate authorization. Unauthorized.
+    explicit gate. Complete, accepted, and inert at
+    `08b80522283438a233974456a026a6dbc2a96746`.
+24. Reconcile all ten E2 interaction records after the first integration pass
+    stopped before source/test changes. Complete as documentation through
+    `E2-CONTRACT-01`, `E2-CONTRACT-02`, and the canonical E2 Runtime Contract.
+    E2 source/test implementation requires fresh maintainer reauthorization.
 25. Complete E3 integration review after E2. Unauthorized.
 26. Complete mandatory Group F2 after E3. Not started.
 27. Push only when explicitly requested by the maintainer.
 
 ## Current next action
 
-Maintainer acceptance of the E1 commit and its
-[content review](docs/reviews/2026-07-29-ode-glossary-wave-1-e1-content-review.md).
+Fresh maintainer reauthorization of E2 source/test implementation against the
+[canonical E2 Runtime Contract](docs/content/ODE_GLOSSARY_WAVE_1_E2_RUNTIME_CONTRACT.md).
 The approved Wave 1 design retains ten terms, keeps
 `/ode` static and unannotated, uses two Core plus eight ODE-owned cards,
 injects no production Tutor handoff, and separates E1, E2, E3, and mandatory
@@ -284,8 +299,9 @@ review; it does not complete Group F. `COPY-003` remains held. Group E0 design
 and content governance is maintainer-approved. The historical E1 stop led to
 the accepted generic rich model; the fresh E1 restart is now locally complete
 with two Core entries, eight ODE entries, two context-only overrides, and ten
-composed cards. It remains inert and awaits maintainer acceptance. E2 and E3
-remain unauthorized.
+composed cards. It remains inert and is accepted. The E2 runtime contract is
+complete, but E2 source/test implementation requires fresh reauthorization.
+E3 remains unauthorized.
 Group F2 remains required after E3.
 The continuation state is
 [the project-language handoff](docs/content/HANDOFF.md). Nothing from these
@@ -329,13 +345,14 @@ accepted; `COPY-003` remains held. Group E0 Wave 1 design and content
 governance is complete. The historical E1 schema stop was resolved by the
 accepted Option 2 generic rich model at
 `6ef085d0b0271a5e7ed5a9f64ef4e6a05b5f257e`. The freshly authorized E1 restart
-is locally complete with verdict **E1 RICH CONTENT IMPLEMENTED AND INERT —
-READY FOR MAINTAINER ACCEPTANCE**. Its two Core entries, eight ODE entries,
-two context-only overrides, and ten composed cards remain outside the
-production registry and import graph. The next gate is maintainer acceptance
-of the E1 commit and evidence package. E2, E3, production activation,
-annotations, an ODE binding, and visible production Glossary behavior remain
-absent and unauthorized. Group F2 remains mandatory after E3.
+is accepted at `08b80522283438a233974456a026a6dbc2a96746`. Its two Core
+entries, eight ODE entries, two context-only overrides, and ten composed cards
+remain outside the production registry and import graph. The ten-record E2
+runtime contract is complete. The next gate is fresh maintainer
+reauthorization of E2 source/test implementation. E2 source, E3, production
+activation, annotations, an ODE binding, and visible production Glossary
+behavior remain absent; E3 is unauthorized. Group F2 remains mandatory after
+E3.
 
 ## Update rule
 

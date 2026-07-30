@@ -1,9 +1,9 @@
 # ODE Glossary Wave 1 Approval Checklist
 
 **Status:** Maintainer approval recorded; content and Wave 1 design approved;
-the generic rich model is accepted; the fresh E1 restart is locally
-implemented and inert pending maintainer acceptance; E2/E3/F2, push, Preview,
-and Production remain unauthorized.
+the generic rich model and E1 are accepted. The E2 runtime contract is
+complete; E2 source implementation requires fresh maintainer reauthorization.
+E3/F2, push, Preview, and Production remain unauthorized.
 
 **Date prepared:** 2026-07-29
 
@@ -28,7 +28,9 @@ The resulting local implementation evidence is recorded by the
 [rich-model implementation review](../reviews/2026-07-29-rich-glossary-content-model-implementation-review.md).
 The fresh E1 implementation evidence is recorded by the
 [E1 content review](../reviews/2026-07-29-ode-glossary-wave-1-e1-content-review.md).
-Checked content/design boxes record approval only. Unchecked
+The exact interaction contract for all ten E2 annotations is the
+[E2 Runtime Contract](ODE_GLOSSARY_WAVE_1_E2_RUNTIME_CONTRACT.md).
+Checked content/design/contract boxes record approval only. Unchecked
 implementation/execution/deployment boxes require separate maintainer
 authorization.
 
@@ -94,9 +96,12 @@ the fresh E1 authorization is recorded separately below.
 - [x] E1 boundary/design approved.
 - [x] E1 implementation explicitly authorized.
 - [x] E1 implementation locally complete and inert.
-- [ ] E1 implementation accepted.
+- [x] E1 implementation accepted at
+  `08b80522283438a233974456a026a6dbc2a96746`.
 - [x] E2 boundary/design approved.
-- [ ] E2 implementation explicitly authorized.
+- [x] E2 runtime contract reconciled by `E2-CONTRACT-01` and
+  `E2-CONTRACT-02`.
+- [ ] E2 source/test implementation freshly reauthorized.
 - [x] E3 mandatory independent review gate approved.
 - [ ] E3 execution explicitly authorized.
 - [x] Group F2 mandatory review gate approved.
@@ -110,8 +115,9 @@ the fresh E1 authorization is recorded separately below.
 ## 6. Approved decision record
 
 The 18 decision cards D01 through D18 in the design specification record
-maintainer-approved Option A. This approval fixes design and governance only;
-it does not authorize E1, E2, E3, F2, push, Preview, or Production action.
+maintainer-approved Option A. This approval fixes design and governance. E1 is
+separately accepted. It does not authorize E2 source/test implementation, E3,
+F2, push, Preview, or Production action.
 
 ## 7. Historical E1 schema-stop and fresh restart record
 
@@ -133,7 +139,9 @@ fresh E1 restart.
 Fresh E1 now owns exactly two inert Core entries, eight inert ODE entries, two
 ODE context-only overrides, and ten composed cards. The production registry
 entry count, Core-content production importer count, annotation count, and ODE
-binding count remain zero. E1 awaits maintainer acceptance. E2, E3, F2, push,
+binding count remain zero. E1 is accepted at
+`08b80522283438a233974456a026a6dbc2a96746`. The E2 source/test implementation
+is incomplete and requires fresh maintainer reauthorization. E3, F2, push,
 Preview, and Production remain unauthorized.
 
 `E1-BROWSER-EXCEPTION-01` permits only the unchanged Google Fonts
@@ -145,10 +153,10 @@ Platform/asset-policy review). E1 introduced no external traffic.
 
 ## 8. Checked-count declaration
 
-Checked approval, prerequisite, authorization, and local-completion boxes:
-**168**.
+Checked approval, prerequisite, authorization, acceptance, contract, and
+local-completion boxes: **170**.
 
-Unchecked acceptance/implementation/execution/deployment boxes: **7**.
+Unchecked implementation/execution/deployment boxes: **6**.
 
 Term rows: **10**.
 
@@ -158,9 +166,9 @@ Architecture rows: **7**.
 
 Generic prerequisite rows: **3**.
 
-Rollout rows: **15**.
+Rollout rows: **16**.
 
-Checked content/design rows do not authorize later implementation. The
-maintainer must still accept E1 and explicitly authorize E2, E3, and F2 at
-their separate gates; push, Preview deployment, and Production deployment
-also remain separately unauthorized.
+Checked content/design/contract rows do not authorize later implementation.
+The maintainer must freshly reauthorize E2 source/test implementation and
+separately authorize E3 and F2 execution; push, Preview deployment, and
+Production deployment also remain unauthorized.

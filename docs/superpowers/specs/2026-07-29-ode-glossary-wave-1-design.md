@@ -1,8 +1,10 @@
 # ODE Glossary Wave 1 Design
 
 **Status:** Maintainer-approved design and content governance; D01–D18 are
-approved as Option A. E1, E2, E3, and F2 remain separately gated and
-unauthorized.
+approved as Option A. E1 is accepted at
+`08b80522283438a233974456a026a6dbc2a96746`. The E2 interaction contract is
+complete; E2 source implementation is incomplete and requires fresh
+maintainer reauthorization. E3 and F2 remain unauthorized.
 
 **Date:** 2026-07-29
 
@@ -13,10 +15,10 @@ unauthorized.
 **Approval scope:** ODE Glossary Wave 1 design and content governance
 
 **Authorization boundary:** This specification approves design, exact content
-governance, ten annotation records, and staged rollout boundaries. It does not
-authorize production content, TypeScript entries, annotation implementation,
-an ODE Glossary binding, runtime composition, Tutor integration, E1, E2, E3,
-or Group F2 implementation or execution.
+governance, ten annotation records, and staged rollout boundaries. Accepted
+E1 content is implemented and inert. This document does not authorize E2
+source/test implementation, E3 or Group F2 execution, push, Preview, or
+Production deployment.
 
 ## 1. Purpose
 
@@ -30,7 +32,11 @@ The approved card copy and complete 21-field annotation records are in the
 [content packet](../../content/ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md). The
 [approval checklist](../../content/ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md)
 records checked content/design approval separately from unchecked
-implementation, execution, push, and deployment authorization.
+implementation, execution, push, and deployment authorization. The
+[E2 Runtime Contract](../../content/ODE_GLOSSARY_WAVE_1_E2_RUNTIME_CONTRACT.md)
+is the sole implementation authority for E2 interaction details. It records
+`E2-CONTRACT-01` and `E2-CONTRACT-02`; where historical interaction wording
+in this design differs, that contract controls.
 
 ## 2. Accepted framework and current source facts
 
@@ -139,12 +145,13 @@ belong to the ODE module override. ODE must not redefine a Core term, replace
 its stable ID, reverse aliases, or create a second independent full card.
 ODE-owned records carry their complete module-specific content directly.
 
-E1 does not import either content owner from a production route. Unreferenced
-content therefore remains absent from the Rollup graph and inert until E2.
+E1 does not import either content owner from a production route. The accepted
+content therefore remains absent from the Rollup graph and inert until a
+reauthorized E2 implementation.
 
 ## 5. Planned ODE module
 
-Future E2 may create:
+Reauthorized E2 implementation creates:
 
 ```text
 src/ode/odeGlossary.ts
@@ -188,8 +195,8 @@ export interface OdeGlossaryRenderTransaction {
 export function createOdeGlossaryRuntime(): OdeGlossaryRuntime;
 ```
 
-The exact TypeScript names remain subject to E2 review, but the responsibilities
-do not:
+Internal TypeScript type names may follow repository conventions during
+implementation, but the responsibilities do not:
 
 - compose `coreGlossaryEntries`, ODE entries, and ODE overrides;
 - create one strict-in-development/controlled-production registry;
@@ -299,9 +306,7 @@ retains the same values in individually readable records.
 | `ODE-W1-ANN-009` | First in `ode_wave1_data` when Forward Euler is selected | Controlled Data replacement | No across Data-to-Output | Selection card, result heading, metadata, Convergence, and Tutor remain plain | Approved E1 card and E2 selected-heading design | `APPROVED` |
 | `ODE-W1-ANN-010` | First in `ode_wave1_data` when Backward Euler is selected | Controlled Data replacement | No across Data-to-Output | Selection card, result heading, metadata, diagnostics, Convergence, and Tutor remain plain | Approved E1 card, D02 Option A, and E2 selected-heading design | `APPROVED` |
 
-For annotations whose surrounding authored copy was previously pending, the
-approved design authorizes the exact approved sentence as the E2 target unless
-implementation discovers an owner mismatch:
+The exact authored helper copy is:
 
 - Lab lede: “Explore fixed-step methods for a first-order ordinary
   differential equation posed as an initial value problem, then analyze
@@ -309,8 +314,14 @@ implementation discovers an owner mismatch:
   size changes.”
 - Data helper: “The current fixed-step time grid includes the aligned start
   and end times.”
+- Method helper: “Explicit scheme: the next numerical approximation is
+  computed directly from quantities already known before the update.” Only
+  `Explicit scheme` is interactive; the colon and remaining sentence are
+  plain text.
 
-These sentences remain unimplemented in this approval task.
+These sentences remain unimplemented. Their exact DOM composition, mode
+conditions, rerender behavior, disposal, duplicates, and direct test ownership
+are fixed by the E2 Runtime Contract.
 
 For every record:
 
@@ -440,7 +451,8 @@ controller, definitions, and fixtures.
 
 ### E1 — Content data only
 
-Possible future commit: `Add reviewed ODE Glossary Wave 1 content`
+Implemented commit: `08b80522283438a233974456a026a6dbc2a96746`
+(`Add reviewed ODE Glossary Wave 1 content`)
 
 Scope:
 
@@ -463,11 +475,11 @@ Verification:
 
 Rollback: revert E1 alone. No visible or session state exists.
 
-Authorization: not authorized.
+Status: accepted, locally verified, and inert.
 
 ### E2 — Explicit annotations and ODE binding
 
-Possible future commit: `Connect ODE Glossary Wave 1`
+Implementation commit boundary: `Integrate ODE Glossary Wave 1`
 
 Scope:
 
@@ -494,6 +506,10 @@ Rollback: revert E2 while retaining inert reviewed E1 data. Production returns
 to zero visible Glossary behavior.
 
 Authorization: not authorized.
+
+The prior E2 authorization paused at the design mismatch before any E2 source
+or test change. `E2-CONTRACT-01` and `E2-CONTRACT-02` now close that mismatch.
+Fresh maintainer reauthorization is required before this phase starts.
 
 ### E3 — Integration review checkpoint
 
@@ -796,8 +812,11 @@ E3, F2, push, Preview deployment, or Production deployment.
 - **Test impact:** Result rerender and Compare-plain-text checks.
 - **Rollback impact:** One explicit record.
 - **Maintainer selection:** Option A — approved.
-- **Maintainer notes:** Output owns only `numerical_approximation`; single and
-  Compare use explicit owner transfer for the same annotation ID.
+- **Maintainer notes:** Output owns only `numerical_approximation`. The
+  historical sentence “single and Compare use explicit owner transfer for the
+  same annotation ID” is superseded by `E2-CONTRACT-02`. Only a successful
+  Single result summary owns `ODE-W1-ANN-006`; Compare Output remains plain
+  and creates no trigger for that record.
 - **Review date:** 2026-07-29.
 
 ### D12 — Editable MathLive exclusion
@@ -949,10 +968,14 @@ Group E0 governance is complete:
 - the approved complete-Lab-only path needs no framework change;
 - `/ode` and Tutor exclusions are explicit;
 - no architecture, annotation, Tutor, content-governance, or rollout-design
-  decision remains pending;
-- E1, E2, E3, and F2 remain unauthorized;
+  decision remains unresolved;
+- E1 is accepted and inert;
+- the E2 runtime contract is complete, while E2 source implementation requires
+  fresh maintainer reauthorization;
+- E3 and F2 remain unauthorized;
 - no production source, test, CSS, package, config, or deployment file changes;
 - local structured validation passed, and its artifact remains ignored.
 
-This approval completes Group E0 design and content governance. It does not
-authorize Group E implementation.
+Group E0 design/content governance and the later E2 runtime-contract
+reconciliation are complete. No E2 source/test implementation, E3/F2
+execution, push, or deployment is authorized by this document.

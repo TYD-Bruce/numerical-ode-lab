@@ -16,6 +16,13 @@
 | Production content impact | None |
 | Remote/deployment impact | None |
 
+**Current reconciliation note (2026-07-30):** This review's original verdict
+is preserved as point-in-time Group E0 evidence. E1 is now accepted at
+`08b80522283438a233974456a026a6dbc2a96746`. The
+[E2 Runtime Contract](../content/ODE_GLOSSARY_WAVE_1_E2_RUNTIME_CONTRACT.md)
+is the sole implementation authority for E2 interaction details. E2 source
+implementation is incomplete and requires fresh maintainer reauthorization.
+
 ## 2. Reviewed packet
 
 - [ODE Glossary Wave 1 Content Packet](../content/ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md)
@@ -302,12 +309,14 @@ pending.
 
 ## 19. Implementation readiness
 
-The design, ten term cards, exact ownership, companion copy, ten annotation
-records, and staged rollout policy are approved. E1 implementation remains
-unauthorized and requires a separate maintainer decision.
+At this review checkpoint, the design, ten term cards, exact ownership,
+companion copy, ten annotation records, and staged rollout policy were
+approved, while E1 implementation still required a separate maintainer
+decision.
 
-E2 requires accepted E1. E3 requires completed E2. F2 remains separate and
-mandatory.
+Current status: E1 is accepted. The reconciled E2 runtime contract is complete,
+but E2 source/test implementation requires fresh maintainer reauthorization.
+E3 requires completed E2. F2 remains separate and mandatory.
 
 ## 20. Explicit non-changes
 
@@ -350,6 +359,37 @@ PASS.
 ## DESIGN AND CONTENT APPROVED — E1 AUTHORIZATION REQUIRED
 
 The content, annotation, ownership, lifecycle, accessibility, lazy-loading,
-Tutor, rollout, validation, and rollback design is approved. No production
-entry, annotation, binding, or Tutor integration exists; E1, E2, E3, and F2
-remain separately unauthorized.
+Tutor, rollout, validation, and rollback design was approved at this
+point-in-time checkpoint. No production entry, annotation, binding, or Tutor
+integration existed.
+
+## 23. E2 runtime-contract reconciliation
+
+PASS.
+
+`E2-CONTRACT-01` fixes the Method helper as:
+
+> Explicit scheme: the next numerical approximation is computed directly from
+> quantities already known before the update.
+
+Only `Explicit scheme` is interactive. The colon and trailing explanation are
+plain text in one noninteractive helper above the method grid and outside
+every method-selection button.
+
+`E2-CONTRACT-02` supersedes the old D11 Single/Compare owner-transfer sentence.
+`ODE-W1-ANN-006` belongs only to the successful Single summary label `Final
+numerical approximation`. Compare Output remains plain and creates no trigger
+for that record.
+
+The source-grounded audit in the E2 Runtime Contract covers all ten records and
+confirms ten exact mappings, owners, trigger texts, state/mode contracts,
+lifecycle contracts, and direct test owners, with no unresolved copy, owner,
+or active policy conflict. Existing `mountOdeApp` render owners and the
+optional route binding/Host lifecycle are sufficient; no generic framework
+change is required.
+
+E2 source implementation remains incomplete and requires fresh maintainer
+reauthorization. E3 and Group F2 execution, push, Preview, and Production
+remain unauthorized.
+
+## E2 RUNTIME CONTRACT COMPLETE — IMPLEMENTATION REAUTHORIZATION REQUIRED

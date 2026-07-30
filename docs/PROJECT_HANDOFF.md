@@ -2,7 +2,7 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
-**Status (2026-07-29):** Numerical T-Lab is locally verified and
+**Status (2026-07-30):** Numerical T-Lab is locally verified and
 Production-verified at `https://numerical-t-lab.vercel.app/`. The GitHub
 repositories, Git remotes, existing Vercel project, Git integration, and
 canonical domain use the Numerical T-Lab identity. The local workspace rename
@@ -57,7 +57,15 @@ restart now contains exactly two inert Core entries, eight inert ODE entries,
 two ODE context-only overrides, and ten composed cards. The
 [E1 review](./reviews/2026-07-29-ode-glossary-wave-1-e1-content-review.md)
 records local verification and verdict **E1 RICH CONTENT IMPLEMENTED AND
-INERT — READY FOR MAINTAINER ACCEPTANCE**. The production registry and
+INERT — READY FOR MAINTAINER ACCEPTANCE** as its point-in-time verdict. The
+maintainer accepted E1 at `08b80522283438a233974456a026a6dbc2a96746`. The
+first E2 integration pass stopped before source/test changes at two interaction
+contract mismatches. The
+[E2 Runtime Contract](./content/ODE_GLOSSARY_WAVE_1_E2_RUNTIME_CONTRACT.md)
+now records `E2-CONTRACT-01`, `E2-CONTRACT-02`, and a complete source-grounded
+contract for all ten records. It is the sole implementation authority for E2
+interaction details. E2 source/test implementation remains incomplete and
+requires fresh maintainer reauthorization. The production registry and
 production importer count remain zero; no annotation, ODE binding, or visible
 Glossary behavior was added.
 `E1-BROWSER-EXCEPTION-01` accepts only the unchanged Google Fonts
@@ -90,8 +98,8 @@ The product is **Numerical T-Lab**. The currently implemented numerical module i
 | any other page path | In-shell Not Found | Available |
 
 Linear Algebra and PDE are truthful roadmap pages with no runnable controls.
-The active milestone is **ODE Glossary Wave 1 E1 — Maintainer Acceptance
-Gate**;
+The active milestone is **ODE Glossary Wave 1 E2 — Implementation
+Reauthorization Gate**;
 **Linear Systems Lab** is later. The
 [authoritative Glossary design](./superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md)
 is approved and committed. Commit 1, the content-agnostic Glossary model and
@@ -132,9 +140,9 @@ The historical E1 schema stop was closed by the accepted generic rich-model
 implementation. The fresh E1 restart is locally complete and inert, with
 two Core entries, eight ODE entries, two context-only overrides, and ten
 composed cards in source. Production activation and the ODE binding remain
-absent and unauthorized. Maintainer acceptance of E1 is the current gate; E2
-and E3 remain future gates, and the final Group F2 review remains mandatory
-after E3.
+absent. E1 is accepted. The E2 runtime contract is complete, while E2
+source/test implementation requires fresh reauthorization. E3 remains
+unauthorized, and the final Group F2 review remains mandatory after E3.
 
 ## 2. Verification baseline
 
@@ -490,9 +498,11 @@ Known limitations:
   covering ten revised Wave 1 term cards, ten exact annotation records, and
   eighteen Option A decisions. E1 stopped incomplete before source/test work
   at the confirmed schema mismatch. The Option 2 rich-model design, plan, and
-  generic implementation are complete locally, but maintainer acceptance, an
-  E1 restart, E2, and E3 remain separately gated. No production content or
-  binding is authorized, and Group F2 remains mandatory after E3.
+  generic implementation are accepted; the fresh E1 restart is accepted and
+  inert at `08b80522283438a233974456a026a6dbc2a96746`. The E2 runtime contract
+  is complete, but E2 source/test implementation requires fresh maintainer
+  reauthorization. E3 remains unauthorized, no production binding exists, and
+  Group F2 remains mandatory after E3.
 
 Contributor rules:
 
@@ -505,7 +515,7 @@ Contributor rules:
 - Keep `beforeunload` minimal and synchronous.
 - Run `npm run verify` after changes and add focused tests first.
 
-*Last updated: 2026-07-29. Project Identity Migration and prior Production
+*Last updated: 2026-07-30. Project Identity Migration and prior Production
 verification remain complete. The Glossary framework is locally accepted as
 complete after all three historical blocked-review findings were repaired and
 closed by repeated independent final review. Nothing was pushed or deployed.
@@ -523,6 +533,8 @@ eighteen Option A decisions. The historical E1 schema stop was resolved by
 the accepted Option 2 rich-model commit
 `6ef085d0b0271a5e7ed5a9f64ef4e6a05b5f257e`. Fresh E1 is locally implemented
 and inert with two Core entries, eight ODE entries, two context-only
-overrides, and ten composed cards. The next gate is maintainer acceptance of
-the E1 commit and evidence package. E2 and E3 remain unauthorized and
-separately gated; Group F2 remains mandatory after E3.*
+overrides, and ten composed cards, and is accepted at
+`08b80522283438a233974456a026a6dbc2a96746`. The E2 runtime contract is
+complete. The next gate is fresh maintainer reauthorization of E2 source/test
+implementation. E3 remains unauthorized and separately gated; Group F2
+remains mandatory after E3.*

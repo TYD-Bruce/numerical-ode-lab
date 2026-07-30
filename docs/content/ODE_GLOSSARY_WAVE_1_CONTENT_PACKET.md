@@ -1,10 +1,11 @@
 # ODE Glossary Wave 1 Content Packet
 
-Status: Maintainer-approved design and content governance packet.
-All ten cards are `APPROVED_WITH_REVISIONS`, all ten annotation records are
-approved as E2 design targets, and decisions D01 through D18 are approved as
-Option A. No term implementation, annotation implementation, binding, runtime
-activation, remote action, or deployment is authorized by this document.
+Status: Maintainer-approved content governance packet. All ten cards are
+`APPROVED_WITH_REVISIONS` and implemented as accepted inert E1 content. The
+ten annotation records and decisions D01 through D18 remain approved, with
+E2 interaction details reconciled by `E2-CONTRACT-01` and
+`E2-CONTRACT-02`. E2 source implementation requires fresh maintainer
+reauthorization. No remote action or deployment is authorized.
 
 Date: 2026-07-29
 
@@ -27,8 +28,11 @@ The companion
 [design specification](../superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md),
 [approval checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md), and
 [design-readiness review](../reviews/2026-07-29-ode-glossary-wave-1-design-readiness-review.md)
-record the same approval boundary. Design approval does not authorize E1, E2,
-E3, or Group F2 implementation or execution.
+record the same approval boundary. The
+[E2 Runtime Contract](ODE_GLOSSARY_WAVE_1_E2_RUNTIME_CONTRACT.md) is the sole
+implementation authority for E2 interaction details. E1 is accepted. E2
+source implementation is incomplete and requires fresh maintainer
+reauthorization; E3 and Group F2 execution remain unauthorized.
 
 ## 2. Exact term set and teaching order
 
@@ -642,10 +646,17 @@ as non-clickable future related text.
 
 ## 4. Approved exact annotation map
 
-The map proposes ten annotations, one per card. All are inside the complete
-Lab route. `/ode` was evaluated, but its static `RouteModule` has no
+The map contains ten approved annotations, one per card. All are inside the
+complete Lab route. `/ode` was evaluated, but its static `RouteModule` has no
 Lab-owned Glossary binding; no `/ode` annotation is approved under the
 approved no-framework-change design.
+
+The canonical E2 Runtime Contract fixes the complete DOM, state/mode,
+replacement, disposal, accessibility, duplicate, and test-owner contract for
+all ten records. `E2-CONTRACT-01` supplies the exact Method helper.
+`E2-CONTRACT-02` supersedes the historical D11 Single/Compare transfer
+sentence: `ODE-W1-ANN-006` belongs only to successful Single Output and Compare
+remains plain.
 
 ### ODE-W1-ANN-001
 
@@ -658,9 +669,7 @@ approved no-framework-change design.
 - **Surrounding context:** Approved E2 lede composition: “Explore fixed-step
   methods for a first-order ordinary differential equation posed as an initial
   value problem, then analyze numerical error, observed convergence, and
-  method behavior as the time-step size changes.” The approved design
-  authorizes this exact sentence as the E2 target unless implementation
-  discovers an owner mismatch.
+  method behavior as the time-step size changes.”
 - **Surface:** lede
 - **Trigger type supported by the framework:** Native text-like button created
   explicitly by `GlossaryScopeController.createTerm`.
@@ -791,9 +800,7 @@ approved no-framework-change design.
 - **Exact visible text:** `time grid`
 - **Surrounding context:** One new helper sentence immediately after the
   interval/time-step controls: “The current fixed-step time grid includes the
-  aligned start and end times.” The approved design authorizes this exact
-  sentence as the E2 target unless implementation discovers an owner
-  mismatch.
+  aligned start and end times.”
 - **Surface:** helper text
 - **Trigger type supported by the framework:** Explicit native text-like
   button inside noninteractive helper prose.
@@ -831,11 +838,15 @@ approved no-framework-change design.
 - **Accessible trigger name:** `Final numerical approximation`
 - **Keyboard behavior:** Native button behavior; no change to result value or
   chart focus.
-- **Rerender lifecycle:** Output-scope controlled replacement.
+- **Rerender lifecycle:** Output-scope controlled replacement for an exact
+  successful Single summary. Compare commits the Output scope without this
+  term.
 - **Route-disposal lifecycle:** Host disconnect then Lab-owned disposal.
 - **Whether the annotation survives result rerender:** Yes when the successful
-  single-result label is recreated with the same scope/term; otherwise it
-  closes.
+  Single-result label is recreated with the same scope/term. A retained result
+  after a failed rerun is explicitly reconnected when Single Output is shown
+  again. Single-to-Compare closes it; Compare-to-Single recreates it only when
+  a successful Single summary exists.
 - **Whether it is excluded from editable MathLive content:** Yes.
 - **Duplicate-term policy:** Compare labels, chart title, legend, tooltip,
   table cells, and Tutor text remain plain.
@@ -882,8 +893,11 @@ approved no-framework-change design.
 - **File:** `src/ode/odeApp.ts`
 - **Owner function/component:** `mountOdeApp.renderChoosePanel`
 - **Exact visible text:** `Explicit scheme`
-- **Surrounding context:** One new short Method teaching note above the method
-  grid. The trigger is outside every method-selection button.
+- **Surrounding context:** One new noninteractive Method helper above the
+  method grid and outside every method-selection button: “Explicit scheme:
+  the next numerical approximation is computed directly from quantities
+  already known before the update.” Only `Explicit scheme` is interactive;
+  the colon and remaining sentence are plain text.
 - **Surface:** helper text
 - **Trigger type supported by the framework:** Explicit native text-like
   button inside noninteractive prose.
@@ -900,8 +914,8 @@ approved no-framework-change design.
 - **Whether it is excluded from editable MathLive content:** Yes.
 - **Duplicate-term policy:** `Explicit` inside method-card button blurbs and
   Output metadata remains plain.
-- **Implementation dependency:** Approved teaching-note design; separately
-  authorized E1 core entry/ODE override and E2 Method composition.
+- **Implementation dependency:** Accepted E1 core entry/ODE override and the
+  exact `E2-CONTRACT-01` Method composition.
 - **Review status:** `APPROVED`.
 
 ### ODE-W1-ANN-009
@@ -1059,4 +1073,11 @@ Maintainer-approved annotations: 10 of 10.
 
 Production entries, annotations, bindings, and visible behavior: 0.
 
-Implementation authorization flags for E1, E2, E3, and F2: all false.
+E1 implementation: accepted at
+`08b80522283438a233974456a026a6dbc2a96746`.
+
+E2 runtime contract: complete, with implementation reauthorization required.
+
+E2 source implementation: incomplete.
+
+E3 and Group F2 execution, push, Preview, and Production: unauthorized.

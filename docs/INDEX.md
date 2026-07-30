@@ -80,8 +80,13 @@ overrides, and ten composed cards exist in source; the production registry,
 production importer count, annotation count, and ODE binding count remain
 zero. The
 [E1 content review](reviews/2026-07-29-ode-glossary-wave-1-e1-content-review.md)
-awaits maintainer acceptance. E2, E3, and production activation remain
-unauthorized. Group F2 remains mandatory after E3.
+records the accepted implementation at
+`08b80522283438a233974456a026a6dbc2a96746`. The
+[E2 Runtime Contract](content/ODE_GLOSSARY_WAVE_1_E2_RUNTIME_CONTRACT.md)
+records `E2-CONTRACT-01`, `E2-CONTRACT-02`, and the source-grounded complete
+ten-record interaction contract. E2 source/test implementation is incomplete
+and requires fresh maintainer reauthorization. E3 and production activation
+remain unauthorized. Group F2 remains mandatory after E3.
 
 ## Project-language standards and content drafts
 
@@ -94,8 +99,9 @@ F1/pre-E prerequisite commits are accepted; all five P2 findings are
 `CLOSED_VERIFIED`. Group E0 ODE Glossary Wave 1 design and content governance
 is complete and maintainer-approved. The historical E1 schema stop was closed
 by the accepted generic rich-model implementation. The fresh E1 restart is
-locally implemented and inert pending maintainer acceptance. E2, E3, and the
-post-Glossary F2 review remain separately gated.
+accepted and inert. The E2 runtime contract is complete, while E2 source/test
+implementation requires fresh reauthorization. E3 and the post-Glossary F2
+review remain separately gated.
 
 | Document | Purpose |
 |---|---|
@@ -110,8 +116,9 @@ post-Glossary F2 review remain separately gated.
 | [Maintainer Decision Packet](content/MAINTAINER_DECISION_PACKET.md) | Completed evidence cards and binding records for exactly nine decisions |
 | [Project Language Approval Checklist](content/PROJECT_LANGUAGE_APPROVAL_CHECKLIST.md) | Completed documentation-only approval and validation record |
 | [Project Language v1 Handoff](content/HANDOFF.md) | Approved choices, counts, accepted Groups A–D/F1/pre-E state, Group E0 Wave 1 packet, held scope, and exact next gate |
-| [ODE Glossary Wave 1 Content Packet](content/ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) | Maintainer-approved ten-card content and exact ten-record annotation design packet; no runtime authority |
-| [ODE Glossary Wave 1 Approval Checklist](content/ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) | Checked content/design, accepted rich-model prerequisite, and E1 authorization with E1 implementation locally complete pending acceptance; later execution, push, and deployment remain unchecked |
+| [ODE Glossary Wave 1 Content Packet](content/ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) | Maintainer-approved ten-card content and ten annotation design records; E1 accepted and interaction details delegated to the canonical E2 runtime contract |
+| [ODE Glossary Wave 1 E2 Runtime Contract](content/ODE_GLOSSARY_WAVE_1_E2_RUNTIME_CONTRACT.md) | Sole E2 interaction authority: ten exact records, owners, text/DOM compositions, state/mode rules, lifecycle rules, duplicates, and direct test owners; implementation reauthorization required |
+| [ODE Glossary Wave 1 Approval Checklist](content/ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) | Checked content/design, accepted rich-model and E1 prerequisites, complete E2 contract, and unchecked later implementation/execution/deployment gates |
 | [Rich Glossary Content Field Matrix](content/RICH_GLOSSARY_CONTENT_FIELD_MATRIX.md) | Exact destination for all 29 approved term-card fields, all 21 annotation-record fields, and six ownership/composition fields; governance/private metadata remains outside runtime |
 
 ## Product and feature specifications
@@ -122,7 +129,7 @@ post-Glossary F2 review remain separately gated.
 | [Human-Friendly Math Expressions Design](superpowers/specs/2026-07-10-human-friendly-math-expressions-design.md) | Implemented and verified |
 | [Observed Convergence Order Experiment Design](superpowers/specs/2026-07-10-convergence-study-design.md) | Implemented, verified, release ready |
 | [Content-Agnostic Interactive Glossary Framework Design](superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md) | Implemented and locally accepted after a repeated independent final review; production content remains deferred |
-| [ODE Glossary Wave 1 Design](superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md) | D01–D18 approved as Option A; E1 content locally implemented and inert pending maintainer acceptance; E2/E3/F2 unauthorized |
+| [ODE Glossary Wave 1 Design](superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md) | D01–D18 approved as Option A; E1 accepted and inert; E2 runtime contract complete with source implementation reauthorization required; E3/F2 unauthorized |
 | [Rich Glossary Content Model and Complete Surface Design](superpowers/specs/2026-07-29-rich-glossary-content-model-design.md) | Option 2 design implemented and accepted at the fresh E1 starting HEAD |
 
 ## Implementation plans
@@ -170,8 +177,9 @@ post-Glossary F2 review remain separately gated.
   validation evidence; Groups A through D are accepted, Group F1 and its five
   pre-E repairs are accepted, Wave 1 Group E0 governance is
   maintainer-approved; the generic rich model is accepted and the fresh E1
-  restart is locally implemented and inert pending maintainer acceptance.
-  E2/E3 and production activation remain unauthorized pending separate gates.
+  restart is accepted and inert. The E2 runtime contract is complete; E2
+  source implementation requires fresh reauthorization, and E3/production
+  activation remain unauthorized.
 - [Project Rename handoff](project-rename/HANDOFF.md) — completed Project
   Identity Migration evidence, including the canonical local workspace reopen.
 

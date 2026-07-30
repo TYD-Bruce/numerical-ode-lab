@@ -5,8 +5,9 @@ implementation groups, and traceability reconciled; Groups A through D
 accepted; Group F1 and its five pre-E repairs accepted as prerequisite state;
 ODE Glossary Wave 1 Group E0 design and content governance
 maintainer-approved; Option 2 rich-model implementation accepted at
-`6ef085d0b0271a5e7ed5a9f64ef4e6a05b5f257e`; fresh E1 locally implemented
-and inert pending maintainer acceptance; E2/E3/F2 unauthorized.
+`6ef085d0b0271a5e7ed5a9f64ef4e6a05b5f257e`; fresh E1 accepted and inert at
+`08b80522283438a233974456a026a6dbc2a96746`; E2 runtime contract complete with
+source implementation reauthorization required; E3/F2 unauthorized.
 
 Runtime/content implementation tracked separately.
 
@@ -521,9 +522,9 @@ explicit Lab scopes, and eighteen decision cards. All ten cards are
 `APPROVED_WITH_REVISIONS`; all ten annotation records are `APPROVED`; and
 D01–D18 record Option A. Core owns `numerical_approximation` and
 `explicit_scheme` with ODE context-only overrides; ODE owns the other eight
-cards. The checklist checks content/design approval and leaves its current
-E1/E2 implementation, E3/F2 execution, push, Preview, and Production gates
-unchecked.
+cards. At the E0 checkpoint, the checklist checked content/design approval and
+left E1/E2 implementation, E3/F2 execution, push, Preview, and Production
+gates unchecked.
 
 The approved rollout structure remains separately gated:
 
@@ -631,6 +632,8 @@ safety. The
 [E1 review](../reviews/2026-07-29-ode-glossary-wave-1-e1-content-review.md)
 records focused/full verification, import-graph and artifact inertness, exact
 desktop/mobile review, and interactive production-build evidence.
+The maintainer accepted E1 at
+`08b80522283438a233974456a026a6dbc2a96746`.
 
 `E1-BROWSER-EXCEPTION-01` permits only the pre-existing Google Fonts
 stylesheet/font chain owned by unchanged `index.html`; the starting and
@@ -639,10 +642,30 @@ current blob are both `912cca340efa743ea0d2ceaa2dac7e0234a889bc`.
 future Platform/asset-policy review. E1 introduced no external traffic and did
 not remediate the baseline dependency.
 
-## 20. Current review gate
+## 20. Group E2 runtime-contract reconciliation
+
+The first authorized E2 integration pass stopped before source/test changes
+because the Method helper lacked one exact approved sentence and historical
+D11 wording conflicted with the required Compare Output behavior. The
+[E2 Runtime Contract](ODE_GLOSSARY_WAVE_1_E2_RUNTIME_CONTRACT.md) is now the
+sole implementation authority for E2 interaction details.
+
+`E2-CONTRACT-01` fixes the Method helper sentence and its trigger/plain-text
+DOM split. `E2-CONTRACT-02` supersedes the old Single/Compare owner-transfer
+sentence: only successful Single Output owns `ODE-W1-ANN-006`; Compare remains
+plain. The complete source-grounded audit fixes all ten term mappings, owners,
+trigger texts, DOM compositions, state/mode rules, rerender, replacement,
+disposal rules, rejected duplicates, accessible names, and direct test owners.
+No additional maintainer decision remains.
+
+E2 source/test implementation is incomplete and requires fresh maintainer
+reauthorization. E3, Group F2, push, Preview, and Production remain
+unauthorized.
+
+## 21. Current review gate
 
 The ODE Glossary Wave 1 design, ten revised term cards, ten annotation records,
-ownership, and rollout structure remain approved. E1 is locally implemented
-and inert. The next gate is maintainer acceptance of the E1 commit and its
-evidence package. E2, E3, Group F2, push, Preview, and Production remain
-separately gated and unauthorized.
+ownership, and rollout structure remain approved. E1 is accepted and inert.
+The E2 runtime contract is complete. The next gate is fresh maintainer
+reauthorization of E2 source/test implementation. E3, Group F2, push, Preview,
+and Production remain separately gated and unauthorized.
