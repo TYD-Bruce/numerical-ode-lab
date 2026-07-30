@@ -3,12 +3,13 @@
 Status: Reconciled against Project Language Standard v1.
 Group A ready records are accepted. Group B records `COPY-006` through
 `COPY-019` and Group C records `COPY-020` through `COPY-029` are accepted.
-Group D records `COPY-030` through `COPY-040` are accepted. Group F1
-implements and reviews `COPY-043` locally and classifies all twelve
-`COPY-NC-*` records without changing their product owners. `COPY-003` remains
-held. The five findings created by the Group F1 consistency scan are
-`CLOSED_VERIFIED` in the separately authorized pre-E repair. Group E remains
-unauthorized, and the final post-Glossary Group F2 review remains required.
+Group D records `COPY-030` through `COPY-040` are accepted. The maintainer has
+accepted the Group F1 and pre-Glossary repair commits as prerequisite state;
+`COPY-043` is implemented, all twelve `COPY-NC-*` records retain their
+reviewed classifications, and all five pre-E findings are `CLOSED_VERIFIED`.
+`COPY-003` remains held. Group E0 now supplies a maintainer-review-only ODE
+Glossary Wave 1 design packet. E1, E2, and E3 remain unauthorized, and the
+final post-Glossary Group F2 review remains required.
 
 ## Purpose and boundary
 
@@ -32,8 +33,9 @@ inside the separately authorized implementation group.
 - Readiness counts: `{'DEFERRED_BY_MODULE': 1, 'IMPLEMENTED_ACCEPTED': 39, 'IMPLEMENTED_LOCALLY_GROUP_F1': 1, 'NO_CHANGE': 12, 'REQUIRES_CONTENT_WAVE': 2}`.
 - Implementation progress: 4 Group A ready records, 14 Group B records,
   10 Group C records, and 11 Group D records accepted; `COPY-043` implemented
-  and reviewed locally in Group F1; `COPY-003` held; Group E unauthorized;
-  Group F2 required after Group E.
+  and accepted with Group F1; `COPY-003` held; Group E0 design packet complete
+  for maintainer review; E1/E2/E3 unauthorized; Group F2 required after Group
+  E.
 - Former decision-blocked records: **0**.
 - Numerical-behavior changes proposed: **0**.
 
@@ -975,7 +977,10 @@ call, push, or deployment was added. Group D is accepted in
 - Implementation group: `GROUP_E`
 - Readiness: `REQUIRES_CONTENT_WAVE`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Notes: The Group E0
+  [ODE Glossary Wave 1 design](../superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md)
+  retains this record as a future E2 surface-copy decision. It remains
+  `REQUIRES_CONTENT_WAVE`; no wording change or activation is authorized.
 
 ### COPY-042 — `src/glossary/surface/glossarySurfaceRuntime.ts` · `preview prompt and live-region copy`
 
@@ -994,7 +999,10 @@ call, push, or deployment was added. Group D is accepted in
 - Implementation group: `GROUP_E`
 - Readiness: `REQUIRES_CONTENT_WAVE`
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
-- Notes: Exact final wording remains subject to review inside the separately authorized implementation group.
+- Notes: The Group E0
+  [ODE Glossary Wave 1 design](../superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md)
+  retains this record as a future E2 surface-copy decision. It remains
+  `REQUIRES_CONTENT_WAVE`; no wording change or activation is authorized.
 
 ### COPY-043 — `src/math/ui/editableMathField.ts` · `expression details / parsed label`
 
@@ -1289,7 +1297,8 @@ authorized
 closes all five findings after tests-first gates, 161 cumulative focused tests,
 the 1,048-test full verification gate, desktop/mobile deterministic demo
 review, structural/numerical audit, and production artifact inspection. Group
-E remains unauthorized, and Group F2 remains required after Group E.
+E0 is now complete as a design packet only. E1, E2, and E3 remain
+unauthorized, and Group F2 remains required after Group E.
 
 ## Behavior-preservation contract
 
@@ -1309,11 +1318,17 @@ E remains unauthorized, and Group F2 remains required after Group E.
 The exact A–F boundaries, files, tests, browser checks, dependencies,
 rollback points, and review gates are in the
 [Project Language Implementation Plan](PROJECT_LANGUAGE_IMPLEMENTATION_PLAN.md).
-Groups A through D are accepted; `COPY-003` remains held. Group F1 implements
-`COPY-043` and completes the pre-Glossary consistency review locally. Its
-historical verdict is **GROUP F1 COMPLETE — PRE-E FIXES REQUIRED**. The five
-resulting findings are now `CLOSED_VERIFIED` with repair verdict **PRE-E REPAIR
-COMPLETE — GROUP E MAY BE PLANNED**. The next gate is maintainer acceptance of
-both repair commits, followed by separate Production Glossary Wave 1 design and
-content authorization. Group E remains unauthorized. The original full Group F
-is not complete; Group F2 remains required after Group E.
+Groups A through D are accepted; `COPY-003` remains held. The maintainer has
+accepted the Group F1 and pre-Glossary repair commits as prerequisite state.
+The historical Group F1 verdict remains **GROUP F1 COMPLETE — PRE-E FIXES
+REQUIRED**, and all five resulting findings remain `CLOSED_VERIFIED` with
+repair verdict **PRE-E REPAIR COMPLETE — GROUP E MAY BE PLANNED**.
+
+Group E0 is complete as a maintainer-review-only packet for exactly ten
+proposed ODE Glossary Wave 1 terms and ten proposed annotation sites. The
+packet does not change the readiness of `COPY-041` or `COPY-042`, and it does
+not authorize their copy, any term content, annotation, binding, or runtime
+activation. The next gate is maintainer review of the term cards and pending
+architecture, annotation, Tutor, and rollout decisions. E1, E2, and E3 remain
+separately gated. The original full Group F is not complete; Group F2 remains
+required after Group E.

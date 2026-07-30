@@ -2,8 +2,8 @@
 
 Status: Project Language Standard v1 approved; Glossary catalog, copy audit,
 implementation groups, and traceability reconciled; Groups A through D
-accepted; Group F1 pre-Glossary review and its five separately authorized
-pre-E repairs completed locally.
+accepted; Group F1 and its five pre-E repairs accepted as prerequisite state;
+ODE Glossary Wave 1 Group E0 design packet complete for maintainer review.
 
 Runtime/content implementation tracked separately.
 
@@ -473,11 +473,79 @@ deltas. Server-only Tutor strings remain outside browser assets. Production
 still contains no Glossary term, annotation, DEV fixture, or ODE binding.
 Nothing was pushed or deployed.
 
-## 16. Current review gate
+## 16. Accepted prerequisite state
 
-Groups A through D are accepted. Group F1 and its five pre-E repairs are
-locally complete with verdict **PRE-E REPAIR COMPLETE — GROUP E MAY BE
-PLANNED**. Group E remains unauthorized. The next gate is maintainer
-acceptance of both repair commits, followed by a separate Production Glossary
-Wave 1 design and content authorization. A final Group F2 review remains
-required after Group E.
+The maintainer has accepted both prerequisite commits:
+
+- `55db8e717c517f90d08911e4324c77c50c3d854f` — `Repair pre-Glossary
+  language inconsistencies`; and
+- `23f0ca817e136b5ed75b4c8324b9a85139aae2be` — `Fix deterministic Tutor
+  intent matching`.
+
+Those acceptances close the pre-E gate. They do not authorize production
+Glossary content, annotations, a Lab binding, or surface activation.
+
+## 17. Group E0 ODE Glossary Wave 1 design packet
+
+Group E0 is documentation/design only. Its complete review set is:
+
+- the [ODE Glossary Wave 1 Content Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md);
+- the
+  [ODE Glossary Wave 1 Design](../superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md);
+- the
+  [ODE Glossary Wave 1 Approval Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md);
+  and
+- the
+  [ODE Glossary Wave 1 Design Readiness Review](../reviews/2026-07-29-ode-glossary-wave-1-design-readiness-review.md).
+
+The proposed prerequisite order is exactly:
+
+1. `ordinary_differential_equation`;
+2. `initial_condition`;
+3. `initial_value_problem`;
+4. `step_size`;
+5. `time_grid`;
+6. `numerical_approximation`;
+7. `exact_solution`;
+8. `explicit_scheme`;
+9. `forward_euler_method`;
+10. `backward_euler_method`.
+
+The packet contains one complete 29-field card for each of those ten IDs, one
+complete 21-field record for each of ten exact proposed annotations, four
+explicit Lab scopes, and eighteen decision cards. Every maintainer selection
+and every checklist box remains unselected or unchecked. The principal open
+choices cover card approval, the two-core/eight-ODE ownership split, the
+implicit-scheme prerequisite treatment, the complete-Lab-only annotation
+boundary, exact placement and density, Tutor handoff absence for Wave 1, and
+the E1/E2/E3 rollout gates.
+
+The recommended implementation sequence is still only a proposal:
+
+- E1 would add inert pure content data and focused content validation;
+- E2 would add the ODE-owned binding and exact annotations behind the
+  existing complete-Lab lazy boundary;
+- E3 would perform integrated browser, bundle, and release review; and
+- Group F2 would remain a mandatory separate post-Glossary consistency
+  review.
+
+No E1, E2, E3, or Group F2 work is authorized by E0. `COPY-041` and
+`COPY-042` remain `REQUIRES_CONTENT_WAVE`; no product source, tests, CSS,
+package/configuration file, runtime registry, annotation, binding, Tutor
+queue/card behavior, Preview, Production, remote, or deployment state changes
+in Group E0.
+
+The packet's structural validation covers the exact ten IDs, the 29 required
+term-card fields, the ten 21-field annotation records, eighteen unselected
+decisions, zero checked approval boxes, relative links, privacy markers,
+tracked-path scope, and cross-document gate language. The final aggregate
+validator passed 33 of 33 checks; `git diff --check` passed; and all four local
+structured artifacts remain ignored. Its readiness verdict is **DESIGN PACKET
+COMPLETE — MAINTAINER DECISIONS REQUIRED**.
+
+## 18. Current review gate
+
+The ODE Glossary Wave 1 design and content packet is complete. No production
+content or binding has been authorized. The next gate is maintainer review of
+the ten term cards and the pending architecture, annotation, Tutor, and
+rollout decisions. E1, E2, E3, and Group F2 remain separately gated.

@@ -19,6 +19,30 @@ optional safe readonly formula, module override, and Tutor topic. Planning
 metadata, prerequisites, review status, and wave ownership remain build-time
 content-governance data unless a later design explicitly promotes them.
 
+### Wave 1 Group E0 review packet
+
+The separate
+[ODE Glossary Wave 1 Content Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md)
+now expands the existing ten `WAVE_1_CURRENT_ODE` rows into complete
+maintainer-review cards and maps ten exact proposed annotation sites. That
+packet adds no catalog ID, alias, status, count, definition, or runtime
+authority. Its exact proposed prerequisite order is:
+`ordinary_differential_equation`, `initial_condition`,
+`initial_value_problem`, `step_size`, `time_grid`,
+`numerical_approximation`, `exact_solution`, `explicit_scheme`,
+`forward_euler_method`, and `backward_euler_method`.
+
+The packet recommends two core-owned cards (`numerical_approximation` and
+`explicit_scheme`) and eight ODE-owned cards, retains
+`backward_euler_method` as a self-contained Wave 1 card without introducing
+an `implicit_scheme` term,
+limits proposed annotations to the complete IVP Lab, and keeps Tutor handoff
+compatible but absent in Wave 1. Those are proposals only. Ownership, the
+implicit-prerequisite treatment, annotation boundary and placement, Tutor
+handoff, and E1/E2/E3 rollout decisions all remain unselected until maintainer
+review. The readiness counts and every one of the 197 catalog rows below
+remain unchanged.
+
 ## Status dimensions
 
 | Dimension | Counts | Meaning |
