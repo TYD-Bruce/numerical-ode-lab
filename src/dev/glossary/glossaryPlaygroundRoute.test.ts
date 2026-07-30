@@ -80,6 +80,41 @@ describe("complete Glossary Playground route", () => {
       expect(hostTarget.textContent).toContain("Why it matters here")
     );
     expect(document.activeElement).toBe(sample);
+    expect(
+      [...hostTarget.querySelectorAll("h3")].map(
+        (sectionHeading) => sectionHeading.textContent
+      )
+    ).toEqual([
+      "Full definition",
+      "Plain-language intuition",
+      "Why it matters here",
+      "Formula",
+      "Assumptions and limits",
+      "Common misconception",
+      "In this Lab",
+      "Prerequisites",
+      "Related terms",
+      "Often confused with",
+    ]);
+    expect(hostTarget.textContent).toContain(
+      "Rich relationship fixture - development only."
+    );
+    const relatedDynamic = [
+      ...hostTarget.querySelectorAll<HTMLButtonElement>(
+        "[data-glossary-related-term]"
+      ),
+    ].find((button) => button.textContent === "Changing context")!;
+    relatedDynamic.click();
+    expect(hostTarget.querySelector("h2")?.textContent).toBe(
+      "Changing context"
+    );
+    expect(document.activeElement).toBe(hostTarget.querySelector("h2"));
+    hostTarget
+      .querySelector<HTMLButtonElement>("[data-glossary-back]")!
+      .click();
+    expect(hostTarget.querySelector("h2")?.textContent).toBe(
+      "Sample parameter"
+    );
 
     const dynamic = routeTarget.querySelector<HTMLButtonElement>(
       '[data-fixture-term-id="dynamic_term"]'
@@ -378,16 +413,16 @@ describe("complete Glossary Playground route", () => {
     expect(hostTarget.querySelector("[data-glossary-surface]")).toBe(surface);
     expect(hostTarget.textContent).toContain("Replacement formula context");
     expect(
-      hostTarget.querySelector<HTMLElement>(".glossary-formula-section")?.hidden
-    ).toBe(false);
+      hostTarget.querySelector<HTMLElement>(".glossary-formula-section")
+    ).not.toBeNull();
     const focused = document.activeElement;
 
     cycle.click();
 
     expect(hostTarget.textContent).toContain("Formula-suppressed context");
     expect(
-      hostTarget.querySelector<HTMLElement>(".glossary-formula-section")?.hidden
-    ).toBe(true);
+      hostTarget.querySelector<HTMLElement>(".glossary-formula-section")
+    ).toBeNull();
     expect(document.activeElement).toBe(focused);
     expect(routeTarget.querySelector("[data-playground-state]")?.textContent).toContain(
       "revision"
@@ -484,6 +519,20 @@ describe("complete Glossary Playground route", () => {
     expect(routeTarget.querySelector("[data-diagnostic-list]")?.textContent).not.toContain(
       "invalid_term_id"
     );
+    const resetSample = routeTarget.querySelector<HTMLButtonElement>(
+      '[data-fixture-instance="sample-primary"]'
+    )!;
+    resetSample.click();
+    await vi.waitFor(() =>
+      expect(hostTarget.textContent).toContain(
+        "Rich relationship fixture - development only."
+      )
+    );
+    expect(
+      [...hostTarget.querySelectorAll<HTMLButtonElement>(
+        "[data-glossary-related-term]"
+      )].map((button) => button.textContent)
+    ).toContain("Changing context");
     mounted.dispose();
   });
 

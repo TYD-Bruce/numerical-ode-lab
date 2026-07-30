@@ -49,6 +49,10 @@ export function createGlossaryScope(options: {
   const enhanced = new Set<string>();
   const terms = new Map<string, GlossaryTermIdentity>();
   const disposeTerms = new Set<(notifyPort: boolean) => void>();
+  const termResolver = Object.freeze({
+    resolve: (termId: GlossaryTermId) =>
+      options.registry.resolveById(options.moduleId, termId),
+  });
   let disposed = false;
   let context = options.context;
 
@@ -138,6 +142,7 @@ export function createGlossaryScope(options: {
           trigger: button,
           display,
           entry: resolution.entry,
+          termResolver,
           ...(context === undefined ? {} : { context }),
           intent: Object.freeze(intent),
           scopeGeneration: options.generation,

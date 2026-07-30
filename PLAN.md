@@ -72,8 +72,16 @@ decisions. The subsequent repository-grounded
 and
 [plan review](docs/reviews/2026-07-29-rich-glossary-content-model-plan-review.md)
 now record verdict **RICH GLOSSARY IMPLEMENTATION PLAN COMPLETE —
-AUTHORIZATION REQUIRED**. E1 remains incomplete and may restart only after the
-generic model/surface implementation is separately authorized and accepted.
+AUTHORIZATION REQUIRED**. The maintainer then explicitly authorized the
+generic implementation. The model, builders, validation, module composition,
+scope resolver, complete rich-card renderer, and surface-local related-term
+navigation are now implemented and locally verified in the single commit
+`Extend Glossary rich content model`; the
+[implementation review](docs/reviews/2026-07-29-rich-glossary-content-model-implementation-review.md)
+records verdict **RICH GLOSSARY MODEL IMPLEMENTED — READY FOR MAINTAINER
+ACCEPTANCE**. The implementation remains content-neutral, the production
+registry remains empty, and no annotation or ODE binding was added. E1 remains
+incomplete and may restart only after this implementation is accepted.
 `COPY-003` and `src/pages/homePage.ts` remain held and unchanged. E2, E3,
 production Glossary content, annotations, and an ODE binding remain
 unauthorized; the final Group F2 review remains mandatory after E3.
@@ -88,14 +96,14 @@ locally verified, Preview-verified, and Production-verified at
 
 ## Active milestone
 
-**Glossary Rich Content Extension — Implementation Planning Gate**
+**Glossary Rich Content Extension — Maintainer Acceptance Gate**
 
 The content-agnostic framework and pre-E repairs are accepted prerequisites.
 Group E0 design and content governance is complete and maintainer-approved.
 The blocked E1 attempt produced no source or test changes and confirmed a
-schema mismatch. Option 2 is selected; the generic rich-model design and
-repository-grounded implementation plan are complete. Runtime implementation
-requires separate maintainer authorization. Production content integration
+schema mismatch. Option 2 is selected; the generic rich-model design, plan,
+and implementation are locally complete. Maintainer acceptance of the
+implementation commit and evidence is pending. Production content integration
 has not begun; E1 remains incomplete.
 
 ## Completed Project Identity Migration
@@ -135,16 +143,15 @@ E3, and F2 remain separately gated and unauthorized.**
 
 [Rich Glossary Content Model and Complete Surface Design](docs/superpowers/specs/2026-07-29-rich-glossary-content-model-design.md)
 
-Status: **Design complete; generic model/surface implementation authorization
-required. No runtime or Wave 1 content was added.**
+Status: **Design complete; generic model/surface implementation locally
+complete pending maintainer acceptance. No Wave 1 content was added.**
 
 ## Authoritative rich-model implementation plan
 
 [Rich Glossary Content Model Extension Implementation Plan](docs/superpowers/plans/2026-07-29-rich-glossary-content-model-implementation-plan.md)
 
-Status: **Repository-grounded plan complete and reviewed with verdict RICH
-GLOSSARY IMPLEMENTATION PLAN COMPLETE — AUTHORIZATION REQUIRED. No runtime or
-Wave 1 content was added.**
+Status: **Repository-grounded plan executed in one locally verified generic
+implementation commit. No Wave 1 content was added.**
 
 Framework authority remains the
 [Content-Agnostic Interactive Glossary Framework Design](docs/superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md),
@@ -223,8 +230,8 @@ independent final review. No production content or ODE binding was added.**
 21. Create and review the repository-grounded generic rich-model
     implementation plan. Complete as documentation only with verdict **RICH
     GLOSSARY IMPLEMENTATION PLAN COMPLETE — AUTHORIZATION REQUIRED**.
-22. Implement and independently review the generic rich model/surface only
-    after separate maintainer authorization. Unauthorized.
+22. Implement and review the generic rich model/surface only after separate
+    maintainer authorization. Complete locally; maintainer acceptance pending.
 23. Restart E1 from the beginning against the accepted rich model after a new
     explicit gate. Unauthorized.
 24. Implement E2 annotations and the ODE binding only after accepted E1 and a
@@ -235,13 +242,11 @@ independent final review. No production content or ODE binding was added.**
 
 ## Current next action
 
-Maintainer acceptance of the
-[rich Glossary implementation plan](docs/superpowers/plans/2026-07-29-rich-glossary-content-model-implementation-plan.md)
-and a separate decision on whether to authorize its generic
-model/builder/surface implementation. No Wave 1 content belongs in that
-implementation. After the extension is independently accepted, E1 must
-restart from the beginning under a new explicit gate; the blocked worktree
-must not be resumed. The approved Wave 1 design still retains ten terms, keeps
+Maintainer acceptance of the generic rich-model implementation commit and its
+[implementation review](docs/reviews/2026-07-29-rich-glossary-content-model-implementation-review.md).
+After the extension is accepted, E1 must restart from the beginning under a
+new explicit gate; the blocked worktree must not be resumed. The approved
+Wave 1 design still retains ten terms, keeps
 `/ode` static and unannotated, uses two Core plus eight ODE-owned cards,
 injects no production Tutor handoff, and separates E1, E2, E3, and mandatory
 F2. `COPY-003` remains deferred with the PDE module.
@@ -268,8 +273,9 @@ accepted. Group F1 implements only `COPY-043` and records the pre-Glossary
 review; it does not complete Group F. `COPY-003` remains held. Group E0 design
 and content governance is maintainer-approved. E1 was authorized but stopped
 incomplete at the schema mismatch; the compact projection is rejected. The
-generic rich-model design and repository-grounded implementation plan are
-complete, but implementation, an E1 restart, E2, and E3 remain unauthorized.
+generic rich-model design, plan, and content-neutral implementation are
+complete locally, but the implementation awaits maintainer acceptance and an
+E1 restart, E2, and E3 remain unauthorized.
 Group F2 remains required after E3.
 The continuation state is
 [the project-language handoff](docs/content/HANDOFF.md). Nothing from these
@@ -312,13 +318,13 @@ records. Groups A through D, Group F1, and both pre-E repair commits are
 accepted; `COPY-003` remains held. Group E0 Wave 1 design and content
 governance is complete. E1 then stopped incomplete, before source/test work,
 at the confirmed rich-field schema mismatch. The selected Option 2 rich-model
-design is complete, and its repository-grounded implementation plan now has
-verdict **RICH GLOSSARY IMPLEMENTATION PLAN COMPLETE — AUTHORIZATION
-REQUIRED**. The next gate is maintainer acceptance of that plan and separate
-authorization of the generic model/builder/surface implementation. An E1
-restart, E2, E3, production Glossary terms, annotations, an ODE binding, and
-visible Glossary behavior remain absent and unauthorized. Group F2 remains
-mandatory after E3.
+design and repository-grounded implementation plan are complete. The
+explicitly authorized generic model/builder/surface implementation is now
+locally complete with verdict **RICH GLOSSARY MODEL IMPLEMENTED — READY FOR
+MAINTAINER ACCEPTANCE**. The next gate is maintainer acceptance of the
+implementation commit and evidence package. An E1 restart, E2, E3, production
+Glossary terms, annotations, an ODE binding, and visible production Glossary
+behavior remain absent and unauthorized. Group F2 remains mandatory after E3.
 
 ## Update rule
 

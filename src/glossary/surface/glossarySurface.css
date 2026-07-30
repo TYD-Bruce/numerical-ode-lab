@@ -25,6 +25,12 @@
   max-height: min(70dvh, 35rem);
 }
 
+.glossary-surface-pinned {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 .glossary-surface-preview {
   padding: var(--space-3) var(--space-4);
   pointer-events: auto;
@@ -51,26 +57,94 @@
 }
 
 .glossary-surface-header h2 {
+  min-width: 0;
   margin: 0;
   font-size: 1.1rem;
+  overflow-wrap: anywhere;
+}
+
+.glossary-surface-header-actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-2);
 }
 
 .glossary-surface-content {
   min-width: 0;
+  min-height: 0;
   padding: var(--space-4);
   overflow: auto;
   overscroll-behavior: contain;
 }
 
-.glossary-surface-content h3 {
-  margin-block: var(--space-4) var(--space-2);
+.glossary-card-section + .glossary-card-section {
+  margin-top: var(--space-4);
+}
+
+.glossary-card-section h3 {
+  margin-block: 0 var(--space-2);
   font-size: 0.95rem;
+  overflow-wrap: anywhere;
 }
 
 .glossary-surface-content p {
   margin-block: 0 var(--space-3);
   color: var(--color-text-secondary);
   line-height: 1.55;
+}
+
+.glossary-contextual-definition {
+  padding-left: var(--space-3);
+  border-left: 2px solid var(--color-border);
+}
+
+.glossary-inline-label {
+  color: var(--color-text-primary);
+}
+
+.glossary-relationship-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.glossary-related-term {
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-accent-secondary);
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 0.16em;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.glossary-related-term:hover {
+  text-decoration-style: solid;
+}
+
+.glossary-related-term:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.glossary-future-term {
+  display: inline-block;
+  max-width: 100%;
+  padding-bottom: 1px;
+  border-bottom: 1px dashed currentColor;
+  color: var(--color-text-secondary);
+  font-style: italic;
+  overflow-wrap: anywhere;
 }
 
 .glossary-formula {
@@ -120,5 +194,20 @@
   .glossary-term-trigger {
     color: LinkText;
     text-decoration-color: LinkText;
+  }
+
+  .glossary-related-term {
+    color: LinkText;
+    border-color: currentColor;
+  }
+
+  .glossary-future-term {
+    color: CanvasText;
+    border-color: currentColor;
+  }
+
+  .glossary-related-term:focus-visible,
+  .glossary-surface-back:focus-visible {
+    outline: 2px solid Highlight;
   }
 }

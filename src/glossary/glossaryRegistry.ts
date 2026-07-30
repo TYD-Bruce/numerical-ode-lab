@@ -10,8 +10,10 @@ import {
 import type {
   GlossaryDiagnostic,
   GlossaryEntry,
+  GlossaryMisconception,
   GlossaryModuleExtension,
   GlossaryModuleOverride,
+  GlossaryRelatedTerm,
   GlossaryResolution,
   GlossaryTermDisplay,
   GlossaryTermId,
@@ -25,6 +27,10 @@ export interface GlossaryRegistry {
     termId: GlossaryTermId,
     display: GlossaryTermDisplay
   ): GlossaryResolution;
+  resolveById(
+    moduleId: LabModuleId,
+    termId: GlossaryTermId
+  ): ResolvedGlossaryEntry | undefined;
 }
 
 export function createGlossaryRegistry(options: {
@@ -88,7 +94,27 @@ export function createGlossaryRegistry(options: {
       }
       if (!moduleOverrides.has(override.termId)) {
         moduleOverrides.set(override.termId, override);
+      } else {
+        diagnostics.reject({
+          code: "duplicate_override_target",
+          termId: override.termId,
+        });
       }
+    }
+  }
+
+  for (const [termId, entry] of entries) {
+    entries.set(
+      termId,
+      validateEntryRelationships(entry, entries, diagnostics)
+    );
+  }
+  for (const moduleOverrides of overrides.values()) {
+    for (const [termId, override] of moduleOverrides) {
+      moduleOverrides.set(
+        termId,
+        validateOverrideRelationships(override, entries, diagnostics)
+      );
     }
   }
 
@@ -135,25 +161,26 @@ export function createGlossaryRegistry(options: {
         return invalidResolution(copiedDisplay, diagnostic);
       }
 
-      const override = overrides.get(moduleId)?.get(termId);
-      const formula =
-        override?.formula === null
-          ? undefined
-          : override?.formula ?? entry.formula;
-      const resolved: ResolvedGlossaryEntry = Object.freeze({
-        id: entry.id,
+      const resolved = composeResolvedEntry(
+        entry,
+        overrides.get(moduleId)?.get(termId),
         moduleId,
-        display: copiedDisplay,
-        label: entry.label,
-        aliases: entry.aliases,
-        definition: entry.definition,
-        whyItMatters: entry.whyItMatters,
-        contextualDefinition: override?.contextualDefinition,
-        whyItMattersHere: override?.whyItMattersHere,
-        formula,
-        tutorTopic: override?.tutorTopic ?? entry.tutorTopic,
-      });
+        copiedDisplay
+      );
       return Object.freeze({ kind: "resolved", entry: resolved });
+    },
+    resolveById(
+      moduleId: LabModuleId,
+      termId: GlossaryTermId
+    ): ResolvedGlossaryEntry | undefined {
+      const entry = entries.get(termId);
+      if (!entry) return undefined;
+      return composeResolvedEntry(
+        entry,
+        overrides.get(moduleId)?.get(termId),
+        moduleId,
+        entry.label
+      );
     },
   });
 }
@@ -195,13 +222,35 @@ function cloneEntry(
   const formula = entry.formula
     ? Object.freeze({ ...entry.formula })
     : undefined;
+  const misconception = cloneMisconception(entry.misconception);
+  const prerequisiteTermIds = cloneTermIds(entry.prerequisiteTermIds);
+  const relatedTerms = cloneRelatedTerms(entry.relatedTerms);
+  const commonlyConfusedTerms = cloneRelatedTerms(
+    entry.commonlyConfusedTerms
+  );
   return Object.freeze({
     id,
     label: entry.label,
     aliases,
     definition: entry.definition,
+    ...(entry.fullDefinition === undefined
+      ? {}
+      : { fullDefinition: entry.fullDefinition }),
+    ...(entry.intuition === undefined ? {} : { intuition: entry.intuition }),
     whyItMatters: entry.whyItMatters,
     ...(formula === undefined ? {} : { formula }),
+    ...(entry.assumptionsAndLimits === undefined
+      ? {}
+      : { assumptionsAndLimits: entry.assumptionsAndLimits }),
+    ...(misconception === undefined ? {} : { misconception }),
+    ...(prerequisiteTermIds === undefined ? {} : { prerequisiteTermIds }),
+    ...(relatedTerms === undefined ? {} : { relatedTerms }),
+    ...(commonlyConfusedTerms === undefined
+      ? {}
+      : { commonlyConfusedTerms }),
+    ...(entry.moduleNote === undefined
+      ? {}
+      : { moduleNote: entry.moduleNote }),
     tutorTopic: entry.tutorTopic,
   });
 }
@@ -214,6 +263,11 @@ function cloneOverride(
     override.formula === undefined || override.formula === null
       ? override.formula
       : Object.freeze({ ...override.formula });
+  const prerequisiteTermIds = cloneTermIds(override.prerequisiteTermIds);
+  const relatedTerms = cloneRelatedTerms(override.relatedTerms);
+  const commonlyConfusedTerms = cloneRelatedTerms(
+    override.commonlyConfusedTerms
+  );
   return Object.freeze({
     termId,
     ...(override.contextualDefinition === undefined
@@ -223,9 +277,17 @@ function cloneOverride(
       ? {}
       : { whyItMattersHere: override.whyItMattersHere }),
     ...(override.formula === undefined ? {} : { formula }),
+    ...(override.moduleNote === undefined
+      ? {}
+      : { moduleNote: override.moduleNote }),
     ...(override.tutorTopic === undefined
       ? {}
       : { tutorTopic: override.tutorTopic }),
+    ...(prerequisiteTermIds === undefined ? {} : { prerequisiteTermIds }),
+    ...(relatedTerms === undefined ? {} : { relatedTerms }),
+    ...(commonlyConfusedTerms === undefined
+      ? {}
+      : { commonlyConfusedTerms }),
   });
 }
 
@@ -237,6 +299,290 @@ function cloneDisplay(display: GlossaryTermDisplay): GlossaryTermDisplay {
         latex: display.latex,
         accessibleText: display.accessibleText,
       });
+}
+
+function composeResolvedEntry(
+  entry: GlossaryEntry,
+  override: GlossaryModuleOverride | undefined,
+  moduleId: LabModuleId,
+  display: GlossaryTermDisplay
+): ResolvedGlossaryEntry {
+  const formula =
+    override?.formula === null
+      ? undefined
+      : cloneFormula(override?.formula ?? entry.formula);
+  const misconception = cloneMisconception(entry.misconception);
+  const prerequisiteTermIds = cloneTermIds(
+    override?.prerequisiteTermIds !== undefined
+      ? override.prerequisiteTermIds
+      : entry.prerequisiteTermIds
+  );
+  const relatedTerms = cloneRelatedTerms(
+    override?.relatedTerms !== undefined
+      ? override.relatedTerms
+      : entry.relatedTerms
+  );
+  const commonlyConfusedTerms = cloneRelatedTerms(
+    override?.commonlyConfusedTerms !== undefined
+      ? override.commonlyConfusedTerms
+      : entry.commonlyConfusedTerms
+  );
+  return Object.freeze({
+    id: entry.id,
+    moduleId,
+    display: cloneDisplay(display),
+    label: entry.label,
+    aliases: Object.freeze(entry.aliases.map(cloneDisplay)),
+    definition: entry.definition,
+    ...(entry.fullDefinition === undefined
+      ? {}
+      : { fullDefinition: entry.fullDefinition }),
+    ...(entry.intuition === undefined ? {} : { intuition: entry.intuition }),
+    whyItMatters: entry.whyItMatters,
+    contextualDefinition: override?.contextualDefinition,
+    whyItMattersHere: override?.whyItMattersHere,
+    formula,
+    ...(entry.assumptionsAndLimits === undefined
+      ? {}
+      : { assumptionsAndLimits: entry.assumptionsAndLimits }),
+    ...(misconception === undefined ? {} : { misconception }),
+    ...(prerequisiteTermIds === undefined ? {} : { prerequisiteTermIds }),
+    ...(relatedTerms === undefined ? {} : { relatedTerms }),
+    ...(commonlyConfusedTerms === undefined
+      ? {}
+      : { commonlyConfusedTerms }),
+    ...(override?.moduleNote !== undefined
+      ? { moduleNote: override.moduleNote }
+      : entry.moduleNote === undefined
+        ? {}
+        : { moduleNote: entry.moduleNote }),
+    tutorTopic: override?.tutorTopic ?? entry.tutorTopic,
+  });
+}
+
+function validateEntryRelationships(
+  entry: GlossaryEntry,
+  entries: ReadonlyMap<GlossaryTermId, GlossaryEntry>,
+  diagnostics: GlossaryDiagnosticSink
+): GlossaryEntry {
+  const prerequisiteTermIds = validateTermIdList(
+    entry.id,
+    "prerequisiteTermIds",
+    entry.prerequisiteTermIds,
+    entries,
+    diagnostics
+  );
+  const relatedTerms = validateRelatedList(
+    entry.id,
+    "relatedTerms",
+    entry.relatedTerms,
+    entries,
+    diagnostics
+  );
+  const commonlyConfusedTerms = validateRelatedList(
+    entry.id,
+    "commonlyConfusedTerms",
+    entry.commonlyConfusedTerms,
+    entries,
+    diagnostics
+  );
+  return Object.freeze({
+    ...entry,
+    ...(entry.prerequisiteTermIds === undefined
+      ? {}
+      : { prerequisiteTermIds }),
+    ...(entry.relatedTerms === undefined ? {} : { relatedTerms }),
+    ...(entry.commonlyConfusedTerms === undefined
+      ? {}
+      : { commonlyConfusedTerms }),
+  });
+}
+
+function validateOverrideRelationships(
+  override: GlossaryModuleOverride,
+  entries: ReadonlyMap<GlossaryTermId, GlossaryEntry>,
+  diagnostics: GlossaryDiagnosticSink
+): GlossaryModuleOverride {
+  const prerequisiteTermIds = validateTermIdList(
+    override.termId,
+    "prerequisiteTermIds",
+    override.prerequisiteTermIds,
+    entries,
+    diagnostics
+  );
+  const relatedTerms = validateRelatedList(
+    override.termId,
+    "relatedTerms",
+    override.relatedTerms,
+    entries,
+    diagnostics
+  );
+  const commonlyConfusedTerms = validateRelatedList(
+    override.termId,
+    "commonlyConfusedTerms",
+    override.commonlyConfusedTerms,
+    entries,
+    diagnostics
+  );
+  return Object.freeze({
+    ...override,
+    ...(override.prerequisiteTermIds === undefined
+      ? {}
+      : { prerequisiteTermIds }),
+    ...(override.relatedTerms === undefined ? {} : { relatedTerms }),
+    ...(override.commonlyConfusedTerms === undefined
+      ? {}
+      : { commonlyConfusedTerms }),
+  });
+}
+
+function validateTermIdList(
+  ownerId: GlossaryTermId,
+  field: "prerequisiteTermIds",
+  values: readonly GlossaryTermId[] | undefined,
+  entries: ReadonlyMap<GlossaryTermId, GlossaryEntry>,
+  diagnostics: GlossaryDiagnosticSink
+): readonly GlossaryTermId[] | undefined {
+  if (values === undefined) return undefined;
+  const valid: GlossaryTermId[] = [];
+  const seen = new Set<string>();
+  for (const relatedTermId of values) {
+    if (relatedTermId === ownerId) {
+      diagnostics.reject({
+        code: "self_reference",
+        termId: ownerId,
+        relatedTermId,
+        field,
+      });
+      continue;
+    }
+    if (seen.has(relatedTermId)) {
+      diagnostics.reject({
+        code: "duplicate_prerequisite",
+        termId: ownerId,
+        relatedTermId,
+        field,
+      });
+      continue;
+    }
+    seen.add(relatedTermId);
+    if (!entries.has(relatedTermId)) {
+      diagnostics.reject({
+        code: "unknown_live_reference",
+        termId: ownerId,
+        relatedTermId,
+        field,
+      });
+      continue;
+    }
+    valid.push(relatedTermId);
+  }
+  return Object.freeze(valid);
+}
+
+function validateRelatedList(
+  ownerId: GlossaryTermId,
+  field: "relatedTerms" | "commonlyConfusedTerms",
+  values: readonly GlossaryRelatedTerm[] | undefined,
+  entries: ReadonlyMap<GlossaryTermId, GlossaryEntry>,
+  diagnostics: GlossaryDiagnosticSink
+): readonly GlossaryRelatedTerm[] | undefined {
+  if (values === undefined) return undefined;
+  const valid: GlossaryRelatedTerm[] = [];
+  const liveIds = new Set<string>();
+  const futureLabels = new Set<string>();
+  for (const relation of values) {
+    if (relation.kind === "future") {
+      if (relation.label.trim().length === 0) {
+        diagnostics.reject({
+          code: "invalid_related_term",
+          termId: ownerId,
+          field,
+        });
+        continue;
+      }
+      if (futureLabels.has(relation.label)) {
+        diagnostics.reject({
+          code: "duplicate_future_label",
+          termId: ownerId,
+          field,
+          display: relation.label,
+        });
+        continue;
+      }
+      futureLabels.add(relation.label);
+      valid.push(Object.freeze({ kind: "future", label: relation.label }));
+      continue;
+    }
+    const relatedTermId = relation.termId;
+    if (relatedTermId === ownerId) {
+      diagnostics.reject({
+        code: "self_reference",
+        termId: ownerId,
+        relatedTermId,
+        field,
+      });
+      continue;
+    }
+    if (liveIds.has(relatedTermId)) {
+      diagnostics.reject({
+        code: "duplicate_live_reference",
+        termId: ownerId,
+        relatedTermId,
+        field,
+      });
+      continue;
+    }
+    liveIds.add(relatedTermId);
+    if (!entries.has(relatedTermId)) {
+      diagnostics.reject({
+        code: "unknown_live_reference",
+        termId: ownerId,
+        relatedTermId,
+        field,
+      });
+      continue;
+    }
+    valid.push(Object.freeze({ kind: "term", termId: relatedTermId }));
+  }
+  return Object.freeze(valid);
+}
+
+function cloneFormula(
+  formula: GlossaryEntry["formula"]
+): GlossaryEntry["formula"] {
+  return formula === undefined ? undefined : Object.freeze({ ...formula });
+}
+
+function cloneMisconception(
+  misconception: GlossaryMisconception | undefined
+): GlossaryMisconception | undefined {
+  return misconception === undefined
+    ? undefined
+    : Object.freeze({
+        statement: misconception.statement,
+        correction: misconception.correction,
+      });
+}
+
+function cloneTermIds(
+  termIds: readonly GlossaryTermId[] | undefined
+): readonly GlossaryTermId[] | undefined {
+  return termIds === undefined ? undefined : Object.freeze([...termIds]);
+}
+
+function cloneRelatedTerms(
+  relations: readonly GlossaryRelatedTerm[] | undefined
+): readonly GlossaryRelatedTerm[] | undefined {
+  return relations === undefined
+    ? undefined
+    : Object.freeze(
+        relations.map((relation) =>
+          relation.kind === "term"
+            ? Object.freeze({ kind: "term" as const, termId: relation.termId })
+            : Object.freeze({ kind: "future" as const, label: relation.label })
+        )
+      );
 }
 
 export type { GlossaryDiagnosticSink };

@@ -93,6 +93,7 @@ function glossaryRequest(
       whyItMatters: "It exercises the shared surface lifecycle.",
       tutorTopic: "sample",
     }),
+    termResolver: Object.freeze({ resolve: () => undefined }),
     intent: { kind: "activate", pointer: "touch" } as const,
     scopeGeneration: 1,
   });

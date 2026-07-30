@@ -26,6 +26,7 @@ import {
   GLOSSARY_DEVELOPMENT_WARNING,
   GLOSSARY_DYNAMIC_CONTEXT_VARIANTS,
   GLOSSARY_FIXTURE_ENTRIES,
+  GLOSSARY_FIXTURE_EXTENSION,
   GLOSSARY_FIXTURE_IDS,
   GLOSSARY_FIXTURE_MATH_ALIAS,
   GLOSSARY_FIXTURE_SCOPE_IDS,
@@ -205,6 +206,7 @@ function mountPlaygroundSession(
   const strictPolicy = createGlossaryValidationPolicy({ mode: "strict" });
   const registry = createGlossaryRegistry({
     coreEntries: GLOSSARY_FIXTURE_ENTRIES,
+    extensions: [GLOSSARY_FIXTURE_EXTENSION],
     policy: strictPolicy,
   });
   const binding = createLabGlossaryBinding({

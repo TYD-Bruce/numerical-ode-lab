@@ -2,8 +2,9 @@
 
 **Status:** Maintainer approval recorded; content and Wave 1 design approved;
 the E1 attempt stopped incomplete at a confirmed schema mismatch; the generic
-rich-model design and repository-grounded implementation plan are complete;
-implementation and deployment remain unauthorized.
+rich-model design, repository-grounded implementation plan, and
+content-neutral implementation are locally complete; implementation
+acceptance and deployment remain unauthorized.
 
 **Date prepared:** 2026-07-29
 
@@ -24,6 +25,8 @@ The executable planning boundary is recorded by the
 [rich-model implementation plan](../superpowers/plans/2026-07-29-rich-glossary-content-model-implementation-plan.md)
 and
 [plan review](../reviews/2026-07-29-rich-glossary-content-model-plan-review.md).
+The resulting local implementation evidence is recorded by the
+[rich-model implementation review](../reviews/2026-07-29-rich-glossary-content-model-implementation-review.md).
 Checked content/design boxes record approval only. Unchecked
 implementation/execution/deployment boxes require separate maintainer
 authorization.
@@ -74,7 +77,16 @@ authorization.
   generic model/surface design is the current prerequisite and has a separate
   implementation gate.
 
-## 4. Rollout
+## 4. Generic rich-model prerequisite
+
+- [x] Generic rich-model design and repository-grounded plan complete.
+- [x] Generic rich-model implementation explicitly authorized and locally
+  verified.
+- [ ] Generic rich-model implementation accepted.
+
+These prerequisite records do not authorize or complete E1 content work.
+
+## 5. Rollout
 
 - [x] E1 boundary/design approved.
 - [ ] E1 implementation explicitly authorized.
@@ -90,13 +102,13 @@ authorization.
 - [ ] Preview deployment explicitly authorized.
 - [ ] Production deployment explicitly authorized.
 
-## 5. Approved decision record
+## 6. Approved decision record
 
 The 18 decision cards D01 through D18 in the design specification record
 maintainer-approved Option A. This approval fixes design and governance only;
 it does not authorize E1, E2, E3, F2, push, Preview, or Production action.
 
-## 6. E1 schema-stop record
+## 7. E1 schema-stop record
 
 E1 implementation was authorized after the original Group E0 approval, but
 repository inspection stopped the attempt before any source or test change.
@@ -106,19 +118,20 @@ runtime change was created.
 
 The maintainer selected `E1-SCHEMA-01 = Option 2`: extend the generic model and
 complete surface before E1. The compact projection is rejected. The rich-model
-design and repository-grounded implementation plan are complete, but runtime
-implementation requires separate authorization and independent acceptance.
-The plan-review verdict is **RICH GLOSSARY IMPLEMENTATION PLAN COMPLETE —
-AUTHORIZATION REQUIRED**. E1 remains incomplete and must restart from the
-beginning after that acceptance. The unchecked E1 authorization box above is
-not converted into implementation acceptance and is not rechecked by this
-planning task. E2, E3, F2, push, Preview, and Production remain unauthorized.
+design and repository-grounded implementation plan are complete. Their
+subsequently authorized content-neutral implementation is locally complete
+with verdict **RICH GLOSSARY MODEL IMPLEMENTED — READY FOR MAINTAINER
+ACCEPTANCE**. E1 remains incomplete and must restart from the beginning after
+that acceptance and a fresh explicit gate. The unchecked E1 authorization box
+above is not converted into implementation acceptance and is not rechecked by
+this generic implementation task. E2, E3, F2, push, Preview, and Production
+remain unauthorized.
 
-## 7. Checked-count declaration
+## 8. Checked-count declaration
 
-Checked content/design boxes after approval: **163**.
+Checked approval and prerequisite boxes: **165**.
 
-Unchecked implementation/execution/deployment boxes after approval: **7**.
+Unchecked acceptance/implementation/execution/deployment boxes: **8**.
 
 Term rows: **10**.
 
@@ -126,10 +139,11 @@ Annotation rows: **10**.
 
 Architecture rows: **7**.
 
+Generic prerequisite rows: **3**.
+
 Rollout rows: **13**.
 
 Checked content/design rows do not authorize implementation. The maintainer
-must still accept the implementation plan and explicitly authorize the
-rich-model implementation, an E1 restart, E2, E3, and F2 at their separate
-gates; push, Preview deployment, and Production deployment also remain
-separately unauthorized.
+must still accept the rich-model implementation and explicitly authorize an
+E1 restart, E2, E3, and F2 at their separate gates; push, Preview deployment,
+and Production deployment also remain separately unauthorized.

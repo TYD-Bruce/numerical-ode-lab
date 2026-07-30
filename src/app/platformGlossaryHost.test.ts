@@ -146,6 +146,7 @@ function surfaceRequest(
       whyItMatters: "Complete explanation.",
       tutorTopic: "sample",
     }),
+    termResolver: Object.freeze({ resolve: () => undefined }),
     ...(context ? { context } : {}),
     intent,
     scopeGeneration: generation,

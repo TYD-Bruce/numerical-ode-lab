@@ -40,6 +40,17 @@ function registry(policy = strict) {
         },
         strict
       )!,
+      defineGlossaryEntry(
+        {
+          id: "related_fixture",
+          label: "Related fixture",
+          aliases: [],
+          definition: "A second content-neutral definition.",
+          whyItMatters: "It verifies scope-local relationship resolution.",
+          tutorTopic: "related fixture topic",
+        },
+        strict
+      )!,
     ],
     policy,
   });
@@ -201,6 +212,21 @@ describe("Glossary scopes", () => {
       "keyboard-focus",
       "activate",
     ]);
+    const relatedId = defineGlossaryTermId("related_fixture", strict)!;
+    const missingId = defineGlossaryTermId("missing_fixture", strict)!;
+    expect(connected.requests[0]!.termResolver).toBe(
+      connected.requests[2]!.termResolver
+    );
+    expect(connected.requests[0]!.termResolver.resolve(relatedId)).toMatchObject(
+      {
+        id: relatedId,
+        display: "Related fixture",
+        moduleId: "ode",
+      }
+    );
+    expect(
+      connected.requests[0]!.termResolver.resolve(missingId)
+    ).toBeUndefined();
   });
 
   it("removes listeners and transient ARIA state on trigger disposal", () => {

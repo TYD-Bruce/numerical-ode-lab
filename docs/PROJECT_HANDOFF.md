@@ -48,9 +48,13 @@ IMPLEMENTATION AUTHORIZATION REQUIRED**. The repository-grounded
 and
 [plan review](./reviews/2026-07-29-rich-glossary-content-model-plan-review.md)
 are complete with verdict **RICH GLOSSARY IMPLEMENTATION PLAN COMPLETE —
-AUTHORIZATION REQUIRED**. No model implementation or Wave 1 content was
-added. E1 remains incomplete and must restart only after a separately
-authorized and accepted generic implementation.
+AUTHORIZATION REQUIRED**. The subsequently authorized generic implementation
+is locally complete, and its
+[implementation review](./reviews/2026-07-29-rich-glossary-content-model-implementation-review.md)
+records verdict **RICH GLOSSARY MODEL IMPLEMENTED — READY FOR MAINTAINER
+ACCEPTANCE**. No Wave 1 content, annotation, or ODE binding was added. E1
+remains incomplete and must restart only after maintainer acceptance and a
+fresh, separately authorized gate.
 `COPY-003` and `src/pages/homePage.ts` remain review-only and unchanged. These
 iterations
 changed approved visible copy, server-owned Tutor prompt policy, deterministic
@@ -74,8 +78,8 @@ The product is **Numerical T-Lab**. The currently implemented numerical module i
 | any other page path | In-shell Not Found | Available |
 
 Linear Algebra and PDE are truthful roadmap pages with no runnable controls.
-The active milestone is **Glossary Rich Content Extension — Implementation
-Planning Gate**;
+The active milestone is **Glossary Rich Content Extension — Maintainer
+Acceptance Gate**;
 **Linear Systems Lab** is later. The
 [authoritative Glossary design](./superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md)
 is approved and committed. Commit 1, the content-agnostic Glossary model and
@@ -112,8 +116,9 @@ commits are accepted. Group E0 design and content governance now approves
 exactly 10 revised Wave 1 cards and 10 complete-Lab annotation records.
 Production Glossary content and the ODE binding remain absent and
 unauthorized. E1 was authorized but stopped incomplete at the confirmed
-rich-field schema mismatch. The generic rich-model design is complete; its
-implementation and an E1 restart require separate gates. E2 and E3 remain
+rich-field schema mismatch. The generic rich-model design, plan, and
+content-neutral implementation are complete locally; maintainer acceptance
+and a fresh E1 restart authorization remain separate gates. E2 and E3 remain
 future gates, and the final Group F2 review remains mandatory after E3.
 
 ## 2. Verification baseline
@@ -469,11 +474,10 @@ Known limitations:
   Group E0 design and content governance is complete and maintainer-approved,
   covering ten revised Wave 1 term cards, ten exact annotation records, and
   eighteen Option A decisions. E1 stopped incomplete before source/test work
-  at the confirmed schema mismatch. The Option 2 rich-model design and
-  repository-grounded implementation plan are complete, but generic
-  implementation, an E1 restart, E2, and E3 remain separately gated. No
-  production content or binding is authorized, and Group F2 remains mandatory
-  after E3.
+  at the confirmed schema mismatch. The Option 2 rich-model design, plan, and
+  generic implementation are complete locally, but maintainer acceptance, an
+  E1 restart, E2, and E3 remain separately gated. No production content or
+  binding is authorized, and Group F2 remains mandatory after E3.
 
 Contributor rules:
 
@@ -500,8 +504,8 @@ prerequisite state. `COPY-003` plus `src/pages/homePage.ts` remain review-only
 and unchanged. Group E0 design and content governance is complete and
 maintainer-approved for ten revised Wave 1 terms, ten annotation records, and
 eighteen Option A decisions. E1 stopped incomplete before source/test changes
-at the confirmed schema mismatch. The Option 2 rich-model design and
-repository-grounded implementation plan are complete; the next gate is
-maintainer acceptance of the plan and separate authorization of the generic
-model/builder/surface implementation. An E1 restart, E2, and E3 remain
-unauthorized and separately gated; Group F2 remains mandatory after E3.*
+at the confirmed schema mismatch. The Option 2 rich-model design, plan, and
+content-neutral implementation are complete locally; the next gate is
+maintainer acceptance of the implementation commit and evidence package. An
+E1 restart, E2, and E3 remain unauthorized and separately gated; Group F2
+remains mandatory after E3.*

@@ -93,6 +93,9 @@ describe("Vite root-base deployment contract", () => {
     );
     expect(emittedJavaScript).not.toContain("Replaceable term");
     expect(emittedJavaScript).not.toContain("Glossary Playground laboratory");
+    expect(emittedJavaScript).not.toContain(
+      "Rich relationship fixture - development only."
+    );
     expect(emittedJavaScript).not.toContain("Developer Tools");
     expect(emittedCss).not.toContain(".glossary-playground-laboratory");
   });

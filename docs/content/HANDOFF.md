@@ -592,16 +592,23 @@ browser checks, production-exclusion checks, one-commit rollback, and clean
 E1 restart contract. Its verdict is **RICH GLOSSARY IMPLEMENTATION PLAN
 COMPLETE — AUTHORIZATION REQUIRED**.
 
-This remains planning evidence only. It does not implement the model, add
-Wave 1 content, resume E1, or authorize E2/E3/F2/deployment.
+The maintainer subsequently authorized that generic implementation plan. The
+content-neutral runtime types, builders, validation, module composition,
+scope resolver, complete-card renderer, one-level surface-local navigation,
+minimal styles, and neutral DEV fixtures are now implemented and locally
+verified. The
+[implementation review](../reviews/2026-07-29-rich-glossary-content-model-implementation-review.md)
+records verdict **RICH GLOSSARY MODEL IMPLEMENTED — READY FOR MAINTAINER
+ACCEPTANCE**. Production Core remains empty, no Wave 1 ID or card was added,
+and no annotation, ODE binding, Tutor behavior, Store/session, numerical,
+package, or configuration change was made.
 
 ## 19. Current review gate
 
 The ODE Glossary Wave 1 design, ten revised term cards, ten annotation records,
 ownership, and rollout structure remain approved. E1 remains incomplete. The
-next gate is maintainer acceptance of the repository-grounded rich-model
-implementation plan and separate authorization of the generic
-model/builder/surface implementation. After that implementation is
-independently accepted, E1 must restart from the beginning under a new
-explicit gate. E2, E3, Group F2, push, Preview, and Production remain
-separately gated and unauthorized.
+next gate is maintainer acceptance of the locally verified generic
+rich-model implementation commit and its evidence package. After acceptance,
+E1 must restart from the beginning under a fresh explicit gate; the blocked
+worktree must not be resumed. E2, E3, Group F2, push, Preview, and Production
+remain separately gated and unauthorized.
