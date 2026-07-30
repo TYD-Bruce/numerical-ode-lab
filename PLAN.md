@@ -18,11 +18,10 @@ both are fixed and locally verified in a second narrow lifecycle follow-up.
 The final conservative re-audit of Commit 3 and both follow-ups returned
 **SAFE TO PROCEED** with `P0 = P1 = P2 = P3 = 0`. Commit 4, `Complete
 glossary framework playground`, is implemented and locally/browser verified.
-The production registry still contains no Glossary entries, annotations, or
-visible Glossary behavior: the Platform Host remains inert because the current
-Lab exposes no Glossary binding, and the complete committed Playground,
-development controls,
-fixtures, styles, About entry, and shortcut are DEV-only. The complete
+The generic production registry still contains no Glossary entries. The
+complete committed Playground, development controls, fixtures, styles, About
+entry, and shortcut are DEV-only. The later E2 integration supplies its
+accepted registry only through the complete-IVP route binding. The complete
 four-phase implementation completed its first adversarial local release review
 on 2026-07-28 with verdict **RELEASE BLOCKED**. Its P1 pending-load
 scope-replacement defect, substantive P2 one-shot Tab-bridge defect, and
@@ -31,9 +30,10 @@ review of exact repair commit
 `8af3ed80b25a520cfa61fa2d7037dea9ed2899d1` then returned
 **APPROVED FOR LOCAL FRAMEWORK RELEASE**. The historical blocked review remains
 unchanged, while the framework is now locally accepted as complete. The
-production registry still contains no active Glossary entries, annotations,
-ODE binding, or visible Glossary behavior. Nothing was pushed or deployed by
-the repair or final review. The separate project-language gate is also
+generic production registry still contains no active entries; E2 leaves
+Home/static routes outside its lazy import graph. Nothing was pushed or
+deployed by the repair, final review, or E2 implementation. The separate
+project-language gate is also
 complete: Yiding (Bruce)
 Tian recorded all nine maintainer decisions on 2026-07-28, and the terminology,
 notation, and teaching-voice standards are approved as Version 1. This approval
@@ -95,11 +95,16 @@ Output contracts conflicted or lacked exact copy. The documentation-only
 [E2 Runtime Contract](docs/content/ODE_GLOSSARY_WAVE_1_E2_RUNTIME_CONTRACT.md)
 now records `E2-CONTRACT-01` and `E2-CONTRACT-02`, reconciles all ten
 annotation records, and is the sole implementation authority for E2
-interaction details. E2 source implementation remains incomplete and requires
-fresh maintainer reauthorization. `COPY-003` and `src/pages/homePage.ts`
-remain held and unchanged. E3, production activation, annotations, and an ODE
-binding remain unauthorized; the final Group F2 review remains mandatory after
-E3.
+interaction details. The separately authorized E2 implementation now creates
+one complete-IVP route-instance binding and the ten exact local annotations,
+with `/ode` plain, Tutor unchanged, and the generic production registry still
+empty. The
+[E2 integration review](docs/reviews/2026-07-30-ode-glossary-wave-1-e2-integration-review.md)
+records focused/full verification, exact desktop/mobile browser evidence,
+scope and disposal ownership, and the production import/bundle boundary. E2
+is locally implemented pending maintainer acceptance. `COPY-003` and
+`src/pages/homePage.ts` remain held and unchanged. E3 and Group F2 execution
+remain unauthorized; the final Group F2 review remains mandatory after E3.
 Nothing was pushed or deployed.
 
 ## Current released baseline
@@ -111,22 +116,27 @@ locally verified, Preview-verified, and Production-verified at
 
 ## Active milestone
 
-**ODE Glossary Wave 1 E2 — Implementation Reauthorization Gate**
+**ODE Glossary Wave 1 E2 — Maintainer Acceptance Gate**
 
 The content-agnostic framework and pre-E repairs are accepted prerequisites.
 Group E0 design and content governance is complete and maintainer-approved.
 The historical E1 attempt produced no source or test changes and confirmed a
 schema mismatch. Option 2 was selected, implemented, accepted at
 `6ef085d0b0271a5e7ed5a9f64ef4e6a05b5f257e`, and used as the required fresh
-restart point. E1 is now locally implemented and verified as inert content:
+restart point. At the accepted E1 boundary, content was locally implemented
+and verified as inert:
 two Core entries, eight ODE entries, two context-only overrides, and ten
-composed cards exist in source while the production registry, production
-importer count, annotation count, and ODE binding count all remain zero.
+composed cards existed in source while the production registry, production
+importer count, annotation count, and ODE binding count were all zero.
 E1 is accepted at `08b80522283438a233974456a026a6dbc2a96746`. The canonical
 E2 Runtime Contract fixes all ten exact owners, trigger texts, DOM
 compositions, state/mode rules, lifecycle rules, duplicates, and direct test
-ownership. E2 source/test implementation has not begun and requires fresh
-maintainer reauthorization.
+ownership. E2 is now locally implemented and verified through one
+complete-IVP route-instance binding, ten exact annotation definitions, four
+route-owned scopes, and the accepted `E2-CONTRACT-01` and
+`E2-CONTRACT-02` behavior. `/ode` remains unannotated, Tutor remains
+independent, and E2 awaits maintainer acceptance before any separately
+authorized E3 review.
 
 ## Completed Project Identity Migration
 
@@ -161,8 +171,8 @@ loading while keeping formal mathematical content separate.
 
 Status: **D01–D18, ten revised cards, and ten annotation records are
 maintainer-approved; E1 is accepted and inert; the E2 runtime contract is
-complete, while E2 source implementation requires fresh reauthorization and
-E3/F2 remain unauthorized.**
+complete and locally implemented pending maintainer acceptance; E3/F2 remain
+unauthorized.**
 
 [Rich Glossary Content Model and Complete Surface Design](docs/superpowers/specs/2026-07-29-rich-glossary-content-model-design.md)
 
@@ -262,19 +272,24 @@ independent final review. No production content or ODE binding was added.**
 24. Reconcile all ten E2 interaction records after the first integration pass
     stopped before source/test changes. Complete as documentation through
     `E2-CONTRACT-01`, `E2-CONTRACT-02`, and the canonical E2 Runtime Contract.
-    E2 source/test implementation requires fresh maintainer reauthorization.
-25. Complete E3 integration review after E2. Unauthorized.
-26. Complete mandatory Group F2 after E3. Not started.
-27. Push only when explicitly requested by the maintainer.
+25. Implement the accepted E2 contract through one ODE-owned complete-IVP
+    binding and ten explicit annotation definitions. Locally complete and
+    verified; pending maintainer acceptance.
+26. Complete E3 integration review after maintainer acceptance of E2.
+    Unauthorized.
+27. Complete mandatory Group F2 after E3. Not started.
+28. Push only when explicitly requested by the maintainer.
 
 ## Current next action
 
-Fresh maintainer reauthorization of E2 source/test implementation against the
-[canonical E2 Runtime Contract](docs/content/ODE_GLOSSARY_WAVE_1_E2_RUNTIME_CONTRACT.md).
-The approved Wave 1 design retains ten terms, keeps
-`/ode` static and unannotated, uses two Core plus eight ODE-owned cards,
-injects no production Tutor handoff, and separates E1, E2, E3, and mandatory
-F2. `COPY-003` remains deferred with the PDE module.
+Maintainer acceptance of the locally implemented E2 commit and its
+[integration review](docs/reviews/2026-07-30-ode-glossary-wave-1-e2-integration-review.md).
+The implementation follows the
+[canonical E2 Runtime Contract](docs/content/ODE_GLOSSARY_WAVE_1_E2_RUNTIME_CONTRACT.md):
+ten terms, one complete-IVP route-instance binding, ten explicit annotation
+definitions, `/ode` static and unannotated, and no Tutor handoff. E3 remains
+unauthorized until a separate maintainer gate. `COPY-003` remains deferred
+with the PDE module.
 
 ## Parallel content foundation
 
@@ -300,8 +315,8 @@ and content governance is maintainer-approved. The historical E1 stop led to
 the accepted generic rich model; the fresh E1 restart is now locally complete
 with two Core entries, eight ODE entries, two context-only overrides, and ten
 composed cards. It remains inert and is accepted. The E2 runtime contract is
-complete, but E2 source/test implementation requires fresh reauthorization.
-E3 remains unauthorized.
+complete and the exact E2 source/test contract is now locally implemented
+pending maintainer acceptance. E3 remains unauthorized.
 Group F2 remains required after E3.
 The continuation state is
 [the project-language handoff](docs/content/HANDOFF.md). Nothing from these
@@ -314,8 +329,11 @@ copy iterations was pushed or deployed.
 - Production is verified at `https://numerical-t-lab.vercel.app/`.
 - The former Production address remains available as a verified alias.
 - The production registry contains no Glossary entries.
-- Production initializes an inert Platform Glossary Host, but the current Lab
-  supplies no binding and cannot activate a surface.
+- The deployed Production baseline initializes an inert Platform Glossary Host
+  and remains unchanged because E2 was not pushed or deployed.
+- The local E2 production build creates one complete-IVP route-instance
+  binding and ten approved annotations; `/ode`, Home, and static pages remain
+  unannotated and do not import Wave 1 content.
 - The complete DEV-only Playground, its ten neutral fixtures, development
   controls, About entry, shortcut, and route stylesheet are excluded from the
   production build.
@@ -325,10 +343,10 @@ copy iterations was pushed or deployed.
 
 ## Explicit non-goals
 
-- No production-active Glossary content.
+- No Wave 1 annotation outside the complete Initial Value Problems Lab.
 - No runtime notation migration or notation profile.
 - No real Tutor Glossary queue.
-- No ODE annotations.
+- No `/ode`, Linear Algebra, or PDE annotation.
 - No Linear Algebra or PDE Glossary content.
 - No private-reference processing in runtime or CI.
 
@@ -348,11 +366,12 @@ accepted Option 2 generic rich model at
 is accepted at `08b80522283438a233974456a026a6dbc2a96746`. Its two Core
 entries, eight ODE entries, two context-only overrides, and ten composed cards
 remain outside the production registry and import graph. The ten-record E2
-runtime contract is complete. The next gate is fresh maintainer
-reauthorization of E2 source/test implementation. E2 source, E3, production
-activation, annotations, an ODE binding, and visible production Glossary
-behavior remain absent; E3 is unauthorized. Group F2 remains mandatory after
-E3.
+runtime contract is complete. Its separately authorized source/test
+implementation is locally complete and verified through one route-instance
+binding and ten explicit complete-IVP annotations. The next gate is maintainer
+acceptance of the E2 commit and evidence package. `/ode` remains unannotated,
+Tutor handoff remains absent, nothing was pushed or deployed, and E3 is
+unauthorized. Group F2 remains mandatory after E3.
 
 ## Update rule
 

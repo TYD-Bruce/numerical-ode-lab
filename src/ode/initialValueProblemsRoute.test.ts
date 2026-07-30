@@ -1,11 +1,9 @@
 // @vitest-environment jsdom
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { MountedLabRoute } from "../app/contracts";
 import { updatePresetProblemFields } from "../problemPresets";
 import {
   createBeginnerStarterSession,
-  type OdeSessionState,
 } from "./odeSession";
 
 const chartDestroy = vi.fn();
@@ -70,7 +68,7 @@ describe("Initial Value Problems route", () => {
     expect(overviewLink?.getAttribute("href")).toBe("/ode");
     expect(breadcrumb?.textContent).toContain("Initial Value Problems Lab");
     expect(firstTarget.textContent).toContain(
-      "Explore fixed-step methods for first-order initial value problems"
+      "Explore fixed-step methods for a first-order ordinary differential equation posed as an initial value problem"
     );
     expect(firstTarget.querySelector("[data-experiment-identity]")?.textContent).toContain(
       "Beginner starter"
@@ -92,9 +90,8 @@ describe("Initial Value Problems route", () => {
       },
     });
     expect(first.getTutorBinding().moduleId).toBe("ode");
-    const structurallyComplete: MountedLabRoute<OdeSessionState> = first;
-    expect(structurallyComplete.getGlossaryBinding).toBeUndefined();
-    expect("getGlossaryBinding" in first).toBe(false);
+    expect(first.getGlossaryBinding().moduleId).toBe("ode");
+    expect(first.getGlossaryBinding()).not.toBe(second.getGlossaryBinding());
 
     first.dispose();
     expect(firstTarget.childElementCount).toBe(0);
@@ -113,7 +110,7 @@ describe("Initial Value Problems route", () => {
     });
 
     expect(target.querySelector(".lede")?.textContent).toBe(
-      "Explore fixed-step methods for first-order initial value problems, then analyze numerical error, observed convergence, and method behavior as the step size changes."
+      "Explore fixed-step methods for a first-order ordinary differential equation posed as an initial value problem, then analyze numerical error, observed convergence, and method behavior as the time-step size changes."
     );
     const cards = [...target.querySelectorAll<HTMLButtonElement>(".card")];
     const card = (name: string) =>

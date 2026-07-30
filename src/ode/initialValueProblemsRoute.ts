@@ -3,6 +3,7 @@ import type {
   LabTutorBinding,
   ResumeSummary,
 } from "../app/contracts";
+import type { LabGlossaryBinding } from "../glossary/glossaryController";
 import {
   mountOdeApp,
   type MountedOdeApp,
@@ -29,6 +30,7 @@ export interface MountedInitialValueProblemsRoute {
   getSession(): OdeSessionState;
   getResumeSummary(): ResumeSummary | undefined;
   getTutorBinding(): LabTutorBinding<unknown>;
+  getGlossaryBinding(): LabGlossaryBinding;
   dispose(): void;
 }
 

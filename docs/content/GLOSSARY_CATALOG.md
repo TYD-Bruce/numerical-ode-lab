@@ -1,8 +1,9 @@
 # Glossary Catalog
 
 Status: Reconciled against Project Language Standard v1. Exactly ten approved
-Wave 1 cards are locally implemented as inert E1 source content; production
-activation and all other catalog content remain deferred.
+Wave 1 cards are accepted E1 content and locally activated only through the
+complete-IVP E2 binding, pending maintainer acceptance. All other catalog
+content remains deferred.
 
 ## Boundary and source of truth
 
@@ -19,8 +20,9 @@ The framework runtime shape remains narrower than this planning record:
 optional safe readonly formula, module override, and Tutor topic. Planning
 metadata, review status, and wave ownership remain build-time
 content-governance data. E1 promotes only the approved ten-card runtime
-content, including runtime prerequisites and relationships, while leaving the
-production registry and import graph empty.
+content, including runtime prerequisites and relationships. E2 composes only
+those ten cards behind the complete-IVP route while the generic production
+registry remains empty.
 
 ### Wave 1 Group E0 approval record
 
@@ -43,21 +45,23 @@ The approved ownership assigns two Core cards (`numerical_approximation` and
 an `implicit_scheme` term, limits approved annotations to the complete IVP
 Lab, and keeps Tutor-topic metadata compatible while exposing no Tutor
 handoff. D01 through D18 are approved as Option A. E1 is locally implemented
-and inert pending maintainer acceptance; E2, E3, and F2 remain separately
-unauthorized. Every one of the other 187 catalog rows below remains unchanged.
+and accepted. E2 is locally implemented through one complete-IVP binding and
+ten explicit annotation records, pending maintainer acceptance. E3 and F2
+remain separately unauthorized. Every one of the other 187 catalog rows below
+remains unchanged.
 
 | Stable ID | Wave 1 content | Approved owner | Runtime readiness | Packet |
 |---|---|---|---|---|
-| `ordinary_differential_equation` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Locally implemented and inert in E1; E2 activation required | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
-| `initial_condition` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Locally implemented and inert in E1; E2 activation required | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
-| `initial_value_problem` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Locally implemented and inert in E1; E2 activation required | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
-| `step_size` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Locally implemented and inert in E1; E2 activation required | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
-| `time_grid` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Locally implemented and inert in E1; E2 activation required | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
-| `numerical_approximation` | `MAINTAINER_APPROVED_WITH_REVISIONS` | Core with ODE context-only override | Locally implemented and inert in E1; E2 activation required | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
-| `exact_solution` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Locally implemented and inert in E1; E2 activation required | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
-| `explicit_scheme` | `MAINTAINER_APPROVED_WITH_REVISIONS` | Core with ODE context-only override | Locally implemented and inert in E1; E2 activation required | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
-| `forward_euler_method` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Locally implemented and inert in E1; E2 activation required | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
-| `backward_euler_method` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Locally implemented and inert in E1; E2 activation required | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `ordinary_differential_equation` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | E2 locally active in complete IVP; pending maintainer acceptance | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `initial_condition` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | E2 locally active in complete IVP; pending maintainer acceptance | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `initial_value_problem` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | E2 locally active in complete IVP; pending maintainer acceptance | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `step_size` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | E2 locally active in complete IVP; pending maintainer acceptance | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `time_grid` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | E2 locally active in complete IVP; pending maintainer acceptance | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `numerical_approximation` | `MAINTAINER_APPROVED_WITH_REVISIONS` | Core with ODE context-only override | E2 locally active in complete IVP; pending maintainer acceptance | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `exact_solution` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | E2 locally active in complete IVP; pending maintainer acceptance | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `explicit_scheme` | `MAINTAINER_APPROVED_WITH_REVISIONS` | Core with ODE context-only override | E2 locally active in complete IVP; pending maintainer acceptance | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `forward_euler_method` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | E2 locally active in complete IVP; pending maintainer acceptance | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `backward_euler_method` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | E2 locally active in complete IVP; pending maintainer acceptance | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
 
 ## Status dimensions
 
@@ -335,7 +339,7 @@ the rich-ready column identifies only drafts prepared in this iteration.
 
 | Wave | Purpose | Included IDs | External prerequisites / blockers | Targets and annotation locations | Rich-ready IDs | Review and binding requirements |
 |---|---|---|---|---|---|---|
-| `WAVE_1_CURRENT_ODE` (10) | Annotate the minimum coherent IVP concepts already visible in the current Lab without depending on Convergence or stability teaching. | `backward_euler_method`, `exact_solution`, `explicit_scheme`, `forward_euler_method`, `initial_condition`, `initial_value_problem`, `numerical_approximation`, `ordinary_differential_equation`, `step_size`, `time_grid` | prerequisites: —; blockers: — | routes/surfaces: /ode, /ode/initial-value-problems; annotations: ODE overview and Initial Value Problems Lab heading/lede, Method cards for Forward Euler and Backward Euler, Data labels for equation, initial value, interval, and time-step size, Output labels for numerical approximation and exact solution | `backward_euler_method`, `exact_solution`, `explicit_scheme`, `forward_euler_method`, `initial_condition`, `initial_value_problem`, `numerical_approximation`, `ordinary_differential_equation`, `step_size`, `time_grid` | Wave-specific mathematical content review, accessibility review, annotation-density review, focused unit tests, and desktop/mobile browser review. Binding/data: Reviewed core content data, ODE module overrides where needed, explicit annotation composition, and an ODE-owned binding connected through the existing optional Host port. Excluded: Convergence/error terms move to Wave 2; stability/reliability terms move to Wave 3; other method-family cards wait for a later ODE expansion. |
+| `WAVE_1_CURRENT_ODE` (10) | Annotate the minimum coherent IVP concepts already visible in the current Lab without depending on Convergence or stability teaching. | `backward_euler_method`, `exact_solution`, `explicit_scheme`, `forward_euler_method`, `initial_condition`, `initial_value_problem`, `numerical_approximation`, `ordinary_differential_equation`, `step_size`, `time_grid` | prerequisites: —; blockers: E2 maintainer acceptance before E3 | route/surface: /ode/initial-value-problems only; annotations: exact lede Context pair, Method explicit-scheme helper, Data companion/helper/selected-heading records, and successful Single Output final-approximation label; `/ode`, titles, breadcrumbs, method cards, labels, MathLive, Compare Output, and Tutor remain plain | `backward_euler_method`, `exact_solution`, `explicit_scheme`, `forward_euler_method`, `initial_condition`, `initial_value_problem`, `numerical_approximation`, `ordinary_differential_equation`, `step_size`, `time_grid` | E1 content accepted; E2 locally implemented with focused/full tests, accessibility review, and exact desktop/mobile browser review. Binding/data: reviewed Core/ODE content and overrides, ten explicit annotation records, and one ODE-owned complete-IVP binding connected through the optional Host port. Excluded: Convergence/error terms move to Wave 2; stability/reliability terms move to Wave 3; other method-family cards wait for a later ODE expansion. |
 | `WAVE_2_CONVERGENCE_ERROR` (14) | Teach the approved signed-error family, named absolute aggregates, theoretical/observed order, evidence status, and asymptotic-region limits. | `absolute_error`, `asymptotic_region`, `convergence`, `discretization_error`, `final_time_error`, `global_error`, `local_truncation_error`, `maximum_global_error`, `model_error`, `nodal_error`, `observed_order`, `order_of_convergence`, `relative_error`, `truncation_error` | prerequisites: exact_solution, numerical_approximation, step_size, time_grid; blockers: step_normalized_local_defect stable ID before any normalized-defect card | routes/surfaces: /ode/initial-value-problems (Output and Convergence Study); annotations: Result summary and exact-reference labels, Convergence conclusion, table, chart, and teaching sections, Tutor context labels without changing Tutor behavior | `absolute_error`, `asymptotic_region`, `convergence`, `discretization_error`, `final_time_error`, `global_error`, `local_truncation_error`, `maximum_global_error`, `nodal_error`, `observed_order`, `order_of_convergence`, `relative_error`, `truncation_error` | Formula-by-formula notation review, copy-encoding tests, released-classification preservation check, and result-state browser review. Binding/data: Wave 1 production content and binding first; reviewed error entries and module overrides; no numerical calculation or classification change. Excluded: Floating-point, conditioning, residual, tolerance, and stability-system teaching move to Wave 3. |
 | `WAVE_3_NUMERICAL_RELIABILITY` (19) | Separate floating-point effects, conditioning, residual, qualified tolerances, numerical stability, ODE absolute stability, A-stability, and stiffness. | `a_stability`, `absolute_stability`, `amplification_factor`, `conditioning`, `floating_point_number`, `loss_of_significance`, `machine_epsilon`, `numerical_stability`, `ode_consistency`, `overflow`, `residual`, `roundoff_error`, `stability_function`, `stability_region`, `stiffness`, `stopping_criterion`, `tolerance`, `underflow`, `zero_stability` | prerequisites: convergence, initial_value_problem, step_size; blockers: test_equation stable ID, scaled_stability_parameter stable ID | routes/surfaces: /ode, /ode/initial-value-problems, future cross-module teaching surfaces; annotations: Method descriptions and stability roadmap, Stiff preset and implicit diagnostics, Tutor explanations and future reliability summaries | — | Stable-ID decision, absolute-stability formula review, tolerance-scope review, and no-behavior-change audit. Binding/data: Earlier waves plus approved prerequisite IDs and reviewed content; no solver, nonlinear iteration, or Tutor transport change. Excluded: Linear Systems object-specific content remains in Wave 4; no adaptive error-control capability is implied. |
 | `WAVE_4_LINEAR_SYSTEMS` (42) | Prepare matrix, vector, linear-system, factorization, direct-solve, norm, residual, conditioning, and least-squares language for the future Linear Systems Lab. | `backward_error`, `band_matrix`, `cholesky_factorization`, `column_space`, `condition_number`, `determinant`, `dot_product`, `euclidean_norm`, `forward_error`, `frobenius_norm`, `gaussian_elimination`, `gram_schmidt`, `householder_reflector`, `induced_matrix_norm`, `infinity_norm`, `invertible_matrix`, `least_squares_problem`, `linear_system`, `lu_factorization`, `matrix`, `matrix_matrix_multiplication`, `matrix_norm`, `matrix_vector_multiplication`, `normal_equations`, `null_space`, `orthogonal_matrix`, `orthogonal_projection`, `p_norm`, `partial_pivoting`, `permutation_matrix`, `pivot`, `plu_factorization`, `pseudoinverse`, `qr_factorization`, `rank`, `row_operation`, `scalar`, `singular_matrix`, `sparse_matrix`, `symmetric_matrix`, `vector`, `vector_norm` | prerequisites: conditioning, positive_definite_matrix; blockers: Linear Systems Lab design and implemented ownership | routes/surfaces: /linear-algebra, future Linear Systems Lab; annotations: Roadmap copy after module design, future matrix editor, solve results, diagnostics, and teaching surfaces | — | Module design, object-type declarations, dimension checks, formula/accessibility review, and future browser review. Binding/data: A future Lab-owned binding and reviewed module registry; no current Linear Algebra runtime exists. Excluded: Eigenvalue and iterative-method families move to Wave 6. |
@@ -759,9 +763,11 @@ accessibility, and composition review.
 
 - The 197-ID set is unchanged.
 - No required-ID gap is promoted by this document.
-- No production registry entry, annotation, ODE binding, Tutor card, queue,
-  or visible Glossary behavior is created.
+- This catalog does not itself create a registry entry, annotation, binding,
+  Tutor card, queue, or surface behavior.
+- The separately authorized E2 implementation composes only the ten approved
+  Wave 1 rows behind one complete-IVP binding; `/ode` and all other catalog
+  rows remain inactive.
 - Language status, relevance, runtime readiness, and planned wave remain
   separate review dimensions.
-- The next authorized work is Group A copy implementation, not a content
-  wave.
+- The next gate is maintainer acceptance of E2; E3 remains unauthorized.

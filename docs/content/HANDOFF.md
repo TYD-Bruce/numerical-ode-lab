@@ -7,9 +7,10 @@ ODE Glossary Wave 1 Group E0 design and content governance
 maintainer-approved; Option 2 rich-model implementation accepted at
 `6ef085d0b0271a5e7ed5a9f64ef4e6a05b5f257e`; fresh E1 accepted and inert at
 `08b80522283438a233974456a026a6dbc2a96746`; E2 runtime contract complete with
-source implementation reauthorization required; E3/F2 unauthorized.
+source implementation locally verified through one complete-IVP binding and
+ten explicit annotations, pending maintainer acceptance; E3/F2 unauthorized.
 
-Runtime/content implementation tracked separately.
+Runtime integration evidence is recorded in the E2 section below.
 
 ## 1. Iteration boundary
 
@@ -166,8 +167,10 @@ The original approval and reconciliation iterations did not change:
 - branches, remotes, Preview, Production, or deployment state.
 
 The locally accepted Content-Agnostic Interactive Glossary Framework remains
-content-neutral. The production registry still contains no Glossary entries,
-annotations, ODE binding, or visible Glossary behavior.
+content-neutral and its generic production registry still contains no entries.
+The later E2 integration composes the accepted Wave 1 registry only through
+the complete-IVP route binding; it does not change the original language
+iterations or any numerical contract.
 
 The Group A iteration changes only `README.md`, visible static-page strings,
 and focused copy expectations. It changes no route, link target, module
@@ -617,8 +620,9 @@ focused ownership tests:
 - `src/ode/odeGlossaryContent.ts` exports exactly eight ODE entries and one
   ODE extension with exactly two context-only overrides for the Core entries;
 - exact composition produces the approved ten cards in teaching order;
-- the production registry entry count, Core-content production importer count,
-  annotation count, and ODE binding count remain zero;
+- at the E1 boundary, the production registry entry count, Core-content
+  production importer count, annotation count, and ODE binding count were
+  zero;
 - `implicit_scheme` remains unregistered future text, not a live relation;
 - the obsolete registry-test assertion that Core content itself must be empty
   was removed while every production-empty and generic registry contract
@@ -658,14 +662,56 @@ trigger texts, DOM compositions, state/mode rules, rerender, replacement,
 disposal rules, rejected duplicates, accessible names, and direct test owners.
 No additional maintainer decision remains.
 
-E2 source/test implementation is incomplete and requires fresh maintainer
-reauthorization. E3, Group F2, push, Preview, and Production remain
-unauthorized.
+This reconciliation was accepted at
+`93a2338d9572e633c8955fc657746f337e34264d`. The later separately authorized
+E2 source/test implementation is recorded below. E3, Group F2, push, Preview,
+and Production remain unauthorized.
 
-## 21. Current review gate
+## 21. Group E2 runtime integration
+
+The separately authorized E2 implementation follows the accepted runtime
+contract without revising E1 card content or the generic Glossary Framework:
+
+- `src/ode/odeGlossary.ts` owns the ten annotation definitions, exact
+  two-Core/eight-ODE/two-override composition, four route-local scopes,
+  rerender transactions, and disposal;
+- each mounted complete-IVP route owns one fresh binding and exposes it through
+  the existing optional route port;
+- Context owns exactly two lede triggers;
+- Method implements the exact `E2-CONTRACT-01` helper outside every method
+  card;
+- Data owns the six accepted companion/helper/selected-heading records without
+  nesting a trigger in a native label, input, or editable MathLive host;
+- Output implements `E2-CONTRACT-02`: only successful Single Output owns
+  `ODE-W1-ANN-006`, while Compare Output remains plain;
+- `/ode`, Home, and static pages have no Wave 1 binding or trigger;
+- Tutor remains independent with no Ask Tutor action or handoff.
+
+The direct and lifecycle tests pass, as do both typechecks and the full
+1,094-test verification build. Exact `1440×900` and `390×844` production-build
+reviews covered trigger sets, rich-card navigation, method replacement,
+Single/Compare/reset/route lifecycles, accessibility exclusions, production
+DEV-route rejection, console health, and horizontal overflow. The generic
+entry graph and lazy Glossary surface remain unchanged; Wave 1 content enters
+only the complete-IVP route chunk.
+
+No E2-introduced external traffic was observed. The only permitted external
+chain remains the unchanged Google Fonts stylesheet/font dependency in
+`index.html`, whose baseline and current blobs are both
+`912cca340efa743ea0d2ceaa2dac7e0234a889bc`.
+`BASELINE-EXT-FONT-001` remains a P3 accepted nonblocking carry-forward for a
+future Platform/asset-policy review. No remediation was performed.
+
+The
+[E2 integration review](../reviews/2026-07-30-ode-glossary-wave-1-e2-integration-review.md)
+records the complete evidence and verdict **E2 ODE GLOSSARY INTEGRATED —
+READY FOR MAINTAINER ACCEPTANCE**. This is a local implementation verdict, not
+maintainer acceptance. Nothing was pushed or deployed.
+
+## 22. Current review gate
 
 The ODE Glossary Wave 1 design, ten revised term cards, ten annotation records,
 ownership, and rollout structure remain approved. E1 is accepted and inert.
-The E2 runtime contract is complete. The next gate is fresh maintainer
-reauthorization of E2 source/test implementation. E3, Group F2, push, Preview,
-and Production remain separately gated and unauthorized.
+The E2 runtime contract is complete and locally implemented. The next gate is
+maintainer acceptance of the E2 commit and its evidence package. E3, Group F2,
+push, Preview, and Production remain separately gated and unauthorized.

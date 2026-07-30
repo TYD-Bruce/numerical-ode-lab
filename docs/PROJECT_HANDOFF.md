@@ -64,10 +64,14 @@ contract mismatches. The
 [E2 Runtime Contract](./content/ODE_GLOSSARY_WAVE_1_E2_RUNTIME_CONTRACT.md)
 now records `E2-CONTRACT-01`, `E2-CONTRACT-02`, and a complete source-grounded
 contract for all ten records. It is the sole implementation authority for E2
-interaction details. E2 source/test implementation remains incomplete and
-requires fresh maintainer reauthorization. The production registry and
-production importer count remain zero; no annotation, ODE binding, or visible
-Glossary behavior was added.
+interaction details. The separately authorized E2 implementation now creates
+exactly one complete-IVP route-instance binding and ten explicit annotations.
+The generic production registry remains empty; the accepted ten-card registry
+is composed only behind the complete-IVP dynamic route. `/ode` remains plain,
+Tutor remains independent, and E2 is locally verified pending maintainer
+acceptance. The
+[E2 integration review](./reviews/2026-07-30-ode-glossary-wave-1-e2-integration-review.md)
+records the exact contract, browser, lifecycle, and production-graph evidence.
 `E1-BROWSER-EXCEPTION-01` accepts only the unchanged Google Fonts
 stylesheet/font request chain for this E1 evidence gate. The source and
 starting-HEAD `index.html` blobs are identical at
@@ -76,12 +80,11 @@ recorded as `BASELINE-EXT-FONT-001` (P3, accepted nonblocking carry-forward,
 owner: future Platform/asset-policy review); E1 introduced no external
 traffic, and no remediation was performed.
 `COPY-003` and `src/pages/homePage.ts` remain review-only and unchanged. These
-iterations
-changed approved visible copy, server-owned Tutor prompt policy, deterministic
-replies, focused expectations, and planning documentation only: calculations,
-classifications, grounding values, request/API/session behavior, and lifecycle
-remain unchanged; no production Glossary content, annotation, or binding
-behavior changed; and nothing was pushed or deployed.
+iterations preserve calculations, classifications, grounding values,
+request/API/session behavior, and numerical lifecycle. E2 adds only its
+accepted ODE-owned binding, explicit annotations, direct tests, narrow layout,
+review, and governance updates. No Tutor handoff, generic Framework redesign,
+push, or deployment occurred.
 
 ## 1. Product and public routes
 
@@ -98,8 +101,8 @@ The product is **Numerical T-Lab**. The currently implemented numerical module i
 | any other page path | In-shell Not Found | Available |
 
 Linear Algebra and PDE are truthful roadmap pages with no runnable controls.
-The active milestone is **ODE Glossary Wave 1 E2 — Implementation
-Reauthorization Gate**;
+The active milestone is **ODE Glossary Wave 1 E2 — Maintainer Acceptance
+Gate**;
 **Linear Systems Lab** is later. The
 [authoritative Glossary design](./superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md)
 is approved and committed. Commit 1, the content-agnostic Glossary model and
@@ -117,11 +120,11 @@ P2, and one DEV-only P3 finding. All three were narrowly repaired in
 then returned **APPROVED FOR LOCAL FRAMEWORK RELEASE** with all 40 binding
 requirements passing or passing with explicit manual carry-forwards. The
 framework is locally accepted as complete; the blocked review remains
-unchanged as history. The production registry remains empty, no production
-Glossary content importer exists, and production has no annotations, ODE
-binding, or visible Glossary behavior; production also excludes the
-Playground. Production activation and the ODE vertical slice remain
-unauthorized.
+unchanged as history. The generic production registry remains empty and has
+no eager Wave 1 importer. The deployed Production baseline remains unchanged
+and excludes the Playground. The local E2 production build now activates its
+accepted ten-card registry only through one complete-IVP route binding; Home,
+static pages, and `/ode` remain unannotated.
 Nothing was pushed or deployed by the repair or final review.
 
 The documentation-only project-language reconciliation is also complete. It
@@ -139,10 +142,11 @@ exactly 10 revised Wave 1 cards and 10 complete-Lab annotation records.
 The historical E1 schema stop was closed by the accepted generic rich-model
 implementation. The fresh E1 restart is locally complete and inert, with
 two Core entries, eight ODE entries, two context-only overrides, and ten
-composed cards in source. Production activation and the ODE binding remain
-absent. E1 is accepted. The E2 runtime contract is complete, while E2
-source/test implementation requires fresh reauthorization. E3 remains
-unauthorized, and the final Group F2 review remains mandatory after E3.
+composed cards in source. E1 is accepted. The E2 runtime contract is complete
+and its separately authorized source/test implementation is locally verified
+through one complete-IVP binding and ten explicit annotations. E2 awaits
+maintainer acceptance. E3 remains unauthorized, and the final Group F2 review
+remains mandatory after E3.
 
 ## 2. Verification baseline
 
@@ -483,9 +487,10 @@ Known limitations:
 - Linear Algebra and PDE are not runnable Labs.
 - The Content-Agnostic Interactive Glossary Framework's four planned phases
   are complete and locally accepted after repeated independent final review.
-  Production initializes an inert Host but its registry contains no entries;
-  production has no annotations, ODE binding, activatable surface, Playground,
-  or visible Glossary behavior.
+  Its generic production registry remains empty and the Playground remains
+  excluded from production. The local E2 build composes the accepted registry
+  only behind one complete-IVP route binding; the deployed Production baseline
+  remains unchanged because nothing was pushed or deployed.
 - The private-source-reviewed project-language foundation is approved as
   Version 1 after all nine maintainer decisions were recorded. The Glossary
   catalog and project copy audit are reconciled planning documents, and the
@@ -500,9 +505,9 @@ Known limitations:
   at the confirmed schema mismatch. The Option 2 rich-model design, plan, and
   generic implementation are accepted; the fresh E1 restart is accepted and
   inert at `08b80522283438a233974456a026a6dbc2a96746`. The E2 runtime contract
-  is complete, but E2 source/test implementation requires fresh maintainer
-  reauthorization. E3 remains unauthorized, no production binding exists, and
-  Group F2 remains mandatory after E3.
+  is complete and locally implemented through one complete-IVP route-instance
+  binding and ten annotations, pending maintainer acceptance. E3 remains
+  unauthorized, and Group F2 remains mandatory after E3.
 
 Contributor rules:
 
@@ -519,9 +524,11 @@ Contributor rules:
 verification remain complete. The Glossary framework is locally accepted as
 complete after all three historical blocked-review findings were repaired and
 closed by repeated independent final review. Nothing was pushed or deployed.
-The production registry still contains no Glossary entries or importer, and
-production contains no annotations, ODE binding, Playground, activatable
-surface, or visible behavior. All nine project-language
+The generic production registry still contains no Glossary entries or eager
+importer, and the deployed Production baseline remains unchanged. The local
+E2 build now supplies one route-owned complete-IVP binding and ten explicit
+annotations while `/ode` and static pages remain plain. The Playground remains
+excluded from production. All nine project-language
 decisions are recorded and the terminology, notation, and teaching-voice
 standards are approved as Version 1. The catalog and copy audit are reconciled;
 Groups A through D are accepted, and the maintainer has accepted both the
@@ -535,6 +542,6 @@ the accepted Option 2 rich-model commit
 and inert with two Core entries, eight ODE entries, two context-only
 overrides, and ten composed cards, and is accepted at
 `08b80522283438a233974456a026a6dbc2a96746`. The E2 runtime contract is
-complete. The next gate is fresh maintainer reauthorization of E2 source/test
-implementation. E3 remains unauthorized and separately gated; Group F2
-remains mandatory after E3.*
+complete and locally implemented. The next gate is maintainer acceptance of
+the E2 commit and evidence package. E3 remains unauthorized and separately
+gated; Group F2 remains mandatory after E3.*

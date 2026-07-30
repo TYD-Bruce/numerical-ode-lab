@@ -10,9 +10,10 @@ reviewed classifications, and all five pre-E findings are `CLOSED_VERIFIED`.
 `COPY-003` remains held. Group E0 ODE Glossary Wave 1 design and content
 governance is maintainer-approved: D01–D18, all ten revised cards, and all ten
 annotation records are approved. E1 inert content is locally implemented
-pending maintainer acceptance; E2 implementation, E3 and F2 execution,
-`COPY-041`, `COPY-042`, production activation, annotations, and an ODE binding
-remain unauthorized and unimplemented.
+and accepted. The separately authorized E2 runtime contract is locally
+implemented through one complete-IVP binding and ten explicit annotations,
+pending maintainer acceptance. E2 does not implement `COPY-041` or
+`COPY-042`; E3 and F2 execution, push, and deployment remain unauthorized.
 
 ## Purpose and boundary
 
@@ -37,9 +38,9 @@ inside the separately authorized implementation group.
 - Implementation progress: 4 Group A ready records, 14 Group B records,
   10 Group C records, and 11 Group D records accepted; `COPY-043` implemented
   and accepted with Group F1; `COPY-003` held; Group E0 design and content
-  governance approved; E1 inert content locally implemented pending
-  acceptance; E2 implementation and E3/F2 execution unauthorized; Group F2
-  required after E3.
+  governance approved; E1 inert content accepted; E2 runtime integration
+  locally implemented pending maintainer acceptance; E3/F2 execution
+  unauthorized; Group F2 required after E3.
 - Former decision-blocked records: **0**.
 - Numerical-behavior changes proposed: **0**.
 
@@ -983,9 +984,9 @@ call, push, or deployment was added. Group D is accepted in
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Notes: The maintainer-approved Group E0
   [ODE Glossary Wave 1 design](../superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md)
-  retains this record as an unimplemented future E2 surface-copy decision. It
-  remains `REQUIRES_CONTENT_WAVE`; E2 is unauthorized, and no production
-  wording change, entry, annotation, binding, or activation exists.
+  retains this record as an unimplemented future generic-surface copy
+  decision. It remains `REQUIRES_CONTENT_WAVE`; the accepted E2 runtime
+  contract did not authorize or change this generic surface wording.
 
 ### COPY-042 — `src/glossary/surface/glossarySurfaceRuntime.ts` · `preview prompt and live-region copy`
 
@@ -1006,9 +1007,9 @@ call, push, or deployment was added. Group D is accepted in
 - Source rescan: `RESCANNED_AT_b14bf1c7_CURRENT_PATH_AND_OWNER_CONFIRMED`
 - Notes: The maintainer-approved Group E0
   [ODE Glossary Wave 1 design](../superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md)
-  retains this record as an unimplemented future E2 surface-copy decision. It
-  remains `REQUIRES_CONTENT_WAVE`; E2 is unauthorized, and no production
-  wording change, entry, annotation, binding, or activation exists.
+  retains this record as an unimplemented future generic-surface copy
+  decision. It remains `REQUIRES_CONTENT_WAVE`; the accepted E2 runtime
+  contract did not authorize or change this generic surface wording.
 
 ### COPY-043 — `src/math/ui/editableMathField.ts` · `expression details / parsed label`
 
@@ -1303,9 +1304,9 @@ authorized
 closes all five findings after tests-first gates, 161 cumulative focused tests,
 the 1,048-test full verification gate, desktop/mobile deterministic demo
 review, structural/numerical audit, and production artifact inspection. Group
-E0 design and content governance is now maintainer-approved. E1 and E2
-implementation and E3/F2 execution remain unauthorized, and Group F2 remains
-required after E3.
+E0 design and content governance was later maintainer-approved. At the Group
+F1 checkpoint, E1/E2 implementation and E3/F2 execution were unauthorized.
+The later E1/E2 state is recorded below; Group F2 remains required after E3.
 
 ## Behavior-preservation contract
 
@@ -1335,9 +1336,26 @@ Group E0 is complete and maintainer-approved for exactly ten revised ODE
 Glossary Wave 1 term cards, ten annotation design records, and D01–D18 Option
 A. The accepted rich model supports the separately authorized E1 inert
 content implementation: exactly two Core entries, eight ODE entries, two
-context-only overrides, and ten composed cards now exist in source, while the
-production registry/importer, annotation, binding, and visible-behavior counts
-remain zero. This does not change the readiness of `COPY-041` or `COPY-042`;
-both remain future E2 surface-copy decisions. The next gate is maintainer
-acceptance of E1. E2, E3, and F2 remain separately gated and unauthorized.
-The original full Group F is not complete; Group F2 remains required after E3.
+context-only overrides, and ten composed cards now exist in source, and E1 is
+accepted. The separately authorized E2 contract now creates one
+complete-IVP route-instance binding and ten explicit annotations. `/ode`
+remains plain, no Tutor handoff exists, and the generic production registry
+remains empty. This does not change the readiness of `COPY-041` or
+`COPY-042`; both remain future generic-surface copy decisions. The next gate
+is maintainer acceptance of E2. E3 and F2 remain separately gated and
+unauthorized. The original full Group F is not complete; Group F2 remains
+required after E3.
+
+### Group E2 local implementation evidence
+
+The
+[E2 Runtime Contract](ODE_GLOSSARY_WAVE_1_E2_RUNTIME_CONTRACT.md) is locally
+implemented without changing any approved card or generic surface string.
+`E2-CONTRACT-01` supplies the exact Method helper in ODE-owned DOM.
+`E2-CONTRACT-02` limits the final-approximation trigger to successful Single
+Output; Compare Output remains plain. Focused and full tests, exact desktop
+and mobile production-build review, import/bundle inspection, and disposal
+checks are recorded in the
+[E2 integration review](../reviews/2026-07-30-ode-glossary-wave-1-e2-integration-review.md).
+The local verdict is **E2 ODE GLOSSARY INTEGRATED — READY FOR MAINTAINER
+ACCEPTANCE**. Nothing was pushed or deployed.

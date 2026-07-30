@@ -93,6 +93,7 @@ import type {
   LabTutorBinding,
   ResumeSummary,
 } from "../app/contracts";
+import type { LabGlossaryBinding } from "../glossary/glossaryController";
 import {
   computeOdeLabMeaningful,
   createBeginnerStarterSession,
@@ -107,6 +108,11 @@ import {
   type ReadonlySolverResult,
 } from "./odeSession";
 import { createOdeTutorBinding } from "./odeTutorBinding";
+import {
+  createOdeGlossaryRuntime,
+  type OdeGlossaryRenderTransaction,
+  type OdeWave1AnnotationId,
+} from "./odeGlossary";
 import "../style.css";
 
 Chart.register(
@@ -138,9 +144,6 @@ interface PersistedForm {
   order: string;
 }
 
-const DEFAULT_LEDE =
-  "Explore fixed-step methods for first-order initial value problems, then analyze numerical error, observed convergence, and method behavior as the step size changes.";
-
 const activeOdeMounts = new WeakMap<HTMLElement, object>();
 
 export interface MountOdeAppOptions {
@@ -164,6 +167,7 @@ export interface MountedOdeApp {
   getSession(): OdeSessionState;
   getResumeSummary(): ResumeSummary | undefined;
   getTutorBinding(): LabTutorBinding<unknown>;
+  getGlossaryBinding(): LabGlossaryBinding;
   dispose(): void;
 }
 
@@ -174,6 +178,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
   }
   const mountToken = {};
   activeOdeMounts.set(app, mountToken);
+  const glossaryRuntime = createOdeGlossaryRuntime();
   let disposed = false;
   let uiGeneration = 0;
   let step = options.initialSession.step;
@@ -635,30 +640,145 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
   `;
   }
 
+  function glossaryTermNode(
+    glossaryRender: OdeGlossaryRenderTransaction,
+    annotationId: OdeWave1AnnotationId
+  ): Node {
+    return glossaryRender.createTerm(annotationId).node;
+  }
+
+  function renderContextLede(
+    shell: HTMLElement,
+    glossaryRender: OdeGlossaryRenderTransaction
+  ): void {
+    const lede = shell.querySelector<HTMLElement>(
+      "[data-ode-glossary-lede]"
+    )!;
+    lede.append(
+      document.createTextNode(
+        "Explore fixed-step methods for a first-order "
+      ),
+      glossaryTermNode(glossaryRender, "ODE-W1-ANN-001"),
+      document.createTextNode(" posed as an "),
+      glossaryTermNode(glossaryRender, "ODE-W1-ANN-002"),
+      document.createTextNode(
+        ", then analyze numerical error, observed convergence, and method behavior as the time-step size changes."
+      )
+    );
+  }
+
+  function renderMethodGlossaryHelper(
+    glossaryRender: OdeGlossaryRenderTransaction
+  ): HTMLElement {
+    const helper = document.createElement("p");
+    helper.className = "hint ode-method-glossary-helper";
+    helper.dataset.odeMethodGlossaryHelper = "";
+    helper.append(
+      glossaryTermNode(glossaryRender, "ODE-W1-ANN-008"),
+      document.createTextNode(
+        ": the next numerical approximation is computed directly from quantities already known before the update."
+      )
+    );
+    return helper;
+  }
+
+  function addFieldGlossaryCompanion(
+    input: HTMLInputElement,
+    glossaryRender: OdeGlossaryRenderTransaction,
+    annotationId: OdeWave1AnnotationId,
+    owner: "initial-condition" | "step-size"
+  ): void {
+    const label = input.closest<HTMLLabelElement>("label");
+    if (!label) throw new Error(`Missing ${owner} field label.`);
+    const wrapper = document.createElement("div");
+    wrapper.className = "field-glossary-companion";
+    wrapper.dataset.odeGlossaryField = owner;
+    label.before(wrapper);
+    wrapper.append(
+      label,
+      glossaryTermNode(glossaryRender, annotationId)
+    );
+  }
+
+  function addTimeGridGlossaryHelper(
+    hInput: HTMLInputElement,
+    glossaryRender: OdeGlossaryRenderTransaction
+  ): void {
+    const field =
+      hInput.closest<HTMLElement>("[data-ode-glossary-field]") ??
+      hInput.closest<HTMLLabelElement>("label");
+    if (!field) throw new Error("Missing time-step field owner.");
+    const helper = document.createElement("p");
+    helper.className = "hint wide ode-time-grid-glossary-helper";
+    helper.dataset.odeTimeGridGlossaryHelper = "";
+    helper.append(
+      document.createTextNode("The current fixed-step "),
+      glossaryTermNode(glossaryRender, "ODE-W1-ANN-005"),
+      document.createTextNode(
+        " includes the aligned start and end times."
+      )
+    );
+    field.after(helper);
+  }
+
+  function addExactSolutionGlossaryHeading(
+    toggle: HTMLInputElement,
+    glossaryRender: OdeGlossaryRenderTransaction
+  ): void {
+    const label = toggle.closest<HTMLLabelElement>("label");
+    if (!label) throw new Error("Missing exact-solution checkbox label.");
+    const heading = document.createElement("p");
+    heading.className = "wide ode-exact-solution-glossary-heading";
+    heading.dataset.odeExactSolutionGlossaryHeading = "";
+    heading.append(glossaryTermNode(glossaryRender, "ODE-W1-ANN-007"));
+    label.before(heading);
+  }
+
+  function replaceSelectedMethodHeading(
+    wrap: HTMLElement,
+    selectedMethod: SelectedMethod,
+    glossaryRender: OdeGlossaryRenderTransaction
+  ): void {
+    const annotationId =
+      selectedMethod.family === "forward_euler"
+        ? "ODE-W1-ANN-009"
+        : selectedMethod.family === "backward_euler"
+          ? "ODE-W1-ANN-010"
+          : undefined;
+    if (!annotationId) return;
+    const heading = wrap.querySelector<HTMLElement>(
+      "[data-selected-method-heading]"
+    );
+    if (!heading) throw new Error("Missing selected method heading.");
+    heading.replaceChildren(glossaryTermNode(glossaryRender, annotationId));
+  }
+
   function render(): void {
     if (disposed) return;
     const generation = ++uiGeneration;
-    const meta = selectedMeta();
-    disposeExpressionUi();
-    disposeConvergenceUi();
-    disposePrimaryChart();
-    app.replaceChildren();
+    const glossaryRender = glossaryRuntime.beginRender();
+    try {
+      const meta = selectedMeta();
+      disposeExpressionUi();
+      disposeConvergenceUi();
+      disposePrimaryChart();
+      app.replaceChildren();
 
-    const shell = document.createElement("div");
-    shell.className = "shell";
+      const shell = document.createElement("div");
+      shell.className = "shell";
 
-    const comparePicking = session.mode === "compare_pick";
-    let workflowNote = "";
-    if (comparePicking && session.mode === "compare_pick") {
-      workflowNote =
-        session.first === null
-          ? "Choose the first first-order method, then a second method. You will enter one shared model y′ = f(t, y)."
-          : `First method: ${methodLabel(session.first)}. Choose a different second method.`;
-    }
-    const experimentIdentity = experimentIdentityPresentation();
-    const compactExperimentIdentity = step === "results";
+      const comparePicking = session.mode === "compare_pick";
+      let workflowNote = "";
+      if (comparePicking && session.mode === "compare_pick") {
+        workflowNote =
+          session.first === null
+            ? "Choose the first first-order method, then a second method. You will enter one shared model y′ = f(t, y)."
+            : `First method: ${methodLabel(session.first)}. Choose a different second method.`;
+      }
+      const experimentIdentity = experimentIdentityPresentation();
+      const compactExperimentIdentity = step === "results";
 
-    shell.innerHTML = `
+      shell.innerHTML = `
     <header class="hero">
       <nav class="ode-breadcrumb" aria-label="Breadcrumb">
         <a href="/ode">Numerical ODE</a>
@@ -670,7 +790,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
         <h1 tabindex="-1" data-route-focus>Initial Value Problems Lab</h1>
         <button type="button" class="btn ghost new-experiment-trigger" data-new-experiment>New experiment</button>
       </div>
-      <p class="lede">${DEFAULT_LEDE}</p>
+      <p class="lede" data-ode-glossary-lede></p>
       ${workflowNote ? `<p class="ivp-note">${workflowNote}</p>` : ""}
       <div class="experiment-identity${compactExperimentIdentity ? " is-compact" : ""}" data-experiment-identity="${experimentIdentity.label === "Beginner starter" ? "beginner-starter" : "custom-experiment"}">
         <strong data-experiment-label>${experimentIdentity.label}</strong>
@@ -690,62 +810,83 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       </div>
     </header>
   `;
+      renderContextLede(shell, glossaryRender);
 
-    shell
-      .querySelector<HTMLButtonElement>("[data-new-experiment]")
-      ?.addEventListener("click", (event) => {
-        openResetDialog(event.currentTarget as HTMLElement);
-      });
+      shell
+        .querySelector<HTMLButtonElement>("[data-new-experiment]")
+        ?.addEventListener("click", (event) => {
+          openResetDialog(event.currentTarget as HTMLElement);
+        });
 
-    const main = document.createElement("main");
-    main.className = "panel";
+      const main = document.createElement("main");
+      main.className = "panel";
+      let outputMountPending = false;
 
-    if (step === "choose") {
-      main.append(renderChoosePanel());
-    } else if (step === "configure") {
-      if (session.mode === "compare") {
-        main.append(
-          renderCompareForm(
-            catalogEntry(session.a),
-            catalogEntry(session.b),
-            session.a,
-            session.b
-          )
-        );
-      } else if (meta && selected) {
-        main.append(renderForm(meta, selected));
+      if (step === "choose") {
+        main.append(renderChoosePanel(glossaryRender));
+      } else if (step === "configure") {
+        if (session.mode === "compare") {
+          main.append(
+            renderCompareForm(
+              catalogEntry(session.a),
+              catalogEntry(session.b),
+              session.a,
+              session.b,
+              glossaryRender
+            )
+          );
+        } else if (meta && selected) {
+          main.append(renderForm(meta, selected, glossaryRender));
+        } else {
+          step = "choose";
+          main.append(renderChoosePanel(glossaryRender));
+        }
+      } else if (step === "results") {
+        if (lastCompare) {
+          outputMountPending = true;
+          main.append(
+            renderCompareResultsShell(
+              catalogEntry(lastCompare.a),
+              catalogEntry(lastCompare.b),
+              lastCompare.resultA,
+              lastCompare.resultB,
+              lastCompare.expression,
+              glossaryRender
+            )
+          );
+        } else if (meta && lastResult && lastResultExpression) {
+          outputMountPending = true;
+          main.append(
+            renderResultsShell(
+              meta,
+              lastResult,
+              lastResultExpression,
+              glossaryRender
+            )
+          );
+        } else {
+          step = "configure";
+          main.append(renderChoosePanel(glossaryRender));
+        }
       } else {
         step = "choose";
-        main.append(renderChoosePanel());
+        main.append(renderChoosePanel(glossaryRender));
       }
-    } else if (step === "results") {
-      if (lastCompare) {
-        main.append(
-          renderCompareResultsShell(
-            catalogEntry(lastCompare.a),
-            catalogEntry(lastCompare.b),
-            lastCompare.resultA,
-            lastCompare.resultB,
-            lastCompare.expression
-          )
-        );
-      } else if (meta && lastResult && lastResultExpression) {
-        main.append(renderResultsShell(meta, lastResult, lastResultExpression));
-      } else {
-        step = "configure";
-        main.append(renderChoosePanel());
-      }
-    } else {
-      step = "choose";
-      main.append(renderChoosePanel());
-    }
 
-    shell.append(main);
-    app.append(shell);
-    if (isCurrentGeneration(generation)) emitSessionUpdate();
+      shell.append(main);
+      app.append(shell);
+      glossaryRender.commitImmediateScopes();
+      if (!outputMountPending) glossaryRender.commitOutputScope();
+      if (isCurrentGeneration(generation)) emitSessionUpdate();
+    } catch (cause) {
+      glossaryRender.abort();
+      throw cause;
+    }
   }
 
-  function renderChoosePanel(): HTMLElement {
+  function renderChoosePanel(
+    glossaryRender: OdeGlossaryRenderTransaction
+  ): HTMLElement {
     const wrap = document.createElement("div");
     wrap.className = "choose-panel";
 
@@ -760,6 +901,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
         render();
       });
       wrap.append(bar);
+      wrap.append(renderMethodGlossaryHelper(glossaryRender));
       wrap.append(renderCompareMethodGrid());
       return wrap;
     }
@@ -777,6 +919,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       render();
     });
     wrap.append(bar);
+    wrap.append(renderMethodGlossaryHelper(glossaryRender));
     wrap.append(renderSingleMethodGrid());
     return wrap;
   }
@@ -1258,7 +1401,11 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     storeConvergenceState(snapshot, state);
   }
 
-  function renderForm(meta: MethodCatalogEntry, sel: SelectedMethod): HTMLElement {
+  function renderForm(
+    meta: MethodCatalogEntry,
+    sel: SelectedMethod,
+    glossaryRender: OdeGlossaryRenderTransaction
+  ): HTMLElement {
     const formGeneration = uiGeneration;
     const wrap = document.createElement("div");
     wrap.className = "form-wrap";
@@ -1273,7 +1420,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     wrap.innerHTML = `
     <div class="form-head">
       <button type="button" class="btn ghost" data-back-methods>← All methods (keep my numbers)</button>
-      <h2>${title}</h2>
+      <h2 data-selected-method-heading>${title}</h2>
       ${lastResult && lastResultExpression ? '<button type="button" class="btn secondary" data-return-output>Return to current output</button>' : ""}
     </div>
     <p class="unrun-edits-note" data-unrun-edits hidden>Your edits have not been run yet.</p>
@@ -1366,6 +1513,30 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       <p class="error" id="form-error" hidden></p>
     </form>
   `;
+
+    replaceSelectedMethodHeading(wrap, sel, glossaryRender);
+    const hInput = wrap.querySelector<HTMLInputElement>('[name="h"]')!;
+    addFieldGlossaryCompanion(
+      hInput,
+      glossaryRender,
+      "ODE-W1-ANN-004",
+      "step-size"
+    );
+    addTimeGridGlossaryHelper(hInput, glossaryRender);
+    if (!isSecond) {
+      addFieldGlossaryCompanion(
+        wrap.querySelector<HTMLInputElement>('[name="y0"]')!,
+        glossaryRender,
+        "ODE-W1-ANN-003",
+        "initial-condition"
+      );
+      addExactSolutionGlossaryHeading(
+        wrap.querySelector<HTMLInputElement>(
+          "[data-exact-solution-toggle]"
+        )!,
+        glossaryRender
+      );
+    }
 
     const summaryHost = wrap.querySelector<HTMLElement>("[data-expression-summary]")!;
     activeExpressionSummary = mountExpressionErrorSummary(summaryHost);
@@ -1720,7 +1891,8 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     metaA: MethodCatalogEntry,
     metaB: MethodCatalogEntry,
     selA: SelectedMethod,
-    selB: SelectedMethod
+    selB: SelectedMethod,
+    glossaryRender: OdeGlossaryRenderTransaction
   ): HTMLElement {
     const formGeneration = uiGeneration;
     const wrap = document.createElement("div");
@@ -1769,6 +1941,15 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       <p class="error" id="form-error" hidden></p>
     </form>
   `;
+
+    const hInput = wrap.querySelector<HTMLInputElement>('[name="h"]')!;
+    addFieldGlossaryCompanion(
+      hInput,
+      glossaryRender,
+      "ODE-W1-ANN-004",
+      "step-size"
+    );
+    addTimeGridGlossaryHelper(hInput, glossaryRender);
 
     activeExpressionSummary = mountExpressionErrorSummary(
       wrap.querySelector<HTMLElement>("[data-expression-summary]")!
@@ -1989,7 +2170,8 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
   function renderResultsShell(
     meta: MethodCatalogEntry,
     result: ReadonlySolverResult,
-    expression: SuccessfulExpressionSnapshot
+    expression: SuccessfulExpressionSnapshot,
+    glossaryRender: OdeGlossaryRenderTransaction
   ): HTMLElement {
     const generation = uiGeneration;
     const wrap = document.createElement("div");
@@ -2009,8 +2191,17 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       goToMethodListKeepInputs();
     });
     queueMicrotask(() => {
-      if (!isCurrentGeneration(generation, wrap)) return;
-      mountResults(meta, result, expression);
+      if (!isCurrentGeneration(generation, wrap)) {
+        glossaryRender.abort();
+        return;
+      }
+      try {
+        mountResults(meta, result, expression, glossaryRender);
+        glossaryRender.commitOutputScope();
+      } catch (cause) {
+        glossaryRender.abort();
+        throw cause;
+      }
     });
     return wrap;
   }
@@ -2020,7 +2211,8 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     metaB: MethodCatalogEntry,
     resultA: ReadonlySolverResult,
     resultB: ReadonlySolverResult,
-    expression: SuccessfulExpressionSnapshot
+    expression: SuccessfulExpressionSnapshot,
+    glossaryRender: OdeGlossaryRenderTransaction
   ): HTMLElement {
     const generation = uiGeneration;
     const wrap = document.createElement("div");
@@ -2051,8 +2243,17 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       goToMethodListKeepInputs();
     });
     queueMicrotask(() => {
-      if (!isCurrentGeneration(generation, wrap)) return;
-      mountCompareResults(metaA, metaB, resultA, resultB, expression);
+      if (!isCurrentGeneration(generation, wrap)) {
+        glossaryRender.abort();
+        return;
+      }
+      try {
+        mountCompareResults(metaA, metaB, resultA, resultB, expression);
+        glossaryRender.commitOutputScope();
+      } catch (cause) {
+        glossaryRender.abort();
+        throw cause;
+      }
     });
     return wrap;
   }
@@ -2060,7 +2261,8 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
   function mountResults(
     meta: MethodCatalogEntry,
     result: ReadonlySolverResult,
-    expression: SuccessfulExpressionSnapshot
+    expression: SuccessfulExpressionSnapshot,
+    glossaryRender: OdeGlossaryRenderTransaction
   ): void {
     const body = app.querySelector("#results-body");
     if (!body) return;
@@ -2082,8 +2284,8 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
           <span class="stat-label">Final time</span>
           <span class="stat-value">${last.t.toFixed(6)}</span>
         </div>
-        <div class="stat">
-          <span class="stat-label">Final numerical approximation</span>
+        <div class="stat" data-final-numerical-approximation>
+          <span class="stat-label" data-final-numerical-approximation-label></span>
           <span class="stat-value">${last.y.toFixed(8)}</span>
         </div>
         ${meta.mode === "second" && last.v !== undefined
@@ -2120,6 +2322,18 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       </div>
     </section>
   `;
+
+    const finalApproximationLabel = body.querySelector<HTMLElement>(
+      "[data-final-numerical-approximation-label]"
+    )!;
+    const finalApproximationTerm = glossaryTermNode(
+      glossaryRender,
+      "ODE-W1-ANN-006"
+    );
+    if (finalApproximationTerm instanceof HTMLElement) {
+      finalApproximationTerm.classList.add("stat-label");
+    }
+    finalApproximationLabel.replaceWith(finalApproximationTerm);
 
     const equationTarget = body.querySelector<HTMLElement>("[data-problem-equation]");
     if (equationTarget) renderReadonlyMath(equationTarget, expression.equation, { display: "block" });
@@ -2447,6 +2661,9 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     getTutorBinding(): LabTutorBinding<unknown> {
       return tutorBindingControl.binding;
     },
+    getGlossaryBinding(): LabGlossaryBinding {
+      return glossaryRuntime.binding;
+    },
     dispose(): void {
       if (disposed) return;
       disposed = true;
@@ -2455,6 +2672,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       disposeExpressionUi();
       disposeConvergenceUi();
       disposePrimaryChart();
+      glossaryRuntime.dispose();
       tutorBindingControl.dispose();
       if (activeOdeMounts.get(app) === mountToken) {
         activeOdeMounts.delete(app);
