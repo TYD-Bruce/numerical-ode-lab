@@ -9,9 +9,10 @@ accepted the Group F1 and pre-Glossary repair commits as prerequisite state;
 reviewed classifications, and all five pre-E findings are `CLOSED_VERIFIED`.
 `COPY-003` remains held. Group E0 ODE Glossary Wave 1 design and content
 governance is maintainer-approved: D01–D18, all ten revised cards, and all ten
-annotation records are approved. E1 and E2 implementation, E3 and F2
-execution, `COPY-041`, `COPY-042`, production entries, annotations, and an ODE
-binding remain unauthorized and unimplemented.
+annotation records are approved. E1 inert content is locally implemented
+pending maintainer acceptance; E2 implementation, E3 and F2 execution,
+`COPY-041`, `COPY-042`, production activation, annotations, and an ODE binding
+remain unauthorized and unimplemented.
 
 ## Purpose and boundary
 
@@ -36,8 +37,9 @@ inside the separately authorized implementation group.
 - Implementation progress: 4 Group A ready records, 14 Group B records,
   10 Group C records, and 11 Group D records accepted; `COPY-043` implemented
   and accepted with Group F1; `COPY-003` held; Group E0 design and content
-  governance approved; E1/E2 implementation and E3/F2 execution unauthorized;
-  Group F2 required after E3.
+  governance approved; E1 inert content locally implemented pending
+  acceptance; E2 implementation and E3/F2 execution unauthorized; Group F2
+  required after E3.
 - Former decision-blocked records: **0**.
 - Numerical-behavior changes proposed: **0**.
 
@@ -1331,8 +1333,11 @@ repair verdict **PRE-E REPAIR COMPLETE — GROUP E MAY BE PLANNED**.
 
 Group E0 is complete and maintainer-approved for exactly ten revised ODE
 Glossary Wave 1 term cards, ten annotation design records, and D01–D18 Option
-A. The approval does not change the readiness of `COPY-041` or `COPY-042` and
-does not authorize their copy, any production entry, annotation, binding, or
-runtime activation. The next gate is a separate maintainer decision on E1
-implementation. E1, E2, E3, and F2 remain separately gated and unauthorized.
+A. The accepted rich model supports the separately authorized E1 inert
+content implementation: exactly two Core entries, eight ODE entries, two
+context-only overrides, and ten composed cards now exist in source, while the
+production registry/importer, annotation, binding, and visible-behavior counts
+remain zero. This does not change the readiness of `COPY-041` or `COPY-042`;
+both remain future E2 surface-copy decisions. The next gate is maintainer
+acceptance of E1. E2, E3, and F2 remain separately gated and unauthorized.
 The original full Group F is not complete; Group F2 remains required after E3.

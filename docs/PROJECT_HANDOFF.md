@@ -49,12 +49,24 @@ and
 [plan review](./reviews/2026-07-29-rich-glossary-content-model-plan-review.md)
 are complete with verdict **RICH GLOSSARY IMPLEMENTATION PLAN COMPLETE —
 AUTHORIZATION REQUIRED**. The subsequently authorized generic implementation
-is locally complete, and its
+was accepted at `6ef085d0b0271a5e7ed5a9f64ef4e6a05b5f257e`, and its
 [implementation review](./reviews/2026-07-29-rich-glossary-content-model-implementation-review.md)
 records verdict **RICH GLOSSARY MODEL IMPLEMENTED — READY FOR MAINTAINER
-ACCEPTANCE**. No Wave 1 content, annotation, or ODE binding was added. E1
-remains incomplete and must restart only after maintainer acceptance and a
-fresh, separately authorized gate.
+ACCEPTANCE** as a point-in-time verdict. The separately authorized fresh E1
+restart now contains exactly two inert Core entries, eight inert ODE entries,
+two ODE context-only overrides, and ten composed cards. The
+[E1 review](./reviews/2026-07-29-ode-glossary-wave-1-e1-content-review.md)
+records local verification and verdict **E1 RICH CONTENT IMPLEMENTED AND
+INERT — READY FOR MAINTAINER ACCEPTANCE**. The production registry and
+production importer count remain zero; no annotation, ODE binding, or visible
+Glossary behavior was added.
+`E1-BROWSER-EXCEPTION-01` accepts only the unchanged Google Fonts
+stylesheet/font request chain for this E1 evidence gate. The source and
+starting-HEAD `index.html` blobs are identical at
+`912cca340efa743ea0d2ceaa2dac7e0234a889bc`. The pre-existing dependency is
+recorded as `BASELINE-EXT-FONT-001` (P3, accepted nonblocking carry-forward,
+owner: future Platform/asset-policy review); E1 introduced no external
+traffic, and no remediation was performed.
 `COPY-003` and `src/pages/homePage.ts` remain review-only and unchanged. These
 iterations
 changed approved visible copy, server-owned Tutor prompt policy, deterministic
@@ -78,8 +90,8 @@ The product is **Numerical T-Lab**. The currently implemented numerical module i
 | any other page path | In-shell Not Found | Available |
 
 Linear Algebra and PDE are truthful roadmap pages with no runnable controls.
-The active milestone is **Glossary Rich Content Extension — Maintainer
-Acceptance Gate**;
+The active milestone is **ODE Glossary Wave 1 E1 — Maintainer Acceptance
+Gate**;
 **Linear Systems Lab** is later. The
 [authoritative Glossary design](./superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md)
 is approved and committed. Commit 1, the content-agnostic Glossary model and
@@ -97,9 +109,11 @@ P2, and one DEV-only P3 finding. All three were narrowly repaired in
 then returned **APPROVED FOR LOCAL FRAMEWORK RELEASE** with all 40 binding
 requirements passing or passing with explicit manual carry-forwards. The
 framework is locally accepted as complete; the blocked review remains
-unchanged as history. Production still has no Glossary terms, annotations,
-ODE binding, or visible Glossary behavior, and production excludes the
-Playground. Production content and the ODE vertical slice remain unauthorized.
+unchanged as history. The production registry remains empty, no production
+Glossary content importer exists, and production has no annotations, ODE
+binding, or visible Glossary behavior; production also excludes the
+Playground. Production activation and the ODE vertical slice remain
+unauthorized.
 Nothing was pushed or deployed by the repair or final review.
 
 The documentation-only project-language reconciliation is also complete. It
@@ -114,12 +128,13 @@ review-only records, and completes the accepted pre-Glossary consistency
 checkpoint. Its five P2 findings are `CLOSED_VERIFIED`, and both prerequisite
 commits are accepted. Group E0 design and content governance now approves
 exactly 10 revised Wave 1 cards and 10 complete-Lab annotation records.
-Production Glossary content and the ODE binding remain absent and
-unauthorized. E1 was authorized but stopped incomplete at the confirmed
-rich-field schema mismatch. The generic rich-model design, plan, and
-content-neutral implementation are complete locally; maintainer acceptance
-and a fresh E1 restart authorization remain separate gates. E2 and E3 remain
-future gates, and the final Group F2 review remains mandatory after E3.
+The historical E1 schema stop was closed by the accepted generic rich-model
+implementation. The fresh E1 restart is locally complete and inert, with
+two Core entries, eight ODE entries, two context-only overrides, and ten
+composed cards in source. Production activation and the ODE binding remain
+absent and unauthorized. Maintainer acceptance of E1 is the current gate; E2
+and E3 remain future gates, and the final Group F2 review remains mandatory
+after E3.
 
 ## 2. Verification baseline
 
@@ -460,9 +475,9 @@ Known limitations:
 - Linear Algebra and PDE are not runnable Labs.
 - The Content-Agnostic Interactive Glossary Framework's four planned phases
   are complete and locally accepted after repeated independent final review.
-  Production initializes an inert Host but contains no Glossary terms,
-  annotations, ODE binding, activatable surface, Playground, or visible
-  Glossary behavior.
+  Production initializes an inert Host but its registry contains no entries;
+  production has no annotations, ODE binding, activatable surface, Playground,
+  or visible Glossary behavior.
 - The private-source-reviewed project-language foundation is approved as
   Version 1 after all nine maintainer decisions were recorded. The Glossary
   catalog and project copy audit are reconciled planning documents, and the
@@ -494,8 +509,9 @@ Contributor rules:
 verification remain complete. The Glossary framework is locally accepted as
 complete after all three historical blocked-review findings were repaired and
 closed by repeated independent final review. Nothing was pushed or deployed.
-Production still contains no Glossary terms, annotations, ODE binding,
-Playground, activatable surface, or visible behavior. All nine project-language
+The production registry still contains no Glossary entries or importer, and
+production contains no annotations, ODE binding, Playground, activatable
+surface, or visible behavior. All nine project-language
 decisions are recorded and the terminology, notation, and teaching-voice
 standards are approved as Version 1. The catalog and copy audit are reconciled;
 Groups A through D are accepted, and the maintainer has accepted both the
@@ -503,9 +519,10 @@ pre-Glossary language repair commit and Tutor intent-matching repair commit as
 prerequisite state. `COPY-003` plus `src/pages/homePage.ts` remain review-only
 and unchanged. Group E0 design and content governance is complete and
 maintainer-approved for ten revised Wave 1 terms, ten annotation records, and
-eighteen Option A decisions. E1 stopped incomplete before source/test changes
-at the confirmed schema mismatch. The Option 2 rich-model design, plan, and
-content-neutral implementation are complete locally; the next gate is
-maintainer acceptance of the implementation commit and evidence package. An
-E1 restart, E2, and E3 remain unauthorized and separately gated; Group F2
-remains mandatory after E3.*
+eighteen Option A decisions. The historical E1 schema stop was resolved by
+the accepted Option 2 rich-model commit
+`6ef085d0b0271a5e7ed5a9f64ef4e6a05b5f257e`. Fresh E1 is locally implemented
+and inert with two Core entries, eight ODE entries, two context-only
+overrides, and ten composed cards. The next gate is maintainer acceptance of
+the E1 commit and evidence package. E2 and E3 remain unauthorized and
+separately gated; Group F2 remains mandatory after E3.*

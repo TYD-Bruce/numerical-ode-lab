@@ -1,10 +1,9 @@
 # ODE Glossary Wave 1 Approval Checklist
 
 **Status:** Maintainer approval recorded; content and Wave 1 design approved;
-the E1 attempt stopped incomplete at a confirmed schema mismatch; the generic
-rich-model design, repository-grounded implementation plan, and
-content-neutral implementation are locally complete; implementation
-acceptance and deployment remain unauthorized.
+the generic rich model is accepted; the fresh E1 restart is locally
+implemented and inert pending maintainer acceptance; E2/E3/F2, push, Preview,
+and Production remain unauthorized.
 
 **Date prepared:** 2026-07-29
 
@@ -27,6 +26,8 @@ and
 [plan review](../reviews/2026-07-29-rich-glossary-content-model-plan-review.md).
 The resulting local implementation evidence is recorded by the
 [rich-model implementation review](../reviews/2026-07-29-rich-glossary-content-model-implementation-review.md).
+The fresh E1 implementation evidence is recorded by the
+[E1 content review](../reviews/2026-07-29-ode-glossary-wave-1-e1-content-review.md).
 Checked content/design boxes record approval only. Unchecked
 implementation/execution/deployment boxes require separate maintainer
 authorization.
@@ -82,14 +83,18 @@ authorization.
 - [x] Generic rich-model design and repository-grounded plan complete.
 - [x] Generic rich-model implementation explicitly authorized and locally
   verified.
-- [ ] Generic rich-model implementation accepted.
+- [x] Generic rich-model implementation accepted at
+  `6ef085d0b0271a5e7ed5a9f64ef4e6a05b5f257e`.
 
-These prerequisite records do not authorize or complete E1 content work.
+These prerequisite records did not by themselves authorize E1 content work;
+the fresh E1 authorization is recorded separately below.
 
 ## 5. Rollout
 
 - [x] E1 boundary/design approved.
-- [ ] E1 implementation explicitly authorized.
+- [x] E1 implementation explicitly authorized.
+- [x] E1 implementation locally complete and inert.
+- [ ] E1 implementation accepted.
 - [x] E2 boundary/design approved.
 - [ ] E2 implementation explicitly authorized.
 - [x] E3 mandatory independent review gate approved.
@@ -108,10 +113,10 @@ The 18 decision cards D01 through D18 in the design specification record
 maintainer-approved Option A. This approval fixes design and governance only;
 it does not authorize E1, E2, E3, F2, push, Preview, or Production action.
 
-## 7. E1 schema-stop record
+## 7. Historical E1 schema-stop and fresh restart record
 
-E1 implementation was authorized after the original Group E0 approval, but
-repository inspection stopped the attempt before any source or test change.
+The first E1 implementation authorization after Group E0 stopped during
+repository inspection before any source or test change.
 The accepted compact `GlossaryEntry` and module override cannot represent all
 maintainer-approved card fields. No E1 content, annotation, binding, or
 runtime change was created.
@@ -120,18 +125,30 @@ The maintainer selected `E1-SCHEMA-01 = Option 2`: extend the generic model and
 complete surface before E1. The compact projection is rejected. The rich-model
 design and repository-grounded implementation plan are complete. Their
 subsequently authorized content-neutral implementation is locally complete
-with verdict **RICH GLOSSARY MODEL IMPLEMENTED — READY FOR MAINTAINER
-ACCEPTANCE**. E1 remains incomplete and must restart from the beginning after
-that acceptance and a fresh explicit gate. The unchecked E1 authorization box
-above is not converted into implementation acceptance and is not rechecked by
-this generic implementation task. E2, E3, F2, push, Preview, and Production
-remain unauthorized.
+with point-in-time verdict **RICH GLOSSARY MODEL IMPLEMENTED — READY FOR
+MAINTAINER ACCEPTANCE**. The maintainer accepted that generic implementation
+at `6ef085d0b0271a5e7ed5a9f64ef4e6a05b5f257e` and separately authorized a
+fresh E1 restart.
+
+Fresh E1 now owns exactly two inert Core entries, eight inert ODE entries, two
+ODE context-only overrides, and ten composed cards. The production registry
+entry count, Core-content production importer count, annotation count, and ODE
+binding count remain zero. E1 awaits maintainer acceptance. E2, E3, F2, push,
+Preview, and Production remain unauthorized.
+
+`E1-BROWSER-EXCEPTION-01` permits only the unchanged Google Fonts
+stylesheet/font chain from `index.html` for the E1 browser evidence. The
+starting and current blobs are both
+`912cca340efa743ea0d2ceaa2dac7e0234a889bc`. The baseline dependency is
+`BASELINE-EXT-FONT-001` (P3, accepted nonblocking carry-forward, owner: future
+Platform/asset-policy review). E1 introduced no external traffic.
 
 ## 8. Checked-count declaration
 
-Checked approval and prerequisite boxes: **165**.
+Checked approval, prerequisite, authorization, and local-completion boxes:
+**168**.
 
-Unchecked acceptance/implementation/execution/deployment boxes: **8**.
+Unchecked acceptance/implementation/execution/deployment boxes: **7**.
 
 Term rows: **10**.
 
@@ -141,9 +158,9 @@ Architecture rows: **7**.
 
 Generic prerequisite rows: **3**.
 
-Rollout rows: **13**.
+Rollout rows: **15**.
 
-Checked content/design rows do not authorize implementation. The maintainer
-must still accept the rich-model implementation and explicitly authorize an
-E1 restart, E2, E3, and F2 at their separate gates; push, Preview deployment,
-and Production deployment also remain separately unauthorized.
+Checked content/design rows do not authorize later implementation. The
+maintainer must still accept E1 and explicitly authorize E2, E3, and F2 at
+their separate gates; push, Preview deployment, and Production deployment
+also remain separately unauthorized.

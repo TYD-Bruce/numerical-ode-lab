@@ -4,9 +4,9 @@ Status: Project Language Standard v1 approved; Glossary catalog, copy audit,
 implementation groups, and traceability reconciled; Groups A through D
 accepted; Group F1 and its five pre-E repairs accepted as prerequisite state;
 ODE Glossary Wave 1 Group E0 design and content governance
-maintainer-approved; E1 stopped incomplete at the confirmed rich-field schema
-mismatch; Option 2 rich-model design complete; generic implementation
-authorization required.
+maintainer-approved; Option 2 rich-model implementation accepted at
+`6ef085d0b0271a5e7ed5a9f64ef4e6a05b5f257e`; fresh E1 locally implemented
+and inert pending maintainer acceptance; E2/E3/F2 unauthorized.
 
 Runtime/content implementation tracked separately.
 
@@ -165,8 +165,8 @@ The original approval and reconciliation iterations did not change:
 - branches, remotes, Preview, Production, or deployment state.
 
 The locally accepted Content-Agnostic Interactive Glossary Framework remains
-content-neutral. Production still contains no Glossary terms, annotations, ODE
-binding, or visible Glossary behavior.
+content-neutral. The production registry still contains no Glossary entries,
+annotations, ODE binding, or visible Glossary behavior.
 
 The Group A iteration changes only `README.md`, visible static-page strings,
 and focused copy expectations. It changes no route, link target, module
@@ -599,16 +599,50 @@ minimal styles, and neutral DEV fixtures are now implemented and locally
 verified. The
 [implementation review](../reviews/2026-07-29-rich-glossary-content-model-implementation-review.md)
 records verdict **RICH GLOSSARY MODEL IMPLEMENTED — READY FOR MAINTAINER
-ACCEPTANCE**. Production Core remains empty, no Wave 1 ID or card was added,
-and no annotation, ODE binding, Tutor behavior, Store/session, numerical,
-package, or configuration change was made.
+ACCEPTANCE** as its point-in-time verdict. The maintainer subsequently
+accepted commit `6ef085d0b0271a5e7ed5a9f64ef4e6a05b5f257e` as the fresh E1
+starting point. At that generic-model boundary, Production Core remained
+empty, no Wave 1 ID or card had been added, and no annotation, ODE binding,
+Tutor behavior, Store/session, numerical, package, or configuration change
+was made.
 
-## 19. Current review gate
+## 19. Group E1 inert rich-content implementation
+
+The separately authorized fresh E1 restart adds only inert source content and
+focused ownership tests:
+
+- `src/glossary/coreGlossary.ts` exports exactly two Core entries:
+  `numerical_approximation` and `explicit_scheme`;
+- `src/ode/odeGlossaryContent.ts` exports exactly eight ODE entries and one
+  ODE extension with exactly two context-only overrides for the Core entries;
+- exact composition produces the approved ten cards in teaching order;
+- the production registry entry count, Core-content production importer count,
+  annotation count, and ODE binding count remain zero;
+- `implicit_scheme` remains unregistered future text, not a live relation;
+- the obsolete registry-test assertion that Core content itself must be empty
+  was removed while every production-empty and generic registry contract
+  remained intact.
+
+The direct tests own exact labels, aliases, preview/full definitions,
+intuition, formulas and accessible text, assumptions/limits, misconception
+statement/correction, prerequisites, live/future relations, confused terms,
+Tutor topics, context-only composition, deep immutability, and plain-data
+safety. The
+[E1 review](../reviews/2026-07-29-ode-glossary-wave-1-e1-content-review.md)
+records focused/full verification, import-graph and artifact inertness, exact
+desktop/mobile review, and interactive production-build evidence.
+
+`E1-BROWSER-EXCEPTION-01` permits only the pre-existing Google Fonts
+stylesheet/font chain owned by unchanged `index.html`; the starting and
+current blob are both `912cca340efa743ea0d2ceaa2dac7e0234a889bc`.
+`BASELINE-EXT-FONT-001` is a P3 accepted nonblocking carry-forward owned by a
+future Platform/asset-policy review. E1 introduced no external traffic and did
+not remediate the baseline dependency.
+
+## 20. Current review gate
 
 The ODE Glossary Wave 1 design, ten revised term cards, ten annotation records,
-ownership, and rollout structure remain approved. E1 remains incomplete. The
-next gate is maintainer acceptance of the locally verified generic
-rich-model implementation commit and its evidence package. After acceptance,
-E1 must restart from the beginning under a fresh explicit gate; the blocked
-worktree must not be resumed. E2, E3, Group F2, push, Preview, and Production
-remain separately gated and unauthorized.
+ownership, and rollout structure remain approved. E1 is locally implemented
+and inert. The next gate is maintainer acceptance of the E1 commit and its
+evidence package. E2, E3, Group F2, push, Preview, and Production remain
+separately gated and unauthorized.

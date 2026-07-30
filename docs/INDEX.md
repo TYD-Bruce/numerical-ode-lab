@@ -14,8 +14,8 @@
 
 ## Current active milestone
 
-[PLAN.md](../PLAN.md) points to the Glossary Rich Content Extension
-maintainer acceptance gate.
+[PLAN.md](../PLAN.md) points to the ODE Glossary Wave 1 E1 maintainer
+acceptance gate.
 The underlying Content-Agnostic Interactive Glossary Framework's approved
 design and repository-grounded implementation plan are documented. The
 corrected framework plan passed conservative re-audit, Commit 1 was
@@ -31,7 +31,7 @@ DEV-only P3 log finding were narrowly repaired. The repeated independent final
 review then returned **APPROVED FOR LOCAL FRAMEWORK RELEASE**. The blocked
 review remains indexed as historical evidence; the framework is now locally
 accepted as complete.
-Production contains no Glossary terms or content and no visible surface
+The production registry contains no Glossary entries and no visible surface
 behavior; its Host is inert and all Playground capabilities are DEV-only.
 The bounded Project Identity Migration is complete.
 The GitHub repositories, remotes, existing Vercel project, Git integration,
@@ -70,12 +70,18 @@ and
 [plan review](reviews/2026-07-29-rich-glossary-content-model-plan-review.md)
 are also complete with verdict **RICH GLOSSARY IMPLEMENTATION PLAN COMPLETE —
 AUTHORIZATION REQUIRED**. The subsequently authorized, content-neutral
-implementation is locally complete, and its
+implementation was accepted at
+`6ef085d0b0271a5e7ed5a9f64ef4e6a05b5f257e`, and its
 [implementation review](reviews/2026-07-29-rich-glossary-content-model-implementation-review.md)
 records verdict **RICH GLOSSARY MODEL IMPLEMENTED — READY FOR MAINTAINER
-ACCEPTANCE**. Production Core remains empty and no annotation or ODE binding
-was added. E1 remains incomplete; its restart, E2, E3, and production Glossary
-content remain unauthorized. Group F2 remains mandatory after E3.
+ACCEPTANCE** as a point-in-time verdict. The fresh E1 restart is now locally
+implemented and inert: two Core entries, eight ODE entries, two context-only
+overrides, and ten composed cards exist in source; the production registry,
+production importer count, annotation count, and ODE binding count remain
+zero. The
+[E1 content review](reviews/2026-07-29-ode-glossary-wave-1-e1-content-review.md)
+awaits maintainer acceptance. E2, E3, and production activation remain
+unauthorized. Group F2 remains mandatory after E3.
 
 ## Project-language standards and content drafts
 
@@ -86,11 +92,10 @@ documents, and the implementation plan separates ready copy work from the
 unauthorized production content wave. Groups A through D and the Group
 F1/pre-E prerequisite commits are accepted; all five P2 findings are
 `CLOSED_VERIFIED`. Group E0 ODE Glossary Wave 1 design and content governance
-is complete and maintainer-approved. E1 stopped incomplete at the rich-field
-schema mismatch. The generic rich-model design and implementation plan are
-complete, but implementation, an E1 restart, E2, E3, and the post-Glossary F2
-review remain separately gated. The generic rich-model implementation is
-locally complete pending maintainer acceptance.
+is complete and maintainer-approved. The historical E1 schema stop was closed
+by the accepted generic rich-model implementation. The fresh E1 restart is
+locally implemented and inert pending maintainer acceptance. E2, E3, and the
+post-Glossary F2 review remain separately gated.
 
 | Document | Purpose |
 |---|---|
@@ -98,7 +103,7 @@ locally complete pending maintainer acceptance.
 | [Numerical T-Lab Terminology Standard v1](content/NUMERICAL_TERMINOLOGY_STANDARD.md) | Maintainer-approved terminology; 197 stable IDs and no decision-blocked terminology row |
 | [Numerical T-Lab Notation Standard v1](content/NUMERICAL_NOTATION_STANDARD.md) | Maintainer-approved notation for the nine project-language decisions |
 | [Numerical T-Lab Teaching Voice Standard v1](content/TEACHING_VOICE.md) | Maintainer-approved plain-first teaching rule, epistemic language, and examples |
-| [Glossary Catalog](content/GLOSSARY_CATALOG.md) | Reconciled 197-ID planning catalog with independent statuses, dependencies, waves, and 23 rich drafts; not runtime data |
+| [Glossary Catalog](content/GLOSSARY_CATALOG.md) | Reconciled 197-ID governance catalog; exactly ten Wave 1 rows now point to locally implemented inert E1 content while the other 187 rows remain planning-only |
 | [Project Copy Audit](content/PROJECT_COPY_AUDIT.md) | Reconciled 55-record audit with exact replacement copy and source/test/browser traceability; Groups A–D and Group F1 prerequisite state accepted, all twelve `COPY-NC-*` records classified, `COPY-003` held, and `COPY-041`/`COPY-042` still unauthorized |
 | [Project Language Implementation Plan](content/PROJECT_LANGUAGE_IMPLEMENTATION_PLAN.md) | Complete A–F future implementation boundaries; no group is authorized by the document alone |
 | [Terminology Decisions](content/TERMINOLOGY_DECISIONS.md) | Historical comparison plus the approved Version 1 resolution index |
@@ -106,7 +111,7 @@ locally complete pending maintainer acceptance.
 | [Project Language Approval Checklist](content/PROJECT_LANGUAGE_APPROVAL_CHECKLIST.md) | Completed documentation-only approval and validation record |
 | [Project Language v1 Handoff](content/HANDOFF.md) | Approved choices, counts, accepted Groups A–D/F1/pre-E state, Group E0 Wave 1 packet, held scope, and exact next gate |
 | [ODE Glossary Wave 1 Content Packet](content/ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) | Maintainer-approved ten-card content and exact ten-record annotation design packet; no runtime authority |
-| [ODE Glossary Wave 1 Approval Checklist](content/ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) | Checked content/design approval with implementation, execution, push, and deployment authorization explicitly unchecked |
+| [ODE Glossary Wave 1 Approval Checklist](content/ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) | Checked content/design, accepted rich-model prerequisite, and E1 authorization with E1 implementation locally complete pending acceptance; later execution, push, and deployment remain unchecked |
 | [Rich Glossary Content Field Matrix](content/RICH_GLOSSARY_CONTENT_FIELD_MATRIX.md) | Exact destination for all 29 approved term-card fields, all 21 annotation-record fields, and six ownership/composition fields; governance/private metadata remains outside runtime |
 
 ## Product and feature specifications
@@ -117,8 +122,8 @@ locally complete pending maintainer acceptance.
 | [Human-Friendly Math Expressions Design](superpowers/specs/2026-07-10-human-friendly-math-expressions-design.md) | Implemented and verified |
 | [Observed Convergence Order Experiment Design](superpowers/specs/2026-07-10-convergence-study-design.md) | Implemented, verified, release ready |
 | [Content-Agnostic Interactive Glossary Framework Design](superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md) | Implemented and locally accepted after a repeated independent final review; production content remains deferred |
-| [ODE Glossary Wave 1 Design](superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md) | D01–D18 approved as Option A; ten cards and ten annotation records fixed; E1 attempt stopped incomplete; E2/E3/F2 unauthorized |
-| [Rich Glossary Content Model and Complete Surface Design](superpowers/specs/2026-07-29-rich-glossary-content-model-design.md) | Option 2 design complete; generic implementation locally complete pending maintainer acceptance; E1 remains incomplete |
+| [ODE Glossary Wave 1 Design](superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md) | D01–D18 approved as Option A; E1 content locally implemented and inert pending maintainer acceptance; E2/E3/F2 unauthorized |
+| [Rich Glossary Content Model and Complete Surface Design](superpowers/specs/2026-07-29-rich-glossary-content-model-design.md) | Option 2 design implemented and accepted at the fresh E1 starting HEAD |
 
 ## Implementation plans
 
@@ -127,7 +132,7 @@ locally complete pending maintainer acceptance.
 | [Theme-Ready Platform Shell Implementation Plan](superpowers/plans/2026-07-13-theme-ready-platform-shell-implementation-plan.md) | Implemented historical plan; check the final review and architecture map for current state |
 | [Numerical T-Lab Rename Migration Plan](superpowers/plans/2026-07-22-numerical-t-lab-rename-migration-plan.md) | Project Identity Migration completed and verified |
 | [Content-Agnostic Interactive Glossary Framework Implementation Plan](superpowers/plans/2026-07-23-content-agnostic-interactive-glossary-framework-implementation-plan.md) | Fully executed locally; historical blocked-review findings closed; final verdict APPROVED FOR LOCAL FRAMEWORK RELEASE; no production content or visible behavior |
-| [Rich Glossary Content Model Extension Implementation Plan](superpowers/plans/2026-07-29-rich-glossary-content-model-implementation-plan.md) | Fully executed locally as one content-neutral implementation; maintainer acceptance pending |
+| [Rich Glossary Content Model Extension Implementation Plan](superpowers/plans/2026-07-29-rich-glossary-content-model-implementation-plan.md) | Fully executed and accepted in `6ef085d0b0271a5e7ed5a9f64ef4e6a05b5f257e` as the E1 starting point |
 
 ## Reviews and release evidence
 
@@ -145,6 +150,7 @@ locally complete pending maintainer acceptance.
 | [Rich Glossary Content Model Design Readiness Review](reviews/2026-07-29-rich-glossary-content-model-design-readiness-review.md) | Verdict **RICH GLOSSARY MODEL DESIGN COMPLETE — IMPLEMENTATION AUTHORIZATION REQUIRED**; no runtime or Wave 1 content |
 | [Rich Glossary Content Model Implementation Plan Review](reviews/2026-07-29-rich-glossary-content-model-plan-review.md) | Verdict **RICH GLOSSARY IMPLEMENTATION PLAN COMPLETE — AUTHORIZATION REQUIRED**; no runtime or Wave 1 content |
 | [Rich Glossary Content Model Implementation Review](reviews/2026-07-29-rich-glossary-content-model-implementation-review.md) | Verdict **RICH GLOSSARY MODEL IMPLEMENTED — READY FOR MAINTAINER ACCEPTANCE**; generic runtime only, no Wave 1 content or ODE binding |
+| [ODE Glossary Wave 1 E1 Content Review](reviews/2026-07-29-ode-glossary-wave-1-e1-content-review.md) | Verdict **E1 RICH CONTENT IMPLEMENTED AND INERT — READY FOR MAINTAINER ACCEPTANCE**; ten cards in source, zero production registry entries/importers/annotations/bindings |
 
 ## Feature handoffs
 
@@ -163,11 +169,9 @@ locally complete pending maintainer acceptance.
   197-term catalog and 55-record copy audit, A–F implementation plan, and
   validation evidence; Groups A through D are accepted, Group F1 and its five
   pre-E repairs are accepted, Wave 1 Group E0 governance is
-  maintainer-approved; E1 stopped incomplete at the schema mismatch; the
-  generic rich-model design, implementation plan, and content-neutral
-  implementation are complete locally; maintainer acceptance is pending, and
-  an E1 restart, E2/E3, and production content remain unauthorized pending
-  separate gates.
+  maintainer-approved; the generic rich model is accepted and the fresh E1
+  restart is locally implemented and inert pending maintainer acceptance.
+  E2/E3 and production activation remain unauthorized pending separate gates.
 - [Project Rename handoff](project-rename/HANDOFF.md) — completed Project
   Identity Migration evidence, including the canonical local workspace reopen.
 

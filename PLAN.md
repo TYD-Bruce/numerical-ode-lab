@@ -18,9 +18,10 @@ both are fixed and locally verified in a second narrow lifecycle follow-up.
 The final conservative re-audit of Commit 3 and both follow-ups returned
 **SAFE TO PROCEED** with `P0 = P1 = P2 = P3 = 0`. Commit 4, `Complete
 glossary framework playground`, is implemented and locally/browser verified.
-Production still contains no Glossary terms, annotations, or visible Glossary
-behavior: the Platform Host remains inert because the current Lab exposes no
-Glossary binding, and the complete committed Playground, development controls,
+The production registry still contains no Glossary entries, annotations, or
+visible Glossary behavior: the Platform Host remains inert because the current
+Lab exposes no Glossary binding, and the complete committed Playground,
+development controls,
 fixtures, styles, About entry, and shortcut are DEV-only. The complete
 four-phase implementation completed its first adversarial local release review
 on 2026-07-28 with verdict **RELEASE BLOCKED**. Its P1 pending-load
@@ -29,10 +30,11 @@ DEV-only P3 unbounded-log issue were narrowly repaired. A repeated independent
 review of exact repair commit
 `8af3ed80b25a520cfa61fa2d7037dea9ed2899d1` then returned
 **APPROVED FOR LOCAL FRAMEWORK RELEASE**. The historical blocked review remains
-unchanged, while the framework is now locally accepted as complete. Production
-still contains no Glossary terms, annotations, ODE binding, or visible
-Glossary behavior. Nothing was pushed or deployed by the repair or final
-review. The separate project-language gate is also complete: Yiding (Bruce)
+unchanged, while the framework is now locally accepted as complete. The
+production registry still contains no active Glossary entries, annotations,
+ODE binding, or visible Glossary behavior. Nothing was pushed or deployed by
+the repair or final review. The separate project-language gate is also
+complete: Yiding (Bruce)
 Tian recorded all nine maintainer decisions on 2026-07-28, and the terminology,
 notation, and teaching-voice standards are approved as Version 1. This approval
 is documentation governance only. The Glossary catalog and project copy audit
@@ -75,15 +77,20 @@ now record verdict **RICH GLOSSARY IMPLEMENTATION PLAN COMPLETE —
 AUTHORIZATION REQUIRED**. The maintainer then explicitly authorized the
 generic implementation. The model, builders, validation, module composition,
 scope resolver, complete rich-card renderer, and surface-local related-term
-navigation are now implemented and locally verified in the single commit
-`Extend Glossary rich content model`; the
+navigation were implemented and locally verified in commit
+`6ef085d0b0271a5e7ed5a9f64ef4e6a05b5f257e` (`Extend Glossary rich content
+model`), which the maintainer accepted as the fresh E1 starting point. The
 [implementation review](docs/reviews/2026-07-29-rich-glossary-content-model-implementation-review.md)
 records verdict **RICH GLOSSARY MODEL IMPLEMENTED — READY FOR MAINTAINER
-ACCEPTANCE**. The implementation remains content-neutral, the production
-registry remains empty, and no annotation or ODE binding was added. E1 remains
-incomplete and may restart only after this implementation is accepted.
+ACCEPTANCE** as its point-in-time verdict. The separately authorized fresh E1
+implementation now adds exactly two inert Core entries, eight inert ODE
+entries, two ODE context-only overrides, and an exact ten-card composition.
+The production registry remains empty, no production importer exists, and no
+annotation, ODE binding, or visible Glossary behavior was added. The
+[E1 content review](docs/reviews/2026-07-29-ode-glossary-wave-1-e1-content-review.md)
+records the local evidence and awaits maintainer acceptance.
 `COPY-003` and `src/pages/homePage.ts` remain held and unchanged. E2, E3,
-production Glossary content, annotations, and an ODE binding remain
+production activation, annotations, and an ODE binding remain
 unauthorized; the final Group F2 review remains mandatory after E3.
 Nothing was pushed or deployed.
 
@@ -96,15 +103,18 @@ locally verified, Preview-verified, and Production-verified at
 
 ## Active milestone
 
-**Glossary Rich Content Extension — Maintainer Acceptance Gate**
+**ODE Glossary Wave 1 E1 — Maintainer Acceptance Gate**
 
 The content-agnostic framework and pre-E repairs are accepted prerequisites.
 Group E0 design and content governance is complete and maintainer-approved.
-The blocked E1 attempt produced no source or test changes and confirmed a
-schema mismatch. Option 2 is selected; the generic rich-model design, plan,
-and implementation are locally complete. Maintainer acceptance of the
-implementation commit and evidence is pending. Production content integration
-has not begun; E1 remains incomplete.
+The historical E1 attempt produced no source or test changes and confirmed a
+schema mismatch. Option 2 was selected, implemented, accepted at
+`6ef085d0b0271a5e7ed5a9f64ef4e6a05b5f257e`, and used as the required fresh
+restart point. E1 is now locally implemented and verified as inert content:
+two Core entries, eight ODE entries, two context-only overrides, and ten
+composed cards exist in source while the production registry, production
+importer count, annotation count, and ODE binding count all remain zero.
+Maintainer acceptance of the E1 commit and evidence package is pending.
 
 ## Completed Project Identity Migration
 
@@ -138,20 +148,20 @@ loading while keeping formal mathematical content separate.
 [ODE Glossary Wave 1 Design](docs/superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md)
 
 Status: **D01–D18, ten revised cards, and ten annotation records are
-maintainer-approved; E1 stopped incomplete at the schema mismatch, while E2,
-E3, and F2 remain separately gated and unauthorized.**
+maintainer-approved; E1 is locally implemented and inert pending maintainer
+acceptance, while E2, E3, and F2 remain separately gated and unauthorized.**
 
 [Rich Glossary Content Model and Complete Surface Design](docs/superpowers/specs/2026-07-29-rich-glossary-content-model-design.md)
 
-Status: **Design complete; generic model/surface implementation locally
-complete pending maintainer acceptance. No Wave 1 content was added.**
+Status: **Design complete; generic model/surface implementation accepted in
+`6ef085d0b0271a5e7ed5a9f64ef4e6a05b5f257e` as the E1 starting point.**
 
 ## Authoritative rich-model implementation plan
 
 [Rich Glossary Content Model Extension Implementation Plan](docs/superpowers/plans/2026-07-29-rich-glossary-content-model-implementation-plan.md)
 
 Status: **Repository-grounded plan executed in one locally verified generic
-implementation commit. No Wave 1 content was added.**
+implementation commit and accepted as the E1 starting point.**
 
 Framework authority remains the
 [Content-Agnostic Interactive Glossary Framework Design](docs/superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md),
@@ -222,7 +232,7 @@ independent final review. No production content or ODE binding was added.**
     no implementation authorized.
 19. Begin E1 content data only after explicit maintainer approval. Authorization
     was issued, but work stopped before source/test changes at the confirmed
-    rich-field schema mismatch. E1 remains incomplete.
+    rich-field schema mismatch. Historical stop; superseded by step 23.
 20. Design the minimal generic rich content model, complete-card surface,
     validation, navigation, compatibility, and rollback boundary. Complete as
     documentation only with verdict **RICH GLOSSARY MODEL DESIGN COMPLETE —
@@ -231,9 +241,11 @@ independent final review. No production content or ODE binding was added.**
     implementation plan. Complete as documentation only with verdict **RICH
     GLOSSARY IMPLEMENTATION PLAN COMPLETE — AUTHORIZATION REQUIRED**.
 22. Implement and review the generic rich model/surface only after separate
-    maintainer authorization. Complete locally; maintainer acceptance pending.
+    maintainer authorization. Complete and accepted in
+    `6ef085d0b0271a5e7ed5a9f64ef4e6a05b5f257e`.
 23. Restart E1 from the beginning against the accepted rich model after a new
-    explicit gate. Unauthorized.
+    explicit gate. Complete locally with inert source content and evidence;
+    maintainer acceptance pending.
 24. Implement E2 annotations and the ODE binding only after accepted E1 and a
     separate authorization. Unauthorized.
 25. Complete E3 integration review after E2. Unauthorized.
@@ -242,11 +254,9 @@ independent final review. No production content or ODE binding was added.**
 
 ## Current next action
 
-Maintainer acceptance of the generic rich-model implementation commit and its
-[implementation review](docs/reviews/2026-07-29-rich-glossary-content-model-implementation-review.md).
-After the extension is accepted, E1 must restart from the beginning under a
-new explicit gate; the blocked worktree must not be resumed. The approved
-Wave 1 design still retains ten terms, keeps
+Maintainer acceptance of the E1 commit and its
+[content review](docs/reviews/2026-07-29-ode-glossary-wave-1-e1-content-review.md).
+The approved Wave 1 design retains ten terms, keeps
 `/ode` static and unannotated, uses two Core plus eight ODE-owned cards,
 injects no production Tutor handoff, and separates E1, E2, E3, and mandatory
 F2. `COPY-003` remains deferred with the PDE module.
@@ -271,11 +281,11 @@ reconciliation publish no production term, definition, annotation, or notation
 migration. Groups A through D and the Group F1/pre-E prerequisite state are
 accepted. Group F1 implements only `COPY-043` and records the pre-Glossary
 review; it does not complete Group F. `COPY-003` remains held. Group E0 design
-and content governance is maintainer-approved. E1 was authorized but stopped
-incomplete at the schema mismatch; the compact projection is rejected. The
-generic rich-model design, plan, and content-neutral implementation are
-complete locally, but the implementation awaits maintainer acceptance and an
-E1 restart, E2, and E3 remain unauthorized.
+and content governance is maintainer-approved. The historical E1 stop led to
+the accepted generic rich model; the fresh E1 restart is now locally complete
+with two Core entries, eight ODE entries, two context-only overrides, and ten
+composed cards. It remains inert and awaits maintainer acceptance. E2 and E3
+remain unauthorized.
 Group F2 remains required after E3.
 The continuation state is
 [the project-language handoff](docs/content/HANDOFF.md). Nothing from these
@@ -287,7 +297,7 @@ copy iterations was pushed or deployed.
 - Initial Value Problems Lab is the complete numerical Lab.
 - Production is verified at `https://numerical-t-lab.vercel.app/`.
 - The former Production address remains available as a verified alias.
-- Production contains no Glossary terms.
+- The production registry contains no Glossary entries.
 - Production initializes an inert Platform Glossary Host, but the current Lab
   supplies no binding and cannot activate a surface.
 - The complete DEV-only Playground, its ten neutral fixtures, development
@@ -299,7 +309,7 @@ copy iterations was pushed or deployed.
 
 ## Explicit non-goals
 
-- No production Glossary content.
+- No production-active Glossary content.
 - No runtime notation migration or notation profile.
 - No real Tutor Glossary queue.
 - No ODE annotations.
@@ -316,15 +326,16 @@ and the three standards are approved as Version 1. The catalog/copy
 reconciliation gate is also closed with 197 stable IDs and 55 rescanned copy
 records. Groups A through D, Group F1, and both pre-E repair commits are
 accepted; `COPY-003` remains held. Group E0 Wave 1 design and content
-governance is complete. E1 then stopped incomplete, before source/test work,
-at the confirmed rich-field schema mismatch. The selected Option 2 rich-model
-design and repository-grounded implementation plan are complete. The
-explicitly authorized generic model/builder/surface implementation is now
-locally complete with verdict **RICH GLOSSARY MODEL IMPLEMENTED — READY FOR
-MAINTAINER ACCEPTANCE**. The next gate is maintainer acceptance of the
-implementation commit and evidence package. An E1 restart, E2, E3, production
-Glossary terms, annotations, an ODE binding, and visible production Glossary
-behavior remain absent and unauthorized. Group F2 remains mandatory after E3.
+governance is complete. The historical E1 schema stop was resolved by the
+accepted Option 2 generic rich model at
+`6ef085d0b0271a5e7ed5a9f64ef4e6a05b5f257e`. The freshly authorized E1 restart
+is locally complete with verdict **E1 RICH CONTENT IMPLEMENTED AND INERT —
+READY FOR MAINTAINER ACCEPTANCE**. Its two Core entries, eight ODE entries,
+two context-only overrides, and ten composed cards remain outside the
+production registry and import graph. The next gate is maintainer acceptance
+of the E1 commit and evidence package. E2, E3, production activation,
+annotations, an ODE binding, and visible production Glossary behavior remain
+absent and unauthorized. Group F2 remains mandatory after E3.
 
 ## Update rule
 

@@ -1,22 +1,8 @@
-import {
-  createGlossaryValidationPolicy,
-  defineGlossaryEntry,
-  type GlossaryEntryInput,
-} from "./glossaryBuilders";
-import type { GlossaryEntry } from "./glossaryRuntimeTypes";
+import { describe, expect, it } from "vitest";
+import { coreGlossaryEntries } from "./coreGlossary";
 
-const strictContent = createGlossaryValidationPolicy({ mode: "strict" });
-
-function requiredEntry(input: GlossaryEntryInput): GlossaryEntry {
-  const entry = defineGlossaryEntry(input, strictContent);
-  if (entry === undefined) {
-    throw new Error(`Invalid Core Glossary entry: ${input.id}`);
-  }
-  return entry;
-}
-
-export const coreGlossaryEntries: readonly GlossaryEntry[] = Object.freeze([
-  requiredEntry({
+const expectedCoreEntries = [
+  {
     id: "numerical_approximation",
     label: "Numerical approximation",
     aliases: ["numerical solution"],
@@ -42,8 +28,8 @@ export const coreGlossaryEntries: readonly GlossaryEntry[] = Object.freeze([
     },
     tutorTopic:
       "Explain what a displayed u_n represents and distinguish it from exact value, error, and residual.",
-  }),
-  requiredEntry({
+  },
+  {
     id: "explicit_scheme",
     label: "Explicit scheme",
     aliases: ["explicit method"],
@@ -64,5 +50,76 @@ export const coreGlossaryEntries: readonly GlossaryEntry[] = Object.freeze([
     },
     tutorTopic:
       "Identify which current quantities are known before the selected explicit update is evaluated.",
-  }),
-]);
+  },
+] as const;
+
+function expectDeeplyFrozen(value: unknown): void {
+  if (
+    value === null ||
+    (typeof value !== "object" && typeof value !== "function")
+  ) {
+    return;
+  }
+
+  expect(Object.isFrozen(value)).toBe(true);
+  for (const nested of Object.values(value as Record<string, unknown>)) {
+    expectDeeplyFrozen(nested);
+  }
+}
+
+describe("Core Glossary content", () => {
+  it("owns exactly the two approved reusable entries with exact rich content", () => {
+    expect(coreGlossaryEntries).toHaveLength(2);
+    expect(coreGlossaryEntries.map(({ id }) => id)).toEqual([
+      "numerical_approximation",
+      "explicit_scheme",
+    ]);
+    expect(coreGlossaryEntries).toEqual(expectedCoreEntries);
+  });
+
+  it("keeps formulas paired with their exact accessible text", () => {
+    expect(coreGlossaryEntries[0]?.formula).toEqual({
+      latex: "u_n\\approx y(t_n)",
+      accessibleText: "u sub n approximately equals y of t sub n.",
+      display: "block",
+    });
+    expect(coreGlossaryEntries[1]?.formula).toBeUndefined();
+  });
+
+  it("keeps ODE-only context out of canonical Core records", () => {
+    for (const entry of coreGlossaryEntries) {
+      const record = entry as unknown as Record<string, unknown>;
+      expect(record.contextualDefinition).toBeUndefined();
+      expect(record.whyItMattersHere).toBeUndefined();
+      expect(entry.moduleNote).toBeUndefined();
+      expect(entry.prerequisiteTermIds).toBeUndefined();
+      expect(entry.relatedTerms).toBeUndefined();
+      expect(entry.commonlyConfusedTerms).toBeUndefined();
+    }
+
+    const serialized = JSON.stringify(coreGlossaryEntries);
+    expect(serialized).not.toContain("In this Lab");
+    expect(serialized).not.toContain("current IVP Lab");
+    expect(serialized).not.toContain("Forward Euler");
+    expect(serialized).not.toContain("Backward Euler");
+  });
+
+  it("exports deeply immutable plain data", () => {
+    expectDeeplyFrozen(coreGlossaryEntries);
+    expect(() => {
+      (
+        coreGlossaryEntries as unknown as Array<{
+          label: string;
+        }>
+      )[0]!.label = "Changed";
+    }).toThrow(TypeError);
+    expect(() => {
+      (
+        coreGlossaryEntries[0]!.misconception as {
+          statement: string;
+        }
+      ).statement = "Changed";
+    }).toThrow(TypeError);
+    expect(coreGlossaryEntries).toEqual(expectedCoreEntries);
+  });
+});

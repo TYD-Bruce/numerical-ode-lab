@@ -1,7 +1,8 @@
 # Glossary Catalog
 
-Status: Reconciled against Project Language Standard v1.
-Content remains non-runtime and requires wave-specific review.
+Status: Reconciled against Project Language Standard v1. Exactly ten approved
+Wave 1 cards are locally implemented as inert E1 source content; production
+activation and all other catalog content remain deferred.
 
 ## Boundary and source of truth
 
@@ -16,8 +17,10 @@ or authorization to activate the production Glossary.
 The framework runtime shape remains narrower than this planning record:
 `label`, aliases, preview definition, full explanation/why-it-matters,
 optional safe readonly formula, module override, and Tutor topic. Planning
-metadata, prerequisites, review status, and wave ownership remain build-time
-content-governance data unless a later design explicitly promotes them.
+metadata, review status, and wave ownership remain build-time
+content-governance data. E1 promotes only the approved ten-card runtime
+content, including runtime prerequisites and relationships, while leaving the
+production registry and import graph empty.
 
 ### Wave 1 Group E0 approval record
 
@@ -39,22 +42,22 @@ The approved ownership assigns two Core cards (`numerical_approximation` and
 `backward_euler_method` as a self-contained Wave 1 card without introducing
 an `implicit_scheme` term, limits approved annotations to the complete IVP
 Lab, and keeps Tutor-topic metadata compatible while exposing no Tutor
-handoff. D01 through D18 are approved as Option A, but E1, E2, E3, and F2
-remain separately unauthorized. The runtime-readiness counts and every one of
-the other 187 catalog rows below remain unchanged.
+handoff. D01 through D18 are approved as Option A. E1 is locally implemented
+and inert pending maintainer acceptance; E2, E3, and F2 remain separately
+unauthorized. Every one of the other 187 catalog rows below remains unchanged.
 
 | Stable ID | Wave 1 content | Approved owner | Runtime readiness | Packet |
 |---|---|---|---|---|
-| `ordinary_differential_equation` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Not implemented | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
-| `initial_condition` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Not implemented | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
-| `initial_value_problem` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Not implemented | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
-| `step_size` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Not implemented | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
-| `time_grid` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Not implemented | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
-| `numerical_approximation` | `MAINTAINER_APPROVED_WITH_REVISIONS` | Core with ODE context-only override | Not implemented | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
-| `exact_solution` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Not implemented | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
-| `explicit_scheme` | `MAINTAINER_APPROVED_WITH_REVISIONS` | Core with ODE context-only override | Not implemented | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
-| `forward_euler_method` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Not implemented | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
-| `backward_euler_method` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Not implemented | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `ordinary_differential_equation` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Locally implemented and inert in E1; E2 activation required | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `initial_condition` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Locally implemented and inert in E1; E2 activation required | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `initial_value_problem` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Locally implemented and inert in E1; E2 activation required | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `step_size` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Locally implemented and inert in E1; E2 activation required | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `time_grid` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Locally implemented and inert in E1; E2 activation required | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `numerical_approximation` | `MAINTAINER_APPROVED_WITH_REVISIONS` | Core with ODE context-only override | Locally implemented and inert in E1; E2 activation required | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `exact_solution` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Locally implemented and inert in E1; E2 activation required | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `explicit_scheme` | `MAINTAINER_APPROVED_WITH_REVISIONS` | Core with ODE context-only override | Locally implemented and inert in E1; E2 activation required | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `forward_euler_method` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Locally implemented and inert in E1; E2 activation required | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `backward_euler_method` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Locally implemented and inert in E1; E2 activation required | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
 
 ## Status dimensions
 

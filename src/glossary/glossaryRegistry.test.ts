@@ -6,7 +6,6 @@ import {
   defineGlossaryTermId,
   GlossaryValidationError,
 } from "./glossaryBuilders";
-import { coreGlossaryEntries } from "./coreGlossary";
 import { createGlossaryRegistry } from "./glossaryRegistry";
 import type {
   GlossaryEntry,
@@ -43,11 +42,6 @@ function entry(
 }
 
 describe("Glossary registry", () => {
-  it("exports an empty frozen production core", () => {
-    expect(coreGlossaryEntries).toEqual([]);
-    expect(Object.isFrozen(coreGlossaryEntries)).toBe(true);
-  });
-
   it("rejects duplicate term IDs", () => {
     expect(() =>
       createGlossaryRegistry({
