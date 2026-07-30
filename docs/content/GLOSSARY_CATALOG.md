@@ -19,29 +19,42 @@ optional safe readonly formula, module override, and Tutor topic. Planning
 metadata, prerequisites, review status, and wave ownership remain build-time
 content-governance data unless a later design explicitly promotes them.
 
-### Wave 1 Group E0 review packet
+### Wave 1 Group E0 approval record
 
 The separate
 [ODE Glossary Wave 1 Content Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md)
-now expands the existing ten `WAVE_1_CURRENT_ODE` rows into complete
-maintainer-review cards and maps ten exact proposed annotation sites. That
-packet adds no catalog ID, alias, status, count, definition, or runtime
-authority. Its exact proposed prerequisite order is:
+and
+[Approval Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md)
+record maintainer approval of the existing ten `WAVE_1_CURRENT_ODE` rows as
+complete cards with revisions and of ten exact annotation design records. The
+approval adds no catalog ID or runtime authority. Its exact approved
+prerequisite order is:
 `ordinary_differential_equation`, `initial_condition`,
 `initial_value_problem`, `step_size`, `time_grid`,
 `numerical_approximation`, `exact_solution`, `explicit_scheme`,
 `forward_euler_method`, and `backward_euler_method`.
 
-The packet recommends two core-owned cards (`numerical_approximation` and
-`explicit_scheme`) and eight ODE-owned cards, retains
+The approved ownership assigns two Core cards (`numerical_approximation` and
+`explicit_scheme`) and eight ODE cards, retains
 `backward_euler_method` as a self-contained Wave 1 card without introducing
-an `implicit_scheme` term,
-limits proposed annotations to the complete IVP Lab, and keeps Tutor handoff
-compatible but absent in Wave 1. Those are proposals only. Ownership, the
-implicit-prerequisite treatment, annotation boundary and placement, Tutor
-handoff, and E1/E2/E3 rollout decisions all remain unselected until maintainer
-review. The readiness counts and every one of the 197 catalog rows below
-remain unchanged.
+an `implicit_scheme` term, limits approved annotations to the complete IVP
+Lab, and keeps Tutor-topic metadata compatible while exposing no Tutor
+handoff. D01 through D18 are approved as Option A, but E1, E2, E3, and F2
+remain separately unauthorized. The runtime-readiness counts and every one of
+the other 187 catalog rows below remain unchanged.
+
+| Stable ID | Wave 1 content | Approved owner | Runtime readiness | Packet |
+|---|---|---|---|---|
+| `ordinary_differential_equation` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Not implemented | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `initial_condition` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Not implemented | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `initial_value_problem` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Not implemented | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `step_size` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Not implemented | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `time_grid` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Not implemented | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `numerical_approximation` | `MAINTAINER_APPROVED_WITH_REVISIONS` | Core with ODE context-only override | Not implemented | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `exact_solution` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Not implemented | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `explicit_scheme` | `MAINTAINER_APPROVED_WITH_REVISIONS` | Core with ODE context-only override | Not implemented | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `forward_euler_method` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Not implemented | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
+| `backward_euler_method` | `MAINTAINER_APPROVED_WITH_REVISIONS` | ODE | Not implemented | [Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) · [Checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) |
 
 ## Status dimensions
 
@@ -300,7 +313,7 @@ and the three independent status dimensions plus wave.
 | `symmetric_matrix` | **symmetric matrix**; aliases: —; avoid: No special avoided wording beyond unqualified or scope-shifting use. | A real square matrix equal to its transpose. | Numerical linear algebra | — | related: —; confusion: Use only in the stated scope; do not substitute a nearby term without checking the mathematical object. | —; assumptions: Use only in the stated mathematical scope; introduce any formula with its variables and limiting conditions. | Use only in the stated scope; do not substitute a nearby term without checking the mathematical object. | Linear Systems module review | NLA-CH09 9.2 (pp. 81-86) | `DRAFT_UNAFFECTED` | `MODULE` | `NEEDS_MODULE_DESIGN` | `WAVE_4_LINEAR_SYSTEMS` |
 | `taylor_method` | **taylor method**; aliases: Taylor-series method; avoid: No special avoided wording beyond unqualified or scope-shifting use. | An ODE method that advances by truncating a Taylor expansion whose derivatives are obtained from the differential equation. | Numerical ODE | — | related: —; confusion: Use only in the stated scope; do not substitute a nearby term without checking the mathematical object. | —; assumptions: Use only in the stated mathematical scope; introduce any formula with its variables and limiting conditions. | Use only in the stated scope; do not substitute a nearby term without checking the mathematical object. | Future module or later ODE expansion | CHENEY 8.2 (pp. 491-498) | `DRAFT_UNAFFECTED` | `CORE_PROJECT` | `READY_FOR_WAVE_PLANNING` | `FUTURE_MODULE` |
 | `taylor_series` | **Taylor series**; aliases: —; avoid: No special avoided wording beyond unqualified or scope-shifting use. | A local power-series representation built from derivatives at an expansion point. | Approximation and nonlinear equations | — | related: —; confusion: Use only in the stated scope; do not substitute a nearby term without checking the mathematical object. | —; assumptions: Use only in the stated mathematical scope; introduce any formula with its variables and limiting conditions. | Use only in the stated scope; do not substitute a nearby term without checking the mathematical object. | Future module review | NOTES-2025 outline-005 (pp. 9-9); CHENEY 6.7 (pp. 354-358) | `DRAFT_UNAFFECTED` | `FUTURE` | `NEEDS_MODULE_DESIGN` | `WAVE_5_APPROXIMATION_AND_QUADRATURE` |
-| `time_grid` | **time grid**; aliases: —; avoid: No special avoided wording beyond unqualified or scope-shifting use. | The ordered set of time points at which a numerical ODE method stores or advances approximations. | Numerical ODE | `step_size` | related: `step_size`; confusion: Use only in the stated scope; do not substitute a nearby term without checking the mathematical object. | t_n = t_0 + n h; assumptions: Use only in the stated mathematical scope; introduce any formula with its variables and limiting conditions. | Use only in the stated scope; do not substitute a nearby term without checking the mathematical object. | Wave 1 required | NOTES-2025 outline-002 (pp. 3-3); NLA-CH02 2.5 (pp. 16-17) | `DRAFT_UNAFFECTED` | `CORE_PROJECT` | `READY_FOR_CONTENT_REVIEW` | `WAVE_1_CURRENT_ODE` |
+| `time_grid` | **time grid**; aliases: —; avoid: No special avoided wording beyond unqualified or scope-shifting use. | The ordered sequence of time points at which a numerical ODE method stores or advances approximations. | Numerical ODE | `step_size` | related: `step_size`; confusion: Use only in the stated scope; do not substitute a nearby term without checking the mathematical object. | t_n = t_0 + n h; assumptions: Use only in the stated mathematical scope; introduce any formula with its variables and limiting conditions. | Use only in the stated scope; do not substitute a nearby term without checking the mathematical object. | Wave 1 required | NOTES-2025 outline-002 (pp. 3-3); NLA-CH02 2.5 (pp. 16-17) | `DRAFT_UNAFFECTED` | `CORE_PROJECT` | `READY_FOR_CONTENT_REVIEW` | `WAVE_1_CURRENT_ODE` |
 | `tolerance` | **tolerance**; aliases: threshold, after the algorithm and controlled quantity are named; avoid: bare solver tolerance; precision tolerance for display formatting | A numerical threshold named by both the algorithm and the quantity controlled by its stopping, acceptance, validation, or interpretation rule. | Cross-cutting numerical analysis | — | related: `residual`, `convergence`; confusion: Nonlinear update, nonlinear residual, exact-solution consistency, Convergence interpretation, and future adaptive error-control tolerances are distinct; a smaller tolerance does not guarantee a smaller global error. | —; assumptions: Name both the algorithm and controlled quantity; a tolerance is not an accuracy guarantee. | Nonlinear update, nonlinear residual, exact-solution consistency, Convergence interpretation, and future adaptive error-control tolerances are distinct; a smaller tolerance does not guarantee a smaller global error. | Wave 3 | NLA-CH10 10.2 (pp. 96-99) | `V1_APPROVED` | `CORE_PROJECT` | `NEEDS_RICH_DRAFT` | `WAVE_3_NUMERICAL_RELIABILITY` |
 | `trigonometric_interpolation` | **trigonometric interpolation**; aliases: —; avoid: No special avoided wording beyond unqualified or scope-shifting use. | Interpolation by a finite trigonometric polynomial, often evaluated through Fourier-transform algorithms. | Approximation and nonlinear equations | — | related: —; confusion: Use only in the stated scope; do not substitute a nearby term without checking the mathematical object. | —; assumptions: Use only in the stated mathematical scope; introduce any formula with its variables and limiting conditions. | Use only in the stated scope; do not substitute a nearby term without checking the mathematical object. | Future module review | CHENEY 6.12 (pp. 409-423) | `DRAFT_UNAFFECTED` | `FUTURE` | `NEEDS_MODULE_DESIGN` | `WAVE_5_APPROXIMATION_AND_QUADRATURE` |
 | `truncation_error` | **truncation error**; aliases: discrete-operator defect, when defined; avoid: local truncation error without its ODE normalization; one formula applied across ODE and PDE contexts | The defect introduced by replacing an exact infinite or continuous operation with a stated finite discrete approximation. | Cross-cutting numerical analysis | `numerical_approximation` | related: `local_truncation_error`, `discretization_error`; confusion: ODE local truncation error has an approved one-step meaning; PDE spatial truncation error remains module-specific. | —; assumptions: Use only in the stated mathematical scope; introduce any formula with its variables and limiting conditions. | ODE local truncation error has an approved one-step meaning; PDE spatial truncation error remains module-specific. | Wave 2 high priority | NOTES-2025 outline-001 (pp. 1-2) | `V1_APPROVED` | `CORE_PROJECT` | `READY_FOR_CONTENT_REVIEW` | `WAVE_2_CONVERGENCE_ERROR` |
@@ -353,7 +366,8 @@ accessibility, and composition review.
 - Current-module explanation: Read the equation together with the initial condition and interval shown in the Data step.
 - Tutor topic: Identify the state, time variable, derivative, and right-hand-side expression in the current ODE.
 - Accessible formula explanation: y prime of t equals f of t and y of t.
-- Content status: `DRAFT_RECONCILED_REQUIRES_WAVE_REVIEW`
+- Content status: `MAINTAINER_APPROVED_WAVE_1_CONTENT_NOT_IMPLEMENTED`; exact
+  approved wording is owned by the Wave 1 content packet.
 
 ### `initial_value_problem` — initial value problem (IVP)
 
@@ -370,7 +384,8 @@ accessibility, and composition review.
 - Current-module explanation: The Initial Value Problems Lab currently supports scalar first-order problems on a fixed time interval.
 - Tutor topic: Explain the current equation, starting time, and initial value as one initial value problem.
 - Accessible formula explanation: y prime of t equals f of t and y of t, with y of t zero equal to y zero.
-- Content status: `DRAFT_RECONCILED_REQUIRES_WAVE_REVIEW`
+- Content status: `MAINTAINER_APPROVED_WAVE_1_CONTENT_NOT_IMPLEMENTED`; exact
+  approved wording is owned by the Wave 1 content packet.
 
 ### `initial_condition` — initial condition
 
@@ -387,7 +402,8 @@ accessibility, and composition review.
 - Current-module explanation: The Data step records the start time t_0 and value y_0 before a method runs.
 - Tutor topic: Connect the current start time and initial value to the first numerical value.
 - Accessible formula explanation: y of t zero equals y zero.
-- Content status: `DRAFT_RECONCILED_REQUIRES_WAVE_REVIEW`
+- Content status: `MAINTAINER_APPROVED_WAVE_1_CONTENT_NOT_IMPLEMENTED`; exact
+  approved wording is owned by the Wave 1 content packet.
 
 ### `numerical_approximation` — numerical approximation
 
@@ -404,7 +420,8 @@ accessibility, and composition review.
 - Current-module explanation: The current Lab stores u_n at each t_n and plots those values as the numerical solution.
 - Tutor topic: Explain what a displayed u_n value represents and how it differs from y(t_n).
 - Accessible formula explanation: u sub n approximately equals y of t sub n.
-- Content status: `DRAFT_RECONCILED_REQUIRES_WAVE_REVIEW`
+- Content status: `MAINTAINER_APPROVED_WAVE_1_CONTENT_NOT_IMPLEMENTED`; exact
+  approved wording is owned by the Wave 1 content packet.
 
 ### `exact_solution` — exact solution
 
@@ -421,7 +438,8 @@ accessibility, and composition review.
 - Current-module explanation: Presets may supply an exact solution, and custom input may provide one subject to the existing consistency check.
 - Tutor topic: Explain how the current exact solution is used as a reference without calling the consistency check a proof.
 - Accessible formula explanation: y of t is the exact solution and u sub n approximates y of t sub n.
-- Content status: `DRAFT_RECONCILED_REQUIRES_WAVE_REVIEW`
+- Content status: `MAINTAINER_APPROVED_WAVE_1_CONTENT_NOT_IMPLEMENTED`; exact
+  approved wording is owned by the Wave 1 content packet.
 
 ### `step_size` — step size
 
@@ -438,13 +456,14 @@ accessibility, and composition review.
 - Current-module explanation: The current fixed-step grid requires h>0 and an interval that aligns with an integer number of steps.
 - Tutor topic: Explain the current h and distinguish likely effects of refinement from guaranteed outcomes.
 - Accessible formula explanation: t sub n equals t zero plus n times h, where h is positive.
-- Content status: `DRAFT_RECONCILED_REQUIRES_WAVE_REVIEW`
+- Content status: `MAINTAINER_APPROVED_WAVE_1_CONTENT_NOT_IMPLEMENTED`; exact
+  approved wording is owned by the Wave 1 content packet.
 
 ### `time_grid` — time grid
 
 - Wave: `WAVE_1_CURRENT_ODE`
-- Short preview definition: The ordered set of time points at which a numerical ODE method stores or advances approximations.
-- Full definition: A time grid is the ordered set of times at which the method stores numerical approximations. In the current Lab the grid is fixed-step and includes both endpoints.
+- Short preview definition: The ordered sequence of time points at which a numerical ODE method stores or advances approximations.
+- Full definition: A time grid is the ordered sequence of times at which the method stores numerical approximations. In the current Lab the grid is fixed-step and includes both endpoints.
 - Plain-language intuition: It is the sequence of time locations where computed values live.
 - Why it matters: Aligned grids make method comparisons and exact-reference error calculations well defined.
 - Formula: \(t_n=t_0+nh,\qquad 0\le n\le N\)
@@ -455,7 +474,8 @@ accessibility, and composition review.
 - Current-module explanation: The grid validator enforces finite input, positive h, endpoint alignment, and the released step budget.
 - Tutor topic: Describe the current grid without changing or reinterpreting its alignment rules.
 - Accessible formula explanation: t sub n equals t zero plus n times h for n from zero through N.
-- Content status: `DRAFT_RECONCILED_REQUIRES_WAVE_REVIEW`
+- Content status: `MAINTAINER_APPROVED_WAVE_1_CONTENT_NOT_IMPLEMENTED`; exact
+  approved wording is owned by the Wave 1 content packet.
 
 ### `explicit_scheme` — explicit scheme
 
@@ -472,7 +492,8 @@ accessibility, and composition review.
 - Current-module explanation: Forward Euler and the current explicit Runge–Kutta and Adams–Bashforth choices use explicit updates.
 - Tutor topic: Identify which data are already known when the selected explicit method forms its next value.
 - Accessible formula explanation: u sub n plus one equals a stated update built from known data.
-- Content status: `DRAFT_RECONCILED_REQUIRES_WAVE_REVIEW`
+- Content status: `MAINTAINER_APPROVED_WAVE_1_CONTENT_NOT_IMPLEMENTED`; exact
+  approved wording is owned by the Wave 1 content packet.
 
 ### `forward_euler_method` — Forward Euler method
 
@@ -489,7 +510,8 @@ accessibility, and composition review.
 - Current-module explanation: The Method step exposes Forward Euler directly and uses the released fixed-step solver unchanged.
 - Tutor topic: Walk through one Forward Euler update with the current equation and values.
 - Accessible formula explanation: u sub n plus one equals u sub n plus h times f of t sub n and u sub n.
-- Content status: `DRAFT_RECONCILED_REQUIRES_WAVE_REVIEW`
+- Content status: `MAINTAINER_APPROVED_WAVE_1_CONTENT_NOT_IMPLEMENTED`; exact
+  approved wording is owned by the Wave 1 content packet.
 
 ### `backward_euler_method` — Backward Euler method
 
@@ -506,7 +528,8 @@ accessibility, and composition review.
 - Current-module explanation: The current Lab exposes nonlinear-solve diagnostics separately from the method’s absolute-stability properties.
 - Tutor topic: Explain the implicit update and why this implementation iterates, without treating solver convergence as method stability.
 - Accessible formula explanation: u sub n plus one equals u sub n plus h times f at t sub n plus one and u sub n plus one.
-- Content status: `DRAFT_RECONCILED_REQUIRES_WAVE_REVIEW`
+- Content status: `MAINTAINER_APPROVED_WAVE_1_CONTENT_NOT_IMPLEMENTED`; exact
+  approved wording is owned by the Wave 1 content packet.
 
 ### `absolute_error` — absolute error
 

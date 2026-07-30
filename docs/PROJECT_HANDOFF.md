@@ -29,12 +29,14 @@ verdict **PRE-E REPAIR COMPLETE — GROUP E MAY BE PLANNED**. Both repair commit
 are accepted prerequisites. The documentation-only
 [ODE Glossary Wave 1 design](./superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md),
 [ten-card content packet](./content/ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md),
-[unchecked approval checklist](./content/ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md),
+[approval checklist](./content/ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md),
 and
 [readiness review](./reviews/2026-07-29-ode-glossary-wave-1-design-readiness-review.md)
-are locally complete with verdict **DESIGN PACKET COMPLETE — MAINTAINER
-DECISIONS REQUIRED**. All 18 choices remain pending. `COPY-003` and
-`src/pages/homePage.ts` remain review-only and unchanged. These iterations
+now record verdict **DESIGN AND CONTENT APPROVED — E1 AUTHORIZATION
+REQUIRED**. Yiding (Bruce) Tian approved D01–D18 as Option A, all ten cards
+with exact revisions, and all ten annotation records on 2026-07-29.
+`COPY-003` and `src/pages/homePage.ts` remain review-only and unchanged. These
+iterations
 changed approved visible copy, server-owned Tutor prompt policy, deterministic
 replies, focused expectations, and planning documentation only: calculations,
 classifications, grounding values, request/API/session behavior, and lifecycle
@@ -56,8 +58,8 @@ The product is **Numerical T-Lab**. The currently implemented numerical module i
 | any other page path | In-shell Not Found | Available |
 
 Linear Algebra and PDE are truthful roadmap pages with no runnable controls.
-The active milestone is **ODE Glossary Wave 1 — Group E0 Maintainer Approval
-Packet**; **Linear Systems Lab** is later. The
+The active milestone is **ODE Glossary Wave 1 — E1 Authorization Gate**;
+**Linear Systems Lab** is later. The
 [authoritative Glossary design](./superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md)
 is approved and committed. Commit 1, the content-agnostic Glossary model and
 scope lifecycle, is implemented and accepted after conservative audit.
@@ -89,11 +91,11 @@ Convergence/error records are accepted. The 11 Group D Tutor numerical-language
 records are accepted. Group F1 implements `COPY-043`, classifies all twelve
 review-only records, and completes the accepted pre-Glossary consistency
 checkpoint. Its five P2 findings are `CLOSED_VERIFIED`, and both prerequisite
-commits are accepted. Group E0 now provides exactly 10 proposed Wave 1 cards
-and 10 complete-Lab annotation records for maintainer review. Production Glossary
-content and the ODE binding remain absent and unauthorized. E1, E2, and E3 are
-separate future gates, and the final Group F2 review remains mandatory after
-Group E.
+commits are accepted. Group E0 design and content governance now approves
+exactly 10 revised Wave 1 cards and 10 complete-Lab annotation records.
+Production Glossary content and the ODE binding remain absent and
+unauthorized. E1, E2, and E3 are separate future gates, and the final Group F2
+review remains mandatory after E3.
 
 ## 2. Verification baseline
 
@@ -445,11 +447,11 @@ Known limitations:
   `COPY-003` remains held. The maintainer has accepted the pre-Glossary
   language repair commit and Tutor intent-matching repair commit as
   prerequisite state.
-  Group E0 is complete as a maintainer-review-only packet covering ten
-  proposed Wave 1 term cards, ten exact proposed annotations, and eighteen
-  still-unselected decisions. No production content or binding is authorized.
+  Group E0 design and content governance is complete and maintainer-approved,
+  covering ten revised Wave 1 term cards, ten exact annotation records, and
+  eighteen Option A decisions. No production content or binding is authorized.
   E1, E2, and E3 remain separately gated, and Group F2 remains mandatory after
-  Group E.
+  E3.
 
 Contributor rules:
 
@@ -473,8 +475,9 @@ standards are approved as Version 1. The catalog and copy audit are reconciled;
 Groups A through D are accepted, and the maintainer has accepted both the
 pre-Glossary language repair commit and Tutor intent-matching repair commit as
 prerequisite state. `COPY-003` plus `src/pages/homePage.ts` remain review-only
-and unchanged. Group E0 is complete as a maintainer-review-only packet for ten
-proposed Wave 1 terms, ten proposed annotation sites, and eighteen unselected
-decisions. The next gate is maintainer review of that packet. E1, E2, and E3
+and unchanged. Group E0 design and content governance is complete and
+maintainer-approved for ten revised Wave 1 terms, ten annotation records, and
+eighteen Option A decisions. The next gate is a separate maintainer decision
+on whether to authorize inert content-only E1 implementation. E1, E2, and E3
 remain unauthorized and separately gated; Group F2 remains mandatory after
-Group E.*
+E3.*

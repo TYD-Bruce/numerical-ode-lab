@@ -14,9 +14,10 @@
 
 ## Current active milestone
 
-[PLAN.md](../PLAN.md) points to the Content-Agnostic Interactive Glossary
-Framework. Its approved design and repository-grounded implementation plan are
-documented. The corrected plan passed conservative re-audit, Commit 1 was
+[PLAN.md](../PLAN.md) points to the ODE Glossary Wave 1 E1 authorization gate.
+The underlying Content-Agnostic Interactive Glossary Framework's approved
+design and repository-grounded implementation plan are documented. The
+corrected framework plan passed conservative re-audit, Commit 1 was
 accepted after conservative audit, the readonly-math prerequisite is locally
 verified, and Commit 3 shared surfaces are implemented and locally/browser
 verified with two lifecycle follow-ups accepted by final conservative
@@ -48,10 +49,11 @@ review. Its four language findings and one deterministic Tutor behavior
 finding are `CLOSED_VERIFIED` by the separately authorized two-commit repair
 with verdict **PRE-E REPAIR COMPLETE — GROUP E MAY BE PLANNED**. Both repair
 commits are accepted prerequisites. The documentation-only ODE Glossary Wave 1
-content/design packet is locally complete with verdict **DESIGN PACKET COMPLETE
-— MAINTAINER DECISIONS REQUIRED**. All term, ownership, annotation, Tutor, and
-rollout choices remain pending. E1, E2, E3, and production Glossary content
-remain unauthorized; Group F2 remains mandatory after Group E.
+design and content governance is maintainer-approved with verdict **DESIGN AND
+CONTENT APPROVED — E1 AUTHORIZATION REQUIRED**. Yiding (Bruce) Tian approved
+D01–D18 as Option A, all ten cards with exact revisions, and all ten annotation
+records on 2026-07-29. E1, E2, E3, and production Glossary content remain
+unauthorized; Group F2 remains mandatory after E3.
 
 ## Project-language standards and content drafts
 
@@ -61,9 +63,10 @@ evidence handling. The Glossary catalog and copy audit are reconciled planning
 documents, and the implementation plan separates ready copy work from the
 unauthorized production content wave. Groups A through D and the Group
 F1/pre-E prerequisite commits are accepted; all five P2 findings are
-`CLOSED_VERIFIED`. The Group E0 ODE Glossary Wave 1 packet is complete for
-maintainer review. Production Glossary content remains unauthorized, and E1,
-E2, E3, and the post-Glossary F2 review remain separately gated.
+`CLOSED_VERIFIED`. Group E0 ODE Glossary Wave 1 design and content governance
+is complete and maintainer-approved. Production Glossary content remains
+unauthorized, and E1, E2, E3, and the post-Glossary F2 review remain
+separately gated.
 
 | Document | Purpose |
 |---|---|
@@ -78,8 +81,8 @@ E2, E3, and the post-Glossary F2 review remain separately gated.
 | [Maintainer Decision Packet](content/MAINTAINER_DECISION_PACKET.md) | Completed evidence cards and binding records for exactly nine decisions |
 | [Project Language Approval Checklist](content/PROJECT_LANGUAGE_APPROVAL_CHECKLIST.md) | Completed documentation-only approval and validation record |
 | [Project Language v1 Handoff](content/HANDOFF.md) | Approved choices, counts, accepted Groups A–D/F1/pre-E state, Group E0 Wave 1 packet, held scope, and exact next gate |
-| [ODE Glossary Wave 1 Content Packet](content/ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) | Maintainer-review content and exact ten-record annotation packet; no runtime authority |
-| [ODE Glossary Wave 1 Approval Checklist](content/ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) | Entirely unchecked term, annotation, architecture, and rollout review checklist; does not authorize implementation |
+| [ODE Glossary Wave 1 Content Packet](content/ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) | Maintainer-approved ten-card content and exact ten-record annotation design packet; no runtime authority |
+| [ODE Glossary Wave 1 Approval Checklist](content/ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) | Checked content/design approval with implementation, execution, push, and deployment authorization explicitly unchecked |
 
 ## Product and feature specifications
 
@@ -89,7 +92,7 @@ E2, E3, and the post-Glossary F2 review remain separately gated.
 | [Human-Friendly Math Expressions Design](superpowers/specs/2026-07-10-human-friendly-math-expressions-design.md) | Implemented and verified |
 | [Observed Convergence Order Experiment Design](superpowers/specs/2026-07-10-convergence-study-design.md) | Implemented, verified, release ready |
 | [Content-Agnostic Interactive Glossary Framework Design](superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md) | Implemented and locally accepted after a repeated independent final review; production content remains deferred |
-| [ODE Glossary Wave 1 Design](superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md) | Planning/approval design complete; all 18 maintainer decisions pending; E1/E2/E3/F2 unauthorized |
+| [ODE Glossary Wave 1 Design](superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md) | D01–D18 approved as Option A; ten cards and ten annotation records fixed; E1/E2/E3/F2 unauthorized |
 
 ## Implementation plans
 
@@ -111,7 +114,7 @@ E2, E3, and the post-Glossary F2 review remain separately gated.
 | [Content-Agnostic Interactive Glossary Framework Final Review](reviews/2026-07-28-content-agnostic-interactive-glossary-framework-final-review.md) | Repeated independent verdict **APPROVED FOR LOCAL FRAMEWORK RELEASE**; all three historical findings closed; production content remains unauthorized |
 | [Pre-Glossary Project-Language Consistency Review](reviews/2026-07-29-pre-glossary-project-language-consistency-review.md) | Group F1 verdict **GROUP F1 COMPLETE — PRE-E FIXES REQUIRED**; `COPY-043` verified, twelve review-only records classified, five P2 findings recorded, Group E unauthorized, F2 still required |
 | [Pre-Glossary Repair Review](reviews/2026-07-29-pre-glossary-repair-review.md) | Verdict **PRE-E REPAIR COMPLETE — GROUP E MAY BE PLANNED**; all five Group F1 findings `CLOSED_VERIFIED`, Group E still unauthorized, F2 still required |
-| [ODE Glossary Wave 1 Design Readiness Review](reviews/2026-07-29-ode-glossary-wave-1-design-readiness-review.md) | Planning verdict **DESIGN PACKET COMPLETE — MAINTAINER DECISIONS REQUIRED**; no production authorization |
+| [ODE Glossary Wave 1 Design and Content Approval Review](reviews/2026-07-29-ode-glossary-wave-1-design-readiness-review.md) | Verdict **DESIGN AND CONTENT APPROVED — E1 AUTHORIZATION REQUIRED**; no production authorization |
 
 ## Feature handoffs
 
@@ -129,9 +132,9 @@ E2, E3, and the post-Glossary F2 review remain separately gated.
   evidence baseline, nine approved decisions, Version 1 standards, reconciled
   197-term catalog and 55-record copy audit, A–F implementation plan, and
   validation evidence; Groups A through D are accepted, Group F1 and its five
-  pre-E repairs are accepted, the Wave 1 E0 packet is locally complete, and
-  E1/E2/E3 plus production content remain unauthorized pending maintainer
-  decisions and separate authorization.
+  pre-E repairs are accepted, Wave 1 Group E0 governance is
+  maintainer-approved, and E1/E2/E3 plus production content remain
+  unauthorized pending separate authorization.
 - [Project Rename handoff](project-rename/HANDOFF.md) — completed Project
   Identity Migration evidence, including the canonical local workspace reopen.
 

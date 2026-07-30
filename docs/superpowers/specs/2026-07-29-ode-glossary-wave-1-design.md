@@ -1,25 +1,36 @@
 # ODE Glossary Wave 1 Design
 
-**Status:** Maintainer approval design; all decisions remain pending.
+**Status:** Maintainer-approved design and content governance; D01–D18 are
+approved as Option A. E1, E2, E3, and F2 remain separately gated and
+unauthorized.
 
 **Date:** 2026-07-29
 
-**Authorization boundary:** This specification does not authorize production
-content, TypeScript entries, annotations, an ODE Glossary binding, runtime
-composition, Tutor integration, E1, E2, E3, or Group F2.
+**Maintainer:** Yiding (Bruce) Tian
+
+**Review date:** 2026-07-29
+
+**Approval scope:** ODE Glossary Wave 1 design and content governance
+
+**Authorization boundary:** This specification approves design, exact content
+governance, ten annotation records, and staged rollout boundaries. It does not
+authorize production content, TypeScript entries, annotation implementation,
+an ODE Glossary binding, runtime composition, Tutor integration, E1, E2, E3,
+or Group F2 implementation or execution.
 
 ## 1. Purpose
 
 This specification converts the existing ten-card Wave 1 catalog draft into a
-repository-grounded production design. It fixes the proposed content,
+repository-grounded production design. It fixes the approved content,
 ownership, annotation, lifecycle, accessibility, lazy-loading, Tutor, staged
 rollout, verification, and rollback boundaries tightly enough for later
 implementation after explicit maintainer approval.
 
-The proposed card copy and complete 21-field annotation records are in the
+The approved card copy and complete 21-field annotation records are in the
 [content packet](../../content/ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md). The
 [approval checklist](../../content/ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md)
-begins entirely unchecked.
+records checked content/design approval separately from unchecked
+implementation, execution, push, and deployment authorization.
 
 ## 2. Accepted framework and current source facts
 
@@ -57,7 +68,7 @@ Current production facts:
 
 ## 3. Exact Wave 1 boundary
 
-Exactly ten stable IDs are proposed:
+Exactly ten stable IDs are approved:
 
 ```text
 ordinary_differential_equation
@@ -72,14 +83,15 @@ forward_euler_method
 backward_euler_method
 ```
 
-The prerequisite-aware teaching order places `initial_condition` before
-`initial_value_problem`, then introduces the grid before the values stored on
-it. `implicit_scheme` remains outside the exact set and is governed by pending
-decision D02.
+The approved prerequisite-aware teaching order places `initial_condition`
+before `initial_value_problem`, then introduces the grid before the values
+stored on it. Approved decision D02 keeps `implicit_scheme` outside the exact
+set as non-clickable future related text and makes
+`backward_euler_method` self-contained.
 
 ## 4. Content ownership
 
-### 4.1 Recommended logical split
+### 4.1 Approved logical split
 
 Core-owned:
 
@@ -107,7 +119,7 @@ separation from PDE spatial grid spacing. `exact_solution` is not promoted
 because the required preview, formula, and proof limitation are stated for an
 IVP. A future content review may promote either without changing the stable ID.
 
-### 4.2 Proposed physical ownership
+### 4.2 Approved future physical ownership
 
 Future E1 may create or change only these production content owners:
 
@@ -121,10 +133,11 @@ src/ode/odeGlossaryContent.ts
   -> pure data only; no DOM, binding, Host, Store, or session
 ```
 
-`whyItMatters` in a core record remains general. `contextualDefinition`,
-`whyItMattersHere`, and a narrower `tutorTopic` belong to the ODE module
-override. ODE-owned records carry their complete module-specific content
-directly.
+Core owns each canonical definition and its reusable teaching content.
+`contextualDefinition`, `whyItMattersHere`, and a narrower `tutorTopic` may
+belong to the ODE module override. ODE must not redefine a Core term, replace
+its stable ID, reverse aliases, or create a second independent full card.
+ODE-owned records carry their complete module-specific content directly.
 
 E1 does not import either content owner from a production route. Unreferenced
 content therefore remains absent from the Rollup graph and inert until E2.
@@ -137,7 +150,7 @@ Future E2 may create:
 src/ode/odeGlossary.ts
 ```
 
-Recommended public API:
+Approved responsibility sketch for future E2:
 
 ```ts
 export type OdeGlossaryScopeName =
@@ -195,7 +208,7 @@ Chart.js.
 
 ## 6. Exact binding design
 
-| Concern | Proposed behavior |
+| Concern | Approved behavior |
 |---|---|
 | Binding owner | `mountOdeApp` owns one `OdeGlossaryRuntime`; its binding remains Lab-owned. |
 | Creation time | Once per complete ODE mount, before the first `render()`. |
@@ -212,7 +225,7 @@ Chart.js.
 | New experiment | The normal full render transfers lede annotations when exact; Method/Data/Output surfaces without a replacement close. No Glossary state is reset or stored. |
 | Session | No Glossary content, surface, scope, or active-term state enters `OdeSessionState` or `AppSessionStore`. |
 | Persistence | None; no localStorage, sessionStorage, IndexedDB, history state, or Resume metadata. |
-| Tutor handoff | No production handoff is injected under the recommended Wave 1 policy; no Ask button, request, queue, card, or transcript mutation. |
+| Tutor handoff | No production handoff is injected under the approved Wave 1 policy; no Ask button, request, queue, card, or transcript mutation. |
 | Error/loading | Invalid content fails to readable plain text; surface-load failure preserves the Lab and exposes existing Retry/Close behavior. |
 | Meaningful work | Preview, pin, sheet, and close do not affect meaningful-work or `beforeunload`. |
 
@@ -251,21 +264,21 @@ transfer. Preview never transfers. No DOM lookup is used to find replacements.
 ## 8. Exact annotation map
 
 The complete 21-field records in
-[the content packet](../../content/ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md#4-proposed-exact-annotation-map)
+[the content packet](../../content/ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md#4-approved-exact-annotation-map)
 are normative. This table is the matching implementation map:
 
 | ID | Term | Route | Current file and owner | Exact trigger text | Context/surface | Scope | Existing/new | Status |
 |---|---|---|---|---|---|---|---|---|
-| `ODE-W1-ANN-001` | `ordinary_differential_equation` | `/ode/initial-value-problems` | `src/ode/odeApp.ts` · `DEFAULT_LEDE`, `render` | `ordinary differential equation` | revised Lab lede | `context` | New exact lede composition | Pending |
-| `ODE-W1-ANN-002` | `initial_value_problem` | `/ode/initial-value-problems` | `src/ode/odeApp.ts` · `DEFAULT_LEDE`, `render` | `initial value problem` | same revised Lab lede | `context` | New exact lede composition | Pending |
-| `ODE-W1-ANN-003` | `initial_condition` | `/ode/initial-value-problems` | `src/ode/odeApp.ts` · `renderForm` | `Initial condition` | sibling of native initial-value label | `data` | New companion text | Pending |
-| `ODE-W1-ANN-004` | `step_size` | `/ode/initial-value-problems` | `src/ode/odeApp.ts` · `renderForm`, `renderCompareForm` | `Time-step size` | sibling of native `Time-step size h` label | `data` | New companion text | Pending |
-| `ODE-W1-ANN-005` | `time_grid` | `/ode/initial-value-problems` | `src/ode/odeApp.ts` · both form owners | `time grid` | fixed-grid helper text | `data` | New exact helper | Pending |
-| `ODE-W1-ANN-006` | `numerical_approximation` | `/ode/initial-value-problems` | `src/ode/odeApp.ts` · `mountResults` | `Final numerical approximation` | existing result label | `output` | Existing text | Pending |
-| `ODE-W1-ANN-007` | `exact_solution` | `/ode/initial-value-problems` | `src/ode/odeApp.ts` · `renderForm` | `Exact solution` | standalone heading before checkbox label | `data` | New companion heading | Pending |
-| `ODE-W1-ANN-008` | `explicit_scheme` | `/ode/initial-value-problems` | `src/ode/odeApp.ts` · `renderChoosePanel` | `Explicit scheme` | Method helper outside cards | `method` | New exact helper | Pending |
-| `ODE-W1-ANN-009` | `forward_euler_method` | `/ode/initial-value-problems` | `src/ode/odeApp.ts` · `renderForm` | `Forward Euler` | existing selected-method heading | `data` | Existing text | Pending |
-| `ODE-W1-ANN-010` | `backward_euler_method` | `/ode/initial-value-problems` | `src/ode/odeApp.ts` · `renderForm` | `Backward Euler` | existing selected-method heading | `data` | Existing text | Pending |
+| `ODE-W1-ANN-001` | `ordinary_differential_equation` | `/ode/initial-value-problems` | `src/ode/odeApp.ts` · `DEFAULT_LEDE`, `render` | `ordinary differential equation` | revised Lab lede | `context` | New exact lede composition | Approved |
+| `ODE-W1-ANN-002` | `initial_value_problem` | `/ode/initial-value-problems` | `src/ode/odeApp.ts` · `DEFAULT_LEDE`, `render` | `initial value problem` | same revised Lab lede | `context` | New exact lede composition | Approved |
+| `ODE-W1-ANN-003` | `initial_condition` | `/ode/initial-value-problems` | `src/ode/odeApp.ts` · `renderForm` | `Initial condition` | sibling of native initial-value label | `data` | New companion text | Approved |
+| `ODE-W1-ANN-004` | `step_size` | `/ode/initial-value-problems` | `src/ode/odeApp.ts` · `renderForm`, `renderCompareForm` | `Time-step size` | sibling of native `Time-step size h` label | `data` | New companion text | Approved |
+| `ODE-W1-ANN-005` | `time_grid` | `/ode/initial-value-problems` | `src/ode/odeApp.ts` · both form owners | `time grid` | fixed-grid helper text | `data` | New exact helper | Approved |
+| `ODE-W1-ANN-006` | `numerical_approximation` | `/ode/initial-value-problems` | `src/ode/odeApp.ts` · `mountResults` | `Final numerical approximation` | existing result label | `output` | Existing text | Approved |
+| `ODE-W1-ANN-007` | `exact_solution` | `/ode/initial-value-problems` | `src/ode/odeApp.ts` · `renderForm` | `Exact solution` | standalone heading before checkbox label | `data` | New companion heading | Approved |
+| `ODE-W1-ANN-008` | `explicit_scheme` | `/ode/initial-value-problems` | `src/ode/odeApp.ts` · `renderChoosePanel` | `Explicit scheme` | Method helper outside cards | `method` | New exact helper | Approved |
+| `ODE-W1-ANN-009` | `forward_euler_method` | `/ode/initial-value-problems` | `src/ode/odeApp.ts` · `renderForm` | `Forward Euler` | existing selected-method heading | `data` | Existing text | Approved |
+| `ODE-W1-ANN-010` | `backward_euler_method` | `/ode/initial-value-problems` | `src/ode/odeApp.ts` · `renderForm` | `Backward Euler` | existing selected-method heading | `data` | Existing text | Approved |
 
 The following record-specific matrix completes the first/repeated-use,
 rerender, result-survival, duplicate, dependency, and review fields. Together
@@ -275,16 +288,29 @@ retains the same values in individually readable records.
 
 | ID | First-use or repeated-use status | Rerender lifecycle | Survives result rerender? | Duplicate-term policy | Implementation dependency | Review status |
 |---|---|---|---|---|---|---|
-| `ODE-W1-ANN-001` | First in `ode_wave1_context` | Controlled same-scope replacement | Yes, through exact context replacement | Breadcrumb and later ODE mentions remain plain | E1 card; E2 lede copy, composition, and binding | `PENDING_MAINTAINER_REVIEW` |
-| `ODE-W1-ANN-002` | First in `ode_wave1_context` after ANN-001 | Controlled same-scope replacement | Yes, through exact context replacement | Title, breadcrumb, and later IVP mentions remain plain | E1 card; E2 lede copy, composition, and binding | `PENDING_MAINTAINER_REVIEW` |
-| `ODE-W1-ANN-003` | First in `ode_wave1_data` | Recreated in the Data transaction | No across Data-to-Output | Other initial-value wording remains plain | E1 card; E2 Data composition and accessibility tests | `PENDING_MAINTAINER_REVIEW` |
-| `ODE-W1-ANN-004` | First in `ode_wave1_data`; current single or Compare form only | Controlled Data replacement | No across Data-to-Output; yes for exact Data replacement | Lede and Convergence stay plain; Compare creates no simultaneous duplicate | E1 card; E2 label companion and both form tests | `PENDING_MAINTAINER_REVIEW` |
-| `ODE-W1-ANN-005` | First in `ode_wave1_data` | Controlled Data replacement | No across Data-to-Output | Output, chart, Compare, and Convergence grid wording remains plain | Approved helper copy; E1 card; E2 composition | `PENDING_MAINTAINER_REVIEW` |
-| `ODE-W1-ANN-006` | First in `ode_wave1_output` | Controlled Output replacement | Yes only through an exact successful-output replacement; otherwise closes | Compare, chart, tooltip, table, and Tutor wording remains plain | E1 core card and ODE override; E2 Output composition | `PENDING_MAINTAINER_REVIEW` |
-| `ODE-W1-ANN-007` | First in `ode_wave1_data` | Controlled Data replacement | No across Data-to-Output | Checkbox, preset, Convergence, and Output references remain plain | E1 card; E2 Data composition | `PENDING_MAINTAINER_REVIEW` |
-| `ODE-W1-ANN-008` | First in `ode_wave1_method` | Controlled Method replacement | No after leaving Method | Method-card `Explicit` wording remains plain | Approved helper copy; E1 card; E2 composition and no-nesting tests | `PENDING_MAINTAINER_REVIEW` |
-| `ODE-W1-ANN-009` | First in `ode_wave1_data` when Forward Euler is selected | Controlled Data replacement | No across Data-to-Output | Selection card, result heading, metadata, Convergence, and Tutor remain plain | E1 card; E2 selected-heading composition | `PENDING_MAINTAINER_REVIEW` |
-| `ODE-W1-ANN-010` | First in `ode_wave1_data` when Backward Euler is selected | Controlled Data replacement | No across Data-to-Output | Selection card, result heading, metadata, diagnostics, Convergence, and Tutor remain plain | E1 card; D02 choice; E2 selected-heading composition | `PENDING_MAINTAINER_REVIEW` |
+| `ODE-W1-ANN-001` | First in `ode_wave1_context` | Controlled same-scope replacement | Yes, through exact context replacement | Breadcrumb and later ODE mentions remain plain | Approved E1 card design; approved E2 lede copy, composition, and binding design | `APPROVED` |
+| `ODE-W1-ANN-002` | First in `ode_wave1_context` after ANN-001 | Controlled same-scope replacement | Yes, through exact context replacement | Title, breadcrumb, and later IVP mentions remain plain | Approved E1 card design; approved E2 lede copy, composition, and binding design | `APPROVED` |
+| `ODE-W1-ANN-003` | First in `ode_wave1_data` | Recreated in the Data transaction | No across Data-to-Output | Other initial-value wording remains plain | Approved E1 card design; approved E2 Data composition and accessibility-test design | `APPROVED` |
+| `ODE-W1-ANN-004` | First in `ode_wave1_data`; current single or Compare form only | Controlled Data replacement | No across Data-to-Output; yes for exact Data replacement | Lede and Convergence stay plain; Compare creates no simultaneous duplicate | Approved E1 card design; approved E2 label companion and both form-test design | `APPROVED` |
+| `ODE-W1-ANN-005` | First in `ode_wave1_data` | Controlled Data replacement | No across Data-to-Output | Output, chart, Compare, and Convergence grid wording remains plain | Approved helper copy and E1/E2 design | `APPROVED` |
+| `ODE-W1-ANN-006` | First in `ode_wave1_output` | Controlled Output replacement | Yes only through an exact successful-output replacement; otherwise closes | Compare, chart, tooltip, table, and Tutor wording remains plain | Approved E1 core card/ODE override and E2 Output design | `APPROVED` |
+| `ODE-W1-ANN-007` | First in `ode_wave1_data` | Controlled Data replacement | No across Data-to-Output | Checkbox, preset, Convergence, and Output references remain plain | Approved E1 card and E2 Data design | `APPROVED` |
+| `ODE-W1-ANN-008` | First in `ode_wave1_method` | Controlled Method replacement | No after leaving Method | Method-card `Explicit` wording remains plain | Approved helper copy, E1 card, and E2 composition/no-nesting design | `APPROVED` |
+| `ODE-W1-ANN-009` | First in `ode_wave1_data` when Forward Euler is selected | Controlled Data replacement | No across Data-to-Output | Selection card, result heading, metadata, Convergence, and Tutor remain plain | Approved E1 card and E2 selected-heading design | `APPROVED` |
+| `ODE-W1-ANN-010` | First in `ode_wave1_data` when Backward Euler is selected | Controlled Data replacement | No across Data-to-Output | Selection card, result heading, metadata, diagnostics, Convergence, and Tutor remain plain | Approved E1 card, D02 Option A, and E2 selected-heading design | `APPROVED` |
+
+For annotations whose surrounding authored copy was previously pending, the
+approved design authorizes the exact approved sentence as the E2 target unless
+implementation discovers an owner mismatch:
+
+- Lab lede: “Explore fixed-step methods for a first-order ordinary
+  differential equation posed as an initial value problem, then analyze
+  numerical error, observed convergence, and method behavior as the time-step
+  size changes.”
+- Data helper: “The current fixed-step time grid includes the aligned start
+  and end times.”
+
+These sentences remain unimplemented in this approval task.
 
 For every record:
 
@@ -298,13 +324,13 @@ For every record:
 - no target is editable MathLive, a nested control, raw formula token, chart
   canvas, numeric cell, diagnostic, Tutor transcript, or scanned text;
 - same-scope later occurrences remain plain text;
-- the exact per-record dependency and pending status remain unchanged between
-  this design and the content packet.
+- the exact per-record dependency and approved status agree between this
+  design and the content packet.
 
 ### 8.1 `/ode` evaluation
 
 Current safe-looking strings are the overview lede's “ordinary differential
-equations” and the card's “Initial Value Problems Lab.” They are not proposed
+equations” and the card's “Initial Value Problems Lab.” They are not approved
 because the route is static and the accepted optional binding is a complete-Lab
 contract. The breadcrumb on the complete Lab is also rejected because it is
 already a link.
@@ -336,7 +362,7 @@ design and authorization. It is not E2.
 
 ## 10. Density policy
 
-Recommended policy:
+Approved policy:
 
 - one reviewed primary annotation for each Wave 1 term;
 - first enhanced occurrence per explicit scope;
@@ -348,7 +374,7 @@ Recommended policy:
 - author exact new helper text only where the current safe DOM has no honest
   occurrence.
 
-The proposed count is 10: two context, one Method, six Data, and one Output.
+The approved count is 10: two context, one Method, six Data, and one Output.
 Method-card names remain unannotated because each card is already a native
 button. This is a deliberate accessibility choice, not an omission discovered
 after implementation.
@@ -356,7 +382,7 @@ after implementation.
 ## 11. Tutor relationship
 
 The framework contains an injectable generic `GlossaryTutorHandoff`, but the
-current production adapter does not supply one. Recommended Wave 1 policy:
+current production adapter does not supply one. Approved Wave 1 policy:
 
 - keep the generic contract compatible;
 - connect the ODE binding without `tutorHandoff`;
@@ -366,11 +392,11 @@ current production adapter does not supply one. Recommended Wave 1 policy:
   or API path;
 - leave the current Tutor binding/session ownership unchanged.
 
-This represents provisional policy Option A without inventing the absent
-production integration: the generic affordance may be used only if a later
-separately approved product design supplies the existing contract. Option B
-would explicitly disable the relationship as a product policy. Option C is a
-new queue/card design outside Group E.
+This is approved policy Option A without inventing the absent production
+integration: Tutor-topic metadata remains compatible, but Wave 1 injects no
+handoff and exposes no Ask action, automatic request, queue, card, transcript
+mutation, or new Tutor/API contract. Any later product integration requires a
+separate approved design.
 
 ## 12. Lazy-loading and bundle design
 
@@ -541,7 +567,7 @@ is actually obtained under a later authorization.
 
 ## 15. Framework-gap result
 
-The recommended complete-Lab-only Wave 1 design needs no framework interface
+The approved complete-Lab-only Wave 1 design needs no framework interface
 or behavior change. The existing registry, binding, scopes, Host port, loader,
 surface, modal environment, optional `getGlossaryBinding`, and adapter disposal
 order are sufficient.
@@ -554,11 +580,13 @@ Two optional requests would create separate gaps:
    the existing generic handoff; a real queue/card remains a larger product
    design.
 
-Neither gap is part of the recommended E1/E2 path or automatically authorized.
+Neither gap is part of the approved E1/E2 path or automatically authorized.
 
-## 16. Maintainer decision cards
+## 16. Maintainer-approved decision cards
 
-Every selection below is deliberately blank.
+Every selection below records maintainer-approved Option A. The selections
+approve design and governance boundaries only; they do not authorize E1, E2,
+E3, F2, push, Preview deployment, or Production deployment.
 
 ### D01 — Exact ten-term set
 
@@ -573,9 +601,10 @@ Every selection below is deliberately blank.
 - **Bundle/lazy-loading impact:** A fixes a bounded ten-card ODE payload.
 - **Test impact:** Exact-count and no-extra assertions remain simple.
 - **Rollback impact:** E1 can be reverted as one content boundary.
-- **Maintainer selection:** Unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
+- **Maintainer selection:** Option A — approved.
+- **Maintainer notes:** Retain exactly the approved ten-term set; no eleventh
+  term.
+- **Review date:** 2026-07-29.
 
 ### D02 — `implicit_scheme` handling
 
@@ -592,9 +621,10 @@ Every selection below is deliberately blank.
 - **Bundle/lazy-loading impact:** A preserves the ten-card budget.
 - **Test impact:** Assert no registered `implicit_scheme` and no live link.
 - **Rollback impact:** A remains within the single-card E1 boundary.
-- **Maintainer selection:** Unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
+- **Maintainer selection:** Option A — approved.
+- **Maintainer notes:** Keep Backward Euler self-contained and retain
+  `implicit_scheme` only as non-clickable future related text.
+- **Review date:** 2026-07-29.
 
 ### D03 — Teaching order
 
@@ -611,9 +641,10 @@ Every selection below is deliberately blank.
 - **Bundle/lazy-loading impact:** None.
 - **Test impact:** Documentation/content-order assertion only.
 - **Rollback impact:** Reordering data is isolated before E1 approval.
-- **Maintainer selection:** Unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
+- **Maintainer selection:** Option A — approved.
+- **Maintainer notes:** Use the exact prerequisite-aware teaching order in
+  Section 3.
+- **Review date:** 2026-07-29.
 
 ### D04 — Core versus ODE ownership
 
@@ -630,9 +661,10 @@ Every selection below is deliberately blank.
   E2.
 - **Test impact:** Two override-resolution cases plus eight ODE records.
 - **Rollback impact:** Core and ODE data can be reverted together in E1.
-- **Maintainer selection:** Unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
+- **Maintainer selection:** Option A — approved.
+- **Maintainer notes:** Core owns `numerical_approximation` and
+  `explicit_scheme`; ODE owns the other eight terms.
+- **Review date:** 2026-07-29.
 
 ### D05 — Core definition and ODE override policy
 
@@ -648,9 +680,10 @@ Every selection below is deliberately blank.
 - **Bundle/lazy-loading impact:** No additional runtime edge.
 - **Test impact:** Override fallback, replacement, and immutability tests.
 - **Rollback impact:** Remove the ODE extension without altering core records.
-- **Maintainer selection:** Unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
+- **Maintainer selection:** Option A — approved.
+- **Maintainer notes:** Core retains canonical definitions and reusable
+  teaching content; ODE may override or add only module-context fields.
+- **Review date:** 2026-07-29.
 
 ### D06 — Annotation density
 
@@ -665,9 +698,10 @@ Every selection below is deliberately blank.
 - **Bundle/lazy-loading impact:** Negligible relative to fixed content.
 - **Test impact:** Exact annotation-count and scope distribution assertions.
 - **Rollback impact:** Individual records remain removable before E2 approval.
-- **Maintainer selection:** Unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
+- **Maintainer selection:** Option A — approved.
+- **Maintainer notes:** Exactly ten primary annotation records, one for each
+  Wave 1 term.
+- **Review date:** 2026-07-29.
 
 ### D07 — Repeated occurrence policy
 
@@ -683,9 +717,10 @@ Every selection below is deliberately blank.
 - **Bundle/lazy-loading impact:** None.
 - **Test impact:** Same-scope duplicate and cross-scope tests.
 - **Rollback impact:** Scope records are explicit.
-- **Maintainer selection:** Unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
+- **Maintainer selection:** Option A — approved.
+- **Maintainer notes:** Only the approved primary occurrence is interactive;
+  exact same-annotation replacement remains explicit and scan-free.
+- **Review date:** 2026-07-29.
 
 ### D08 — ODE overview scope
 
@@ -702,9 +737,10 @@ Every selection below is deliberately blank.
 - **Bundle/lazy-loading impact:** A keeps static `/ode` content-neutral.
 - **Test impact:** Static graph remains free of registries/content.
 - **Rollback impact:** No static change exists to unwind.
-- **Maintainer selection:** Unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
+- **Maintainer selection:** Option A — approved.
+- **Maintainer notes:** `/ode` remains static and unannotated; all Wave 1
+  annotations stay on `/ode/initial-value-problems`.
+- **Review date:** 2026-07-29.
 
 ### D09 — IVP Method annotation scope
 
@@ -721,9 +757,10 @@ Every selection below is deliberately blank.
 - **Test impact:** Method-card non-change plus heading/helper tests.
 - **Rollback impact:** Remove three explicit compositions without reverting
   card behavior.
-- **Maintainer selection:** Unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
+- **Maintainer selection:** Option A — approved.
+- **Maintainer notes:** Method contains only the `explicit_scheme` helper
+  annotation; method cards remain pure selection controls.
+- **Review date:** 2026-07-29.
 
 ### D10 — Data annotation scope
 
@@ -740,9 +777,10 @@ Every selection below is deliberately blank.
 - **Test impact:** Label/input/trigger, single/Compare, and MathLive-exclusion
   coverage.
 - **Rollback impact:** Data composition can be reverted as one E2 section.
-- **Maintainer selection:** Unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
+- **Maintainer selection:** Option A — approved.
+- **Maintainer notes:** Approve the exact six Data annotations with separate
+  companion/helper triggers outside native labels and inputs.
+- **Review date:** 2026-07-29.
 
 ### D11 — Output annotation scope
 
@@ -757,9 +795,10 @@ Every selection below is deliberately blank.
 - **Bundle/lazy-loading impact:** None.
 - **Test impact:** Result rerender and Compare-plain-text checks.
 - **Rollback impact:** One explicit record.
-- **Maintainer selection:** Unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
+- **Maintainer selection:** Option A — approved.
+- **Maintainer notes:** Output owns only `numerical_approximation`; single and
+  Compare use explicit owner transfer for the same annotation ID.
+- **Review date:** 2026-07-29.
 
 ### D12 — Editable MathLive exclusion
 
@@ -774,9 +813,10 @@ Every selection below is deliberately blank.
 - **Bundle/lazy-loading impact:** Annotation does not trigger editable math.
 - **Test impact:** Explicit DOM/source exclusion assertions.
 - **Rollback impact:** No editor change exists.
-- **Maintainer selection:** Unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
+- **Maintainer selection:** Option A — approved.
+- **Maintainer notes:** Exclude all editable MathLive content and readonly
+  formula interiors; use explicit noneditable companion triggers.
+- **Review date:** 2026-07-29.
 
 ### D13 — Tutor handoff policy
 
@@ -792,9 +832,11 @@ Every selection below is deliberately blank.
 - **Bundle/lazy-loading impact:** Tutor stays independently lazy.
 - **Test impact:** Assert no button, request, queue, card, or transcript change.
 - **Rollback impact:** No Tutor code to revert.
-- **Maintainer selection:** Unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
+- **Maintainer selection:** Option A — approved.
+- **Maintainer notes:** Retain Tutor-topic metadata for compatibility but
+  expose no handoff injector, Ask action, request, queue, card, or transcript
+  mutation.
+- **Review date:** 2026-07-29.
 
 ### D14 — Content-only E1 gate
 
@@ -810,9 +852,10 @@ Every selection below is deliberately blank.
   unreferenced data.
 - **Test impact:** Content/build graph only.
 - **Rollback impact:** Revert E1 independently.
-- **Maintainer selection:** Unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
+- **Maintainer selection:** Option A — approved.
+- **Maintainer notes:** The inert content-only E1 boundary is approved; E1
+  implementation is not authorized.
+- **Review date:** 2026-07-29.
 
 ### D15 — Binding/annotation E2 gate
 
@@ -828,9 +871,10 @@ Every selection below is deliberately blank.
   ODE graph.
 - **Test impact:** Full focused integration matrix.
 - **Rollback impact:** Revert E2 while retaining inert E1 data.
-- **Maintainer selection:** Unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
+- **Maintainer selection:** Option A — approved.
+- **Maintainer notes:** The integration-only E2 boundary is approved; E2
+  implementation is not authorized.
+- **Review date:** 2026-07-29.
 
 ### D16 — Integration-review E3 gate
 
@@ -844,9 +888,10 @@ Every selection below is deliberately blank.
 - **Bundle/lazy-loading impact:** Records manifest and browser evidence.
 - **Test impact:** Focused/full/browser/bundle gates.
 - **Rollback impact:** Blocked review can hold or roll back E2.
-- **Maintainer selection:** Unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
+- **Maintainer selection:** Option A — approved.
+- **Maintainer notes:** E3 is a mandatory independent review of committed
+  E1+E2 state; E3 execution is not authorized.
+- **Review date:** 2026-07-29.
 
 ### D17 — Mandatory F2 gate
 
@@ -861,9 +906,10 @@ Every selection below is deliberately blank.
 - **Bundle/lazy-loading impact:** Rechecks final production boundaries.
 - **Test impact:** Full consistency suite and browser evidence.
 - **Rollback impact:** Findings map to focused E1/E2 corrections.
-- **Maintainer selection:** Unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
+- **Maintainer selection:** Option A — approved.
+- **Maintainer notes:** F2 remains mandatory after E3 and before any release,
+  push, or deployment decision; F2 execution is not authorized.
+- **Review date:** 2026-07-29.
 
 ### D18 — Production activation criteria
 
@@ -879,25 +925,34 @@ Every selection below is deliberately blank.
 - **Bundle/lazy-loading impact:** Requires graph/artifact proof before release.
 - **Test impact:** Each gate has its own acceptance criteria.
 - **Rollback impact:** E1, E2, and review evidence remain separable.
-- **Maintainer selection:** Unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
+- **Maintainer selection:** Option A — approved.
+- **Maintainer notes:** Local production-build activation is allowed during
+  E2 for review. No remote action is allowed until E1 and E2 are accepted, E3
+  and F2 pass, no P0/P1/P2 finding remains open, final verification passes,
+  the worktree is clean, and the maintainer explicitly authorizes an exact
+  commit SHA. Preview and Production deployment require separate
+  authorization.
+- **Review date:** 2026-07-29.
 
-## 17. Acceptance criteria for this design packet
+## 17. Approval result and remaining gates
 
-This E0 packet is complete only when:
+Group E0 governance is complete:
 
-- all ten cards contain all 29 required fields;
-- the exact annotation map contains ten real-file/real-owner records and all 21
-  required fields;
-- all 18 decisions remain unselected;
-- the approval checklist has zero checked boxes;
-- the core/ODE split has no duplicate content authority;
-- the chosen recommended path needs no framework change;
-- `/ode` and Tutor gaps are explicit rather than silently implemented;
+- all ten cards contain all 29 required fields and are
+  `APPROVED_WITH_REVISIONS`;
+- the exact annotation map contains ten approved real-file/real-owner records
+  with all 21 required fields;
+- D01 through D18 are approved as Option A;
+- the checklist records checked content/design approval and leaves
+  implementation, execution, push, and deployment authorization unchecked;
+- the approved two-Core/eight-ODE split has no duplicate content authority;
+- the approved complete-Lab-only path needs no framework change;
+- `/ode` and Tutor exclusions are explicit;
+- no architecture, annotation, Tutor, content-governance, or rollout-design
+  decision remains pending;
 - E1, E2, E3, and F2 remain unauthorized;
 - no production source, test, CSS, package, config, or deployment file changes;
-- local structured validation passes and remains ignored.
+- local structured validation passed, and its artifact remains ignored.
 
-Meeting these criteria means the design is ready for maintainer decisions. It
-does not mean Group E is authorized.
+This approval completes Group E0 design and content governance. It does not
+authorize Group E implementation.

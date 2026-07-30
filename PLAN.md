@@ -53,13 +53,14 @@ and the maintainer accepted both repair commits as prerequisites for Group E0.
 The documentation-only
 [ODE Glossary Wave 1 design](docs/superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md),
 [content packet](docs/content/ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md),
-[unchecked checklist](docs/content/ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md),
+[approval checklist](docs/content/ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md),
 and [readiness review](docs/reviews/2026-07-29-ode-glossary-wave-1-design-readiness-review.md)
-are now locally complete with verdict **DESIGN PACKET COMPLETE — MAINTAINER
-DECISIONS REQUIRED**. All 18 decisions and all checklist items remain pending.
+now record verdict **DESIGN AND CONTENT APPROVED — E1 AUTHORIZATION
+REQUIRED**. Yiding (Bruce) Tian approved D01–D18 as Option A, all ten cards
+with exact revisions, and all ten annotation design records on 2026-07-29.
 `COPY-003` and `src/pages/homePage.ts` remain held and unchanged. E1, E2, E3,
 production Glossary content, annotations, and an ODE binding remain
-unauthorized; the final Group F2 review remains mandatory after Group E.
+unauthorized; the final Group F2 review remains mandatory after E3.
 Nothing was pushed or deployed.
 
 ## Current released baseline
@@ -71,11 +72,11 @@ locally verified, Preview-verified, and Production-verified at
 
 ## Active milestone
 
-**ODE Glossary Wave 1 — Group E0 Maintainer Approval Packet**
+**ODE Glossary Wave 1 — E1 Authorization Gate**
 
 The content-agnostic framework and pre-E repairs are accepted prerequisites.
-Group E0 design/content documentation is locally complete. Maintainer
-decisions are pending, and production content integration has not begun.
+Group E0 design and content governance is complete and maintainer-approved.
+Production content integration has not begun, and E1 remains unauthorized.
 
 ## Completed Project Identity Migration
 
@@ -108,8 +109,9 @@ loading while keeping formal mathematical content separate.
 
 [ODE Glossary Wave 1 Design](docs/superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md)
 
-Status: **Design packet locally complete; all maintainer choices remain
-pending; E1, E2, E3, and F2 are separately gated and unauthorized.**
+Status: **D01–D18, ten revised cards, and ten annotation records are
+maintainer-approved; E1, E2, E3, and F2 are separately gated and
+unauthorized.**
 
 Framework authority remains the
 [Content-Agnostic Interactive Glossary Framework Design](docs/superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md),
@@ -175,7 +177,8 @@ independent final review. No production content or ODE binding was added.**
     as the Group E0 prerequisite.
 18. Prepare the ODE Glossary Wave 1 content, annotation, ownership, binding,
     Tutor-boundary, rollout, checklist, and readiness packet without
-    implementation. Complete locally; maintainer decisions remain pending.
+    implementation. Complete and maintainer-approved as Group E0 governance;
+    no implementation authorized.
 19. Implement E1 content data only after explicit maintainer approval.
     Unauthorized.
 20. Implement E2 annotations and the ODE binding only after accepted E1 and a
@@ -186,15 +189,13 @@ independent final review. No production content or ODE binding was added.**
 
 ## Current next action
 
-Maintainer review of the ten cards, ten annotation records, and 18 unselected
-decision cards in the
-[Wave 1 packet](docs/content/ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md), followed
-by explicit recording of choices in the
-[unchecked checklist](docs/content/ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md).
-The recommended design retains ten terms, keeps `/ode` static and unannotated,
-uses two core plus eight ODE-owned cards, injects no production Tutor handoff,
+A separate maintainer decision on whether to authorize the inert content-only
+E1 implementation described by the
+[approved Wave 1 design](docs/superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md).
+The approved design retains ten terms, keeps `/ode` static and unannotated,
+uses two Core plus eight ODE-owned cards, injects no production Tutor handoff,
 and splits future work into E1, E2, E3, and mandatory F2. `COPY-003` remains
-deferred with the PDE module. No future gate is authorized by this packet.
+deferred with the PDE module. This Group E0 approval authorizes no future gate.
 
 ## Parallel content foundation
 
@@ -215,9 +216,9 @@ rescans 55 records and maps exact replacements to Groups A–F. The standards an
 reconciliation publish no production term, definition, annotation, or notation
 migration. Groups A through D and the Group F1/pre-E prerequisite state are
 accepted. Group F1 implements only `COPY-043` and records the pre-Glossary
-review; it does not complete Group F. `COPY-003` remains held. Group E0 is
-complete for maintainer review, while E1, E2, and E3 remain unauthorized and
-Group F2 remains required after Group E.
+review; it does not complete Group F. `COPY-003` remains held. Group E0 design
+and content governance is maintainer-approved, while E1, E2, and E3 remain
+unauthorized and Group F2 remains required after E3.
 The continuation state is
 [the project-language handoff](docs/content/HANDOFF.md). Nothing from these
 copy iterations was pushed or deployed.
@@ -256,13 +257,13 @@ project-language approval gate is also closed: all nine choices are recorded
 and the three standards are approved as Version 1. The catalog/copy
 reconciliation gate is also closed with 197 stable IDs and 55 rescanned copy
 records. Groups A through D, Group F1, and both pre-E repair commits are
-accepted; `COPY-003` remains held. The Group E0 Wave 1 design/content packet is
-locally complete with verdict **DESIGN PACKET COMPLETE — MAINTAINER DECISIONS
-REQUIRED**. The next gate is maintainer review and recording of the pending
-term, ownership, annotation, Tutor, and rollout choices. E1, E2, E3,
+accepted; `COPY-003` remains held. Group E0 Wave 1 design and content
+governance is complete with verdict **DESIGN AND CONTENT APPROVED — E1
+AUTHORIZATION REQUIRED**. The next gate is a separate maintainer decision on
+whether to authorize inert content-only E1 implementation. E1, E2, E3,
 production Glossary terms, annotations, an ODE binding, and visible Glossary
 behavior remain absent and unauthorized. Group F2 remains mandatory after
-Group E.
+E3.
 
 ## Update rule
 

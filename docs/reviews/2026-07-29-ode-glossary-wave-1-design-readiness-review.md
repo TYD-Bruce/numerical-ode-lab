@@ -1,15 +1,17 @@
-# ODE Glossary Wave 1 Design Readiness Review
+# ODE Glossary Wave 1 Design and Content Approval Review
 
 ## 1. Metadata
 
 | Field | Value |
 |---|---|
 | Date | 2026-07-29 |
-| Task | Group E0 — ODE Glossary Wave 1 Design and Content Approval Packet |
+| Task | Record Group E0 maintainer approval for ODE Glossary Wave 1 |
 | Starting branch | `main` |
-| Starting HEAD | `23f0ca817e136b5ed75b4c8324b9a85139aae2be` |
-| Accepted prerequisites | `55db8e717c517f90d08911e4324c77c50c3d854f`; `23f0ca817e136b5ed75b4c8324b9a85139aae2be` |
-| Review type | Documentation/design readiness only |
+| Starting HEAD | `535a742dd1d2b0a8cb309b01fe287253cd74eecc` |
+| Accepted prerequisites | `55db8e717c517f90d08911e4324c77c50c3d854f`; `23f0ca817e136b5ed75b4c8324b9a85139aae2be`; `535a742dd1d2b0a8cb309b01fe287253cd74eecc` |
+| Maintainer | Yiding (Bruce) Tian |
+| Approval scope | ODE Glossary Wave 1 design and content governance |
+| Review type | Documentation-only approval record |
 | Runtime impact | None |
 | Production content impact | None |
 | Remote/deployment impact | None |
@@ -35,15 +37,17 @@ The packet contains exactly ten cards and no eleventh stable ID. Every card
 has all 29 required fields: identity, language, scope, dependencies,
 confusions, preview, full definition, intuition, current-Lab relevance,
 formula/accessibility, limits, misconception, module/Tutor notes, annotations,
-runtime/content ownership, evidence, recommendation, and unselected maintainer
-review fields.
+runtime/content ownership, evidence, recommendation, and recorded maintainer
+approval fields.
 
-The refined cards start from the catalog's existing rich drafts. They do not
-replace those drafts in the catalog or claim runtime authority.
+The refined cards start from the catalog's existing rich drafts. All ten are
+`APPROVED_WITH_REVISIONS` with the exact maintainer wording recorded in the
+content packet. They remain documentation governance and do not claim runtime
+authority.
 
 ## 4. Mathematical consistency
 
-PASS WITH MAINTAINER DECISIONS.
+PASS.
 
 - ODE uses the current scalar first-order form
   \(y'(t)=f(t,y(t))\) and distinguishes equation, solution, PDE, and systems.
@@ -82,7 +86,7 @@ improvement.
 
 ## 6. Stable-ID and prerequisite consistency
 
-PASS WITH ONE EXPLICIT PENDING CHOICE.
+PASS.
 
 All ten IDs exist in the 197-term catalog and are assigned to
 `WAVE_1_CURRENT_ODE`. There are no duplicates, renamed IDs, or new IDs.
@@ -92,24 +96,24 @@ The review order changes only to respect the catalog dependency
 initial_value_problem`. `time_grid` follows `step_size`; computed \(u_n\)
 follows the grid; Forward Euler follows `explicit_scheme`.
 
-The missing standalone `implicit_scheme` card is explicitly documented and is
-not a live prerequisite or link.
+Approved Option A keeps the missing standalone `implicit_scheme` card
+explicitly documented as non-clickable future related text. It is not a live
+prerequisite or link.
 
-## 7. `implicit_scheme` issue
+## 7. `implicit_scheme` decision
 
-DECISION REQUIRED.
+APPROVED — OPTION A.
 
 Option A retains ten terms and makes Backward Euler self-contained. Option B
 expands to eleven and requires a new catalog/content/annotation/validation
 scope. Option C removes Backward Euler and changes the exact set.
 
-Codex recommends Option A because it is mathematically complete without
-inventing a broken related-term control. The maintainer has not selected an
-option.
+The maintainer selected Option A because it is mathematically complete without
+inventing a broken related-term control.
 
 ## 8. Annotation precision
 
-PASS WITH MAINTAINER DECISIONS.
+PASS.
 
 The map contains exactly ten records and all 21 required fields. Every record
 names a real current route file and owner:
@@ -124,13 +128,14 @@ Existing visible strings are identified separately from exact new companion
 copy. New copy is not described as current behavior. The map records exact
 trigger text, surrounding context, surface, scope, responsive behavior,
 accessible name, keyboard behavior, rerender/disposal behavior, result
-survival, MathLive exclusion, duplicate policy, dependency, and pending status.
+survival, MathLive exclusion, duplicate policy, dependency, and approved
+status.
 
 ## 9. Annotation density
 
 PASS.
 
-The proposed distribution is two Lab-context, one Method, six Data, and one
+The approved distribution is two Lab-context, one Method, six Data, and one
 Output annotations. One card has one primary annotation. Repeated mentions
 remain plain text under first-occurrence-per-scope policy.
 
@@ -151,9 +156,9 @@ Forward/Backward cards appear only after method selection.
 
 ## 10. Core/module ownership
 
-PASS WITH MAINTAINER DECISION.
+PASS.
 
-The recommended split is two reusable core entries
+The approved split is two reusable core entries
 (`numerical_approximation`, `explicit_scheme`) and eight ODE entries. ODE
 context uses the current module-override fields rather than duplicating core
 authority.
@@ -217,12 +222,13 @@ checks. No live screen-reader or physical-touch evidence is claimed here.
 
 ## 14. Tutor boundary
 
-PASS WITH MAINTAINER DECISION.
+PASS.
 
 The current Host can accept a generic Tutor handoff, but the production Lab
-adapter supplies none. The recommended design therefore injects none and shows
-no Ask action. It adds no request, queue, card, transcript item, schema, API,
-session, or automatic behavior.
+adapter supplies none. Approved Option A therefore retains Tutor-topic
+metadata while injecting no handoff and showing no Ask action. It adds no
+request, queue, card, transcript item, schema, API, session, or automatic
+behavior.
 
 A later explicit handoff or queue design is a separate product decision. This
 packet does not treat the development mock as production capability.
@@ -234,16 +240,17 @@ PASS.
 - E1 is pure reviewed data and validation, with no route import or visibility.
 - E2 is exact ODE composition, ten annotations, binding, and focused
   integration.
-- E3 is documentation/evidence and a release verdict.
+- E3 is a mandatory independent review of committed E1+E2 state and
+  introduces no feature or content changes.
 - F2 is a later mandatory cross-surface consistency review.
 
 E1 can be reverted without visible behavior. E2 can be reverted while leaving
 E1 inert. A blocked E3 can hold or roll back E2. F2 findings map back to
-focused E1/E2 corrections. No monolithic Group E commit is proposed.
+focused E1/E2 corrections. No monolithic Group E commit is authorized.
 
 ## 16. Framework-gap result
 
-PASS FOR THE RECOMMENDED PATH.
+PASS FOR THE APPROVED PATH.
 
 No framework modification is required for complete-Lab Wave 1.
 
@@ -252,7 +259,7 @@ Two exact optional gaps are documented:
 1. `/ode` is a static route and has no Lab-owned binding lifecycle.
 2. A production Ask the Tutor action lacks an approved handoff injector.
 
-The recommended path excludes both. Selecting either alternate requires a
+The approved path excludes both. Selecting either alternate requires a
 separate maintainer-authorized design; neither is silently folded into E2.
 
 ## 17. Private-source and copyright safety
@@ -265,9 +272,9 @@ no private path, basename, hash, manifest, screenshot, extraction, or
 substantial quotation. Runtime design includes no evidence metadata or private
 dependency.
 
-## 18. Unresolved decisions
+## 18. Approved decisions
 
-All 18 design cards remain pending:
+All 18 design cards record maintainer-approved Option A:
 
 1. exact set;
 2. `implicit_scheme`;
@@ -288,19 +295,16 @@ All 18 design cards remain pending:
 17. F2;
 18. activation criteria.
 
-The checklist has zero checked boxes. No recommendation is recorded as a
-maintainer selection.
+The checklist has 163 checked content/design boxes and seven unchecked
+implementation, execution, push, and deployment boxes. No architecture,
+annotation, Tutor, content-governance, or rollout-design decision remains
+pending.
 
 ## 19. Implementation readiness
 
-The packet is complete enough for maintainer review. It is not ready for
-implementation until the maintainer:
-
-- records decisions D01–D18;
-- approves or revises every term card;
-- approves or revises every annotation;
-- accepts the ownership and exact new companion copy;
-- separately authorizes E1.
+The design, ten term cards, exact ownership, companion copy, ten annotation
+records, and staged rollout policy are approved. E1 implementation remains
+unauthorized and requires a separate maintainer decision.
 
 E2 requires accepted E1. E3 requires completed E2. F2 remains separate and
 mandatory.
@@ -324,24 +328,28 @@ This design iteration changes no:
 
 PASS.
 
-- Final aggregate validator: 33 of 33 checks passed.
-- Catalog registry: 197 of 197 IDs parsed uniquely; all ten proposed Wave 1
+- Final approval aggregate validator: 52 of 52 checks passed.
+- Catalog registry: 197 of 197 IDs parsed uniquely; all ten approved Wave 1
   IDs are present.
-- Packet: ten 29-field cards and ten 21-field annotations.
-- Design: eighteen complete, unselected decision cards and the complete exact
+- Packet: ten 29-field cards approved with revisions and ten approved 21-field
+  annotations.
+- Design: eighteen complete Option A decision cards and the complete exact
   annotation map.
-- Checklist: 162 unchecked boxes and zero checked boxes.
+- Checklist: 163 checked content/design boxes and seven unchecked
+  implementation/execution/deployment boxes.
 - Current-source ownership: every named annotation file and owner resolved.
-- Relative Markdown links, privacy markers, status consistency, authorized
-  tracked paths, and ignored-artifact checks passed.
+- All 132 relative Markdown links, privacy markers, status consistency,
+  authorized tracked paths, and ignored-artifact checks passed.
+- The other 187 catalog registry rows are byte-identical to starting HEAD.
 - `git diff --check` passed.
 - No npm, typecheck, build, browser, bundle, deployment, remote, or external
   check was required or claimed for this documentation-only packet.
 
 ## 22. Verdict
 
-## DESIGN PACKET COMPLETE — MAINTAINER DECISIONS REQUIRED
+## DESIGN AND CONTENT APPROVED — E1 AUTHORIZATION REQUIRED
 
 The content, annotation, ownership, lifecycle, accessibility, lazy-loading,
-Tutor, rollout, validation, and rollback design is complete. All decisions and
-checklist items remain pending, and no production work is authorized.
+Tutor, rollout, validation, and rollback design is approved. No production
+entry, annotation, binding, or Tutor integration exists; E1, E2, E3, and F2
+remain separately unauthorized.

@@ -1,10 +1,18 @@
 # ODE Glossary Wave 1 Content Packet
 
-Status: Maintainer review packet.
-No term content, annotation, binding, or runtime activation is authorized by
-this document.
+Status: Maintainer-approved design and content governance packet.
+All ten cards are `APPROVED_WITH_REVISIONS`, all ten annotation records are
+approved as E2 design targets, and decisions D01 through D18 are approved as
+Option A. No term implementation, annotation implementation, binding, runtime
+activation, remote action, or deployment is authorized by this document.
 
 Date: 2026-07-29
+
+Maintainer: Yiding (Bruce) Tian
+
+Review date: 2026-07-29
+
+Approval scope: ODE Glossary Wave 1 design and content governance
 
 ## 1. Purpose and authority
 
@@ -13,18 +21,18 @@ This packet refines the ten existing Wave 1 rich drafts in the
 [Terminology Standard v1](NUMERICAL_TERMINOLOGY_STANDARD.md),
 [Notation Standard v1](NUMERICAL_NOTATION_STANDARD.md), and
 [Teaching Voice Standard v1](TEACHING_VOICE.md) to the current Initial Value
-Problems Lab. The packet is proposed content, not runtime data.
+Problems Lab. The packet records approved content governance, not runtime data.
 
 The companion
 [design specification](../superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md),
 [approval checklist](ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md), and
 [design-readiness review](../reviews/2026-07-29-ode-glossary-wave-1-design-readiness-review.md)
-remain subject to explicit maintainer decisions. No unchecked or completed
-field in those documents authorizes E1, E2, E3, or Group F2 by itself.
+record the same approval boundary. Design approval does not authorize E1, E2,
+E3, or Group F2 implementation or execution.
 
 ## 2. Exact term set and teaching order
 
-The proposed set contains exactly these ten existing stable IDs:
+The approved set contains exactly these ten existing stable IDs:
 
 1. `ordinary_differential_equation`
 2. `initial_condition`
@@ -44,8 +52,9 @@ introducing the two ingredients before the combined problem keeps every later
 card's prerequisites behind it. `time_grid` follows `step_size`, and
 `numerical_approximation` follows the grid on which \(u_n\) is stored.
 
-`implicit_scheme` is not added. Its handling is a pending maintainer decision
-in Section 14 and in the design specification.
+`implicit_scheme` is not added. Approved Option A retains the ten-term set,
+makes `backward_euler_method` self-contained, and keeps `implicit_scheme` only
+as non-clickable future related text.
 
 ## 3. Term cards
 
@@ -67,7 +76,8 @@ in Section 14 and in the design specification.
   system.
 - **Annotation priority:** High; first contextual term in the Lab lede.
 - **Short preview definition:** An ordinary differential equation relates an
-  unknown function of one variable to one or more of its derivatives.
+  unknown function of one independent variable to one or more of its
+  derivatives.
 - **Full definition:** An ordinary differential equation relates an unknown
   function of one independent variable to one or more of its derivatives. The
   current Lab treats time as that variable and uses the scalar first-order form
@@ -75,36 +85,38 @@ in Section 14 and in the design specification.
   systems, and they are not all supported here.
 - **Plain-language intuition:** It is a rule describing how a state changes.
   The rule is the equation; a function satisfying that rule is a solution.
-- **Why it matters in the current IVP Lab:** Every current first-order method
-  repeatedly evaluates the entered right-hand side \(f(t,y)\). The Lab does not
-  decide existence or uniqueness and does not support every ODE form.
+- **Why it matters in the current IVP Lab:** Every numerical method currently
+  available in this Lab uses the entered right-hand side \(f(t,y)\) to advance
+  its numerical approximations. The Lab does not decide existence or
+  uniqueness and does not support every ODE form.
 - **Formula, when useful:** \(y'(t)=f(t,y(t))\).
-- **Accessible formula explanation:** “y prime of t equals f of t and y of t.”
+- **Accessible formula explanation:** “y prime of t equals f evaluated at t
+  and y of t.”
 - **Assumptions and limits:** Scalar, first-order, fixed-interval current Lab
   scope; autonomous and time-dependent right-hand sides are allowed. No
   existence, uniqueness, exact-solvability, or universal Lab-support claim.
 - **Common misconception:** Misconception: the ODE is the curve shown in the
   chart. Correction: the ODE is the governing equation; the chart shows
-  computed values from a selected numerical method.
+  numerical approximations computed by the selected method or methods.
 - **Module-specific note:** Read this equation together with the starting value
   and interval entered in Data.
 - **Tutor topic:** Identify the time variable, state, derivative, and
   right-hand side in the current equation without asserting an exact solution.
-- **Proposed annotation locations:** `ODE-W1-ANN-001`; the `/ode` overview
+- **Approved annotation locations:** `ODE-W1-ANN-001`; the `/ode` overview
   occurrence is evaluated but excluded pending a separate static-route design.
-- **Proposed runtime owner:** Future
+- **Approved future runtime owner:** Future
   `src/ode/odeGlossaryContent.ts`, loaded only through the complete ODE route.
-- **Proposed card-content owner:** ODE-owned; not reusable as a complete card
+- **Approved card-content owner:** ODE-owned; not reusable as a complete card
   without a future module review.
 - **Content-review evidence:** Existing catalog rich draft; terminology rows
   for `ordinary_differential_equation`; current equation form in
   `src/ode/odeApp.ts`; scalar fixed-step limits in
   `docs/NUMERICAL_CONTRACTS.md`.
-- **Maintainer recommendation:** Approve the refined card.
-- **Maintainer choice:** Approve / Revise / Defer — unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
-- **Approved status, initially pending:** `PENDING_MAINTAINER_REVIEW`.
+- **Approval rationale:** Approved the refined card.
+- **Maintainer choice:** Approved with revisions — selected.
+- **Maintainer notes:** Exact revisions recorded in this approved packet.
+- **Review date:** 2026-07-29.
+- **Approved status:** `APPROVED_WITH_REVISIONS`.
 
 ### 3.2 Initial condition
 
@@ -123,19 +135,19 @@ in Section 14 and in the design specification.
 - **Commonly confused terms:** Boundary condition; initial time; first
   numerical error.
 - **Annotation priority:** High; Data input composition.
-- **Short preview definition:** The initial condition gives the supplied
-  solution value at the starting time.
-- **Full definition:** The initial condition states that the solution has the
-  supplied value \(y_0\) at the starting time \(t_0\). For the current
-  first-order Lab it is written \(y(t_0)=y_0\). It starts the numerical
-  computation, but it is not a boundary condition at multiple points and is
-  not an error estimate.
-- **Plain-language intuition:** It tells the method where the trajectory
-  starts. The starting time is \(t_0\), and the supplied starting value is
-  \(y_0\).
+- **Short preview definition:** An initial condition specifies the value the
+  solution must have at the starting time.
+- **Full definition:** An initial condition specifies that the solution must
+  have the value \(y_0\) at the starting time \(t_0\). In the current scalar
+  first-order Lab, it is written \(y(t_0)=y_0\). It supplies the starting data
+  for the numerical computation; it is not an error estimate or a boundary
+  condition from a boundary-value problem.
+- **Plain-language intuition:** It tells the method where to start: at time
+  \(t_0\), with value \(y_0\).
 - **Why it matters in the current IVP Lab:** Changing \(y_0\) changes the
-  problem even if the differential equation is unchanged. The first stored
-  approximation begins from this supplied value.
+  initial value problem even when the differential equation remains the same.
+  The first stored numerical approximation is initialized with this supplied
+  value.
 - **Formula, when useful:** \(y(t_0)=y_0\).
 - **Accessible formula explanation:** “y of t zero equals y zero.”
 - **Assumptions and limits:** The current card covers one scalar value at one
@@ -147,18 +159,18 @@ in Section 14 and in the design specification.
   Initial value \(y_0\); together they state the condition.
 - **Tutor topic:** Connect the current start time and initial value to the first
   numerical value without calling the condition a boundary condition.
-- **Proposed annotation locations:** `ODE-W1-ANN-003`.
-- **Proposed runtime owner:** Future
+- **Approved annotation locations:** `ODE-W1-ANN-003`.
+- **Approved future runtime owner:** Future
   `src/ode/odeGlossaryContent.ts`.
-- **Proposed card-content owner:** ODE-owned.
+- **Approved card-content owner:** ODE-owned.
 - **Content-review evidence:** Existing catalog rich draft; terminology row for
   `initial_condition`; current Data fields in `mountOdeApp.renderForm`.
-- **Maintainer recommendation:** Approve the refined card and the separate
+- **Approval rationale:** Approved the refined card and the separate
   sibling-trigger composition.
-- **Maintainer choice:** Approve / Revise / Defer — unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
-- **Approved status, initially pending:** `PENDING_MAINTAINER_REVIEW`.
+- **Maintainer choice:** Approved with revisions — selected.
+- **Maintainer notes:** Exact revisions recorded in this approved packet.
+- **Review date:** 2026-07-29.
+- **Approved status:** `APPROVED_WITH_REVISIONS`.
 
 ### 3.3 Initial value problem (IVP)
 
@@ -186,12 +198,14 @@ in Section 14 and in the design specification.
   solution, and existence or uniqueness requires additional assumptions.
 - **Plain-language intuition:** It supplies both the rule for change and the
   place to start.
-- **Why it matters in the current IVP Lab:** The selected equation, starting
-  time, starting value, and interval identify the problem. Choosing Forward
-  Euler or another method does not change that problem.
+- **Why it matters in the current IVP Lab:** The differential equation,
+  starting time \(t_0\), and starting value \(y_0\) define the initial value
+  problem. The selected interval tells the Lab where to approximate its
+  solution. Choosing Forward Euler or another numerical method does not change
+  the mathematical problem.
 - **Formula, when useful:** \(y'(t)=f(t,y(t)),\qquad y(t_0)=y_0\).
-- **Accessible formula explanation:** “y prime of t equals f of t and y of t,
-  with y of t zero equal to y zero.”
+- **Accessible formula explanation:** “y prime of t equals f evaluated at t
+  and y of t, with y of t zero equal to y zero.”
 - **Assumptions and limits:** Current support is scalar, first-order, and
   fixed-interval. The input form represents an IVP but is not itself the exact
   mathematical solution.
@@ -202,18 +216,17 @@ in Section 14 and in the design specification.
   problems or general ODE systems.
 - **Tutor topic:** Explain the current equation, \(t_0\), and \(y_0\) as one
   problem and keep the method separate.
-- **Proposed annotation locations:** `ODE-W1-ANN-002`.
-- **Proposed runtime owner:** Future
+- **Approved annotation locations:** `ODE-W1-ANN-002`.
+- **Approved future runtime owner:** Future
   `src/ode/odeGlossaryContent.ts`.
-- **Proposed card-content owner:** ODE-owned.
+- **Approved card-content owner:** ODE-owned.
 - **Content-review evidence:** Existing catalog rich draft and dependency
   graph; current route title and Data form; terminology standard.
-- **Maintainer recommendation:** Approve after approving the prerequisite-aware
-  teaching order.
-- **Maintainer choice:** Approve / Revise / Defer — unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
-- **Approved status, initially pending:** `PENDING_MAINTAINER_REVIEW`.
+- **Approval rationale:** Approved with the prerequisite-aware teaching order.
+- **Maintainer choice:** Approved with revisions — selected.
+- **Maintainer notes:** Exact revisions recorded in this approved packet.
+- **Review date:** 2026-07-29.
+- **Approved status:** `APPROVED_WITH_REVISIONS`.
 
 ### 3.4 Time-step size
 
@@ -231,19 +244,19 @@ in Section 14 and in the design specification.
 - **Commonly confused terms:** Number of steps; number of stored points; PDE
   spatial grid spacing.
 - **Annotation priority:** High; Data input companion.
-- **Short preview definition:** The time-step size \(h\) is the spacing between
-  consecutive times on the current fixed grid.
-- **Full definition:** The time-step size is
-  \(h=t_{n+1}-t_n\). The current Lab uses one constant positive \(h\) and
-  requires the interval to align with an integer number of steps. A smaller
-  \(h\) creates more steps on the same interval, but it does not by itself
-  guarantee a more accurate or stable result.
+- **Short preview definition:** The time-step size \(h\) is the constant time
+  interval between consecutive points on the current uniform grid.
+- **Full definition:** The time-step size is \(h=t_{n+1}-t_n\). The current
+  Lab uses one constant positive value of \(h\) and requires the interval
+  length to equal an integer number of time steps. Over the same interval, a
+  smaller \(h\) produces more steps, but it does not by itself guarantee a
+  more accurate or stable result.
 - **Plain-language intuition:** It controls how far the method advances in
   time during each update.
-- **Why it matters in the current IVP Lab:** The selected \(h\) determines the
-  fixed time grid, computational work, and the step used by the numerical
-  method. Convergence and stability interpretations require additional
-  evidence.
+- **Why it matters in the current IVP Lab:** The selected \(h\) sets the
+  spacing of the time grid and strongly affects the amount of computation. Its
+  effect on error and stability must be checked using the method, problem, and
+  available numerical evidence.
 - **Formula, when useful:** \(h=t_{n+1}-t_n,\qquad h>0\).
 - **Accessible formula explanation:** “h equals t sub n plus one minus t sub n,
   and h is positive.”
@@ -257,19 +270,19 @@ in Section 14 and in the design specification.
   spacing.
 - **Tutor topic:** Explain the current \(h\), step count, and likely refinement
   effects without promising improvement.
-- **Proposed annotation locations:** `ODE-W1-ANN-004`.
-- **Proposed runtime owner:** Future
+- **Approved annotation locations:** `ODE-W1-ANN-004`.
+- **Approved future runtime owner:** Future
   `src/ode/odeGlossaryContent.ts`.
-- **Proposed card-content owner:** ODE-owned because the preferred label,
+- **Approved card-content owner:** ODE-owned because the preferred label,
   formula, and limits are explicitly temporal.
 - **Content-review evidence:** Existing catalog rich draft; terminology and
   notation standards; `validateFixedStepGrid` contract; current Data label.
-- **Maintainer recommendation:** Approve the ODE-owned card rather than
+- **Approval rationale:** Approved the ODE-owned card rather than
   prematurely generalizing it as cross-module core content.
-- **Maintainer choice:** Approve / Revise / Defer — unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
-- **Approved status, initially pending:** `PENDING_MAINTAINER_REVIEW`.
+- **Maintainer choice:** Approved with revisions — selected.
+- **Maintainer notes:** Exact revisions recorded in this approved packet.
+- **Review date:** 2026-07-29.
+- **Approved status:** `APPROVED_WITH_REVISIONS`.
 
 ### 3.5 Time grid
 
@@ -285,18 +298,19 @@ in Section 14 and in the design specification.
 - **Commonly confused terms:** Time-step size; number of steps; stored-point
   count; PDE spatial grid.
 - **Annotation priority:** Medium-high; one Data helper occurrence.
-- **Short preview definition:** The time grid is the ordered set of times where
-  the method stores numerical approximations.
-- **Full definition:** A time grid is the ordered set
+- **Short preview definition:** The time grid is the ordered sequence of times
+  where the method stores numerical approximations.
+- **Full definition:** A time grid is the ordered sequence
   \(t_0,t_1,\ldots,t_N\) at which a numerical ODE method stores
-  approximations. In the current fixed-step Lab,
-  \(t_n=t_0+nh\). There are \(N\) steps between \(N+1\) stored grid points,
-  and the current grid includes both aligned endpoints.
+  approximations. In the current fixed-step Lab, \(t_n=t_0+nh\). There are
+  \(N\) time steps between \(N+1\) stored grid points, and the current grid
+  includes both aligned endpoints.
 - **Plain-language intuition:** It is the sequence of time locations where the
   computed values live.
 - **Why it matters in the current IVP Lab:** The plot, table, comparison, and
-  exact-reference evaluations rely on aligned time locations. The Lab
-  validates one uniform grid rather than an adaptive or nonuniform grid.
+  exact-reference calculations align values using these time points. The
+  current Lab uses one uniform time grid rather than an adaptive or nonuniform
+  grid.
 - **Formula, when useful:** \(t_n=t_0+nh,\qquad 0\le n\le N\).
 - **Accessible formula explanation:** “t sub n equals t zero plus n times h,
   for n from zero through N.”
@@ -309,19 +323,19 @@ in Section 14 and in the design specification.
   it does not advertise adaptive or arbitrary grids.
 - **Tutor topic:** Relate \(t_0\), \(t_N\), \(h\), step count, and stored-point
   count without changing the alignment contract.
-- **Proposed annotation locations:** `ODE-W1-ANN-005`.
-- **Proposed runtime owner:** Future
+- **Approved annotation locations:** `ODE-W1-ANN-005`.
+- **Approved future runtime owner:** Future
   `src/ode/odeGlossaryContent.ts`.
-- **Proposed card-content owner:** ODE-owned because this complete card is
+- **Approved card-content owner:** ODE-owned because this complete card is
   temporal and tied to the current fixed-grid contract.
 - **Content-review evidence:** Existing catalog rich draft; grid contract and
   tests; current Data and Output owners.
-- **Maintainer recommendation:** Approve the card and its one explicit helper
+- **Approval rationale:** Approved the card and its one explicit helper
   occurrence.
-- **Maintainer choice:** Approve / Revise / Defer — unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
-- **Approved status, initially pending:** `PENDING_MAINTAINER_REVIEW`.
+- **Maintainer choice:** Approved with revisions — selected.
+- **Maintainer notes:** Exact revisions recorded in this approved packet.
+- **Review date:** 2026-07-29.
+- **Approved status:** `APPROVED_WITH_REVISIONS`.
 
 ### 3.6 Numerical approximation
 
@@ -342,16 +356,15 @@ in Section 14 and in the design specification.
 - **Annotation priority:** High; primary Output label.
 - **Short preview definition:** A numerical approximation is a computed value
   intended to estimate an exact mathematical quantity.
-- **Full definition:** A numerical approximation is a computed estimate of an
-  exact mathematical quantity. In the current IVP Lab, \(u_n\) is the value
-  produced by the selected method at time \(t_n\), so
-  \(u_n\approx y(t_n)\). The approximation is distinct from the exact value,
-  its error, and any residual of an equation.
+- **Full definition:** A numerical approximation is a value computed by a
+  numerical method to estimate an exact mathematical quantity. It is distinct
+  from the exact quantity, the error in the approximation, and any residual of
+  an equation.
 - **Plain-language intuition:** It is the method's computed value at one grid
   time, not a claim that the exact value has been found.
-- **Why it matters in the current IVP Lab:** The result summary, plot, and
-  table display the sequence of computed approximations. Error analysis, when
-  available, compares those values with a separate reference.
+- **Why it matters in the current IVP Lab:** In this Lab, \(u_n\) is the value
+  produced by the selected method at time \(t_n\), so
+  \(u_n\approx y(t_n)\).
 - **Formula, when useful:** \(u_n\approx y(t_n)\).
 - **Accessible formula explanation:** “u sub n approximately equals y of t sub
   n.”
@@ -362,24 +375,27 @@ in Section 14 and in the design specification.
   \(t_n\). Correction: \(u_n\) is computed by the numerical method; its
   difference from a stated reference is an error, not the approximation
   itself.
-- **Module-specific note:** The current Lab stores these values in immutable
-  solver-result points and renders them without changing their numerical
-  ownership.
+- **Module-specific note:** In this Lab, \(u_n\) denotes the stored numerical
+  approximation at time \(t_n\). When an exact solution is supplied,
+  \(y(t_n)\) provides a separate reference value for comparison.
 - **Tutor topic:** Explain what a displayed \(u_n\) represents and distinguish
   it from exact value, error, and residual.
-- **Proposed annotation locations:** `ODE-W1-ANN-006`.
-- **Proposed runtime owner:** Future `src/glossary/coreGlossary.ts`, imported by
+- **Approved annotation locations:** `ODE-W1-ANN-006`.
+- **Approved future runtime owner:** Future `src/glossary/coreGlossary.ts`,
+  imported by
   the lazy ODE composition only after E2.
-- **Proposed card-content owner:** Core-owned with an ODE contextual override
-  for “Why it matters here.”
+- **Approved card-content owner:** Core-owned canonical definition and
+  reusable teaching content, with an ODE context-only override for the current
+  Lab. ODE must not redefine the Core term, replace its stable ID, reverse
+  aliases, or create a second independent full card.
 - **Content-review evidence:** Existing catalog rich draft; terminology and
   notation standards; accepted Output wording in `src/ode/odeApp.ts`.
-- **Maintainer recommendation:** Approve as reusable core content plus an ODE
+- **Approval rationale:** Approved as reusable core content plus an ODE
   override.
-- **Maintainer choice:** Approve / Revise / Defer — unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
-- **Approved status, initially pending:** `PENDING_MAINTAINER_REVIEW`.
+- **Maintainer choice:** Approved with revisions — selected.
+- **Maintainer notes:** Exact revisions recorded in this approved packet.
+- **Review date:** 2026-07-29.
+- **Approved status:** `APPROVED_WITH_REVISIONS`.
 
 ### 3.7 Exact solution
 
@@ -398,7 +414,7 @@ in Section 14 and in the design specification.
   a function that matches only the initial condition.
 - **Annotation priority:** High; Data exact-reference composition.
 - **Short preview definition:** An exact solution is a function that satisfies
-  the stated initial value problem.
+  the differential equation and initial condition on the stated interval.
 - **Full definition:** An exact solution satisfies both the differential
   equation and the initial condition throughout the stated interval. In the
   current Lab an optional analytical expression can supply reference values
@@ -406,12 +422,14 @@ in Section 14 and in the design specification.
   agreement; it is not a proof that the entered expression is exact.
 - **Plain-language intuition:** It is the mathematical function used as a
   reference, not another run of a numerical method.
-- **Why it matters in the current IVP Lab:** The Lab needs a usable supplied
-  exact solution before it can calculate current exact-reference errors or run
-  the Convergence Study.
+- **Why it matters in the current IVP Lab:** When a supplied exact-solution
+  expression is available, the Lab evaluates it at time-grid points to
+  calculate exact-reference errors and support the Convergence Study.
+  Numerical integration can still run without an exact solution, but those
+  comparisons are then unavailable.
 - **Formula, when useful:** \(y'(t)=f(t,y(t)),\qquad y(t_0)=y_0\).
-- **Accessible formula explanation:** “y prime of t equals f of t and y of t,
-  with y of t zero equal to y zero.”
+- **Accessible formula explanation:** “y prime of t equals f evaluated at t
+  and y of t, with y of t zero equal to y zero.”
 - **Assumptions and limits:** The function must satisfy the equation and
   initial condition on the interval. Matching \(y(t_0)=y_0\) alone is
   insufficient. The user's expression is not formally proved exact.
@@ -423,19 +441,19 @@ in Section 14 and in the design specification.
   itself.
 - **Tutor topic:** Explain reference-value use and the proof limitation
   without treating the expression as automatically certified.
-- **Proposed annotation locations:** `ODE-W1-ANN-007`.
-- **Proposed runtime owner:** Future
+- **Approved annotation locations:** `ODE-W1-ANN-007`.
+- **Approved future runtime owner:** Future
   `src/ode/odeGlossaryContent.ts`.
-- **Proposed card-content owner:** ODE-owned; the Wave 1 definition, formula,
+- **Approved card-content owner:** ODE-owned; the Wave 1 definition, formula,
   and proof limitation are specifically IVP-scoped.
 - **Content-review evidence:** Existing catalog rich draft; exact-solution
   numerical contract; Data and Convergence owners.
-- **Maintainer recommendation:** Approve as ODE-owned rather than generalizing
+- **Approval rationale:** Approved as ODE-owned rather than generalizing
   the IVP-specific card into core content.
-- **Maintainer choice:** Approve / Revise / Defer — unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
-- **Approved status, initially pending:** `PENDING_MAINTAINER_REVIEW`.
+- **Maintainer choice:** Approved with revisions — selected.
+- **Maintainer notes:** Exact revisions recorded in this approved packet.
+- **Review date:** 2026-07-29.
+- **Approved status:** `APPROVED_WITH_REVISIONS`.
 
 ### 3.8 Explicit scheme
 
@@ -457,42 +475,48 @@ in Section 14 and in the design specification.
 - **Short preview definition:** An explicit scheme computes the next numerical
   approximation directly from quantities already known.
 - **Full definition:** An explicit scheme computes the next numerical
-  approximation directly from data already available at the current step.
-  Forward Euler is the current simplest example:
-  \(u_{n+1}=u_n+h f(t_n,u_n)\). Explicitness describes how the update is
-  formed; it does not determine the method's accuracy order or absolute
-  stability by itself.
+  approximation directly from quantities that are already known before the
+  update. Explicitness describes how the update is formed; it does not by
+  itself determine the method's accuracy order or absolute stability.
 - **Plain-language intuition:** Known values go in, and the next value comes
   out without solving a new equation for that value.
-- **Why it matters in the current IVP Lab:** It helps explain why Forward Euler
-  and other explicit choices differ in work and stability behavior from
-  Backward Euler and other implicit choices.
+- **Why it matters in the current IVP Lab:** Forward Euler is explicit, while
+  Backward Euler is implicit. This distinction describes how each next
+  approximation is obtained; it does not by itself decide which method is more
+  accurate or suitable for a particular problem.
 - **Formula, when useful:** \(u_{n+1}=u_n+h f(t_n,u_n)\) (Forward Euler
   example).
 - **Accessible formula explanation:** “u sub n plus one equals u sub n plus h
-  times f of t sub n and u sub n.”
+  times f evaluated at t sub n and u sub n.”
 - **Assumptions and limits:** The quantities on the right are already known for
   the stated update. Explicit does not mean first-order, inaccurate,
   unsuitable, or exact.
 - **Common misconception:** Misconception: explicit means the exact solution
   has an explicit formula. Correction: explicit describes how the numerical
   update computes its next approximation.
-- **Module-specific note:** Forward Euler is the Wave 1 example; other current
-  method-family details remain outside this ten-term content review.
+- **Module-specific note:** Forward Euler is the Wave 1 example. Other
+  explicit methods may use additional evaluations or previously stored
+  values, but they still form the next approximation from quantities already
+  known.
 - **Tutor topic:** Identify which current quantities are known before the
   selected explicit update is evaluated.
-- **Proposed annotation locations:** `ODE-W1-ANN-008`.
-- **Proposed runtime owner:** Future `src/glossary/coreGlossary.ts`, imported by
+- **Approved annotation locations:** `ODE-W1-ANN-008`.
+- **Approved future runtime owner:** Future `src/glossary/coreGlossary.ts`,
+  imported by
   lazy ODE composition only after E2.
-- **Proposed card-content owner:** Core-owned with an ODE contextual override.
+- **Approved card-content owner:** Core-owned canonical definition and
+  reusable teaching content, with an ODE context-only override:
+  “In this Lab, Forward Euler is the simplest example:
+  \(u_{n+1}=u_n+h f(t_n,u_n)\).” ODE must not redefine the Core term, replace
+  its stable ID, reverse aliases, or create a second independent full card.
 - **Content-review evidence:** Existing catalog rich draft; cross-cutting
   terminology row; current Forward Euler formula and method metadata.
-- **Maintainer recommendation:** Approve as reusable core content plus an ODE
+- **Approval rationale:** Approved as reusable core content plus an ODE
   override.
-- **Maintainer choice:** Approve / Revise / Defer — unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
-- **Approved status, initially pending:** `PENDING_MAINTAINER_REVIEW`.
+- **Maintainer choice:** Approved with revisions — selected.
+- **Maintainer notes:** Exact revisions recorded in this approved packet.
+- **Review date:** 2026-07-29.
+- **Approved status:** `APPROVED_WITH_REVISIONS`.
 
 ### 3.9 Forward Euler method
 
@@ -512,13 +536,15 @@ in Section 14 and in the design specification.
 - **Commonly confused terms:** Backward Euler; theoretical order versus
   observed order; explicitness versus stability.
 - **Annotation priority:** High; selected-method Data heading.
-- **Short preview definition:** Forward Euler advances directly using the
-  derivative at the current time and current approximation.
+- **Short preview definition:** Forward Euler computes the next approximation
+  from the current time, the current approximation, and the derivative
+  evaluated there.
 - **Full definition:** Forward Euler is an explicit one-step method that uses
   the current time \(t_n\) and approximation \(u_n\) to compute
   \(u_{n+1}=u_n+h f(t_n,u_n)\). Its theoretical order is 1 under the usual
   regularity and stability assumptions. It is simple and useful for learning,
-  while its absolute-stability restrictions may require small time-step sizes.
+  but for some problems its absolute-stability restriction forces the use of
+  small time-step sizes.
 - **Plain-language intuition:** It follows the current tangent direction for
   one time step.
 - **Why it matters in the current IVP Lab:** Its direct update makes it a clear
@@ -526,29 +552,30 @@ in Section 14 and in the design specification.
   values. It is also the Beginner Starter method.
 - **Formula, when useful:** \(u_{n+1}=u_n+h f(t_n,u_n)\).
 - **Accessible formula explanation:** “u sub n plus one equals u sub n plus h
-  times f of t sub n and u sub n.”
+  times f evaluated at t sub n and u sub n.”
 - **Assumptions and limits:** Theoretical order 1 needs the usual regularity
   and stability assumptions. Observed order need not equal 1 in every finite
   run, and smaller \(h\) is not a universal remedy.
 - **Common misconception:** Misconception: every Forward Euler run must show
   observed order exactly 1. Correction: 1 is the theoretical order under the
   usual assumptions; finite observed evidence can differ or be unavailable.
-- **Module-specific note:** The card explains the released fixed-step method
-  without changing its solver, metadata, or stability contract.
+- **Module-specific note:** In this Lab, Forward Euler is the Beginner Starter
+  method. Its update uses one right-hand-side evaluation per fixed time step,
+  and the Lab does not adapt \(h\) automatically.
 - **Tutor topic:** Walk through one update using the current equation and
   values, then qualify any order or stability statement.
-- **Proposed annotation locations:** `ODE-W1-ANN-009`.
-- **Proposed runtime owner:** Future
+- **Approved annotation locations:** `ODE-W1-ANN-009`.
+- **Approved future runtime owner:** Future
   `src/ode/odeGlossaryContent.ts`.
-- **Proposed card-content owner:** ODE-owned.
+- **Approved card-content owner:** ODE-owned.
 - **Content-review evidence:** Existing catalog rich draft; current method
   catalog formula, blurb, metadata, solver, and numerical contract.
-- **Maintainer recommendation:** Approve the card and safe selected-heading
+- **Approval rationale:** Approved the card and safe selected-heading
   annotation; do not nest a trigger in the method selection card.
-- **Maintainer choice:** Approve / Revise / Defer — unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
-- **Approved status, initially pending:** `PENDING_MAINTAINER_REVIEW`.
+- **Maintainer choice:** Approved with revisions — selected.
+- **Maintainer notes:** Exact revisions recorded in this approved packet.
+- **Review date:** 2026-07-29.
+- **Approved status:** `APPROVED_WITH_REVISIONS`.
 
 ### 3.10 Backward Euler method
 
@@ -570,10 +597,11 @@ in Section 14 and in the design specification.
 - **Short preview definition:** Backward Euler defines the next approximation
   through an equation involving the unknown next value.
 - **Full definition:** Backward Euler is an implicit one-step method:
-  \(u_{n+1}=u_n+h f(t_{n+1},u_{n+1})\). Because the unknown next value appears
-  on both sides, each step must be solved. Its theoretical order is 1 under the
-  usual assumptions, and it is A-stable for the scalar test equation.
-  A-stability does not establish accuracy or successful nonlinear iteration.
+  \(u_{n+1}=u_n+h f(t_{n+1},u_{n+1})\). Because the unknown next approximation
+  appears on both sides, each step must be solved. Its theoretical order is 1
+  under the usual assumptions, and it is A-stable for the scalar test
+  equation. A-stability does not guarantee accuracy, and it does not guarantee
+  that the nonlinear solve will succeed.
 - **Plain-language intuition:** The next value appears inside its own update
   equation, so the method cannot simply evaluate known quantities and move on.
 - **Why it matters in the current IVP Lab:** The current implementation may
@@ -582,40 +610,42 @@ in Section 14 and in the design specification.
   absolute-stability property.
 - **Formula, when useful:** \(u_{n+1}=u_n+h f(t_{n+1},u_{n+1})\).
 - **Accessible formula explanation:** “u sub n plus one equals u sub n plus h
-  times f at t sub n plus one and u sub n plus one.”
-- **Assumptions and limits:** Theoretical order 1 needs the usual regularity
-  and stability assumptions. A-stability is stated only for the scalar test
-  equation. A nonlinear solve can fail, and a successful solve does not prove
-  accuracy or A-stability.
+  times f evaluated at t sub n plus one and u sub n plus one.”
+- **Assumptions and limits:** Theoretical order 1 requires the usual
+  regularity and stability assumptions. The A-stability statement refers to
+  the scalar test equation. The nonlinear solve may fail; if it succeeds, that
+  does not by itself establish accuracy, and nonlinear convergence remains
+  separate from the method's A-stability.
 - **Common misconception:** Misconception: if the nonlinear iteration
   converges, Backward Euler must be accurate and stable for that run.
   Correction: iteration success, accuracy, and absolute stability are
   different questions.
-- **Module-specific note:** Under provisional Option A, this card is
-  self-contained: it directly explains the solved next-value equation and
-  names `implicit_scheme` only as a future related term.
+- **Module-specific note:** In this Lab, Backward Euler is the basic implicit
+  example. Because the next approximation appears inside \(f\), the
+  implementation may require nonlinear iteration. Those iteration diagnostics
+  describe the step solve, not the method's absolute-stability property.
 - **Tutor topic:** Explain why the update is implicit, how this implementation
   iterates, and why nonlinear convergence is different from absolute
   stability.
-- **Proposed annotation locations:** `ODE-W1-ANN-010`.
-- **Proposed runtime owner:** Future
+- **Approved annotation locations:** `ODE-W1-ANN-010`.
+- **Approved future runtime owner:** Future
   `src/ode/odeGlossaryContent.ts`.
-- **Proposed card-content owner:** ODE-owned.
+- **Approved card-content owner:** ODE-owned.
 - **Content-review evidence:** Existing catalog rich draft; current method
   catalog and implicit diagnostics; nonlinear and stability contracts.
-- **Maintainer recommendation:** Approve with provisional implicit-scheme
-  Option A; retain the card in the exact ten-term set.
-- **Maintainer choice:** Approve / Revise / Defer — unselected.
-- **Maintainer notes:** —
-- **Review date:** Pending.
-- **Approved status, initially pending:** `PENDING_MAINTAINER_REVIEW`.
+- **Approval rationale:** Approved implicit-scheme Option A and retained
+  the card in the exact ten-term set.
+- **Maintainer choice:** Approved with revisions — selected.
+- **Maintainer notes:** Exact revisions recorded in this approved packet.
+- **Review date:** 2026-07-29.
+- **Approved status:** `APPROVED_WITH_REVISIONS`.
 
-## 4. Proposed exact annotation map
+## 4. Approved exact annotation map
 
 The map proposes ten annotations, one per card. All are inside the complete
 Lab route. `/ode` was evaluated, but its static `RouteModule` has no
-Lab-owned Glossary binding; no `/ode` annotation is proposed under the
-recommended no-framework-change design.
+Lab-owned Glossary binding; no `/ode` annotation is approved under the
+approved no-framework-change design.
 
 ### ODE-W1-ANN-001
 
@@ -625,10 +655,12 @@ recommended no-framework-change design.
 - **File:** `src/ode/odeApp.ts`
 - **Owner function/component:** `DEFAULT_LEDE` and `mountOdeApp.render`
 - **Exact visible text:** `ordinary differential equation`
-- **Surrounding context:** Proposed E2 lede composition: “Explore fixed-step
+- **Surrounding context:** Approved E2 lede composition: “Explore fixed-step
   methods for a first-order ordinary differential equation posed as an initial
   value problem, then analyze numerical error, observed convergence, and
-  method behavior as the time-step size changes.” The exact copy is pending.
+  method behavior as the time-step size changes.” The approved design
+  authorizes this exact sentence as the E2 target unless implementation
+  discovers an owner mismatch.
 - **Surface:** lede
 - **Trigger type supported by the framework:** Native text-like button created
   explicitly by `GlossaryScopeController.createTerm`.
@@ -651,7 +683,7 @@ recommended no-framework-change design.
   remain ordinary link/text, never nested triggers.
 - **Implementation dependency:** E1-approved card data; E2-approved lede copy,
   ODE runtime composition, and binding.
-- **Review status:** `PENDING_MAINTAINER_REVIEW`.
+- **Review status:** `APPROVED`.
 
 ### ODE-W1-ANN-002
 
@@ -661,7 +693,7 @@ recommended no-framework-change design.
 - **File:** `src/ode/odeApp.ts`
 - **Owner function/component:** `DEFAULT_LEDE` and `mountOdeApp.render`
 - **Exact visible text:** `initial value problem`
-- **Surrounding context:** The same proposed exact lede sentence as
+- **Surrounding context:** The same approved exact lede sentence as
   `ODE-W1-ANN-001`; the route title and breadcrumb remain plain.
 - **Surface:** lede
 - **Trigger type supported by the framework:** Explicit native text-like
@@ -681,7 +713,7 @@ recommended no-framework-change design.
 - **Duplicate-term policy:** Route title, breadcrumb, and subsequent mentions
   remain plain.
 - **Implementation dependency:** Approved E1 content and E2 lede/binding.
-- **Review status:** `PENDING_MAINTAINER_REVIEW`.
+- **Review status:** `APPROVED`.
 
 ### ODE-W1-ANN-003
 
@@ -713,7 +745,7 @@ recommended no-framework-change design.
   plain.
 - **Implementation dependency:** Approved Data composition and accessibility
   tests in E2.
-- **Review status:** `PENDING_MAINTAINER_REVIEW`.
+- **Review status:** `APPROVED`.
 
 ### ODE-W1-ANN-004
 
@@ -746,7 +778,7 @@ recommended no-framework-change design.
   Compare does not create two simultaneous triggers.
 - **Implementation dependency:** E1 card; E2 label-companion helper and both
   form tests.
-- **Review status:** `PENDING_MAINTAINER_REVIEW`.
+- **Review status:** `APPROVED`.
 
 ### ODE-W1-ANN-005
 
@@ -759,7 +791,9 @@ recommended no-framework-change design.
 - **Exact visible text:** `time grid`
 - **Surrounding context:** One new helper sentence immediately after the
   interval/time-step controls: “The current fixed-step time grid includes the
-  aligned start and end times.” Exact copy is pending.
+  aligned start and end times.” The approved design authorizes this exact
+  sentence as the E2 target unless implementation discovers an owner
+  mismatch.
 - **Surface:** helper text
 - **Trigger type supported by the framework:** Explicit native text-like
   button inside noninteractive helper prose.
@@ -774,9 +808,9 @@ recommended no-framework-change design.
 - **Whether it is excluded from editable MathLive content:** Yes.
 - **Duplicate-term policy:** Output `Grid points stored`, chart axes, Compare
   diagnostics, and table values remain plain.
-- **Implementation dependency:** Maintainer approval of the exact helper copy
-  plus E1/E2.
-- **Review status:** `PENDING_MAINTAINER_REVIEW`.
+- **Implementation dependency:** Approved exact helper copy plus separately
+  authorized E1/E2.
+- **Review status:** `APPROVED`.
 
 ### ODE-W1-ANN-006
 
@@ -807,7 +841,7 @@ recommended no-framework-change design.
   table cells, and Tutor text remain plain.
 - **Implementation dependency:** E1 core entry, ODE override, E2 Output DOM
   composition and lifecycle tests.
-- **Review status:** `PENDING_MAINTAINER_REVIEW`.
+- **Review status:** `APPROVED`.
 
 ### ODE-W1-ANN-007
 
@@ -838,7 +872,7 @@ recommended no-framework-change design.
 - **Duplicate-term policy:** Checkbox text, preset preview, Convergence labels,
   formulas, and Tutor transcript remain plain.
 - **Implementation dependency:** Approved E1 card and E2 Data composition.
-- **Review status:** `PENDING_MAINTAINER_REVIEW`.
+- **Review status:** `APPROVED`.
 
 ### ODE-W1-ANN-008
 
@@ -866,9 +900,9 @@ recommended no-framework-change design.
 - **Whether it is excluded from editable MathLive content:** Yes.
 - **Duplicate-term policy:** `Explicit` inside method-card button blurbs and
   Output metadata remains plain.
-- **Implementation dependency:** Approval of the exact teaching-note copy;
-  E1 core entry/ODE override; E2 Method composition.
-- **Review status:** `PENDING_MAINTAINER_REVIEW`.
+- **Implementation dependency:** Approved teaching-note design; separately
+  authorized E1 core entry/ODE override and E2 Method composition.
+- **Review status:** `APPROVED`.
 
 ### ODE-W1-ANN-009
 
@@ -898,7 +932,7 @@ recommended no-framework-change design.
 - **Duplicate-term policy:** Selection card, result heading, metadata,
   diagnostics, chart legend, and Tutor text remain plain.
 - **Implementation dependency:** E1 card and E2 selected-heading composition.
-- **Review status:** `PENDING_MAINTAINER_REVIEW`.
+- **Review status:** `APPROVED`.
 
 ### ODE-W1-ANN-010
 
@@ -929,14 +963,14 @@ recommended no-framework-change design.
   nonlinear diagnostics, and Tutor text remain plain.
 - **Implementation dependency:** E1 card, maintainer choice on
   `implicit_scheme`, and E2 selected-heading composition.
-- **Review status:** `PENDING_MAINTAINER_REVIEW`.
+- **Review status:** `APPROVED`.
 
 ## 5. Annotation density and rejected sites
 
-Recommended density is exactly one proposed primary annotation per Wave 1
+Approved density is exactly one approved primary annotation per Wave 1
 term, scoped as follows:
 
-| Conceptual surface | Proposed count | Annotation IDs |
+| Conceptual surface | Approved count | Annotation IDs |
 |---|---:|---|
 | Lab context/lede | 2 | `001`, `002` |
 | Method step | 1 | `008` |
@@ -970,7 +1004,7 @@ through D11 of the design specification.
 
 ## 6. Content ownership proposal
 
-| Stable ID | Logical owner | Proposed E1 physical owner | ODE override | Reusable complete card? | Lazy implication |
+| Stable ID | Logical owner | Approved future E1 physical owner | ODE override | Reusable complete card? | Lazy implication |
 |---|---|---|---|---|---|
 | `ordinary_differential_equation` | ODE | `src/ode/odeGlossaryContent.ts` | No | No | Unreferenced in E1; lazy ODE graph in E2 |
 | `initial_condition` | ODE | `src/ode/odeGlossaryContent.ts` | No | No | Same |
@@ -983,21 +1017,23 @@ through D11 of the design specification.
 | `forward_euler_method` | ODE | `src/ode/odeGlossaryContent.ts` | No | No | Lazy ODE graph |
 | `backward_euler_method` | ODE | `src/ode/odeGlossaryContent.ts` | No | No | Lazy ODE graph |
 
-For the two core entries, the core record owns the short definition, general
-why-it-matters text, formula, and Tutor topic. The ODE module override owns the
-current-IVP contextual definition, `whyItMattersHere`, and any narrower Tutor
-topic. For the eight ODE entries, the complete card is module-owned; no
-duplicate “core” record is proposed.
+For the two core entries, the core record owns the canonical definition and
+reusable teaching content. The ODE module may override or add only
+module-context fields such as the current-IVP contextual definition,
+`whyItMattersHere`, and a narrower Tutor topic. ODE must not redefine a Core
+term, replace its stable ID, reverse aliases, or create a second independent
+full card. For the eight ODE entries, the complete card is module-owned; no
+duplicate “core” record is approved.
 
 This split deliberately rejects premature core ownership for `step_size` and
 `exact_solution`. Their approved Wave 1 labels, formulas, and limits are
 time/IVP-specific. A future module can propose a separate core promotion
 without changing either stable ID.
 
-## 7. Provisional `implicit_scheme` recommendation
+## 7. Approved `implicit_scheme` decision
 
 The ten-term set contains Backward Euler but no standalone
-`implicit_scheme` card. The provisional recommendation is Option A:
+`implicit_scheme` card. The maintainer approved Option A:
 
 - retain all ten terms;
 - keep the Backward Euler card self-contained;
@@ -1006,19 +1042,21 @@ The ten-term set contains Backward Euler but no standalone
 - show `implicit_scheme` only as plain future related text;
 - create no broken trigger or live related-term link.
 
-Option B would expand the wave to eleven terms and would require a new
-maintainer-authorized catalog, content, dependency, annotation, validation,
-and rollout revision. Option C would remove Backward Euler and require a new
-exact-set decision. No option is selected in this packet.
+Options B and C were not selected. A future proposal to add
+`implicit_scheme` would require a new maintainer-authorized catalog, content,
+dependency, annotation, validation, and rollout revision.
 
 ## 8. Content packet status
 
 Complete term cards: 10 of 10.
 
-Proposed annotations: 10.
+Approved annotation design records: 10 of 10.
 
-Maintainer-approved cards: 0.
+Maintainer-approved cards: 10 of 10, each
+`APPROVED_WITH_REVISIONS`.
 
-Maintainer-approved annotations: 0.
+Maintainer-approved annotations: 10 of 10.
 
 Production entries, annotations, bindings, and visible behavior: 0.
+
+Implementation authorization flags for E1, E2, E3, and F2: all false.

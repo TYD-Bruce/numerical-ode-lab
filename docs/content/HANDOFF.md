@@ -3,7 +3,8 @@
 Status: Project Language Standard v1 approved; Glossary catalog, copy audit,
 implementation groups, and traceability reconciled; Groups A through D
 accepted; Group F1 and its five pre-E repairs accepted as prerequisite state;
-ODE Glossary Wave 1 Group E0 design packet complete for maintainer review.
+ODE Glossary Wave 1 Group E0 design and content governance
+maintainer-approved; E1 authorization required.
 
 Runtime/content implementation tracked separately.
 
@@ -485,9 +486,10 @@ The maintainer has accepted both prerequisite commits:
 Those acceptances close the pre-E gate. They do not authorize production
 Glossary content, annotations, a Lab binding, or surface activation.
 
-## 17. Group E0 ODE Glossary Wave 1 design packet
+## 17. Group E0 ODE Glossary Wave 1 approval
 
-Group E0 is documentation/design only. Its complete review set is:
+Group E0 is documentation/design governance only. Yiding (Bruce) Tian
+approved it on 2026-07-29. Its complete review set is:
 
 - the [ODE Glossary Wave 1 Content Packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md);
 - the
@@ -512,15 +514,16 @@ The proposed prerequisite order is exactly:
 10. `backward_euler_method`.
 
 The packet contains one complete 29-field card for each of those ten IDs, one
-complete 21-field record for each of ten exact proposed annotations, four
-explicit Lab scopes, and eighteen decision cards. Every maintainer selection
-and every checklist box remains unselected or unchecked. The principal open
-choices cover card approval, the two-core/eight-ODE ownership split, the
-implicit-scheme prerequisite treatment, the complete-Lab-only annotation
-boundary, exact placement and density, Tutor handoff absence for Wave 1, and
-the E1/E2/E3 rollout gates.
+complete 21-field record for each of ten exact approved annotations, four
+explicit Lab scopes, and eighteen decision cards. All ten cards are
+`APPROVED_WITH_REVISIONS`; all ten annotation records are `APPROVED`; and
+D01–D18 record Option A. Core owns `numerical_approximation` and
+`explicit_scheme` with ODE context-only overrides; ODE owns the other eight
+cards. The checklist checks content/design approval and leaves E1/E2
+implementation, E3/F2 execution, push, Preview, and Production authorization
+unchecked.
 
-The recommended implementation sequence is still only a proposal:
+The approved rollout structure remains separately gated:
 
 - E1 would add inert pure content data and focused content validation;
 - E2 would add the ODE-owned binding and exact annotations behind the
@@ -535,17 +538,19 @@ package/configuration file, runtime registry, annotation, binding, Tutor
 queue/card behavior, Preview, Production, remote, or deployment state changes
 in Group E0.
 
-The packet's structural validation covers the exact ten IDs, the 29 required
-term-card fields, the ten 21-field annotation records, eighteen unselected
-decisions, zero checked approval boxes, relative links, privacy markers,
-tracked-path scope, and cross-document gate language. The final aggregate
-validator passed 33 of 33 checks; `git diff --check` passed; and all four local
-structured artifacts remain ignored. Its readiness verdict is **DESIGN PACKET
-COMPLETE — MAINTAINER DECISIONS REQUIRED**.
+The approval's structural validation covers the exact ten IDs, the 29 required
+term-card fields, the ten 21-field annotation records, eighteen Option A
+decisions, 163 checked content/design boxes, seven unchecked authorization
+boxes, relative links, privacy markers, tracked-path scope, and cross-document
+gate language. The final approval validator passed 52 of 52 checks, all 132
+relative Markdown links resolved, `git diff --check` passed, and all four local
+structured artifacts remain ignored. Its verdict is **DESIGN AND CONTENT
+APPROVED — E1 AUTHORIZATION REQUIRED**.
 
 ## 18. Current review gate
 
-The ODE Glossary Wave 1 design and content packet is complete. No production
-content or binding has been authorized. The next gate is maintainer review of
-the ten term cards and the pending architecture, annotation, Tutor, and
-rollout decisions. E1, E2, E3, and Group F2 remain separately gated.
+The ODE Glossary Wave 1 design, ten revised term cards, ten annotation records,
+ownership, and rollout structure are approved. No production content or
+binding has been authorized. The next gate is a separate maintainer decision
+on whether to authorize the inert content-only E1 implementation. E1, E2, E3,
+and Group F2 remain separately gated and unauthorized.
