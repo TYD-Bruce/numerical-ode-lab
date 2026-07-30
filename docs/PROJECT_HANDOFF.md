@@ -35,6 +35,17 @@ and
 now record verdict **DESIGN AND CONTENT APPROVED — E1 AUTHORIZATION
 REQUIRED**. Yiding (Bruce) Tian approved D01–D18 as Option A, all ten cards
 with exact revisions, and all ten annotation records on 2026-07-29.
+The subsequent authorized E1 attempt stopped before source or test changes
+when repository inspection confirmed that the compact Glossary model cannot
+represent all approved rich card fields. The maintainer selected
+`E1-SCHEMA-01 = Option 2`; the
+[rich-model design](./superpowers/specs/2026-07-29-rich-glossary-content-model-design.md),
+[field matrix](./content/RICH_GLOSSARY_CONTENT_FIELD_MATRIX.md), and
+[readiness review](./reviews/2026-07-29-rich-glossary-content-model-design-readiness-review.md)
+are complete with verdict **RICH GLOSSARY MODEL DESIGN COMPLETE —
+IMPLEMENTATION AUTHORIZATION REQUIRED**. No model implementation or Wave 1
+content was added. E1 remains incomplete and must restart only after a
+separately authorized and accepted generic implementation.
 `COPY-003` and `src/pages/homePage.ts` remain review-only and unchanged. These
 iterations
 changed approved visible copy, server-owned Tutor prompt policy, deterministic
@@ -58,7 +69,7 @@ The product is **Numerical T-Lab**. The currently implemented numerical module i
 | any other page path | In-shell Not Found | Available |
 
 Linear Algebra and PDE are truthful roadmap pages with no runnable controls.
-The active milestone is **ODE Glossary Wave 1 — E1 Authorization Gate**;
+The active milestone is **Glossary Rich Content Extension — Design Gate**;
 **Linear Systems Lab** is later. The
 [authoritative Glossary design](./superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md)
 is approved and committed. Commit 1, the content-agnostic Glossary model and
@@ -94,8 +105,10 @@ checkpoint. Its five P2 findings are `CLOSED_VERIFIED`, and both prerequisite
 commits are accepted. Group E0 design and content governance now approves
 exactly 10 revised Wave 1 cards and 10 complete-Lab annotation records.
 Production Glossary content and the ODE binding remain absent and
-unauthorized. E1, E2, and E3 are separate future gates, and the final Group F2
-review remains mandatory after E3.
+unauthorized. E1 was authorized but stopped incomplete at the confirmed
+rich-field schema mismatch. The generic rich-model design is complete; its
+implementation and an E1 restart require separate gates. E2 and E3 remain
+future gates, and the final Group F2 review remains mandatory after E3.
 
 ## 2. Verification baseline
 
@@ -449,9 +462,11 @@ Known limitations:
   prerequisite state.
   Group E0 design and content governance is complete and maintainer-approved,
   covering ten revised Wave 1 term cards, ten exact annotation records, and
-  eighteen Option A decisions. No production content or binding is authorized.
-  E1, E2, and E3 remain separately gated, and Group F2 remains mandatory after
-  E3.
+  eighteen Option A decisions. E1 stopped incomplete before source/test work
+  at the confirmed schema mismatch. The Option 2 rich-model design is
+  complete, but generic implementation, an E1 restart, E2, and E3 remain
+  separately gated. No production content or binding is authorized, and Group
+  F2 remains mandatory after E3.
 
 Contributor rules:
 
@@ -477,7 +492,8 @@ pre-Glossary language repair commit and Tutor intent-matching repair commit as
 prerequisite state. `COPY-003` plus `src/pages/homePage.ts` remain review-only
 and unchanged. Group E0 design and content governance is complete and
 maintainer-approved for ten revised Wave 1 terms, ten annotation records, and
-eighteen Option A decisions. The next gate is a separate maintainer decision
-on whether to authorize inert content-only E1 implementation. E1, E2, and E3
-remain unauthorized and separately gated; Group F2 remains mandatory after
-E3.*
+eighteen Option A decisions. E1 stopped incomplete before source/test changes
+at the confirmed schema mismatch. The Option 2 rich-model design is complete;
+the next gate is maintainer acceptance and separate authorization of the
+generic model/surface implementation. An E1 restart, E2, and E3 remain
+unauthorized and separately gated; Group F2 remains mandatory after E3.*

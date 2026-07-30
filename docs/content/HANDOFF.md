@@ -4,7 +4,9 @@ Status: Project Language Standard v1 approved; Glossary catalog, copy audit,
 implementation groups, and traceability reconciled; Groups A through D
 accepted; Group F1 and its five pre-E repairs accepted as prerequisite state;
 ODE Glossary Wave 1 Group E0 design and content governance
-maintainer-approved; E1 authorization required.
+maintainer-approved; E1 stopped incomplete at the confirmed rich-field schema
+mismatch; Option 2 rich-model design complete; generic implementation
+authorization required.
 
 Runtime/content implementation tracked separately.
 
@@ -519,8 +521,8 @@ explicit Lab scopes, and eighteen decision cards. All ten cards are
 `APPROVED_WITH_REVISIONS`; all ten annotation records are `APPROVED`; and
 D01–D18 record Option A. Core owns `numerical_approximation` and
 `explicit_scheme` with ODE context-only overrides; ODE owns the other eight
-cards. The checklist checks content/design approval and leaves E1/E2
-implementation, E3/F2 execution, push, Preview, and Production authorization
+cards. The checklist checks content/design approval and leaves its current
+E1/E2 implementation, E3/F2 execution, push, Preview, and Production gates
 unchecked.
 
 The approved rollout structure remains separately gated:
@@ -532,10 +534,10 @@ The approved rollout structure remains separately gated:
 - Group F2 would remain a mandatory separate post-Glossary consistency
   review.
 
-No E1, E2, E3, or Group F2 work is authorized by E0. `COPY-041` and
+No E1, E2, E3, or Group F2 work was authorized by E0 itself. `COPY-041` and
 `COPY-042` remain `REQUIRES_CONTENT_WAVE`; no product source, tests, CSS,
 package/configuration file, runtime registry, annotation, binding, Tutor
-queue/card behavior, Preview, Production, remote, or deployment state changes
+queue/card behavior, Preview, Production, remote, or deployment state changed
 in Group E0.
 
 The approval's structural validation covers the exact ten IDs, the 29 required
@@ -547,10 +549,42 @@ relative Markdown links resolved, `git diff --check` passed, and all four local
 structured artifacts remain ignored. Its verdict is **DESIGN AND CONTENT
 APPROVED — E1 AUTHORIZATION REQUIRED**.
 
-## 18. Current review gate
+## 18. E1 schema stop and rich-model design
+
+A later maintainer authorization began E1, but repository inspection stopped
+the attempt before any source or test change. The current compact
+`GlossaryEntry`/module-override projection cannot represent every approved
+card field. No term, annotation, binding, registry record, or runtime change
+was created, and the blocked worktree must not be resumed.
+
+The maintainer selected `E1-SCHEMA-01 = Option 2` and rejected the compact
+projection. The documentation-only review set is:
+
+- the
+  [Rich Glossary Content Field Matrix](RICH_GLOSSARY_CONTENT_FIELD_MATRIX.md);
+- the
+  [Rich Glossary Content Model and Complete Surface Design](../superpowers/specs/2026-07-29-rich-glossary-content-model-design.md);
+  and
+- the
+  [Rich Glossary Content Model Design Readiness Review](../reviews/2026-07-29-rich-glossary-content-model-design-readiness-review.md).
+
+The design retains `definition` for compact preview, adds optional generic
+rich fields, uses a live/future related-term union, renders prerequisites,
+preserves D05 context-only overrides, specifies the complete-card order, and
+chooses one-level surface-local Back navigation. It keeps governance/private
+metadata out of runtime, preserves the empty production registry, and changes
+no Tutor, Store, annotation, binding, or lazy-loading ownership.
+
+Its verdict is **RICH GLOSSARY MODEL DESIGN COMPLETE — IMPLEMENTATION
+AUTHORIZATION REQUIRED**. This is design evidence only. It does not implement
+the model, add Wave 1 content, resume E1, or authorize E2/E3/F2/deployment.
+
+## 19. Current review gate
 
 The ODE Glossary Wave 1 design, ten revised term cards, ten annotation records,
-ownership, and rollout structure are approved. No production content or
-binding has been authorized. The next gate is a separate maintainer decision
-on whether to authorize the inert content-only E1 implementation. E1, E2, E3,
-and Group F2 remain separately gated and unauthorized.
+ownership, and rollout structure remain approved. E1 remains incomplete. The
+next gate is maintainer acceptance of the rich-model design and separate
+authorization of the generic model/surface implementation. After that
+implementation is independently accepted, E1 must restart from the beginning
+under a new explicit gate. E2, E3, Group F2, push, Preview, and Production
+remain separately gated and unauthorized.

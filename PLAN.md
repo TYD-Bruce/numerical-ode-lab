@@ -58,7 +58,18 @@ and [readiness review](docs/reviews/2026-07-29-ode-glossary-wave-1-design-readin
 now record verdict **DESIGN AND CONTENT APPROVED — E1 AUTHORIZATION
 REQUIRED**. Yiding (Bruce) Tian approved D01–D18 as Option A, all ten cards
 with exact revisions, and all ten annotation design records on 2026-07-29.
-`COPY-003` and `src/pages/homePage.ts` remain held and unchanged. E1, E2, E3,
+The subsequent E1 implementation authorization stopped before any source or
+test change when repository inspection confirmed that the accepted compact
+`GlossaryEntry` and module override cannot represent the approved rich card
+content. The maintainer selected `E1-SCHEMA-01 = Option 2` and rejected a
+compact projection. The documentation-only
+[rich Glossary content-model design](docs/superpowers/specs/2026-07-29-rich-glossary-content-model-design.md),
+[field matrix](docs/content/RICH_GLOSSARY_CONTENT_FIELD_MATRIX.md), and
+[design-readiness review](docs/reviews/2026-07-29-rich-glossary-content-model-design-readiness-review.md)
+now close the generic schema, complete-surface, validation, and navigation
+decisions. E1 remains incomplete and may restart only after the generic
+model/surface implementation is separately authorized and accepted.
+`COPY-003` and `src/pages/homePage.ts` remain held and unchanged. E2, E3,
 production Glossary content, annotations, and an ODE binding remain
 unauthorized; the final Group F2 review remains mandatory after E3.
 Nothing was pushed or deployed.
@@ -72,11 +83,14 @@ locally verified, Preview-verified, and Production-verified at
 
 ## Active milestone
 
-**ODE Glossary Wave 1 — E1 Authorization Gate**
+**Glossary Rich Content Extension — Design Gate**
 
 The content-agnostic framework and pre-E repairs are accepted prerequisites.
 Group E0 design and content governance is complete and maintainer-approved.
-Production content integration has not begun, and E1 remains unauthorized.
+The blocked E1 attempt produced no source or test changes and confirmed a
+schema mismatch. Option 2 is selected, the generic rich-model design is
+complete, and implementation requires separate maintainer authorization.
+Production content integration has not begun; E1 remains incomplete.
 
 ## Completed Project Identity Migration
 
@@ -110,13 +124,19 @@ loading while keeping formal mathematical content separate.
 [ODE Glossary Wave 1 Design](docs/superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md)
 
 Status: **D01–D18, ten revised cards, and ten annotation records are
-maintainer-approved; E1, E2, E3, and F2 are separately gated and
-unauthorized.**
+maintainer-approved; E1 stopped incomplete at the schema mismatch, while E2,
+E3, and F2 remain separately gated and unauthorized.**
+
+[Rich Glossary Content Model and Complete Surface Design](docs/superpowers/specs/2026-07-29-rich-glossary-content-model-design.md)
+
+Status: **Design complete; generic model/surface implementation authorization
+required. No runtime or Wave 1 content was added.**
 
 Framework authority remains the
 [Content-Agnostic Interactive Glossary Framework Design](docs/superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md),
-which is implemented and locally accepted. No Wave 1 design choice changes the
-framework.
+which is implemented and locally accepted. The rich-model design is a bounded
+extension prerequisite; it does not reopen the accepted Host, modal, scope,
+annotation, Store, or Tutor ownership decisions.
 
 ## Historical framework implementation plan
 
@@ -179,23 +199,35 @@ independent final review. No production content or ODE binding was added.**
     Tutor-boundary, rollout, checklist, and readiness packet without
     implementation. Complete and maintainer-approved as Group E0 governance;
     no implementation authorized.
-19. Implement E1 content data only after explicit maintainer approval.
-    Unauthorized.
-20. Implement E2 annotations and the ODE binding only after accepted E1 and a
+19. Begin E1 content data only after explicit maintainer approval. Authorization
+    was issued, but work stopped before source/test changes at the confirmed
+    rich-field schema mismatch. E1 remains incomplete.
+20. Design the minimal generic rich content model, complete-card surface,
+    validation, navigation, compatibility, and rollback boundary. Complete as
+    documentation only with verdict **RICH GLOSSARY MODEL DESIGN COMPLETE —
+    IMPLEMENTATION AUTHORIZATION REQUIRED**.
+21. Implement and independently review the generic rich model/surface only
+    after separate maintainer authorization. Unauthorized.
+22. Restart E1 from the beginning against the accepted rich model after a new
+    explicit gate. Unauthorized.
+23. Implement E2 annotations and the ODE binding only after accepted E1 and a
     separate authorization. Unauthorized.
-21. Complete E3 integration review after E2. Unauthorized.
-22. Complete mandatory Group F2 after E3. Not started.
-23. Push only when explicitly requested by the maintainer.
+24. Complete E3 integration review after E2. Unauthorized.
+25. Complete mandatory Group F2 after E3. Not started.
+26. Push only when explicitly requested by the maintainer.
 
 ## Current next action
 
-A separate maintainer decision on whether to authorize the inert content-only
-E1 implementation described by the
-[approved Wave 1 design](docs/superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md).
-The approved design retains ten terms, keeps `/ode` static and unannotated,
+Maintainer acceptance of the
+[rich Glossary content-model design](docs/superpowers/specs/2026-07-29-rich-glossary-content-model-design.md)
+and a separate decision on whether to authorize its generic model/surface
+implementation. No Wave 1 content belongs in that implementation. After the
+extension is independently accepted, E1 must restart from the beginning under
+a new explicit gate; the blocked worktree must not be resumed. The approved
+Wave 1 design still retains ten terms, keeps `/ode` static and unannotated,
 uses two Core plus eight ODE-owned cards, injects no production Tutor handoff,
-and splits future work into E1, E2, E3, and mandatory F2. `COPY-003` remains
-deferred with the PDE module. This Group E0 approval authorizes no future gate.
+and separates E1, E2, E3, and mandatory F2. `COPY-003` remains deferred with
+the PDE module.
 
 ## Parallel content foundation
 
@@ -217,8 +249,10 @@ reconciliation publish no production term, definition, annotation, or notation
 migration. Groups A through D and the Group F1/pre-E prerequisite state are
 accepted. Group F1 implements only `COPY-043` and records the pre-Glossary
 review; it does not complete Group F. `COPY-003` remains held. Group E0 design
-and content governance is maintainer-approved, while E1, E2, and E3 remain
-unauthorized and Group F2 remains required after E3.
+and content governance is maintainer-approved. E1 was authorized but stopped
+incomplete at the schema mismatch; the compact projection is rejected. The
+generic rich-model design is complete, but its implementation, an E1 restart,
+E2, and E3 remain unauthorized. Group F2 remains required after E3.
 The continuation state is
 [the project-language handoff](docs/content/HANDOFF.md). Nothing from these
 copy iterations was pushed or deployed.
@@ -258,12 +292,14 @@ and the three standards are approved as Version 1. The catalog/copy
 reconciliation gate is also closed with 197 stable IDs and 55 rescanned copy
 records. Groups A through D, Group F1, and both pre-E repair commits are
 accepted; `COPY-003` remains held. Group E0 Wave 1 design and content
-governance is complete with verdict **DESIGN AND CONTENT APPROVED — E1
-AUTHORIZATION REQUIRED**. The next gate is a separate maintainer decision on
-whether to authorize inert content-only E1 implementation. E1, E2, E3,
-production Glossary terms, annotations, an ODE binding, and visible Glossary
-behavior remain absent and unauthorized. Group F2 remains mandatory after
-E3.
+governance is complete. E1 then stopped incomplete, before source/test work,
+at the confirmed rich-field schema mismatch. The selected Option 2 rich-model
+design now has verdict **RICH GLOSSARY MODEL DESIGN COMPLETE —
+IMPLEMENTATION AUTHORIZATION REQUIRED**. The next gate is maintainer
+acceptance and separate authorization of the generic model/surface
+implementation. An E1 restart, E2, E3, production Glossary terms, annotations,
+an ODE binding, and visible Glossary behavior remain absent and unauthorized.
+Group F2 remains mandatory after E3.
 
 ## Update rule
 

@@ -14,7 +14,8 @@
 
 ## Current active milestone
 
-[PLAN.md](../PLAN.md) points to the ODE Glossary Wave 1 E1 authorization gate.
+[PLAN.md](../PLAN.md) points to the Glossary Rich Content Extension design
+gate.
 The underlying Content-Agnostic Interactive Glossary Framework's approved
 design and repository-grounded implementation plan are documented. The
 corrected framework plan passed conservative re-audit, Commit 1 was
@@ -52,7 +53,19 @@ commits are accepted prerequisites. The documentation-only ODE Glossary Wave 1
 design and content governance is maintainer-approved with verdict **DESIGN AND
 CONTENT APPROVED — E1 AUTHORIZATION REQUIRED**. Yiding (Bruce) Tian approved
 D01–D18 as Option A, all ten cards with exact revisions, and all ten annotation
-records on 2026-07-29. E1, E2, E3, and production Glossary content remain
+records on 2026-07-29. At that approval checkpoint, E1, E2, E3, and production
+Glossary content were unauthorized; Group F2 remained mandatory after E3. A
+subsequent authorized E1 attempt stopped before source or test changes at a
+confirmed schema mismatch:
+the accepted compact model cannot represent the approved rich cards. The
+maintainer selected `E1-SCHEMA-01 = Option 2` and rejected a compact
+projection. The generic
+[rich-model design](superpowers/specs/2026-07-29-rich-glossary-content-model-design.md),
+[field matrix](content/RICH_GLOSSARY_CONTENT_FIELD_MATRIX.md), and
+[design-readiness review](reviews/2026-07-29-rich-glossary-content-model-design-readiness-review.md)
+are complete with verdict **RICH GLOSSARY MODEL DESIGN COMPLETE —
+IMPLEMENTATION AUTHORIZATION REQUIRED**. E1 remains incomplete. The model
+implementation, an E1 restart, E2, E3, and production Glossary content remain
 unauthorized; Group F2 remains mandatory after E3.
 
 ## Project-language standards and content drafts
@@ -64,8 +77,9 @@ documents, and the implementation plan separates ready copy work from the
 unauthorized production content wave. Groups A through D and the Group
 F1/pre-E prerequisite commits are accepted; all five P2 findings are
 `CLOSED_VERIFIED`. Group E0 ODE Glossary Wave 1 design and content governance
-is complete and maintainer-approved. Production Glossary content remains
-unauthorized, and E1, E2, E3, and the post-Glossary F2 review remain
+is complete and maintainer-approved. E1 stopped incomplete at the rich-field
+schema mismatch. The generic rich-model design is complete, but its
+implementation, an E1 restart, E2, E3, and the post-Glossary F2 review remain
 separately gated.
 
 | Document | Purpose |
@@ -83,6 +97,7 @@ separately gated.
 | [Project Language v1 Handoff](content/HANDOFF.md) | Approved choices, counts, accepted Groups A–D/F1/pre-E state, Group E0 Wave 1 packet, held scope, and exact next gate |
 | [ODE Glossary Wave 1 Content Packet](content/ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) | Maintainer-approved ten-card content and exact ten-record annotation design packet; no runtime authority |
 | [ODE Glossary Wave 1 Approval Checklist](content/ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) | Checked content/design approval with implementation, execution, push, and deployment authorization explicitly unchecked |
+| [Rich Glossary Content Field Matrix](content/RICH_GLOSSARY_CONTENT_FIELD_MATRIX.md) | Exact destination for all 29 approved term-card fields, all 21 annotation-record fields, and six ownership/composition fields; governance/private metadata remains outside runtime |
 
 ## Product and feature specifications
 
@@ -92,7 +107,8 @@ separately gated.
 | [Human-Friendly Math Expressions Design](superpowers/specs/2026-07-10-human-friendly-math-expressions-design.md) | Implemented and verified |
 | [Observed Convergence Order Experiment Design](superpowers/specs/2026-07-10-convergence-study-design.md) | Implemented, verified, release ready |
 | [Content-Agnostic Interactive Glossary Framework Design](superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md) | Implemented and locally accepted after a repeated independent final review; production content remains deferred |
-| [ODE Glossary Wave 1 Design](superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md) | D01–D18 approved as Option A; ten cards and ten annotation records fixed; E1/E2/E3/F2 unauthorized |
+| [ODE Glossary Wave 1 Design](superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md) | D01–D18 approved as Option A; ten cards and ten annotation records fixed; E1 attempt stopped incomplete; E2/E3/F2 unauthorized |
+| [Rich Glossary Content Model and Complete Surface Design](superpowers/specs/2026-07-29-rich-glossary-content-model-design.md) | Option 2 design complete; generic implementation requires separate authorization; E1 remains incomplete |
 
 ## Implementation plans
 
@@ -115,6 +131,7 @@ separately gated.
 | [Pre-Glossary Project-Language Consistency Review](reviews/2026-07-29-pre-glossary-project-language-consistency-review.md) | Group F1 verdict **GROUP F1 COMPLETE — PRE-E FIXES REQUIRED**; `COPY-043` verified, twelve review-only records classified, five P2 findings recorded, Group E unauthorized, F2 still required |
 | [Pre-Glossary Repair Review](reviews/2026-07-29-pre-glossary-repair-review.md) | Verdict **PRE-E REPAIR COMPLETE — GROUP E MAY BE PLANNED**; all five Group F1 findings `CLOSED_VERIFIED`, Group E still unauthorized, F2 still required |
 | [ODE Glossary Wave 1 Design and Content Approval Review](reviews/2026-07-29-ode-glossary-wave-1-design-readiness-review.md) | Verdict **DESIGN AND CONTENT APPROVED — E1 AUTHORIZATION REQUIRED**; no production authorization |
+| [Rich Glossary Content Model Design Readiness Review](reviews/2026-07-29-rich-glossary-content-model-design-readiness-review.md) | Verdict **RICH GLOSSARY MODEL DESIGN COMPLETE — IMPLEMENTATION AUTHORIZATION REQUIRED**; no runtime or Wave 1 content |
 
 ## Feature handoffs
 
@@ -133,8 +150,9 @@ separately gated.
   197-term catalog and 55-record copy audit, A–F implementation plan, and
   validation evidence; Groups A through D are accepted, Group F1 and its five
   pre-E repairs are accepted, Wave 1 Group E0 governance is
-  maintainer-approved, and E1/E2/E3 plus production content remain
-  unauthorized pending separate authorization.
+  maintainer-approved; E1 stopped incomplete at the schema mismatch; the
+  generic rich-model design is complete; and implementation, an E1 restart,
+  E2/E3, and production content remain unauthorized pending separate gates.
 - [Project Rename handoff](project-rename/HANDOFF.md) — completed Project
   Identity Migration evidence, including the canonical local workspace reopen.
 

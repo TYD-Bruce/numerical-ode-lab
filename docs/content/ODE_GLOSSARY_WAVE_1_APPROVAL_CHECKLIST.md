@@ -1,7 +1,9 @@
 # ODE Glossary Wave 1 Approval Checklist
 
-**Status:** Maintainer approval recorded; content and design approved,
-implementation and deployment remain unauthorized.
+**Status:** Maintainer approval recorded; content and Wave 1 design approved;
+the E1 attempt stopped incomplete at a confirmed schema mismatch; the generic
+rich-model design is complete; implementation and deployment remain
+unauthorized.
 
 **Date prepared:** 2026-07-29
 
@@ -14,6 +16,10 @@ implementation and deployment remain unauthorized.
 This checklist accompanies the
 [content packet](ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) and
 [design specification](../superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md).
+The later schema prerequisite is recorded by the
+[rich-model design](../superpowers/specs/2026-07-29-rich-glossary-content-model-design.md),
+[field matrix](RICH_GLOSSARY_CONTENT_FIELD_MATRIX.md), and
+[design-readiness review](../reviews/2026-07-29-rich-glossary-content-model-design-readiness-review.md).
 Checked content/design boxes record approval only. Unchecked
 implementation/execution/deployment boxes require separate maintainer
 authorization.
@@ -60,8 +66,9 @@ authorization.
   exists.
 - [x] Runtime data contains no private source material or private evidence
   metadata.
-- [x] The approved path needs no framework change; any future alternate
-  gap has its exact separate approval.
+- [x] The confirmed rich-field schema gap rejects a compact projection; the
+  generic model/surface design is the current prerequisite and has a separate
+  implementation gate.
 
 ## 4. Rollout
 
@@ -85,7 +92,23 @@ The 18 decision cards D01 through D18 in the design specification record
 maintainer-approved Option A. This approval fixes design and governance only;
 it does not authorize E1, E2, E3, F2, push, Preview, or Production action.
 
-## 6. Checked-count declaration
+## 6. E1 schema-stop record
+
+E1 implementation was authorized after the original Group E0 approval, but
+repository inspection stopped the attempt before any source or test change.
+The accepted compact `GlossaryEntry` and module override cannot represent all
+maintainer-approved card fields. No E1 content, annotation, binding, or
+runtime change was created.
+
+The maintainer selected `E1-SCHEMA-01 = Option 2`: extend the generic model and
+complete surface before E1. The compact projection is rejected. The rich-model
+design is complete, but its implementation requires separate authorization
+and independent acceptance. E1 remains incomplete and must restart from the
+beginning after that acceptance. The unchecked E1 authorization box above is
+not converted into implementation acceptance and is not rechecked by this
+design task. E2, E3, F2, push, Preview, and Production remain unauthorized.
+
+## 7. Checked-count declaration
 
 Checked content/design boxes after approval: **163**.
 
@@ -100,6 +123,6 @@ Architecture rows: **7**.
 Rollout rows: **13**.
 
 Checked content/design rows do not authorize implementation. The maintainer
-must still explicitly authorize E1, E2, E3, and F2 at their separate gates;
-push, Preview deployment, and Production deployment also remain separately
-unauthorized.
+must still explicitly authorize the rich-model implementation, an E1 restart,
+E2, E3, and F2 at their separate gates; push, Preview deployment, and
+Production deployment also remain separately unauthorized.
