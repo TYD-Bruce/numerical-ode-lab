@@ -1,9 +1,9 @@
 # ODE Glossary Wave 1 Approval Checklist
 
 **Status:** Maintainer approval recorded; content and Wave 1 design approved;
-the generic rich model and E1 are accepted. The E2 runtime contract is
-complete and locally implemented pending maintainer acceptance. E3/F2, push,
-Preview, and Production remain unauthorized.
+the generic rich model and E1 are accepted. E2 is accepted for entry into E3.
+The independent E3 review passed locally pending maintainer acceptance. F2,
+push, Preview, and Production remain unauthorized.
 
 **Date prepared:** 2026-07-29
 
@@ -32,6 +32,8 @@ The exact interaction contract for all ten E2 annotations is the
 [E2 Runtime Contract](ODE_GLOSSARY_WAVE_1_E2_RUNTIME_CONTRACT.md).
 The local implementation evidence is recorded by the
 [E2 integration review](../reviews/2026-07-30-ode-glossary-wave-1-e2-integration-review.md).
+The mandatory independent evidence is recorded by the
+[E3 integration review](../reviews/2026-07-30-ode-glossary-wave-1-e3-integration-review.md).
 Checked content/design/contract boxes record approval only. Unchecked
 implementation/execution/deployment boxes require separate maintainer
 authorization.
@@ -105,9 +107,12 @@ the fresh E1 authorization is recorded separately below.
   `E2-CONTRACT-02`.
 - [x] E2 source/test implementation freshly reauthorized.
 - [x] E2 source/test implementation locally complete and verified.
-- [ ] E2 implementation maintainer-accepted.
+- [x] E2 implementation maintainer-accepted for entry into E3 at
+  `8c8e90a6abc177132f3e033bdb575f2042b982a9`.
 - [x] E3 mandatory independent review gate approved.
-- [ ] E3 execution explicitly authorized.
+- [x] E3 execution explicitly authorized.
+- [x] E3 independent review locally complete with zero P0/P1/P2 findings.
+- [ ] E3 review maintainer-accepted.
 - [x] Group F2 mandatory review gate approved.
 - [ ] Group F2 execution explicitly authorized.
 - [x] E1/E2/E3/F2 rollback boundaries approved.
@@ -120,9 +125,10 @@ the fresh E1 authorization is recorded separately below.
 
 The 18 decision cards D01 through D18 in the design specification record
 maintainer-approved Option A. This approval fixes design and governance. E1 is
-separately accepted. E2 source/test implementation was later separately
-authorized and is locally complete pending maintainer acceptance. This record
-does not authorize E3, F2, push, Preview, or Production action.
+separately accepted. E2 source/test implementation was separately authorized
+and accepted for entry into E3. E3 execution was later separately authorized
+and passed locally pending maintainer acceptance. This record does not
+authorize F2, push, Preview, or Production action.
 
 ## 7. Historical E1 schema-stop and fresh restart record
 
@@ -149,8 +155,10 @@ binding count remain zero. E1 is accepted at
 source/test implementation is locally complete through one complete-IVP
 route-instance binding and ten explicit annotations. `/ode` remains plain,
 Tutor remains independent, and the generic production registry remains empty.
-E2 awaits maintainer acceptance. E3, F2, push, Preview, and Production remain
-unauthorized.
+E2 is accepted for entry into E3. The independent E3 review passed exact commit
+`8c8e90a6abc177132f3e033bdb575f2042b982a9` with zero P0/P1/P2 findings
+and no product-source change. E3 awaits maintainer acceptance. F2, push,
+Preview, and Production remain unauthorized.
 
 `E1-BROWSER-EXCEPTION-01` permits only the unchanged Google Fonts
 stylesheet/font chain from `index.html` for the E1 browser evidence. The
@@ -166,9 +174,9 @@ remediation was performed.
 ## 8. Checked-count declaration
 
 Checked approval, prerequisite, authorization, acceptance, contract, and
-local-completion boxes: **172**.
+local-completion boxes: **175**.
 
-Unchecked implementation/execution/deployment boxes: **6**.
+Unchecked implementation/execution/deployment boxes: **5**.
 
 Term rows: **10**.
 
@@ -178,9 +186,9 @@ Architecture rows: **7**.
 
 Generic prerequisite rows: **3**.
 
-Rollout rows: **18**.
+Rollout rows: **20**.
 
 Checked content/design/contract rows do not authorize later implementation.
-The maintainer must accept E2 before a separately authorized E3 review. E3 and
-F2 execution, push, Preview deployment, and Production deployment remain
-unauthorized.
+The maintainer accepted E2 for the separately authorized E3 review. E3 passed
+locally and now awaits maintainer acceptance. F2 execution, push, Preview
+deployment, and Production deployment remain unauthorized.

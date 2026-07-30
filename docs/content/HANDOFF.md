@@ -7,10 +7,12 @@ ODE Glossary Wave 1 Group E0 design and content governance
 maintainer-approved; Option 2 rich-model implementation accepted at
 `6ef085d0b0271a5e7ed5a9f64ef4e6a05b5f257e`; fresh E1 accepted and inert at
 `08b80522283438a233974456a026a6dbc2a96746`; E2 runtime contract complete with
-source implementation locally verified through one complete-IVP binding and
-ten explicit annotations, pending maintainer acceptance; E3/F2 unauthorized.
+source implementation accepted for E3 through one complete-IVP binding and
+ten explicit annotations; independent E3 review locally passed with zero
+P0/P1/P2 findings, pending maintainer acceptance; F2 unauthorized.
 
-Runtime integration evidence is recorded in the E2 section below.
+Runtime integration and independent review evidence are recorded in the E2
+and E3 sections below.
 
 ## 1. Iteration boundary
 
@@ -664,8 +666,8 @@ No additional maintainer decision remains.
 
 This reconciliation was accepted at
 `93a2338d9572e633c8955fc657746f337e34264d`. The later separately authorized
-E2 source/test implementation is recorded below. E3, Group F2, push, Preview,
-and Production remain unauthorized.
+E2 source/test implementation is recorded below. At that reconciliation
+checkpoint, E3, Group F2, push, Preview, and Production remained unauthorized.
 
 ## 21. Group E2 runtime integration
 
@@ -706,12 +708,49 @@ The
 [E2 integration review](../reviews/2026-07-30-ode-glossary-wave-1-e2-integration-review.md)
 records the complete evidence and verdict **E2 ODE GLOSSARY INTEGRATED —
 READY FOR MAINTAINER ACCEPTANCE**. This is a local implementation verdict, not
-maintainer acceptance. Nothing was pushed or deployed.
+maintainer acceptance at that checkpoint. The maintainer later accepted exact
+commit `8c8e90a6abc177132f3e033bdb575f2042b982a9` for entry into E3.
+Nothing was pushed or deployed.
 
-## 22. Current review gate
+## 22. Group E3 independent integration review
+
+The mandatory independent E3 review audited exact E2 commit
+`8c8e90a6abc177132f3e033bdb575f2042b982a9` against the canonical Runtime
+Contract, Content Packet, accepted generic Framework/rich-model contracts, and
+committed source. It independently verified:
+
+- the exact 14-file E2 commit scope and byte-identical E1 content sources;
+- two Core entries, eight ODE entries, two overrides, ten composed cards, ten
+  annotation definitions, and one complete-IVP route-instance binding;
+- every annotation owner, trigger, mode, replacement, rejected duplicate,
+  accessible name, and disposal path;
+- exact `E2-CONTRACT-01` Method copy and `E2-CONTRACT-02` Single-only Output
+  behavior;
+- label, method-card, editable/readonly MathLive, Tutor, Store/session,
+  numerical, and `/ode` exclusions;
+- 19 focused files and 235 tests, both typechecks, and full verification at 76
+  files and 1,094 tests;
+- a fresh 86-module production graph with Wave 1 annotation markers confined
+  to the complete-IVP chunk; and
+- independent `1440×900` and `390×844` production-build browser review with
+  no horizontal overflow, E2-attributable console error, stale surface, or
+  E2-introduced external traffic.
+
+The
+[E3 integration review](../reviews/2026-07-30-ode-glossary-wave-1-e3-integration-review.md)
+records `P0 = P1 = P2 = 0`, no P3 implementation finding, and only accepted
+baseline P3 carry-forward `BASELINE-EXT-FONT-001`. Its verdict is **E3
+INTEGRATION REVIEW PASSED — READY FOR F2 AUTHORIZATION**. E3 made no
+product-source change and is locally complete pending maintainer acceptance.
+Group F2, push, Preview, and Production remain unauthorized. Nothing was
+pushed or deployed.
+
+## 23. Current review gate
 
 The ODE Glossary Wave 1 design, ten revised term cards, ten annotation records,
 ownership, and rollout structure remain approved. E1 is accepted and inert.
-The E2 runtime contract is complete and locally implemented. The next gate is
-maintainer acceptance of the E2 commit and its evidence package. E3, Group F2,
-push, Preview, and Production remain separately gated and unauthorized.
+The E2 runtime contract and implementation are accepted for E3. The exact
+committed integration passed mandatory independent E3 review. The next gate is
+maintainer acceptance of the E3 review commit and separate authorization of
+mandatory Group F2. Group F2, push, Preview, and Production remain
+unauthorized.

@@ -68,10 +68,15 @@ interaction details. The separately authorized E2 implementation now creates
 exactly one complete-IVP route-instance binding and ten explicit annotations.
 The generic production registry remains empty; the accepted ten-card registry
 is composed only behind the complete-IVP dynamic route. `/ode` remains plain,
-Tutor remains independent, and E2 is locally verified pending maintainer
-acceptance. The
+Tutor remains independent, and the maintainer accepted E2 for entry into the
+mandatory E3 review at `8c8e90a6abc177132f3e033bdb575f2042b982a9`. The
 [E2 integration review](./reviews/2026-07-30-ode-glossary-wave-1-e2-integration-review.md)
 records the exact contract, browser, lifecycle, and production-graph evidence.
+The independent
+[E3 integration review](./reviews/2026-07-30-ode-glossary-wave-1-e3-integration-review.md)
+passed the exact committed E1+E2 state with zero P0/P1/P2 findings and no
+product-source change. E3 is locally complete pending maintainer acceptance;
+Group F2 remains unauthorized.
 `E1-BROWSER-EXCEPTION-01` accepts only the unchanged Google Fonts
 stylesheet/font request chain for this E1 evidence gate. The source and
 starting-HEAD `index.html` blobs are identical at
@@ -101,7 +106,7 @@ The product is **Numerical T-Lab**. The currently implemented numerical module i
 | any other page path | In-shell Not Found | Available |
 
 Linear Algebra and PDE are truthful roadmap pages with no runnable controls.
-The active milestone is **ODE Glossary Wave 1 E2 — Maintainer Acceptance
+The active milestone is **ODE Glossary Wave 1 E3 — Maintainer Acceptance
 Gate**;
 **Linear Systems Lab** is later. The
 [authoritative Glossary design](./superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md)
@@ -143,10 +148,10 @@ The historical E1 schema stop was closed by the accepted generic rich-model
 implementation. The fresh E1 restart is locally complete and inert, with
 two Core entries, eight ODE entries, two context-only overrides, and ten
 composed cards in source. E1 is accepted. The E2 runtime contract is complete
-and its separately authorized source/test implementation is locally verified
-through one complete-IVP binding and ten explicit annotations. E2 awaits
-maintainer acceptance. E3 remains unauthorized, and the final Group F2 review
-remains mandatory after E3.
+and its separately authorized source/test implementation is accepted for E3
+through one complete-IVP binding and ten explicit annotations. Independent E3
+review passed with zero P0/P1/P2 findings and awaits maintainer acceptance.
+The final Group F2 review remains mandatory and unauthorized.
 
 ## 2. Verification baseline
 
@@ -506,8 +511,9 @@ Known limitations:
   generic implementation are accepted; the fresh E1 restart is accepted and
   inert at `08b80522283438a233974456a026a6dbc2a96746`. The E2 runtime contract
   is complete and locally implemented through one complete-IVP route-instance
-  binding and ten annotations, pending maintainer acceptance. E3 remains
-  unauthorized, and Group F2 remains mandatory after E3.
+  binding and ten annotations. E2 is accepted for E3; independent E3 review
+  passed and awaits maintainer acceptance. Group F2 remains mandatory and
+  unauthorized.
 
 Contributor rules:
 
@@ -542,6 +548,8 @@ the accepted Option 2 rich-model commit
 and inert with two Core entries, eight ODE entries, two context-only
 overrides, and ten composed cards, and is accepted at
 `08b80522283438a233974456a026a6dbc2a96746`. The E2 runtime contract is
-complete and locally implemented. The next gate is maintainer acceptance of
-the E2 commit and evidence package. E3 remains unauthorized and separately
-gated; Group F2 remains mandatory after E3.*
+complete and locally implemented. E2 is accepted for entry into E3. The exact
+committed E1+E2 state passed independent E3 review with zero P0/P1/P2 findings
+and no product-source change. The next gate is maintainer acceptance of the E3
+review commit and separate authorization of mandatory Group F2. Group F2
+remains unauthorized.*

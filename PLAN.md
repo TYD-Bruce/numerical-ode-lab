@@ -102,9 +102,13 @@ empty. The
 [E2 integration review](docs/reviews/2026-07-30-ode-glossary-wave-1-e2-integration-review.md)
 records focused/full verification, exact desktop/mobile browser evidence,
 scope and disposal ownership, and the production import/bundle boundary. E2
-is locally implemented pending maintainer acceptance. `COPY-003` and
-`src/pages/homePage.ts` remain held and unchanged. E3 and Group F2 execution
-remain unauthorized; the final Group F2 review remains mandatory after E3.
+was accepted for entry into the mandatory E3 gate at
+`8c8e90a6abc177132f3e033bdb575f2042b982a9`. The independent
+[E3 integration review](docs/reviews/2026-07-30-ode-glossary-wave-1-e3-integration-review.md)
+passed the exact committed E1+E2 state with `P0 = P1 = P2 = 0`; it is locally
+complete pending maintainer acceptance and introduced no product-source
+change. `COPY-003` and `src/pages/homePage.ts` remain held and unchanged.
+Group F2 execution remains unauthorized and mandatory after E3 acceptance.
 Nothing was pushed or deployed.
 
 ## Current released baseline
@@ -135,8 +139,8 @@ ownership. E2 is now locally implemented and verified through one
 complete-IVP route-instance binding, ten exact annotation definitions, four
 route-owned scopes, and the accepted `E2-CONTRACT-01` and
 `E2-CONTRACT-02` behavior. `/ode` remains unannotated, Tutor remains
-independent, and E2 awaits maintainer acceptance before any separately
-authorized E3 review.
+independent, E2 is accepted for E3, and the independent E3 review passed
+locally pending maintainer acceptance. Group F2 remains unauthorized.
 
 ## Completed Project Identity Migration
 
@@ -171,8 +175,8 @@ loading while keeping formal mathematical content separate.
 
 Status: **D01–D18, ten revised cards, and ten annotation records are
 maintainer-approved; E1 is accepted and inert; the E2 runtime contract is
-complete and locally implemented pending maintainer acceptance; E3/F2 remain
-unauthorized.**
+complete and accepted for E3; independent E3 review passed locally pending
+maintainer acceptance; F2 remains unauthorized.**
 
 [Rich Glossary Content Model and Complete Surface Design](docs/superpowers/specs/2026-07-29-rich-glossary-content-model-design.md)
 
@@ -273,23 +277,23 @@ independent final review. No production content or ODE binding was added.**
     stopped before source/test changes. Complete as documentation through
     `E2-CONTRACT-01`, `E2-CONTRACT-02`, and the canonical E2 Runtime Contract.
 25. Implement the accepted E2 contract through one ODE-owned complete-IVP
-    binding and ten explicit annotation definitions. Locally complete and
-    verified; pending maintainer acceptance.
+    binding and ten explicit annotation definitions. Complete and accepted for
+    entry into E3 at `8c8e90a6abc177132f3e033bdb575f2042b982a9`.
 26. Complete E3 integration review after maintainer acceptance of E2.
-    Unauthorized.
+    Locally complete with zero P0/P1/P2 findings; pending maintainer
+    acceptance.
 27. Complete mandatory Group F2 after E3. Not started.
 28. Push only when explicitly requested by the maintainer.
 
 ## Current next action
 
-Maintainer acceptance of the locally implemented E2 commit and its
-[integration review](docs/reviews/2026-07-30-ode-glossary-wave-1-e2-integration-review.md).
-The implementation follows the
-[canonical E2 Runtime Contract](docs/content/ODE_GLOSSARY_WAVE_1_E2_RUNTIME_CONTRACT.md):
-ten terms, one complete-IVP route-instance binding, ten explicit annotation
-definitions, `/ode` static and unannotated, and no Tutor handoff. E3 remains
-unauthorized until a separate maintainer gate. `COPY-003` remains deferred
-with the PDE module.
+Maintainer acceptance of the locally complete
+[E3 integration review](docs/reviews/2026-07-30-ode-glossary-wave-1-e3-integration-review.md).
+The exact committed E1+E2 state passed independent source, lifecycle,
+accessibility, focused/full verification, production-graph, and exact
+desktop/mobile browser review with zero P0/P1/P2 findings. Group F2 remains
+mandatory but unauthorized until a separate maintainer gate. `COPY-003`
+remains deferred with the PDE module.
 
 ## Parallel content foundation
 
@@ -315,9 +319,9 @@ and content governance is maintainer-approved. The historical E1 stop led to
 the accepted generic rich model; the fresh E1 restart is now locally complete
 with two Core entries, eight ODE entries, two context-only overrides, and ten
 composed cards. It remains inert and is accepted. The E2 runtime contract is
-complete and the exact E2 source/test contract is now locally implemented
-pending maintainer acceptance. E3 remains unauthorized.
-Group F2 remains required after E3.
+complete and the exact E2 source/test contract is accepted for E3. Independent
+E3 review passed locally pending maintainer acceptance. Group F2 remains
+required and unauthorized.
 The continuation state is
 [the project-language handoff](docs/content/HANDOFF.md). Nothing from these
 copy iterations was pushed or deployed.
@@ -368,10 +372,13 @@ entries, eight ODE entries, two context-only overrides, and ten composed cards
 remain outside the production registry and import graph. The ten-record E2
 runtime contract is complete. Its separately authorized source/test
 implementation is locally complete and verified through one route-instance
-binding and ten explicit complete-IVP annotations. The next gate is maintainer
-acceptance of the E2 commit and evidence package. `/ode` remains unannotated,
-Tutor handoff remains absent, nothing was pushed or deployed, and E3 is
-unauthorized. Group F2 remains mandatory after E3.
+binding and ten explicit complete-IVP annotations, and the maintainer accepted
+the E2 commit for entry into E3. The independent E3 review of exact commit
+`8c8e90a6abc177132f3e033bdb575f2042b982a9` passed with zero P0/P1/P2
+findings and no product-source change. The next gate is maintainer acceptance
+of the E3 review commit and separate authorization of mandatory Group F2.
+`/ode` remains unannotated, Tutor handoff remains absent, nothing was pushed
+or deployed, and Group F2 remains unauthorized.
 
 ## Update rule
 
