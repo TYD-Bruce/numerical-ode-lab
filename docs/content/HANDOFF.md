@@ -576,15 +576,32 @@ metadata out of runtime, preserves the empty production registry, and changes
 no Tutor, Store, annotation, binding, or lazy-loading ownership.
 
 Its verdict is **RICH GLOSSARY MODEL DESIGN COMPLETE — IMPLEMENTATION
-AUTHORIZATION REQUIRED**. This is design evidence only. It does not implement
-the model, add Wave 1 content, resume E1, or authorize E2/E3/F2/deployment.
+AUTHORIZATION REQUIRED**.
+
+The subsequent documentation-only planning set is:
+
+- the
+  [Rich Glossary Content Model Extension Implementation Plan](../superpowers/plans/2026-07-29-rich-glossary-content-model-implementation-plan.md);
+  and
+- the
+  [Rich Glossary Content Model Implementation Plan Review](../reviews/2026-07-29-rich-glossary-content-model-plan-review.md).
+
+It maps the accepted fields to the actual runtime types, builders, registry,
+scope request, lazy surface, styles, neutral DEV fixtures, focused tests,
+browser checks, production-exclusion checks, one-commit rollback, and clean
+E1 restart contract. Its verdict is **RICH GLOSSARY IMPLEMENTATION PLAN
+COMPLETE — AUTHORIZATION REQUIRED**.
+
+This remains planning evidence only. It does not implement the model, add
+Wave 1 content, resume E1, or authorize E2/E3/F2/deployment.
 
 ## 19. Current review gate
 
 The ODE Glossary Wave 1 design, ten revised term cards, ten annotation records,
 ownership, and rollout structure remain approved. E1 remains incomplete. The
-next gate is maintainer acceptance of the rich-model design and separate
-authorization of the generic model/surface implementation. After that
-implementation is independently accepted, E1 must restart from the beginning
-under a new explicit gate. E2, E3, Group F2, push, Preview, and Production
-remain separately gated and unauthorized.
+next gate is maintainer acceptance of the repository-grounded rich-model
+implementation plan and separate authorization of the generic
+model/builder/surface implementation. After that implementation is
+independently accepted, E1 must restart from the beginning under a new
+explicit gate. E2, E3, Group F2, push, Preview, and Production remain
+separately gated and unauthorized.

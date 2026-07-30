@@ -43,9 +43,14 @@ represent all approved rich card fields. The maintainer selected
 [field matrix](./content/RICH_GLOSSARY_CONTENT_FIELD_MATRIX.md), and
 [readiness review](./reviews/2026-07-29-rich-glossary-content-model-design-readiness-review.md)
 are complete with verdict **RICH GLOSSARY MODEL DESIGN COMPLETE —
-IMPLEMENTATION AUTHORIZATION REQUIRED**. No model implementation or Wave 1
-content was added. E1 remains incomplete and must restart only after a
-separately authorized and accepted generic implementation.
+IMPLEMENTATION AUTHORIZATION REQUIRED**. The repository-grounded
+[implementation plan](./superpowers/plans/2026-07-29-rich-glossary-content-model-implementation-plan.md)
+and
+[plan review](./reviews/2026-07-29-rich-glossary-content-model-plan-review.md)
+are complete with verdict **RICH GLOSSARY IMPLEMENTATION PLAN COMPLETE —
+AUTHORIZATION REQUIRED**. No model implementation or Wave 1 content was
+added. E1 remains incomplete and must restart only after a separately
+authorized and accepted generic implementation.
 `COPY-003` and `src/pages/homePage.ts` remain review-only and unchanged. These
 iterations
 changed approved visible copy, server-owned Tutor prompt policy, deterministic
@@ -69,7 +74,8 @@ The product is **Numerical T-Lab**. The currently implemented numerical module i
 | any other page path | In-shell Not Found | Available |
 
 Linear Algebra and PDE are truthful roadmap pages with no runnable controls.
-The active milestone is **Glossary Rich Content Extension — Design Gate**;
+The active milestone is **Glossary Rich Content Extension — Implementation
+Planning Gate**;
 **Linear Systems Lab** is later. The
 [authoritative Glossary design](./superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md)
 is approved and committed. Commit 1, the content-agnostic Glossary model and
@@ -463,10 +469,11 @@ Known limitations:
   Group E0 design and content governance is complete and maintainer-approved,
   covering ten revised Wave 1 term cards, ten exact annotation records, and
   eighteen Option A decisions. E1 stopped incomplete before source/test work
-  at the confirmed schema mismatch. The Option 2 rich-model design is
-  complete, but generic implementation, an E1 restart, E2, and E3 remain
-  separately gated. No production content or binding is authorized, and Group
-  F2 remains mandatory after E3.
+  at the confirmed schema mismatch. The Option 2 rich-model design and
+  repository-grounded implementation plan are complete, but generic
+  implementation, an E1 restart, E2, and E3 remain separately gated. No
+  production content or binding is authorized, and Group F2 remains mandatory
+  after E3.
 
 Contributor rules:
 
@@ -493,7 +500,8 @@ prerequisite state. `COPY-003` plus `src/pages/homePage.ts` remain review-only
 and unchanged. Group E0 design and content governance is complete and
 maintainer-approved for ten revised Wave 1 terms, ten annotation records, and
 eighteen Option A decisions. E1 stopped incomplete before source/test changes
-at the confirmed schema mismatch. The Option 2 rich-model design is complete;
-the next gate is maintainer acceptance and separate authorization of the
-generic model/surface implementation. An E1 restart, E2, and E3 remain
+at the confirmed schema mismatch. The Option 2 rich-model design and
+repository-grounded implementation plan are complete; the next gate is
+maintainer acceptance of the plan and separate authorization of the generic
+model/builder/surface implementation. An E1 restart, E2, and E3 remain
 unauthorized and separately gated; Group F2 remains mandatory after E3.*

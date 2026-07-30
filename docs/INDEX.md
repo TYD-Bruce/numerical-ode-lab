@@ -14,8 +14,8 @@
 
 ## Current active milestone
 
-[PLAN.md](../PLAN.md) points to the Glossary Rich Content Extension design
-gate.
+[PLAN.md](../PLAN.md) points to the Glossary Rich Content Extension
+implementation planning gate.
 The underlying Content-Agnostic Interactive Glossary Framework's approved
 design and repository-grounded implementation plan are documented. The
 corrected framework plan passed conservative re-audit, Commit 1 was
@@ -64,9 +64,14 @@ projection. The generic
 [field matrix](content/RICH_GLOSSARY_CONTENT_FIELD_MATRIX.md), and
 [design-readiness review](reviews/2026-07-29-rich-glossary-content-model-design-readiness-review.md)
 are complete with verdict **RICH GLOSSARY MODEL DESIGN COMPLETE —
-IMPLEMENTATION AUTHORIZATION REQUIRED**. E1 remains incomplete. The model
-implementation, an E1 restart, E2, E3, and production Glossary content remain
-unauthorized; Group F2 remains mandatory after E3.
+IMPLEMENTATION AUTHORIZATION REQUIRED**. The repository-grounded
+[implementation plan](superpowers/plans/2026-07-29-rich-glossary-content-model-implementation-plan.md)
+and
+[plan review](reviews/2026-07-29-rich-glossary-content-model-plan-review.md)
+are also complete with verdict **RICH GLOSSARY IMPLEMENTATION PLAN COMPLETE —
+AUTHORIZATION REQUIRED**. E1 remains incomplete. The model implementation, an
+E1 restart, E2, E3, and production Glossary content remain unauthorized;
+Group F2 remains mandatory after E3.
 
 ## Project-language standards and content drafts
 
@@ -78,9 +83,9 @@ unauthorized production content wave. Groups A through D and the Group
 F1/pre-E prerequisite commits are accepted; all five P2 findings are
 `CLOSED_VERIFIED`. Group E0 ODE Glossary Wave 1 design and content governance
 is complete and maintainer-approved. E1 stopped incomplete at the rich-field
-schema mismatch. The generic rich-model design is complete, but its
-implementation, an E1 restart, E2, E3, and the post-Glossary F2 review remain
-separately gated.
+schema mismatch. The generic rich-model design and implementation plan are
+complete, but implementation, an E1 restart, E2, E3, and the post-Glossary F2
+review remain separately gated.
 
 | Document | Purpose |
 |---|---|
@@ -117,6 +122,7 @@ separately gated.
 | [Theme-Ready Platform Shell Implementation Plan](superpowers/plans/2026-07-13-theme-ready-platform-shell-implementation-plan.md) | Implemented historical plan; check the final review and architecture map for current state |
 | [Numerical T-Lab Rename Migration Plan](superpowers/plans/2026-07-22-numerical-t-lab-rename-migration-plan.md) | Project Identity Migration completed and verified |
 | [Content-Agnostic Interactive Glossary Framework Implementation Plan](superpowers/plans/2026-07-23-content-agnostic-interactive-glossary-framework-implementation-plan.md) | Fully executed locally; historical blocked-review findings closed; final verdict APPROVED FOR LOCAL FRAMEWORK RELEASE; no production content or visible behavior |
+| [Rich Glossary Content Model Extension Implementation Plan](superpowers/plans/2026-07-29-rich-glossary-content-model-implementation-plan.md) | Repository-grounded plan complete; exact generic model/builder/registry/surface/navigation scope and verification defined; runtime authorization still required |
 
 ## Reviews and release evidence
 
@@ -132,6 +138,7 @@ separately gated.
 | [Pre-Glossary Repair Review](reviews/2026-07-29-pre-glossary-repair-review.md) | Verdict **PRE-E REPAIR COMPLETE — GROUP E MAY BE PLANNED**; all five Group F1 findings `CLOSED_VERIFIED`, Group E still unauthorized, F2 still required |
 | [ODE Glossary Wave 1 Design and Content Approval Review](reviews/2026-07-29-ode-glossary-wave-1-design-readiness-review.md) | Verdict **DESIGN AND CONTENT APPROVED — E1 AUTHORIZATION REQUIRED**; no production authorization |
 | [Rich Glossary Content Model Design Readiness Review](reviews/2026-07-29-rich-glossary-content-model-design-readiness-review.md) | Verdict **RICH GLOSSARY MODEL DESIGN COMPLETE — IMPLEMENTATION AUTHORIZATION REQUIRED**; no runtime or Wave 1 content |
+| [Rich Glossary Content Model Implementation Plan Review](reviews/2026-07-29-rich-glossary-content-model-plan-review.md) | Verdict **RICH GLOSSARY IMPLEMENTATION PLAN COMPLETE — AUTHORIZATION REQUIRED**; no runtime or Wave 1 content |
 
 ## Feature handoffs
 
@@ -151,8 +158,9 @@ separately gated.
   validation evidence; Groups A through D are accepted, Group F1 and its five
   pre-E repairs are accepted, Wave 1 Group E0 governance is
   maintainer-approved; E1 stopped incomplete at the schema mismatch; the
-  generic rich-model design is complete; and implementation, an E1 restart,
-  E2/E3, and production content remain unauthorized pending separate gates.
+  generic rich-model design and implementation plan are complete; and
+  implementation, an E1 restart, E2/E3, and production content remain
+  unauthorized pending separate gates.
 - [Project Rename handoff](project-rename/HANDOFF.md) — completed Project
   Identity Migration evidence, including the canonical local workspace reopen.
 
