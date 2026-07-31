@@ -57,8 +57,18 @@ describe("static platform pages", () => {
 
   it("describes the available ODE Lab and marks its roadmap as planned", () => {
     const target = mount(odeOverviewPage, "/ode");
+    const availableDescription = target.querySelector(
+      ".platform-feature-card > p"
+    )?.textContent;
     expect(target.textContent).toContain("Initial Value Problems Lab");
     expect(target.textContent).toContain("Open Initial Value Problems Lab");
+    expect(availableDescription).toBe(
+      "Compare numerical methods, inspect their computed numerical approximations, and study how error changes as the time-step size is refined."
+    );
+    expect(availableDescription).not.toContain("inspect solution curves");
+    expect(availableDescription).not.toContain(
+      "as the step size is refined"
+    );
     for (const item of [
       "Boundary Value Problems",
       "Adaptive Step Size",

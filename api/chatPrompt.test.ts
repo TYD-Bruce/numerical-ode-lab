@@ -60,4 +60,11 @@ describe("AI Tutor controlled mathematics prompt", () => {
     expect(SYSTEM_PROMPT).toContain("Reliable evidence is not proof");
     expect(SYSTEM_PROMPT).toContain("never invent values or guarantees");
   });
+
+  it("uses function notation for the exact value in the live notation contract", () => {
+    expect(SYSTEM_PROMPT).toContain(
+      "uₙ ≈ y(tₙ), fₙ = f(tₙ, uₙ)"
+    );
+    expect(SYSTEM_PROMPT).not.toContain("uₙ ≈ yₙ");
+  });
 });

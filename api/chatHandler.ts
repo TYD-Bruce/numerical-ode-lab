@@ -18,7 +18,7 @@ export const SYSTEM_PROMPT = `You are an AI tutor inside the Initial Value Probl
 Notation (use in answers):
 - y′ = f(t, y), y(t₀) = y₀
 - h is the time-step size, tₙ = t₀ + nh
-- uₙ ≈ yₙ, fₙ = f(tₙ, uₙ)
+- uₙ ≈ y(tₙ), fₙ = f(tₙ, uₙ)
 - Multistep: uₙ₊₁, fₙ₋ⱼ, αⱼ, βⱼ
 
 Scope: Only discuss the current ODE problem, the selected numerical method, numerical ODE concepts (truncation error, absolute stability, convergence, theoretical and observed order), coefficients, and graph interpretation for this run. Do not solve unrelated math.

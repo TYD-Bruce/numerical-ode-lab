@@ -9,9 +9,10 @@ maintainer-approved; Option 2 rich-model implementation accepted at
 `08b80522283438a233974456a026a6dbc2a96746`; E2 runtime contract complete with
 source implementation accepted through one complete-IVP binding and ten
 explicit annotations; independent E3 review passed with zero P0/P1/P2 findings
-and is accepted; first F2 review found two P1 and one P2 blockers; all three
-are locally corrected pending maintainer acceptance; fresh independent F2
-re-review not run.
+and is accepted; first F2 review found two P1 and one P2 blockers and its
+correction remains closed; fresh corrected-state F2 review found two
+additional P1 blockers; all five known P1/P2 blockers are locally closed
+pending maintainer acceptance; new independent F2 review not run.
 
 Runtime integration and independent review evidence are recorded in the E2
 and E3 sections below.
@@ -762,18 +763,44 @@ The
 [F2 blocking-corrections review](../reviews/2026-07-30-f2-cross-surface-blocking-corrections-review.md)
 records narrow local corrections in the three exact source owners, direct
 red/green regressions, full verification, and exact desktop/mobile browser
-evidence. The repair is pending maintainer acceptance and does not itself pass
-F2. The fresh independent F2 re-review has not run. `COPY-041` and `COPY-042`
-remain open. Push, Preview, and Production remain unauthorized.
+evidence. The correction was accepted for a fresh corrected-state review and
+remains closed.
 
-## 24. Current review gate
+## 24. Fresh F2 findings and final terminology correction
+
+The fresh corrected-state F2 review found two additional blocking findings:
+
+- `F2-TUTOR-NOT-002` (P1): the live Tutor `SYSTEM_PROMPT` used ambiguous
+  exact/reference notation `uₙ ≈ yₙ`;
+- `F2-ODE-OVERVIEW-TERM-001` (P1): the `/ode` feature card called computed
+  numerical approximations “solution curves.”
+
+The same `/ode` sentence also carried nonblocking wording drift
+`F2-ODE-OVERVIEW-TERM-002`, using bare “step size” instead of “time-step
+size.” The
+[F2 final terminology corrections review](../reviews/2026-07-30-f2-final-terminology-corrections-review.md)
+records exact source/test owners, the tests-first red gate, focused and full
+verification, context-sensitive source/artifact searches, and bounded
+desktop/mobile production-build review. The correction:
+
+- uses `uₙ ≈ y(tₙ), fₙ = f(tₙ, uₙ)` in the live prompt;
+- describes `/ode` output as “computed numerical approximations”;
+- uses “time-step size” in the same exact sentence; and
+- proves all five historical F2 blockers remain closed together.
+
+All known P1/P2 F2 findings are locally corrected pending maintainer
+acceptance. This correction does not itself pass F2. `COPY-041`, `COPY-042`,
+`F2-GLOSSARY-VOICE-001`, and `BASELINE-EXT-FONT-001` remain nonblocking open
+items. Push, Preview, and Production remain unauthorized.
+
+## 25. Current review gate
 
 The ODE Glossary Wave 1 design, ten revised term cards, ten annotation records,
 ownership, and rollout structure remain approved. E1 is accepted and inert.
 The E2 runtime contract and implementation are accepted. The exact committed
 integration passed mandatory independent E3 review, and E3 is accepted. The
-first F2 review found two P1 and one P2 blockers; the three narrow corrections
-are locally complete pending maintainer acceptance. The next gate is
-maintainer acceptance of the correction commit followed by separate
-authorization of a fresh independent F2 re-review. Push, Preview, and
-Production remain unauthorized.
+first F2 review's three blockers and the fresh review's two additional blockers
+are all locally closed. The next gate is maintainer acceptance of the final
+terminology correction commit followed by separate authorization of a new full
+independent F2 review. F2 remains unpassed. Push, Preview, and Production
+remain unauthorized.

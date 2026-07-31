@@ -28,7 +28,7 @@ export const odeOverviewPage: RouteModule = {
         headingRow,
         createTextElement(
           "p",
-          "Compare numerical methods, inspect solution curves, and study how error changes as the step size is refined."
+          "Compare numerical methods, inspect their computed numerical approximations, and study how error changes as the time-step size is refined."
         ),
         createRouteLink(
           "Open Initial Value Problems Lab",
