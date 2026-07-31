@@ -75,8 +75,12 @@ records the exact contract, browser, lifecycle, and production-graph evidence.
 The independent
 [E3 integration review](./reviews/2026-07-30-ode-glossary-wave-1-e3-integration-review.md)
 passed the exact committed E1+E2 state with zero P0/P1/P2 findings and no
-product-source change. E3 is locally complete pending maintainer acceptance;
-Group F2 remains unauthorized.
+product-source change. E1, E2, and E3 are accepted. The first mandatory F2
+review found two P1 findings (`F2-TUTOR-NOT-001`,
+`F2-TUTOR-TERM-001`) and one P2 finding (`F2-ABOUT-STATUS-001`). The
+[blocking-corrections review](./reviews/2026-07-30-f2-cross-surface-blocking-corrections-review.md)
+records their narrow local correction pending maintainer acceptance. This
+repair does not pass F2; a fresh independent F2 re-review has not run.
 `E1-BROWSER-EXCEPTION-01` accepts only the unchanged Google Fonts
 stylesheet/font request chain for this E1 evidence gate. The source and
 starting-HEAD `index.html` blobs are identical at
@@ -106,8 +110,8 @@ The product is **Numerical T-Lab**. The currently implemented numerical module i
 | any other page path | In-shell Not Found | Available |
 
 Linear Algebra and PDE are truthful roadmap pages with no runnable controls.
-The active milestone is **ODE Glossary Wave 1 E3 — Maintainer Acceptance
-Gate**;
+The active milestone is **ODE Glossary Wave 1 F2 — Blocking Correction
+Acceptance Gate**;
 **Linear Systems Lab** is later. The
 [authoritative Glossary design](./superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md)
 is approved and committed. Commit 1, the content-agnostic Glossary model and
@@ -148,10 +152,11 @@ The historical E1 schema stop was closed by the accepted generic rich-model
 implementation. The fresh E1 restart is locally complete and inert, with
 two Core entries, eight ODE entries, two context-only overrides, and ten
 composed cards in source. E1 is accepted. The E2 runtime contract is complete
-and its separately authorized source/test implementation is accepted for E3
-through one complete-IVP binding and ten explicit annotations. Independent E3
-review passed with zero P0/P1/P2 findings and awaits maintainer acceptance.
-The final Group F2 review remains mandatory and unauthorized.
+and its separately authorized source/test implementation is accepted through
+one complete-IVP binding and ten explicit annotations. Independent E3 review
+passed with zero P0/P1/P2 findings and is accepted. The first Group F2 review
+found two P1 and one P2 blocking findings. All three are locally corrected
+pending maintainer acceptance; the fresh independent F2 re-review has not run.
 
 ## 2. Verification baseline
 
@@ -511,9 +516,10 @@ Known limitations:
   generic implementation are accepted; the fresh E1 restart is accepted and
   inert at `08b80522283438a233974456a026a6dbc2a96746`. The E2 runtime contract
   is complete and locally implemented through one complete-IVP route-instance
-  binding and ten annotations. E2 is accepted for E3; independent E3 review
-  passed and awaits maintainer acceptance. Group F2 remains mandatory and
-  unauthorized.
+  binding and ten annotations. E2 and the independent E3 review are accepted.
+  The first F2 review found two P1 and one P2 blocking findings; all three are
+  locally corrected pending maintainer acceptance. `COPY-041` and `COPY-042`
+  remain open, and the fresh independent F2 re-review has not run.
 
 Contributor rules:
 
@@ -550,6 +556,9 @@ overrides, and ten composed cards, and is accepted at
 `08b80522283438a233974456a026a6dbc2a96746`. The E2 runtime contract is
 complete and locally implemented. E2 is accepted for entry into E3. The exact
 committed E1+E2 state passed independent E3 review with zero P0/P1/P2 findings
-and no product-source change. The next gate is maintainer acceptance of the E3
-review commit and separate authorization of mandatory Group F2. Group F2
-remains unauthorized.*
+and no product-source change, and E3 is accepted. The first F2 review found two
+P1 and one P2 blocking findings. Their narrow correction is locally complete
+pending maintainer acceptance. The next gate is maintainer acceptance of the
+correction commit followed by separate authorization of a fresh independent F2
+re-review. `COPY-041` and `COPY-042` remain open. Push, Preview, and
+Production remain unauthorized.*

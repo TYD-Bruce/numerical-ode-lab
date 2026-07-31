@@ -336,11 +336,10 @@ function buildMockResponse(
         ? 2
         : (tEnd ?? finalT ?? tMin + 2);
     message = demoReply(
-      `I can narrow the plot to t ∈ [${tMin}, ${tMax}] so you can inspect the solution on that window. The curve still comes from your computed series (${pointCount ?? "?"} points, h = ${h ?? "?"}).`
+      `I can narrow the plot to t ∈ [${tMin}, ${tMax}] so you can inspect the computed numerical approximation on that window. The curve still comes from your computed series (${pointCount ?? "?"} points, h = ${h ?? "?"}).`
     );
     chartInstruction = {
       type: "zoom_range",
-      title: `Solution on [${tMin}, ${tMax}]`,
       tMin,
       tMax,
     };
@@ -425,7 +424,7 @@ function buildMockResponse(
     );
   } else if (q.includes("variable") || q.includes("what does") || q.includes("mean")) {
     message = demoReply(
-      `Symbols for this run:\n\n• t, y: independent time and exact solution in y′ = f(t, y)\n• uₙ: numerical approximation at tₙ; fₙ = f(tₙ, uₙ)\n• h = Δt: step size (${h ?? "?"})\n• ${formula}\n\nAll values above come from your current session.`
+      `Symbols for this run:\n\n• t, y: independent time and exact solution in y′ = f(t, y)\n• uₙ: numerical approximation at tₙ; fₙ = f(tₙ, uₙ)\n• h: fixed time-step size (${h ?? "?"})\n• ${formula}\n\nAll values above come from your current session.`
     );
   } else if (q.includes("exam") || q.includes("review")) {
     message = demoReply(

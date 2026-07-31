@@ -125,12 +125,12 @@ describe("static platform pages", () => {
     expect(currentTeachingCopy).toContain("AI Tutor");
     expect(currentTeachingCopy).not.toContain("Interactive Glossary");
     expect(teachingCopy).toContain(
-      "locally accepted Interactive Glossary framework"
+      "Reviewed Glossary terms and definitions are currently available only in the complete Initial Value Problems Lab. The Numerical ODE overview and other routes remain unannotated, and no Glossary-to-Tutor handoff is available."
     );
-    expect(teachingCopy).toContain("ready for reviewed content integration");
-    expect(teachingCopy).toContain(
+    expect(teachingCopy).not.toContain(
       "No production terms or definitions are published yet."
     );
+    expect(teachingCopy).not.toContain("ready for reviewed content integration");
     expect(teachingCopy).not.toContain(
       "approved Interactive Glossary framework is planned"
     );

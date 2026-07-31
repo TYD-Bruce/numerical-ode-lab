@@ -7,9 +7,11 @@ ODE Glossary Wave 1 Group E0 design and content governance
 maintainer-approved; Option 2 rich-model implementation accepted at
 `6ef085d0b0271a5e7ed5a9f64ef4e6a05b5f257e`; fresh E1 accepted and inert at
 `08b80522283438a233974456a026a6dbc2a96746`; E2 runtime contract complete with
-source implementation accepted for E3 through one complete-IVP binding and
-ten explicit annotations; independent E3 review locally passed with zero
-P0/P1/P2 findings, pending maintainer acceptance; F2 unauthorized.
+source implementation accepted through one complete-IVP binding and ten
+explicit annotations; independent E3 review passed with zero P0/P1/P2 findings
+and is accepted; first F2 review found two P1 and one P2 blockers; all three
+are locally corrected pending maintainer acceptance; fresh independent F2
+re-review not run.
 
 Runtime integration and independent review evidence are recorded in the E2
 and E3 sections below.
@@ -741,16 +743,37 @@ The
 records `P0 = P1 = P2 = 0`, no P3 implementation finding, and only accepted
 baseline P3 carry-forward `BASELINE-EXT-FONT-001`. Its verdict is **E3
 INTEGRATION REVIEW PASSED — READY FOR F2 AUTHORIZATION**. E3 made no
-product-source change and is locally complete pending maintainer acceptance.
-Group F2, push, Preview, and Production remain unauthorized. Nothing was
+product-source change. The maintainer subsequently accepted E3. Nothing was
 pushed or deployed.
 
-## 23. Current review gate
+## 23. First F2 review and blocking correction
+
+The first mandatory F2 cross-surface review found exactly three blocking
+consistency findings:
+
+- `F2-TUTOR-NOT-001` (P1): the deterministic Tutor symbols response introduced
+  `Δt` instead of the approved canonical `h`;
+- `F2-TUTOR-TERM-001` (P1): the deterministic Tutor zoom response/action used
+  ambiguous `Solution` wording and could replace the ODE-owned chart title;
+- `F2-ABOUT-STATUS-001` (P2): the public About page still described the
+  pre-content Glossary state.
+
+The
+[F2 blocking-corrections review](../reviews/2026-07-30-f2-cross-surface-blocking-corrections-review.md)
+records narrow local corrections in the three exact source owners, direct
+red/green regressions, full verification, and exact desktop/mobile browser
+evidence. The repair is pending maintainer acceptance and does not itself pass
+F2. The fresh independent F2 re-review has not run. `COPY-041` and `COPY-042`
+remain open. Push, Preview, and Production remain unauthorized.
+
+## 24. Current review gate
 
 The ODE Glossary Wave 1 design, ten revised term cards, ten annotation records,
 ownership, and rollout structure remain approved. E1 is accepted and inert.
-The E2 runtime contract and implementation are accepted for E3. The exact
-committed integration passed mandatory independent E3 review. The next gate is
-maintainer acceptance of the E3 review commit and separate authorization of
-mandatory Group F2. Group F2, push, Preview, and Production remain
-unauthorized.
+The E2 runtime contract and implementation are accepted. The exact committed
+integration passed mandatory independent E3 review, and E3 is accepted. The
+first F2 review found two P1 and one P2 blockers; the three narrow corrections
+are locally complete pending maintainer acceptance. The next gate is
+maintainer acceptance of the correction commit followed by separate
+authorization of a fresh independent F2 re-review. Push, Preview, and
+Production remain unauthorized.

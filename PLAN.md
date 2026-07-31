@@ -105,11 +105,14 @@ scope and disposal ownership, and the production import/bundle boundary. E2
 was accepted for entry into the mandatory E3 gate at
 `8c8e90a6abc177132f3e033bdb575f2042b982a9`. The independent
 [E3 integration review](docs/reviews/2026-07-30-ode-glossary-wave-1-e3-integration-review.md)
-passed the exact committed E1+E2 state with `P0 = P1 = P2 = 0`; it is locally
-complete pending maintainer acceptance and introduced no product-source
-change. `COPY-003` and `src/pages/homePage.ts` remain held and unchanged.
-Group F2 execution remains unauthorized and mandatory after E3 acceptance.
-Nothing was pushed or deployed.
+passed the exact committed E1+E2 state with `P0 = P1 = P2 = 0` and introduced
+no product-source change. E1, E2, and E3 are accepted. The first mandatory F2
+review then found `F2-TUTOR-NOT-001` and `F2-TUTOR-TERM-001` at P1 and
+`F2-ABOUT-STATUS-001` at P2. Those three findings are now narrowly corrected,
+tested, and locally reviewed pending maintainer acceptance. The fresh
+independent F2 re-review has not run. `COPY-003` and
+`src/pages/homePage.ts` remain held and unchanged. `COPY-041` and `COPY-042`
+remain open. Nothing was pushed or deployed.
 
 ## Current released baseline
 
@@ -120,7 +123,7 @@ locally verified, Preview-verified, and Production-verified at
 
 ## Active milestone
 
-**ODE Glossary Wave 1 E2 — Maintainer Acceptance Gate**
+**ODE Glossary Wave 1 F2 — Blocking Correction Acceptance Gate**
 
 The content-agnostic framework and pre-E repairs are accepted prerequisites.
 Group E0 design and content governance is complete and maintainer-approved.
@@ -139,8 +142,9 @@ ownership. E2 is now locally implemented and verified through one
 complete-IVP route-instance binding, ten exact annotation definitions, four
 route-owned scopes, and the accepted `E2-CONTRACT-01` and
 `E2-CONTRACT-02` behavior. `/ode` remains unannotated, Tutor remains
-independent, E2 is accepted for E3, and the independent E3 review passed
-locally pending maintainer acceptance. Group F2 remains unauthorized.
+independent, and E1, E2, and E3 are accepted. The first F2 review found two P1
+and one P2 blocking consistency findings. All three are locally corrected
+pending maintainer acceptance; the fresh independent F2 re-review has not run.
 
 ## Completed Project Identity Migration
 
@@ -174,9 +178,9 @@ loading while keeping formal mathematical content separate.
 [ODE Glossary Wave 1 Design](docs/superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md)
 
 Status: **D01–D18, ten revised cards, and ten annotation records are
-maintainer-approved; E1 is accepted and inert; the E2 runtime contract is
-complete and accepted for E3; independent E3 review passed locally pending
-maintainer acceptance; F2 remains unauthorized.**
+maintainer-approved; E1, E2, and E3 are accepted; the first F2 review found two
+P1 and one P2 blocking findings; all three are locally corrected pending
+maintainer acceptance; the fresh independent F2 re-review has not run.**
 
 [Rich Glossary Content Model and Complete Surface Design](docs/superpowers/specs/2026-07-29-rich-glossary-content-model-design.md)
 
@@ -280,20 +284,22 @@ independent final review. No production content or ODE binding was added.**
     binding and ten explicit annotation definitions. Complete and accepted for
     entry into E3 at `8c8e90a6abc177132f3e033bdb575f2042b982a9`.
 26. Complete E3 integration review after maintainer acceptance of E2.
-    Locally complete with zero P0/P1/P2 findings; pending maintainer
-    acceptance.
-27. Complete mandatory Group F2 after E3. Not started.
-28. Push only when explicitly requested by the maintainer.
+    Complete with zero P0/P1/P2 findings and maintainer-accepted.
+27. Complete the first mandatory Group F2 review after E3. Complete with two
+    P1 and one P2 blocking consistency findings.
+28. Correct only the three authorized F2 blockers. Locally complete and
+    verified; pending maintainer acceptance.
+29. Perform a fresh independent F2 re-review of the exact corrected commit
+    only after separate maintainer authorization. Not started.
+30. Push only when explicitly requested by the maintainer.
 
 ## Current next action
 
 Maintainer acceptance of the locally complete
-[E3 integration review](docs/reviews/2026-07-30-ode-glossary-wave-1-e3-integration-review.md).
-The exact committed E1+E2 state passed independent source, lifecycle,
-accessibility, focused/full verification, production-graph, and exact
-desktop/mobile browser review with zero P0/P1/P2 findings. Group F2 remains
-mandatory but unauthorized until a separate maintainer gate. `COPY-003`
-remains deferred with the PDE module.
+[F2 blocking-corrections review](docs/reviews/2026-07-30-f2-cross-surface-blocking-corrections-review.md),
+followed by separate authorization for a fresh independent F2 re-review of the
+exact corrected commit. This correction does not itself pass F2. `COPY-003`
+remains deferred with the PDE module, and `COPY-041`/`COPY-042` remain open.
 
 ## Parallel content foundation
 
@@ -318,10 +324,11 @@ review; it does not complete Group F. `COPY-003` remains held. Group E0 design
 and content governance is maintainer-approved. The historical E1 stop led to
 the accepted generic rich model; the fresh E1 restart is now locally complete
 with two Core entries, eight ODE entries, two context-only overrides, and ten
-composed cards. It remains inert and is accepted. The E2 runtime contract is
-complete and the exact E2 source/test contract is accepted for E3. Independent
-E3 review passed locally pending maintainer acceptance. Group F2 remains
-required and unauthorized.
+composed cards. It remains inert and is accepted. The E2 runtime contract and
+implementation are accepted, and independent E3 review is accepted. The first
+F2 review found two P1 and one P2 blockers; the three narrow corrections are
+locally complete pending maintainer acceptance. The fresh independent F2
+re-review has not run.
 The continuation state is
 [the project-language handoff](docs/content/HANDOFF.md). Nothing from these
 copy iterations was pushed or deployed.
@@ -370,15 +377,13 @@ accepted Option 2 generic rich model at
 is accepted at `08b80522283438a233974456a026a6dbc2a96746`. Its two Core
 entries, eight ODE entries, two context-only overrides, and ten composed cards
 remain outside the production registry and import graph. The ten-record E2
-runtime contract is complete. Its separately authorized source/test
-implementation is locally complete and verified through one route-instance
-binding and ten explicit complete-IVP annotations, and the maintainer accepted
-the E2 commit for entry into E3. The independent E3 review of exact commit
-`8c8e90a6abc177132f3e033bdb575f2042b982a9` passed with zero P0/P1/P2
-findings and no product-source change. The next gate is maintainer acceptance
-of the E3 review commit and separate authorization of mandatory Group F2.
-`/ode` remains unannotated, Tutor handoff remains absent, nothing was pushed
-or deployed, and Group F2 remains unauthorized.
+runtime contract and implementation are accepted. The independent E3 review
+of exact commit `8c8e90a6abc177132f3e033bdb575f2042b982a9` passed with zero
+P0/P1/P2 findings, introduced no product-source change, and is accepted. The
+first F2 review found two P1 and one P2 blocking findings. The three authorized
+corrections are locally complete pending maintainer acceptance; the fresh
+independent F2 re-review has not run. `/ode` remains unannotated, Glossary
+Tutor handoff remains absent, and nothing was pushed or deployed.
 
 ## Update rule
 

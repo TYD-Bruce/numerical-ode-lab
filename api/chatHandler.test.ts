@@ -392,6 +392,33 @@ describe("mock tutor approved numerical language", () => {
     expect(answer).not.toContain("Steps stored:");
   });
 
+  it("uses the canonical fixed time-step symbol in the variables response", async () => {
+    const answer = await ask("What does each variable mean?", "explicit");
+
+    expect(answer).toContain("h: fixed time-step size (0.1)");
+    expect(answer).not.toContain("Δt");
+    expect(answer).toContain("uₙ: numerical approximation at tₙ");
+    expect(answer).toContain("All values above come from your current session.");
+  });
+
+  it("zooms the computed numerical approximation without replacing the chart title", async () => {
+    const response = await handleChatRequest({
+      messages: [{ role: "user", content: "Zoom the graph." }],
+      context: context("explicit"),
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.body.message).toContain("computed numerical approximation");
+    expect(response.body.message).not.toContain("inspect the solution");
+    expect(response.body.message).not.toContain("Solution on");
+    expect(response.body.chartInstruction).toEqual({
+      type: "zoom_range",
+      tMin: 0,
+      tMax: 1,
+    });
+    expect(response.body.chartInstruction).not.toHaveProperty("title");
+  });
+
   it("does not route an explicit unstable prompt to the table summary", async () => {
     const response = await handleChatRequest({
       messages: [{ role: "user", content: "Why is this unstable?" }],

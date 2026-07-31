@@ -2,6 +2,7 @@
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { assertPureValue, createAppSessionStore } from "../app/appSessionStore";
+import { createPlatformTutorHost } from "../app/platformTutorHost";
 import type { SolverResult } from "../solvers";
 import type { EditableMathFieldHandle } from "../math/ui/editableMathField";
 import { createSuccessfulExpressionSnapshot } from "../math/problemExpressions";
@@ -25,6 +26,28 @@ import { METHOD_CATALOG } from "../methodCatalog";
 
 const destroyChart = vi.fn();
 const chartConfigurations: unknown[] = [];
+const chartInstances: Array<{
+  data: {
+    datasets: Array<{
+      type?: string;
+      pointRadius?: number;
+    }>;
+  };
+  options: {
+    scales?: {
+      x?: {
+        min?: number;
+        max?: number;
+      };
+    };
+    plugins?: {
+      title?: {
+        text?: string;
+      };
+    };
+  };
+  update: ReturnType<typeof vi.fn>;
+}> = [];
 const disposeConvergence = vi.fn();
 const mountConvergence = vi.fn(
   (
@@ -43,9 +66,21 @@ const mountConvergence = vi.fn(
 vi.mock("chart.js", () => {
   class ChartMock {
     static register = vi.fn();
+    data: (typeof chartInstances)[number]["data"];
+    options: (typeof chartInstances)[number]["options"];
+    update = vi.fn();
     destroy = destroyChart;
-    constructor(_canvas: unknown, configuration: unknown) {
+    constructor(
+      _canvas: unknown,
+      configuration: {
+        data: (typeof chartInstances)[number]["data"];
+        options: (typeof chartInstances)[number]["options"];
+      }
+    ) {
+      this.data = configuration.data;
+      this.options = configuration.options;
       chartConfigurations.push(configuration);
+      chartInstances.push(this);
     }
   }
   return {
@@ -162,6 +197,7 @@ describe("mounted ODE lifecycle", () => {
     document.body.innerHTML = "";
     destroyChart.mockClear();
     chartConfigurations.length = 0;
+    chartInstances.length = 0;
     disposeConvergence.mockClear();
     mountConvergence.mockClear();
   });
@@ -238,6 +274,66 @@ describe("mounted ODE lifecycle", () => {
     expect(target.childElementCount).toBe(0);
     expect(destroyChart).toHaveBeenCalledTimes(1);
     expect(disposeConvergence).toHaveBeenCalledTimes(1);
+  });
+
+  it("applies Tutor zoom bounds without changing the chart-owned title", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const mounted = mountOdeApp({
+      target,
+      initialSession: outputSession(),
+    });
+    await Promise.resolve();
+
+    const chart = chartInstances[0]!;
+    const titleBefore = chart.options.plugins?.title?.text;
+    const tutorHostTarget = document.createElement("aside");
+    document.body.append(tutorHostTarget);
+    const tutorHost = createPlatformTutorHost({
+      target: tutorHostTarget,
+      isMobile: () => false,
+      loadPanel: async () => ({
+        mountPlatformTutorPanel: () => ({
+          dispose: vi.fn(),
+          focus: vi.fn(),
+        }),
+      }),
+    });
+    const store = createAppSessionStore();
+    tutorHost.connect(
+      mounted.getTutorBinding(),
+      store.createTutorSessionAccess("ode")
+    );
+    await tutorHost.open(
+      tutorHostTarget.querySelector<HTMLButtonElement>("[data-tutor-open]")!
+    );
+    mounted.getTutorBinding().applyChartInstruction?.({
+      type: "zoom_range",
+      title: "Solution on [0.25, 0.75]",
+      tMin: 0.25,
+      tMax: 0.75,
+    });
+
+    expect(chart.options.scales?.x).toMatchObject({
+      min: 0.25,
+      max: 0.75,
+    });
+    expect(chart.options.plugins?.title?.text).toBe(titleBefore);
+    expect(chart.options.plugins?.title?.text).toBe(
+      "Numerical approximation vs time"
+    );
+    expect(chart.options.plugins?.title?.text).not.toContain("Solution");
+    expect(chart.update).toHaveBeenCalledOnce();
+
+    tutorHost.close();
+    expect(tutorHost.isPresentationVisible()).toBe(false);
+    expect(chart.options.plugins?.title?.text).toBe(titleBefore);
+    expect(chart.options.plugins?.title?.text).not.toContain("Solution");
+
+    tutorHost.dispose();
+    mounted.dispose();
+    expect(chart.options.plugins?.title?.text).toBe(titleBefore);
   });
 
   it("keeps one accessible method formula through rerender and final disposal", async () => {

@@ -36,7 +36,7 @@ export function createAboutPage(): RouteModule {
         teaching.append(
           createTextElement("strong", "Teaching"),
           document.createTextNode(
-            " — provides guided workflows, the AI Tutor, and beginner-oriented interpretation today. The locally accepted Interactive Glossary framework is ready for reviewed content integration. No production terms or definitions are published yet."
+            " — provides guided workflows, the AI Tutor, and beginner-oriented interpretation today. Reviewed Glossary terms and definitions are currently available only in the complete Initial Value Problems Lab. The Numerical ODE overview and other routes remain unannotated, and no Glossary-to-Tutor handoff is available."
           )
         );
         pillarList.append(theory, tools, teaching);

@@ -246,12 +246,6 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       if (instruction.tMin !== undefined) x.min = instruction.tMin;
       if (instruction.tMax !== undefined) x.max = instruction.tMax;
       (chart.options.scales as { x: typeof x }).x = x;
-      if (instruction.title) {
-        chart.options.plugins = chart.options.plugins ?? {};
-        const title = (chart.options.plugins as { title?: { text?: string } }).title ?? {};
-        title.text = instruction.title;
-        (chart.options.plugins as { title: typeof title }).title = title;
-      }
       chart.update();
       return;
     }

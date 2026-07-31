@@ -14,7 +14,7 @@
 
 ## Current active milestone
 
-[PLAN.md](../PLAN.md) points to the ODE Glossary Wave 1 E3 maintainer
+[PLAN.md](../PLAN.md) points to the ODE Glossary Wave 1 F2 blocking-correction
 acceptance gate.
 The underlying Content-Agnostic Interactive Glossary Framework's approved
 design and repository-grounded implementation plan are documented. The
@@ -94,8 +94,12 @@ records the implementation evidence. The maintainer accepted E2 for entry
 into the mandatory E3 gate. The independent
 [E3 integration review](reviews/2026-07-30-ode-glossary-wave-1-e3-integration-review.md)
 passed the exact committed E1+E2 state with zero P0/P1/P2 findings and no
-product-source change. E3 is locally complete pending maintainer acceptance.
-Group F2 execution remains unauthorized, and nothing was pushed or deployed.
+product-source change, and E1/E2/E3 are accepted. The first F2 review found two
+P1 and one P2 blocking findings. The
+[F2 blocking-corrections review](reviews/2026-07-30-f2-cross-surface-blocking-corrections-review.md)
+records their narrow local correction pending maintainer acceptance. The fresh
+independent F2 re-review has not run. `COPY-041` and `COPY-042` remain open,
+and nothing was pushed or deployed.
 
 ## Project-language standards and content drafts
 
@@ -109,9 +113,10 @@ F1/pre-E prerequisite commits are accepted; all five P2 findings are
 is complete and maintainer-approved. The historical E1 schema stop was closed
 by the accepted generic rich-model implementation. The fresh E1 restart is
 accepted and inert. The E2 runtime contract is complete, while E2 source/test
-implementation is accepted for E3. The independent E3 review passed locally
-pending maintainer acceptance. The post-Glossary F2 review remains separately
-gated and unauthorized.
+implementation is accepted. The independent E3 review is accepted. The first
+post-Glossary F2 review found two P1 and one P2 blockers; the three corrections
+are locally complete pending maintainer acceptance. A fresh independent F2
+re-review remains separately gated and has not run.
 
 | Document | Purpose |
 |---|---|
@@ -125,10 +130,10 @@ gated and unauthorized.
 | [Terminology Decisions](content/TERMINOLOGY_DECISIONS.md) | Historical comparison plus the approved Version 1 resolution index |
 | [Maintainer Decision Packet](content/MAINTAINER_DECISION_PACKET.md) | Completed evidence cards and binding records for exactly nine decisions |
 | [Project Language Approval Checklist](content/PROJECT_LANGUAGE_APPROVAL_CHECKLIST.md) | Completed documentation-only approval and validation record |
-| [Project Language v1 Handoff](content/HANDOFF.md) | Approved choices, counts, accepted Groups A–D/F1/pre-E/E1/E2 state, locally passed E3 state, held scope, and exact next gate |
+| [Project Language v1 Handoff](content/HANDOFF.md) | Approved choices, counts, accepted Groups A–D/F1/pre-E/E1/E2/E3 state, first F2 findings, locally corrected blockers, held scope, and exact next gate |
 | [ODE Glossary Wave 1 Content Packet](content/ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) | Maintainer-approved ten-card content and ten annotation design records; E1 accepted and interaction details delegated to the canonical E2 runtime contract |
 | [ODE Glossary Wave 1 E2 Runtime Contract](content/ODE_GLOSSARY_WAVE_1_E2_RUNTIME_CONTRACT.md) | Sole E2 interaction authority: ten exact records, owners, text/DOM compositions, state/mode rules, lifecycle rules, duplicates, and direct test owners; implemented and accepted for E3 |
-| [ODE Glossary Wave 1 Approval Checklist](content/ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) | Checked content/design, accepted rich-model/E1/E2 prerequisites, locally passed E3 review, and unchecked E3 acceptance/F2/deployment gates |
+| [ODE Glossary Wave 1 Approval Checklist](content/ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) | Checked content/design and accepted rich-model/E1/E2/E3 prerequisites; first F2 review and local blocker correction recorded with correction acceptance, fresh re-review, and deployment gates still unchecked |
 | [Rich Glossary Content Field Matrix](content/RICH_GLOSSARY_CONTENT_FIELD_MATRIX.md) | Exact destination for all 29 approved term-card fields, all 21 annotation-record fields, and six ownership/composition fields; governance/private metadata remains outside runtime |
 
 ## Product and feature specifications
@@ -139,7 +144,7 @@ gated and unauthorized.
 | [Human-Friendly Math Expressions Design](superpowers/specs/2026-07-10-human-friendly-math-expressions-design.md) | Implemented and verified |
 | [Observed Convergence Order Experiment Design](superpowers/specs/2026-07-10-convergence-study-design.md) | Implemented, verified, release ready |
 | [Content-Agnostic Interactive Glossary Framework Design](superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md) | Implemented and locally accepted after a repeated independent final review; production content remains deferred |
-| [ODE Glossary Wave 1 Design](superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md) | D01–D18 approved as Option A; E1 accepted; E2 accepted for E3; independent E3 review passed locally pending acceptance; F2 unauthorized |
+| [ODE Glossary Wave 1 Design](superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md) | D01–D18 approved as Option A; E1/E2/E3 accepted; first F2 review found two P1 and one P2 blockers; all three locally corrected pending acceptance; fresh F2 re-review not run |
 | [Rich Glossary Content Model and Complete Surface Design](superpowers/specs/2026-07-29-rich-glossary-content-model-design.md) | Option 2 design implemented and accepted at the fresh E1 starting HEAD |
 
 ## Implementation plans
@@ -170,6 +175,7 @@ gated and unauthorized.
 | [ODE Glossary Wave 1 E1 Content Review](reviews/2026-07-29-ode-glossary-wave-1-e1-content-review.md) | Verdict **E1 RICH CONTENT IMPLEMENTED AND INERT — READY FOR MAINTAINER ACCEPTANCE**; ten cards in source, zero production registry entries/importers/annotations/bindings |
 | [ODE Glossary Wave 1 E2 Integration Review](reviews/2026-07-30-ode-glossary-wave-1-e2-integration-review.md) | Verdict **E2 ODE GLOSSARY INTEGRATED — READY FOR MAINTAINER ACCEPTANCE**; one complete-IVP route binding, ten explicit annotations, `/ode` plain, no Tutor handoff |
 | [ODE Glossary Wave 1 E3 Integration Review](reviews/2026-07-30-ode-glossary-wave-1-e3-integration-review.md) | Independent verdict **E3 INTEGRATION REVIEW PASSED — READY FOR F2 AUTHORIZATION**; exact E1+E2 commit audited with zero P0/P1/P2 findings and no product-source change |
+| [F2 Cross-Surface Blocking Corrections Review](reviews/2026-07-30-f2-cross-surface-blocking-corrections-review.md) | Verdict **F2 BLOCKING CONSISTENCY FINDINGS CORRECTED — READY FOR MAINTAINER ACCEPTANCE**; two P1 and one P2 findings narrowly corrected; fresh independent F2 re-review not yet run |
 
 ## Feature handoffs
 

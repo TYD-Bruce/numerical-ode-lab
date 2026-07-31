@@ -1,9 +1,10 @@
 # ODE Glossary Wave 1 Approval Checklist
 
 **Status:** Maintainer approval recorded; content and Wave 1 design approved;
-the generic rich model and E1 are accepted. E2 is accepted for entry into E3.
-The independent E3 review passed locally pending maintainer acceptance. F2,
-push, Preview, and Production remain unauthorized.
+the generic rich model, E1, E2, and E3 are accepted. The first F2 review found
+two P1 and one P2 blockers. All three are locally corrected pending maintainer
+acceptance; the fresh independent F2 re-review has not run. Push, Preview, and
+Production remain unauthorized.
 
 **Date prepared:** 2026-07-29
 
@@ -34,6 +35,8 @@ The local implementation evidence is recorded by the
 [E2 integration review](../reviews/2026-07-30-ode-glossary-wave-1-e2-integration-review.md).
 The mandatory independent evidence is recorded by the
 [E3 integration review](../reviews/2026-07-30-ode-glossary-wave-1-e3-integration-review.md).
+The three first-review blocking corrections are recorded by the
+[F2 blocking-corrections review](../reviews/2026-07-30-f2-cross-surface-blocking-corrections-review.md).
 Checked content/design/contract boxes record approval only. Unchecked
 implementation/execution/deployment boxes require separate maintainer
 authorization.
@@ -112,9 +115,13 @@ the fresh E1 authorization is recorded separately below.
 - [x] E3 mandatory independent review gate approved.
 - [x] E3 execution explicitly authorized.
 - [x] E3 independent review locally complete with zero P0/P1/P2 findings.
-- [ ] E3 review maintainer-accepted.
+- [x] E3 review maintainer-accepted.
 - [x] Group F2 mandatory review gate approved.
-- [ ] Group F2 execution explicitly authorized.
+- [x] Group F2 execution explicitly authorized.
+- [x] First Group F2 review completed with two P1 and one P2 findings.
+- [x] Three Group F2 blocking findings locally corrected and verified.
+- [ ] F2 correction commit maintainer-accepted.
+- [ ] Fresh independent F2 re-review authorized and completed.
 - [x] E1/E2/E3/F2 rollback boundaries approved.
 - [x] Release criteria in decision D18 approved.
 - [ ] Push explicitly authorized.
@@ -126,9 +133,11 @@ the fresh E1 authorization is recorded separately below.
 The 18 decision cards D01 through D18 in the design specification record
 maintainer-approved Option A. This approval fixes design and governance. E1 is
 separately accepted. E2 source/test implementation was separately authorized
-and accepted for entry into E3. E3 execution was later separately authorized
-and passed locally pending maintainer acceptance. This record does not
-authorize F2, push, Preview, or Production action.
+and accepted. E3 execution was later separately authorized, passed locally,
+and was maintainer-accepted. The first F2 review found two P1 and one P2
+blocking findings; all three are locally corrected pending maintainer
+acceptance. This record does not authorize a fresh F2 re-review, push, Preview,
+or Production action.
 
 ## 7. Historical E1 schema-stop and fresh restart record
 
@@ -157,8 +166,10 @@ route-instance binding and ten explicit annotations. `/ode` remains plain,
 Tutor remains independent, and the generic production registry remains empty.
 E2 is accepted for entry into E3. The independent E3 review passed exact commit
 `8c8e90a6abc177132f3e033bdb575f2042b982a9` with zero P0/P1/P2 findings
-and no product-source change. E3 awaits maintainer acceptance. F2, push,
-Preview, and Production remain unauthorized.
+and no product-source change, and E3 is accepted. The first F2 review found two
+P1 and one P2 blocking findings. All three are locally corrected pending
+maintainer acceptance. The fresh independent F2 re-review, push, Preview, and
+Production remain unauthorized.
 
 `E1-BROWSER-EXCEPTION-01` permits only the unchanged Google Fonts
 stylesheet/font chain from `index.html` for the E1 browser evidence. The
@@ -174,7 +185,7 @@ remediation was performed.
 ## 8. Checked-count declaration
 
 Checked approval, prerequisite, authorization, acceptance, contract, and
-local-completion boxes: **175**.
+local-completion boxes: **179**.
 
 Unchecked implementation/execution/deployment boxes: **5**.
 
@@ -186,9 +197,10 @@ Architecture rows: **7**.
 
 Generic prerequisite rows: **3**.
 
-Rollout rows: **20**.
+Rollout rows: **24**.
 
 Checked content/design/contract rows do not authorize later implementation.
-The maintainer accepted E2 for the separately authorized E3 review. E3 passed
-locally and now awaits maintainer acceptance. F2 execution, push, Preview
-deployment, and Production deployment remain unauthorized.
+E1, E2, and E3 are accepted. The first F2 review found two P1 and one P2
+blocking findings, and the three corrections are locally complete pending
+maintainer acceptance. A fresh independent F2 re-review has not run. Push,
+Preview deployment, and Production deployment remain unauthorized.
