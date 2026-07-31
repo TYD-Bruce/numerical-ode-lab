@@ -211,7 +211,9 @@ On complete-Lab mount:
 3. The adapter connects the Lab-owned Tutor binding to live module session
    access.
 4. If the mounted Lab provides a Glossary binding, the adapter connects it to
-   the Platform Glossary Host; the current ODE Lab omits this optional edge.
+   the Platform Glossary Host. The complete Initial Value Problems route
+   provides one fresh route-instance binding; the static `/ode` overview does
+   not.
 5. The router waits for readiness and restores the current navigation's scroll.
 
 On route leave:
@@ -336,14 +338,29 @@ framework and its development verification environment:
   single-listener ownership, retryable loading, and stale-resolution guards.
 
 This transient runtime state and its DOM/listener/subscription/modal handles
-remain outside `AppSessionStore`. The current Initial Value Problems route
-omits the optional binding, so the production Host is inert and the surface
-chunk cannot be requested through current product UI. The Playground and all
-ten neutral fixtures, its development controls, route stylesheet, About entry,
-shortcut, and unique markers are excluded from production.
+remain outside `AppSessionStore`.
 
-No production term, annotation, definition, real Tutor Glossary request, queue,
-or canonical Glossary notation exists.
+The static `/ode` overview exposes no Glossary binding. The complete
+`/ode/initial-value-problems` route owns one optional route-instance Glossary
+binding, composed from ten approved Wave 1 cards and ten explicit annotation
+records. The Platform Host connects to that binding only while the complete
+IVP route is mounted. The Glossary surface remains independently lazy. No
+Glossary state enters `AppSessionStore` or an ODE session, and no
+Glossary-to-Tutor handoff is implemented.
+
+The generic production registry remains empty. The Playground and all ten
+neutral fixtures, its development controls, route stylesheet, About entry,
+shortcut, and unique markers remain excluded from production.
+
+Current governance distinguishes this local architecture from the deployed
+site. E1, E2, and E3 are accepted locally; all seven known F2 blockers are
+corrected, but F2 remains unpassed pending a final independent F2 rerun. No
+push, Preview deployment, or Production deployment was authorized or
+performed, so the public deployed site remains on its previously deployed
+commit.
+`COPY-041`, `COPY-042`, `F2-GLOSSARY-VOICE-001`,
+`BASELINE-EXT-FONT-001`, and `F2-EVIDENCE-001` remain nonblocking open
+items.
 
 ## Architecture invariants
 

@@ -3,6 +3,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { assertPureValue, createAppSessionStore } from "../app/appSessionStore";
 import { createPlatformTutorHost } from "../app/platformTutorHost";
+import { validateFixedStepGrid } from "../grid";
 import type { SolverResult } from "../solvers";
 import type { EditableMathFieldHandle } from "../math/ui/editableMathField";
 import { createSuccessfulExpressionSnapshot } from "../math/problemExpressions";
@@ -386,8 +387,21 @@ describe("mounted ODE lifecycle", () => {
     const target = document.createElement("div");
     document.body.append(target);
     const base = outputSession();
+    const stepCount = validateFixedStepGrid(0, 5, 0.2).steps;
+    const countContractPoints = Array.from(
+      { length: stepCount + 1 },
+      (_, index) => ({ t: index * 0.2, y: 1 - index * 0.02 })
+    );
+    const first = createReadonlySolverResult({
+      ...RAW_RESULT,
+      points: countContractPoints,
+    });
     const second = createReadonlySolverResult({
       ...RAW_RESULT,
+      points: countContractPoints.map((point) => ({
+        ...point,
+        y: point.y + point.t * 0.001,
+      })),
       metadata: {
         ...RAW_RESULT.metadata,
         family: "rk4",
@@ -407,7 +421,7 @@ describe("mounted ODE lifecycle", () => {
         comparison: {
           a: { family: "forward_euler" as const },
           b: { family: "rk4" as const },
-          resultA: base.output.single.result,
+          resultA: first,
           resultB: second,
           expression: base.output.single.expression,
         },
@@ -428,6 +442,28 @@ describe("mounted ODE lifecycle", () => {
     );
     expect(target.textContent).not.toContain("Final y —");
     expect(target.textContent).not.toContain("|uₙ − yₙ| at final t");
+    const compareStats = [...target.querySelectorAll<HTMLElement>(".stat")];
+    const storedPointStat = compareStats.find(
+      (stat) =>
+        stat.querySelector(".stat-label")?.textContent ===
+        "Stored grid points (each)"
+    );
+    expect(stepCount).toBe(25);
+    expect(countContractPoints).toHaveLength(26);
+    expect(storedPointStat?.querySelector(".stat-value")?.textContent).toBe(
+      "26"
+    );
+    expect(
+      compareStats.map(
+        (stat) => stat.querySelector(".stat-label")?.textContent
+      )
+    ).not.toContain("Steps (each)");
+    expect(
+      target.querySelector(".table-section h3")?.textContent
+    ).toBe("Last 12 stored grid points (both methods)");
+    expect(target.textContent).not.toContain(
+      "Last 12 steps (both methods)"
+    );
     expect(mounted.getTutorBinding().getContext()).toEqual({ enabled: false });
     expect(mounted.getSession().output.single).toBeUndefined();
     expect(mounted.getSession().output.comparison?.resultB).toBe(second);

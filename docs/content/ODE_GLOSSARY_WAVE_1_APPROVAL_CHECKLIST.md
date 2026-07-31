@@ -4,9 +4,11 @@
 the generic rich model, E1, E2, and E3 are accepted. The first F2 review found
 two P1 and one P2 blockers, and its correction remains closed. The fresh
 corrected-state F2 review found two additional P1 blockers; both are locally
-corrected. All five known P1/P2 blockers are closed pending maintainer
-acceptance. A new independent F2 review has not run. Push, Preview, and
-Production remain unauthorized.
+corrected. The final independent F2 review found one Compare count-semantics
+blocker and one current-state governance blocker; both are locally corrected.
+All seven known F2 blockers are closed. A final independent F2 rerun has not
+run, so F2 remains unpassed. Push, Preview, and Production remain
+unauthorized.
 
 **Date prepared:** 2026-07-29
 
@@ -42,6 +44,9 @@ The three first-review blocking corrections are recorded by the
 The two fresh-review terminology corrections and adjacent `/ode` wording
 normalization are recorded by the
 [F2 final terminology corrections review](../reviews/2026-07-30-f2-final-terminology-corrections-review.md).
+The final Compare-count and current-state governance corrections are recorded
+by the
+[F2 final count and governance corrections review](../reviews/2026-07-30-f2-final-count-and-governance-corrections-review.md).
 Checked content/design/contract boxes record approval only. Unchecked
 implementation/execution/deployment boxes require separate maintainer
 authorization.
@@ -129,8 +134,12 @@ the fresh E1 authorization is recorded separately below.
 - [x] Fresh independent F2 re-review authorized and completed.
 - [x] Fresh F2 review completed with two additional P1 findings.
 - [x] Final terminology correction locally complete and verified.
-- [ ] Final terminology correction commit maintainer-accepted.
-- [ ] New full independent F2 review authorized and completed.
+- [x] Final terminology correction commit maintainer-accepted for final F2
+  review.
+- [x] Final independent F2 review completed with one P1 and one P2 finding.
+- [x] Final count and governance correction locally complete and verified.
+- [ ] Final count and governance correction commit maintainer-accepted.
+- [ ] Final independent F2 rerun authorized and completed.
 - [x] E1/E2/E3/F2 rollback boundaries approved.
 - [x] Release criteria in decision D18 approved.
 - [ ] Push explicitly authorized.
@@ -146,9 +155,10 @@ and accepted. E3 execution was later separately authorized, passed locally,
 and was maintainer-accepted. The first F2 review found two P1 and one P2
 blocking findings, and its correction remains closed. The fresh corrected-state
 F2 review found two additional P1 findings; both are locally corrected, along
-with the adjacent `/ode` P3 wording drift. All five known P1/P2 blockers are
-closed pending maintainer acceptance. This record does not authorize a new F2
-review, push, Preview, or Production action.
+with the adjacent `/ode` P3 wording drift. The final review's Compare count and
+governance blockers are also locally corrected. All seven known F2 blockers
+are closed, but F2 remains unpassed pending a final independent rerun. This
+record does not authorize that rerun, push, Preview, or Production action.
 
 ## 7. Historical E1 schema-stop and fresh restart record
 
@@ -180,9 +190,10 @@ E2 is accepted for entry into E3. The independent E3 review passed exact commit
 and no product-source change, and E3 is accepted. The first F2 review found two
 P1 and one P2 blocking findings, and its correction remains closed. The fresh
 corrected-state F2 review found two additional P1 findings; both are locally
-corrected, along with `F2-ODE-OVERVIEW-TERM-002`. All five known P1/P2
-blockers are closed pending maintainer acceptance. A new independent F2
-review, push, Preview, and Production remain unauthorized.
+corrected, along with `F2-ODE-OVERVIEW-TERM-002`. The final review found
+`F2-COMPARE-COUNT-001` and `F2-GOV-STATUS-001`; both are locally corrected.
+All seven known F2 blockers are closed. A final independent F2 rerun, push,
+Preview, and Production remain unauthorized.
 
 `E1-BROWSER-EXCEPTION-01` permits only the unchanged Google Fonts
 stylesheet/font chain from `index.html` for the E1 browser evidence. The
@@ -198,7 +209,7 @@ remediation was performed.
 ## 8. Checked-count declaration
 
 Checked approval, prerequisite, authorization, acceptance, contract, and
-local-completion boxes: **183**.
+local-completion boxes: **186**.
 
 Unchecked implementation/execution/deployment boxes: **5**.
 
@@ -210,12 +221,18 @@ Architecture rows: **7**.
 
 Generic prerequisite rows: **3**.
 
-Rollout rows: **28**.
+Rollout rows: **31**.
 
 Checked content/design/contract rows do not authorize later implementation.
 E1, E2, and E3 are accepted. The first F2 review found two P1 and one P2
 blocking findings, and its correction remains closed. The fresh F2 review
 found two additional P1 blockers; both are locally corrected, along with the
-adjacent `/ode` P3 wording drift. All five known P1/P2 blockers are closed
-pending maintainer acceptance. A new independent F2 review has not run. Push,
-Preview deployment, and Production deployment remain unauthorized.
+adjacent `/ode` P3 wording drift. The final review's Compare count and
+governance blockers are also locally corrected. All seven known F2 blockers
+are closed. A final independent F2 rerun has not run, so F2 remains unpassed.
+Push, Preview deployment, and Production deployment remain unauthorized and
+unperformed.
+
+`COPY-041`, `COPY-042`, `F2-GLOSSARY-VOICE-001`,
+`BASELINE-EXT-FONT-001`, and `F2-EVIDENCE-001` remain nonblocking open
+items.

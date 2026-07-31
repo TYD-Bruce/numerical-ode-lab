@@ -2468,7 +2468,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       <h2>Comparison · ${resultA.metadata.displayName} vs ${resultB.metadata.displayName}</h2>
       <div class="problem-equation" data-problem-equation></div>
       <div class="stat-grid">
-        <div class="stat"><span class="stat-label">Steps (each)</span><span class="stat-value">${seriesA.length}</span></div>
+        <div class="stat"><span class="stat-label">Stored grid points (each)</span><span class="stat-value">${seriesA.length}</span></div>
         <div class="stat"><span class="stat-label">Final time</span><span class="stat-value">${la.t.toFixed(6)}</span></div>
         <div class="stat"><span class="stat-label">Final numerical approximation — ${escapeHtml(resultA.metadata.displayName)}</span><span class="stat-value">${la.y.toFixed(8)}</span></div>
         <div class="stat"><span class="stat-label">Final numerical approximation — ${escapeHtml(resultB.metadata.displayName)}</span><span class="stat-value">${lb.y.toFixed(8)}</span></div>
@@ -2483,7 +2483,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       <canvas id="plot" height="120"></canvas>
     </section>
     <section class="table-section">
-      <h3>Last 12 steps (both methods)</h3>
+      <h3>Last 12 stored grid points (both methods)</h3>
       <div class="table-scroll">
         <table>
           <thead>

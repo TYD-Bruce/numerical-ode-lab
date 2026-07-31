@@ -10,10 +10,13 @@ reviewed classifications, and all five pre-E findings are `CLOSED_VERIFIED`.
 `COPY-003` remains held. Group E0 ODE Glossary Wave 1 design and content
 governance is maintainer-approved: D01–D18, all ten revised cards, and all ten
 annotation records are approved. E1 inert content is locally implemented
-and accepted. The separately authorized E2 runtime contract is locally
-implemented through one complete-IVP binding and ten explicit annotations,
-pending maintainer acceptance. E2 does not implement `COPY-041` or
-`COPY-042`; E3 and F2 execution, push, and deployment remain unauthorized.
+and accepted. E2 is accepted and locally implemented through one complete-IVP
+binding and ten explicit annotations. E3 is accepted. The first and second F2
+corrections are committed, and the final count/governance correction is
+locally complete; all seven known F2 blockers are closed. A final independent
+F2 rerun remains required, so F2 is unpassed. E2 does not implement
+`COPY-041` or `COPY-042`. No push, Preview deployment, or Production
+deployment was authorized or performed.
 
 ## Purpose and boundary
 
@@ -38,9 +41,8 @@ inside the separately authorized implementation group.
 - Implementation progress: 4 Group A ready records, 14 Group B records,
   10 Group C records, and 11 Group D records accepted; `COPY-043` implemented
   and accepted with Group F1; `COPY-003` held; Group E0 design and content
-  governance approved; E1 inert content accepted; E2 runtime integration
-  locally implemented pending maintainer acceptance; E3/F2 execution
-  unauthorized; Group F2 required after E3.
+  governance approved; E1/E2/E3 accepted; all seven known F2 blockers locally
+  corrected; final independent F2 rerun required and F2 unpassed.
 - Former decision-blocked records: **0**.
 - Numerical-behavior changes proposed: **0**.
 
@@ -1337,14 +1339,15 @@ Glossary Wave 1 term cards, ten annotation design records, and D01–D18 Option
 A. The accepted rich model supports the separately authorized E1 inert
 content implementation: exactly two Core entries, eight ODE entries, two
 context-only overrides, and ten composed cards now exist in source, and E1 is
-accepted. The separately authorized E2 contract now creates one
-complete-IVP route-instance binding and ten explicit annotations. `/ode`
-remains plain, no Tutor handoff exists, and the generic production registry
-remains empty. This does not change the readiness of `COPY-041` or
-`COPY-042`; both remain future generic-surface copy decisions. The next gate
-is maintainer acceptance of E2. E3 and F2 remain separately gated and
-unauthorized. The original full Group F is not complete; Group F2 remains
-required after E3.
+accepted. E2 is accepted and creates one complete-IVP route-instance binding
+and ten explicit annotations. E3 is accepted. `/ode` remains plain, no Tutor
+handoff exists, and the generic production registry remains empty. The first
+and second F2 correction commits remain closed; the final count/governance
+correction closes `F2-COMPARE-COUNT-001` and `F2-GOV-STATUS-001`. All seven
+known F2 blockers are locally corrected, but F2 remains unpassed pending one
+final independent rerun. This does not change the readiness of `COPY-041` or
+`COPY-042`; both remain future generic-surface copy decisions. The original
+full Group F is not complete.
 
 ### Group E2 local implementation evidence
 
@@ -1357,5 +1360,14 @@ Output; Compare Output remains plain. Focused and full tests, exact desktop
 and mobile production-build review, import/bundle inspection, and disposal
 checks are recorded in the
 [E2 integration review](../reviews/2026-07-30-ode-glossary-wave-1-e2-integration-review.md).
-The local verdict is **E2 ODE GLOSSARY INTEGRATED — READY FOR MAINTAINER
-ACCEPTANCE**. Nothing was pushed or deployed.
+The point-in-time local verdict is **E2 ODE GLOSSARY INTEGRATED — READY FOR
+MAINTAINER ACCEPTANCE**. E2 and the later independent E3 review are now
+accepted. No push, Preview deployment, or Production deployment was authorized
+or performed; the public deployed site remains unchanged.
+
+`COPY-041` and `COPY-042` remain open exactly as recorded above.
+`F2-GLOSSARY-VOICE-001` remains packet-approved and nonblocking;
+`BASELINE-EXT-FONT-001` remains a Platform/asset-policy carry-forward; and
+`F2-EVIDENCE-001` remains a nonblocking desktop compact-preview gesture
+evidence limitation. None is repaired or reclassified by the count/governance
+correction.

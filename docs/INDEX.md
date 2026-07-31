@@ -14,8 +14,8 @@
 
 ## Current active milestone
 
-[PLAN.md](../PLAN.md) points to the ODE Glossary Wave 1 F2 blocking-correction
-acceptance gate.
+[PLAN.md](../PLAN.md) points to the ODE Glossary Wave 1 final F2 count and
+governance correction acceptance gate.
 The underlying Content-Agnostic Interactive Glossary Framework's approved
 design and repository-grounded implementation plan are documented. The
 corrected framework plan passed conservative re-audit, Commit 1 was
@@ -101,10 +101,15 @@ records their accepted narrow correction. The fresh corrected-state F2 review
 found two additional P1 blockers and one adjacent P3 wording drift. The
 [F2 final terminology corrections review](reviews/2026-07-30-f2-final-terminology-corrections-review.md)
 records their narrow local correction. All five known P1/P2 blockers are
-closed pending maintainer acceptance; a new independent F2 review has not run.
-`COPY-041`, `COPY-042`, `F2-GLOSSARY-VOICE-001`, and
-`BASELINE-EXT-FONT-001` remain nonblocking open items. Nothing was pushed or
-deployed.
+closed. The final independent F2 review then found
+`F2-COMPARE-COUNT-001` and `F2-GOV-STATUS-001`; the
+[final count and governance corrections review](reviews/2026-07-30-f2-final-count-and-governance-corrections-review.md)
+records their narrow local correction. All seven known F2 blockers are closed,
+but a final independent F2 rerun has not run and F2 remains unpassed.
+`COPY-041`, `COPY-042`, `F2-GLOSSARY-VOICE-001`,
+`BASELINE-EXT-FONT-001`, and `F2-EVIDENCE-001` remain nonblocking open
+items. No push, Preview deployment, or Production deployment was authorized
+or performed; the public deployed site remains unchanged.
 
 ## Project-language standards and content drafts
 
@@ -122,9 +127,9 @@ implementation is accepted. The independent E3 review is accepted. The first
 post-Glossary F2 review found two P1 and one P2 blockers and its correction
 remains closed. The fresh F2 review found two additional P1 blockers; the
 final terminology correction closes both and normalizes the adjacent `/ode`
-wording drift. All five known P1/P2 blockers are locally closed pending
-maintainer acceptance. A new independent F2 review remains separately gated
-and has not run.
+wording drift. The final review's Compare count and governance blockers are
+also locally corrected. All seven known F2 blockers are closed. A final
+independent F2 rerun remains separately gated and has not run.
 
 | Document | Purpose |
 |---|---|
@@ -138,10 +143,10 @@ and has not run.
 | [Terminology Decisions](content/TERMINOLOGY_DECISIONS.md) | Historical comparison plus the approved Version 1 resolution index |
 | [Maintainer Decision Packet](content/MAINTAINER_DECISION_PACKET.md) | Completed evidence cards and binding records for exactly nine decisions |
 | [Project Language Approval Checklist](content/PROJECT_LANGUAGE_APPROVAL_CHECKLIST.md) | Completed documentation-only approval and validation record |
-| [Project Language v1 Handoff](content/HANDOFF.md) | Approved choices, counts, accepted Groups A–D/F1/pre-E/E1/E2/E3 state, both F2 finding sets, all five locally corrected blockers, held scope, and exact next gate |
+| [Project Language v1 Handoff](content/HANDOFF.md) | Approved choices, counts, accepted Groups A–D/F1/pre-E/E1/E2/E3 state, all seven locally corrected F2 blockers, held scope, and exact next gate |
 | [ODE Glossary Wave 1 Content Packet](content/ODE_GLOSSARY_WAVE_1_CONTENT_PACKET.md) | Maintainer-approved ten-card content and ten annotation design records; E1 accepted and interaction details delegated to the canonical E2 runtime contract |
 | [ODE Glossary Wave 1 E2 Runtime Contract](content/ODE_GLOSSARY_WAVE_1_E2_RUNTIME_CONTRACT.md) | Sole E2 interaction authority: ten exact records, owners, text/DOM compositions, state/mode rules, lifecycle rules, duplicates, and direct test owners; implemented and accepted for E3 |
-| [ODE Glossary Wave 1 Approval Checklist](content/ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) | Checked content/design and accepted rich-model/E1/E2/E3 prerequisites; both F2 finding sets and both local correction gates recorded, with final-correction acceptance, new review, and deployment gates still unchecked |
+| [ODE Glossary Wave 1 Approval Checklist](content/ODE_GLOSSARY_WAVE_1_APPROVAL_CHECKLIST.md) | Checked content/design and accepted rich-model/E1/E2/E3 prerequisites; all seven F2 blockers and three local correction gates recorded, with final count/governance correction acceptance, final F2 rerun, and deployment gates still unchecked |
 | [Rich Glossary Content Field Matrix](content/RICH_GLOSSARY_CONTENT_FIELD_MATRIX.md) | Exact destination for all 29 approved term-card fields, all 21 annotation-record fields, and six ownership/composition fields; governance/private metadata remains outside runtime |
 
 ## Product and feature specifications
@@ -152,7 +157,7 @@ and has not run.
 | [Human-Friendly Math Expressions Design](superpowers/specs/2026-07-10-human-friendly-math-expressions-design.md) | Implemented and verified |
 | [Observed Convergence Order Experiment Design](superpowers/specs/2026-07-10-convergence-study-design.md) | Implemented, verified, release ready |
 | [Content-Agnostic Interactive Glossary Framework Design](superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md) | Implemented and locally accepted after a repeated independent final review; production content remains deferred |
-| [ODE Glossary Wave 1 Design](superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md) | D01–D18 approved as Option A; E1/E2/E3 accepted; all five P1/P2 blockers from two F2 reviews locally corrected pending acceptance; new F2 review not run |
+| [ODE Glossary Wave 1 Design](superpowers/specs/2026-07-29-ode-glossary-wave-1-design.md) | D01–D18 approved as Option A; E1/E2/E3 accepted; all seven blockers from three F2 reviews locally corrected; final independent F2 rerun not run |
 | [Rich Glossary Content Model and Complete Surface Design](superpowers/specs/2026-07-29-rich-glossary-content-model-design.md) | Option 2 design implemented and accepted at the fresh E1 starting HEAD |
 
 ## Implementation plans
@@ -185,6 +190,7 @@ and has not run.
 | [ODE Glossary Wave 1 E3 Integration Review](reviews/2026-07-30-ode-glossary-wave-1-e3-integration-review.md) | Independent verdict **E3 INTEGRATION REVIEW PASSED — READY FOR F2 AUTHORIZATION**; exact E1+E2 commit audited with zero P0/P1/P2 findings and no product-source change |
 | [F2 Cross-Surface Blocking Corrections Review](reviews/2026-07-30-f2-cross-surface-blocking-corrections-review.md) | Verdict **F2 BLOCKING CONSISTENCY FINDINGS CORRECTED — READY FOR MAINTAINER ACCEPTANCE**; first-review two P1 and one P2 findings narrowly corrected and accepted for corrected-state review |
 | [F2 Final Terminology Corrections Review](reviews/2026-07-30-f2-final-terminology-corrections-review.md) | Verdict **ALL KNOWN F2 BLOCKING CONSISTENCY FINDINGS CORRECTED — READY FOR MAINTAINER ACCEPTANCE**; two additional P1 findings and the adjacent `/ode` P3 wording drift locally corrected; new full F2 review not run |
+| [F2 Final Count and Governance Corrections Review](reviews/2026-07-30-f2-final-count-and-governance-corrections-review.md) | Verdict **ALL KNOWN F2 BLOCKING FINDINGS CORRECTED — FINAL INDEPENDENT REVIEW REQUIRED**; Compare stored-point labels and stale current-state claims corrected; F2 remains unpassed |
 
 ## Feature handoffs
 
@@ -207,8 +213,9 @@ and has not run.
   restart is accepted. The E2 runtime contract is complete and locally
   implemented through one complete-IVP binding and ten explicit annotations.
   E2 is accepted for entry into E3; the independent E3 review passed and is
-  pending maintainer acceptance. F2 execution, push, and deployment remain
-  unauthorized.
+  accepted. All seven blockers found across the three independent F2 reviews
+  are locally corrected; F2 remains unpassed pending a final independent
+  rerun. Push and deployment remain unauthorized and unperformed.
 - [Project Rename handoff](project-rename/HANDOFF.md) — completed Project
   Identity Migration evidence, including the canonical local workspace reopen.
 

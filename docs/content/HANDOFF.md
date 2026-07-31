@@ -11,8 +11,10 @@ source implementation accepted through one complete-IVP binding and ten
 explicit annotations; independent E3 review passed with zero P0/P1/P2 findings
 and is accepted; first F2 review found two P1 and one P2 blockers and its
 correction remains closed; fresh corrected-state F2 review found two
-additional P1 blockers; all five known P1/P2 blockers are locally closed
-pending maintainer acceptance; new independent F2 review not run.
+additional P1 blockers; the final independent F2 review found one Compare
+count-semantics blocker and one current-state governance blocker; all seven
+known F2 blockers are locally closed; final independent F2 rerun not run and
+F2 remains unpassed.
 
 Runtime integration and independent review evidence are recorded in the E2
 and E3 sections below.
@@ -788,19 +790,40 @@ desktop/mobile production-build review. The correction:
 - uses “time-step size” in the same exact sentence; and
 - proves all five historical F2 blockers remain closed together.
 
-All known P1/P2 F2 findings are locally corrected pending maintainer
-acceptance. This correction does not itself pass F2. `COPY-041`, `COPY-042`,
-`F2-GLOSSARY-VOICE-001`, and `BASELINE-EXT-FONT-001` remain nonblocking open
-items. Push, Preview, and Production remain unauthorized.
+Those five blockers remain closed.
 
-## 25. Current review gate
+## 25. Final F2 findings and count/governance correction
+
+The final independent F2 review found two further blockers:
+
+- `F2-COMPARE-COUNT-001`: Compare displayed the `N + 1` stored-array length as
+  a count of time steps and described its last stored rows as steps;
+- `F2-GOV-STATUS-001`: active current-state claims in architecture, catalog,
+  copy-audit, and status documents still described pre-E2 ownership or gates.
+
+The
+[final count and governance corrections review](../reviews/2026-07-30-f2-final-count-and-governance-corrections-review.md)
+records the narrow correction. Compare now reports 26 stored grid points for
+the deterministic 25-step grid and calls the tail rows stored grid points.
+The eight-document Current-State Claim Set now agrees that E1, E2, and E3 are
+accepted; ten cards, ten annotations, and one complete-IVP route binding exist
+locally; `/ode` has no binding; Tutor handoff is absent; all seven known F2
+blockers are corrected; and a final independent F2 rerun is still required.
+
+No push, Preview deployment, or Production deployment was authorized or
+performed. The public deployed site remains unchanged from its previously
+deployed commit.
+
+## 26. Current review gate
 
 The ODE Glossary Wave 1 design, ten revised term cards, ten annotation records,
 ownership, and rollout structure remain approved. E1 is accepted and inert.
 The E2 runtime contract and implementation are accepted. The exact committed
 integration passed mandatory independent E3 review, and E3 is accepted. The
-first F2 review's three blockers and the fresh review's two additional blockers
-are all locally closed. The next gate is maintainer acceptance of the final
-terminology correction commit followed by separate authorization of a new full
-independent F2 review. F2 remains unpassed. Push, Preview, and Production
-remain unauthorized.
+seven blockers found across three independent F2 reviews are all locally
+closed. The next gate is maintainer acceptance of the final count and
+governance correction commit followed by separate authorization of one final
+independent F2 rerun. F2 remains unpassed. `COPY-041`, `COPY-042`,
+`F2-GLOSSARY-VOICE-001`, `BASELINE-EXT-FONT-001`, and
+`F2-EVIDENCE-001` remain nonblocking open items. Push, Preview, and
+Production remain unauthorized and unperformed.
