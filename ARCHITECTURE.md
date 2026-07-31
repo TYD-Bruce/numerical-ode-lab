@@ -353,11 +353,11 @@ neutral fixtures, its development controls, route stylesheet, About entry,
 shortcut, and unique markers remain excluded from production.
 
 Current governance distinguishes this local architecture from the deployed
-site. E1, E2, and E3 are accepted locally; all seven known F2 blockers are
-corrected, but F2 remains unpassed pending a final independent F2 rerun. No
-push, Preview deployment, or Production deployment was authorized or
-performed, so the public deployed site remains on its previously deployed
-commit.
+site. E1, E2, and E3 are accepted locally; all seven known F2 blockers remain
+closed; the final independent F2 review passed with zero P0/P1/P2 findings and
+is pending maintainer acceptance of the F2 review commit. No push, Preview
+deployment, or Production deployment was authorized or performed, so the
+public deployed site remains on its previously deployed commit.
 `COPY-041`, `COPY-042`, `F2-GLOSSARY-VOICE-001`,
 `BASELINE-EXT-FONT-001`, and `F2-EVIDENCE-001` remain nonblocking open
 items.

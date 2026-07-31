@@ -13,8 +13,9 @@ annotation records are approved. E1 inert content is locally implemented
 and accepted. E2 is accepted and locally implemented through one complete-IVP
 binding and ten explicit annotations. E3 is accepted. The first and second F2
 corrections are committed, and the final count/governance correction is
-locally complete; all seven known F2 blockers are closed. A final independent
-F2 rerun remains required, so F2 is unpassed. E2 does not implement
+accepted for review; all seven known F2 blockers remain closed. The final
+independent F2 review passed with `P0 = P1 = P2 = 0` and is pending
+maintainer acceptance of the F2 review commit. E2 does not implement
 `COPY-041` or `COPY-042`. No push, Preview deployment, or Production
 deployment was authorized or performed.
 
@@ -41,8 +42,9 @@ inside the separately authorized implementation group.
 - Implementation progress: 4 Group A ready records, 14 Group B records,
   10 Group C records, and 11 Group D records accepted; `COPY-043` implemented
   and accepted with Group F1; `COPY-003` held; Group E0 design and content
-  governance approved; E1/E2/E3 accepted; all seven known F2 blockers locally
-  corrected; final independent F2 rerun required and F2 unpassed.
+  governance approved; E1/E2/E3 accepted; all seven known F2 blockers closed;
+  final independent F2 review passed pending maintainer acceptance of the
+  review commit.
 - Former decision-blocked records: **0**.
 - Numerical-behavior changes proposed: **0**.
 
@@ -1308,7 +1310,8 @@ the 1,048-test full verification gate, desktop/mobile deterministic demo
 review, structural/numerical audit, and production artifact inspection. Group
 E0 design and content governance was later maintainer-approved. At the Group
 F1 checkpoint, E1/E2 implementation and E3/F2 execution were unauthorized.
-The later E1/E2 state is recorded below; Group F2 remains required after E3.
+The later E1/E2/E3/F2 state is recorded below; the original full Group F is
+not complete until the final F2 review commit is maintainer-accepted.
 
 ## Behavior-preservation contract
 
@@ -1344,10 +1347,11 @@ and ten explicit annotations. E3 is accepted. `/ode` remains plain, no Tutor
 handoff exists, and the generic production registry remains empty. The first
 and second F2 correction commits remain closed; the final count/governance
 correction closes `F2-COMPARE-COUNT-001` and `F2-GOV-STATUS-001`. All seven
-known F2 blockers are locally corrected, but F2 remains unpassed pending one
-final independent rerun. This does not change the readiness of `COPY-041` or
-`COPY-042`; both remain future generic-surface copy decisions. The original
-full Group F is not complete.
+known F2 blockers remain closed. The final independent F2 review passed with
+zero P0/P1/P2 findings and is pending maintainer acceptance of the F2 review
+commit. This does not change the readiness of `COPY-041` or `COPY-042`; both
+remain future generic-surface copy decisions. The original full Group F is not
+complete.
 
 ### Group E2 local implementation evidence
 
@@ -1369,5 +1373,4 @@ or performed; the public deployed site remains unchanged.
 `F2-GLOSSARY-VOICE-001` remains packet-approved and nonblocking;
 `BASELINE-EXT-FONT-001` remains a Platform/asset-policy carry-forward; and
 `F2-EVIDENCE-001` remains a nonblocking desktop compact-preview gesture
-evidence limitation. None is repaired or reclassified by the count/governance
-correction.
+evidence limitation. None is repaired or reclassified by the final F2 review.

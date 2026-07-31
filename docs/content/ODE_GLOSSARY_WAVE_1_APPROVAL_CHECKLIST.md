@@ -1,14 +1,11 @@
 # ODE Glossary Wave 1 Approval Checklist
 
 **Status:** Maintainer approval recorded; content and Wave 1 design approved;
-the generic rich model, E1, E2, and E3 are accepted. The first F2 review found
-two P1 and one P2 blockers, and its correction remains closed. The fresh
-corrected-state F2 review found two additional P1 blockers; both are locally
-corrected. The final independent F2 review found one Compare count-semantics
-blocker and one current-state governance blocker; both are locally corrected.
-All seven known F2 blockers are closed. A final independent F2 rerun has not
-run, so F2 remains unpassed. Push, Preview, and Production remain
-unauthorized.
+the generic rich model, E1, E2, and E3 are accepted. All seven known F2
+blockers remain closed. The final independent F2 consistency review of
+`451a0cbe5e67afc58b280795dd13d43db09d16af` passed with `P0 = P1 = P2 = 0`
+and is pending maintainer acceptance of the F2 review commit. Push, Preview,
+and Production remain unauthorized.
 
 **Date prepared:** 2026-07-29
 
@@ -47,6 +44,8 @@ normalization are recorded by the
 The final Compare-count and current-state governance corrections are recorded
 by the
 [F2 final count and governance corrections review](../reviews/2026-07-30-f2-final-count-and-governance-corrections-review.md).
+The final independent consistency evidence is recorded by the
+[final F2 consistency review](../reviews/2026-07-31-ode-glossary-wave-1-final-f2-cross-surface-consistency-review.md).
 Checked content/design/contract boxes record approval only. Unchecked
 implementation/execution/deployment boxes require separate maintainer
 authorization.
@@ -138,8 +137,10 @@ the fresh E1 authorization is recorded separately below.
   review.
 - [x] Final independent F2 review completed with one P1 and one P2 finding.
 - [x] Final count and governance correction locally complete and verified.
-- [ ] Final count and governance correction commit maintainer-accepted.
-- [ ] Final independent F2 rerun authorized and completed.
+- [x] Final count and governance correction commit maintainer-accepted.
+- [x] Final independent F2 rerun authorized and completed.
+- [x] Final independent F2 review locally complete with zero P0/P1/P2 findings.
+- [ ] Final F2 review commit maintainer-accepted.
 - [x] E1/E2/E3/F2 rollback boundaries approved.
 - [x] Release criteria in decision D18 approved.
 - [ ] Push explicitly authorized.
@@ -157,8 +158,9 @@ blocking findings, and its correction remains closed. The fresh corrected-state
 F2 review found two additional P1 findings; both are locally corrected, along
 with the adjacent `/ode` P3 wording drift. The final review's Compare count and
 governance blockers are also locally corrected. All seven known F2 blockers
-are closed, but F2 remains unpassed pending a final independent rerun. This
-record does not authorize that rerun, push, Preview, or Production action.
+remain closed. The final independent F2 review passed with zero P0/P1/P2
+findings and is pending maintainer acceptance of the F2 review commit. This
+record does not authorize push, Preview, or Production action.
 
 ## 7. Historical E1 schema-stop and fresh restart record
 
@@ -177,10 +179,10 @@ MAINTAINER ACCEPTANCE**. The maintainer accepted that generic implementation
 at `6ef085d0b0271a5e7ed5a9f64ef4e6a05b5f257e` and separately authorized a
 fresh E1 restart.
 
-Fresh E1 now owns exactly two inert Core entries, eight inert ODE entries, two
-ODE context-only overrides, and ten composed cards. The production registry
-entry count, Core-content production importer count, annotation count, and ODE
-binding count remain zero. E1 is accepted at
+Fresh E1 owned exactly two inert Core entries, eight inert ODE entries, two
+ODE context-only overrides, and ten composed cards. At that E1 boundary the
+production registry entry count, Core-content production importer count,
+annotation count, and ODE binding count were zero. E1 is accepted at
 `08b80522283438a233974456a026a6dbc2a96746`. The separately authorized E2
 source/test implementation is locally complete through one complete-IVP
 route-instance binding and ten explicit annotations. `/ode` remains plain,
@@ -192,8 +194,9 @@ P1 and one P2 blocking findings, and its correction remains closed. The fresh
 corrected-state F2 review found two additional P1 findings; both are locally
 corrected, along with `F2-ODE-OVERVIEW-TERM-002`. The final review found
 `F2-COMPARE-COUNT-001` and `F2-GOV-STATUS-001`; both are locally corrected.
-All seven known F2 blockers are closed. A final independent F2 rerun, push,
-Preview, and Production remain unauthorized.
+All seven known F2 blockers remain closed. The final independent F2 review
+passed with zero P0/P1/P2 findings. Push, Preview, and Production remain
+unauthorized.
 
 `E1-BROWSER-EXCEPTION-01` permits only the unchanged Google Fonts
 stylesheet/font chain from `index.html` for the E1 browser evidence. The
@@ -209,9 +212,9 @@ remediation was performed.
 ## 8. Checked-count declaration
 
 Checked approval, prerequisite, authorization, acceptance, contract, and
-local-completion boxes: **186**.
+local-completion boxes: **189**.
 
-Unchecked implementation/execution/deployment boxes: **5**.
+Unchecked implementation/execution/deployment boxes: **4**.
 
 Term rows: **10**.
 
@@ -224,14 +227,10 @@ Generic prerequisite rows: **3**.
 Rollout rows: **31**.
 
 Checked content/design/contract rows do not authorize later implementation.
-E1, E2, and E3 are accepted. The first F2 review found two P1 and one P2
-blocking findings, and its correction remains closed. The fresh F2 review
-found two additional P1 blockers; both are locally corrected, along with the
-adjacent `/ode` P3 wording drift. The final review's Compare count and
-governance blockers are also locally corrected. All seven known F2 blockers
-are closed. A final independent F2 rerun has not run, so F2 remains unpassed.
-Push, Preview deployment, and Production deployment remain unauthorized and
-unperformed.
+E1, E2, and E3 are accepted. All seven known F2 blockers remain closed. The
+final independent F2 review passed with zero P0/P1/P2 findings and is pending
+maintainer acceptance of the F2 review commit. Push, Preview deployment, and
+Production deployment remain unauthorized and unperformed.
 
 `COPY-041`, `COPY-042`, `F2-GLOSSARY-VOICE-001`,
 `BASELINE-EXT-FONT-001`, and `F2-EVIDENCE-001` remain nonblocking open

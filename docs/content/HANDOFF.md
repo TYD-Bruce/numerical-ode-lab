@@ -9,12 +9,10 @@ maintainer-approved; Option 2 rich-model implementation accepted at
 `08b80522283438a233974456a026a6dbc2a96746`; E2 runtime contract complete with
 source implementation accepted through one complete-IVP binding and ten
 explicit annotations; independent E3 review passed with zero P0/P1/P2 findings
-and is accepted; first F2 review found two P1 and one P2 blockers and its
-correction remains closed; fresh corrected-state F2 review found two
-additional P1 blockers; the final independent F2 review found one Compare
-count-semantics blocker and one current-state governance blocker; all seven
-known F2 blockers are locally closed; final independent F2 rerun not run and
-F2 remains unpassed.
+and is accepted; all seven known F2 blockers remain closed; the final
+independent F2 consistency review of `451a0cbe5e67afc58b280795dd13d43db09d16af`
+passed with `P0 = P1 = P2 = 0` and is pending maintainer acceptance of the F2
+review commit.
 
 Runtime integration and independent review evidence are recorded in the E2
 and E3 sections below.
@@ -807,23 +805,35 @@ records the narrow correction. Compare now reports 26 stored grid points for
 the deterministic 25-step grid and calls the tail rows stored grid points.
 The eight-document Current-State Claim Set now agrees that E1, E2, and E3 are
 accepted; ten cards, ten annotations, and one complete-IVP route binding exist
-locally; `/ode` has no binding; Tutor handoff is absent; all seven known F2
-blockers are corrected; and a final independent F2 rerun is still required.
+locally; `/ode` has no binding; Tutor handoff is absent; and all seven known
+F2 blockers remain closed.
+
+## 26. Final independent F2 review
+
+The
+[final independent F2 consistency review](../reviews/2026-07-31-ode-glossary-wave-1-final-f2-cross-surface-consistency-review.md)
+audited exact count/governance correction commit
+`451a0cbe5e67afc58b280795dd13d43db09d16af`. It independently re-verified all
+seven historical blockers, the Current-State Claim Set, Wave 1
+cross-surface consistency, Tutor/Glossary/accessibility ownership, browser and
+network evidence, full verification at 76 files / 1,098 tests, and production
+lazy boundaries. Verdict: **F2 FINAL INDEPENDENT CONSISTENCY PASSED — READY
+FOR RELEASE DECISION**. The review introduced no product-source change.
 
 No push, Preview deployment, or Production deployment was authorized or
 performed. The public deployed site remains unchanged from its previously
 deployed commit.
 
-## 26. Current review gate
+## 27. Current review gate
 
 The ODE Glossary Wave 1 design, ten revised term cards, ten annotation records,
 ownership, and rollout structure remain approved. E1 is accepted and inert.
 The E2 runtime contract and implementation are accepted. The exact committed
 integration passed mandatory independent E3 review, and E3 is accepted. The
-seven blockers found across three independent F2 reviews are all locally
-closed. The next gate is maintainer acceptance of the final count and
-governance correction commit followed by separate authorization of one final
-independent F2 rerun. F2 remains unpassed. `COPY-041`, `COPY-042`,
+seven blockers found across three independent F2 reviews remain closed. The
+final independent F2 review passed with zero P0/P1/P2 findings. The next gate
+is maintainer acceptance of that F2 review commit followed by a separate,
+commit-specific release decision. `COPY-041`, `COPY-042`,
 `F2-GLOSSARY-VOICE-001`, `BASELINE-EXT-FONT-001`, and
 `F2-EVIDENCE-001` remain nonblocking open items. Push, Preview, and
 Production remain unauthorized and unperformed.

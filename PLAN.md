@@ -116,8 +116,12 @@ independent F2 review then found `F2-TUTOR-NOT-002` and
 independent F2 review found `F2-COMPARE-COUNT-001` and
 `F2-GOV-STATUS-001`; both are now narrowly corrected with direct count
 evidence and synchronized current-state documentation. All seven known F2
-blockers are locally closed. A final independent F2 rerun has not run, so F2
-remains unpassed. `COPY-003` and
+blockers remain closed. The final independent F2 rerun of exact commit
+`451a0cbe5e67afc58b280795dd13d43db09d16af` passed with `P0 = P1 = P2 = 0`
+and is recorded in the
+[final F2 consistency review](docs/reviews/2026-07-31-ode-glossary-wave-1-final-f2-cross-surface-consistency-review.md).
+F2 is independently passed pending maintainer acceptance of that review
+commit. `COPY-003` and
 `src/pages/homePage.ts` remain held and unchanged. `COPY-041` and `COPY-042`
 remain open, as do the nonblocking `F2-GLOSSARY-VOICE-001` and
 `BASELINE-EXT-FONT-001` carry-forwards and `F2-EVIDENCE-001` evidence
@@ -133,8 +137,7 @@ locally verified, Preview-verified, and Production-verified at
 
 ## Active milestone
 
-**ODE Glossary Wave 1 F2 — Final Count and Governance Correction Acceptance
-Gate**
+**ODE Glossary Wave 1 F2 — Final Consistency Review Acceptance Gate**
 
 The content-agnostic framework and pre-E repairs are accepted prerequisites.
 Group E0 design and content governance is complete and maintainer-approved.
@@ -160,8 +163,9 @@ and the same `/ode` sentence also carried one nonblocking wording drift. The
 two blockers and that wording drift are locally corrected. The subsequent
 final independent F2 review found one Compare count-semantics blocker and one
 current-state governance blocker. Both are locally corrected, so all seven
-known F2 blockers are closed. A final independent F2 rerun has not run, and F2
-remains unpassed.
+known F2 blockers remain closed. The final independent F2 rerun passed with
+zero P0/P1/P2 findings and is pending maintainer acceptance of the F2 review
+commit.
 
 ## Completed Project Identity Migration
 
@@ -197,8 +201,9 @@ loading while keeping formal mathematical content separate.
 Status: **D01–D18, ten revised cards, and ten annotation records are
 maintainer-approved; E1, E2, and E3 are accepted; the first F2 review's three
 blockers, the fresh review's two blockers, and the final review's count and
-governance blockers are locally corrected; all seven known F2 blockers are
-closed; a final independent F2 rerun has not run.**
+governance blockers remain closed; the final independent F2 rerun passed with
+zero P0/P1/P2 findings and is pending maintainer acceptance of the F2 review
+commit.**
 
 [Rich Glossary Content Model and Complete Surface Design](docs/superpowers/specs/2026-07-29-rich-glossary-content-model-design.md)
 
@@ -311,27 +316,29 @@ independent final review. No production content or ODE binding was added.**
     only after separate maintainer authorization. Complete with two additional
     P1 findings and one adjacent P3 wording drift.
 30. Correct the two remaining blockers and normalize the same `/ode` sentence.
-    Locally complete and verified; pending maintainer acceptance.
+    Complete, verified, and maintainer-accepted for the subsequent final F2
+    review.
 31. Perform the independent F2 review of the exact final terminology
     correction commit. Complete with one P1 Compare count-semantics finding
     and one P2 current-state governance finding.
 32. Correct only those two findings and prove all seven historical blockers
-    closed together. Locally complete and verified; pending maintainer
-    acceptance.
+    closed together. Complete, verified, and maintainer-accepted for the final
+    independent F2 rerun.
 33. Perform one final independent F2 rerun of the exact count/governance
-    correction commit only after separate maintainer authorization. Not
-    started.
+    correction commit only after separate maintainer authorization. Complete
+    with `P0 = P1 = P2 = 0`; pending maintainer acceptance of the F2 review
+    commit.
 34. Push only when explicitly requested by the maintainer.
 
 ## Current next action
 
-Maintainer acceptance of the locally complete
-[F2 final count and governance corrections review](docs/reviews/2026-07-30-f2-final-count-and-governance-corrections-review.md),
-followed by separate authorization for one final independent F2 rerun of the
-exact corrected commit. This correction does not itself pass F2. `COPY-003`
-remains deferred with the PDE module. `COPY-041`, `COPY-042`,
-`F2-GLOSSARY-VOICE-001`, `BASELINE-EXT-FONT-001`, and `F2-EVIDENCE-001`
-remain nonblocking open items.
+Maintainer acceptance of the documentation-only
+[final F2 consistency review](docs/reviews/2026-07-31-ode-glossary-wave-1-final-f2-cross-surface-consistency-review.md),
+followed by a separate, commit-specific release decision. F2 introduced no
+product-source change. `COPY-003` remains deferred with the PDE module.
+`COPY-041`, `COPY-042`, `F2-GLOSSARY-VOICE-001`, `BASELINE-EXT-FONT-001`,
+and `F2-EVIDENCE-001` remain nonblocking open items. Push, Preview, and
+Production remain unauthorized.
 
 ## Parallel content foundation
 
@@ -363,8 +370,9 @@ closed. The fresh F2 review found two additional P1 blockers; both are locally
 corrected, with the adjacent `/ode` time-step wording drift normalized in the
 same sentence. The final independent review then found one Compare
 count-semantics blocker and one current-state governance blocker; both are
-locally corrected. All seven known F2 blockers are closed, but a final
-independent F2 rerun has not run and F2 remains unpassed.
+locally corrected. All seven known F2 blockers remain closed. The final
+independent F2 rerun passed with zero P0/P1/P2 findings and is pending
+maintainer acceptance of the F2 review commit.
 The continuation state is
 [the project-language handoff](docs/content/HANDOFF.md). Nothing from these
 copy iterations was pushed or deployed.
@@ -424,10 +432,10 @@ corrections remain closed. The fresh corrected-state F2 review found two
 additional P1 findings; both are locally corrected, along with the one
 adjacent P3 `/ode` wording drift. The final review found
 `F2-COMPARE-COUNT-001` and `F2-GOV-STATUS-001`; both are locally corrected.
-All seven known F2 blockers are locally closed, but a final independent F2
-rerun has not run and F2 remains unpassed. `/ode` remains unannotated,
-Glossary Tutor handoff remains absent, and no push or deployment was
-authorized or performed.
+All seven known F2 blockers remain closed. The final independent F2 rerun
+passed with zero P0/P1/P2 findings and is pending maintainer acceptance of the
+F2 review commit. `/ode` remains unannotated, Glossary Tutor handoff remains
+absent, and no push or deployment was authorized or performed.
 
 ## Update rule
 

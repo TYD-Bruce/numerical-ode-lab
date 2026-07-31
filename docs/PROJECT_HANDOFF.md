@@ -86,8 +86,12 @@ adjacent P3 wording drift `F2-ODE-OVERVIEW-TERM-002`. The
 records their narrow local correction. The final independent F2 review then
 found `F2-COMPARE-COUNT-001` and `F2-GOV-STATUS-001`. The
 [final count and governance corrections review](./reviews/2026-07-30-f2-final-count-and-governance-corrections-review.md)
-records their narrow local correction. All seven known F2 blockers are closed.
-This repair does not pass F2; a final independent F2 rerun has not run.
+records their narrow local correction. All seven known F2 blockers remain
+closed. The
+[final independent F2 consistency review](./reviews/2026-07-31-ode-glossary-wave-1-final-f2-cross-surface-consistency-review.md)
+passed exact commit `451a0cbe5e67afc58b280795dd13d43db09d16af` with
+`P0 = P1 = P2 = 0` and no product-source change. F2 is independently passed
+pending maintainer acceptance of that review commit.
 `E1-BROWSER-EXCEPTION-01` accepts only the unchanged Google Fonts
 stylesheet/font request chain for this E1 evidence gate. The source and
 starting-HEAD `index.html` blobs are identical at
@@ -119,8 +123,8 @@ The product is **Numerical T-Lab**. The currently implemented numerical module i
 | any other page path | In-shell Not Found | Available |
 
 Linear Algebra and PDE are truthful roadmap pages with no runnable controls.
-The active milestone is **ODE Glossary Wave 1 F2 — Final Count and Governance
-Correction Acceptance Gate**;
+The active milestone is **ODE Glossary Wave 1 F2 — Final Consistency Review
+Acceptance Gate**;
 **Linear Systems Lab** is later. The
 [authoritative Glossary design](./superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md)
 is approved and committed. Commit 1, the content-agnostic Glossary model and
@@ -169,8 +173,8 @@ The fresh corrected-state F2 review found two additional P1 blockers, and the
 same `/ode` sentence carried one adjacent P3 wording drift. Those items are
 locally corrected. The final review's Compare count and current-state
 governance blockers are also locally corrected. All seven known F2 blockers
-are closed, while a final independent F2 rerun has not run and F2 remains
-unpassed.
+remain closed. The final independent F2 review passed with zero P0/P1/P2
+findings and is pending maintainer acceptance of the F2 review commit.
 
 ## 2. Verification baseline
 
@@ -535,10 +539,12 @@ Known limitations:
   correction remains closed. The fresh F2 review found two additional P1
   findings; both are locally corrected, along with one adjacent P3 `/ode`
   wording drift. The final F2 review's Compare count and governance blockers
-  are also locally corrected. All seven known F2 blockers are closed.
+  are also locally corrected. All seven known F2 blockers remain closed. The
+  final independent F2 review passed with zero P0/P1/P2 findings and is
+  pending maintainer acceptance of the F2 review commit.
   `COPY-041`, `COPY-042`, `F2-GLOSSARY-VOICE-001`,
   `BASELINE-EXT-FONT-001`, and `F2-EVIDENCE-001` remain nonblocking open
-  items, and a final independent F2 rerun has not run.
+  items.
 
 Contributor rules:
 
