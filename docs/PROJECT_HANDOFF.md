@@ -92,6 +92,16 @@ closed. The
 passed exact commit `451a0cbe5e67afc58b280795dd13d43db09d16af` with
 `P0 = P1 = P2 = 0` and no product-source change. F2 is independently passed
 pending maintainer acceptance of that review commit.
+
+Separately, one bounded frontend visual-polish pass is implemented in the local
+commit containing the
+[frontend visual-polish review](./reviews/2026-07-31-frontend-visual-polish-review.md).
+The default presentation is now light-first, locally verified, and
+Chrome-reviewed at `1440 × 900` and `390 × 844`. Product behavior, numerical
+contracts, Glossary/Tutor lifecycle, and production boundaries are unchanged.
+The commit is awaiting maintainer visual review and has not been pushed or
+deployed, so the public Production baseline remains unchanged.
+
 `E1-BROWSER-EXCEPTION-01` accepts only the unchanged Google Fonts
 stylesheet/font request chain for this E1 evidence gate. The source and
 starting-HEAD `index.html` blobs are identical at

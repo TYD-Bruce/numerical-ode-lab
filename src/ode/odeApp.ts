@@ -83,6 +83,7 @@ import {
 } from "../convergenceStudyState";
 import {
   mountConvergenceStudyView,
+  resolveNumericalChartTheme,
   type ConvergenceChartFactory,
   type ConvergenceStudyIntent,
   type ConvergenceStudyViewHandle,
@@ -920,11 +921,16 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
 
   function renderMethodCard(
     cat: MethodCatalogEntry,
-    onClick: () => void
+    onClick: () => void,
+    selectedState?: boolean
   ): HTMLButtonElement {
     const card = document.createElement("button");
     card.type = "button";
     card.className = "card";
+    if (selectedState !== undefined) {
+      card.setAttribute("aria-pressed", String(selectedState));
+      card.classList.toggle("is-selected", selectedState);
+    }
     const tag =
       cat.mode === "first"
         ? "First-order y′ = f(t, y)"
@@ -962,6 +968,10 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     const grid = document.createElement("div");
     grid.className = "grid-methods";
     FIRST_ORDER_CATALOG.forEach((cat) => {
+      const isSelected =
+        session.mode === "compare_pick" &&
+        session.first?.family === cat.family &&
+        (session.first.order ?? cat.orderDefault) === cat.orderDefault;
       grid.append(
         renderMethodCard(cat, () => {
           if (session.mode !== "compare_pick") return;
@@ -991,7 +1001,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
           step = "configure";
           markMeaningfulInteraction();
           render();
-        })
+        }, isSelected)
       );
     });
     return grid;
@@ -2361,6 +2371,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     const ts = series.map((p) => p.t.toFixed(3));
     const ys = series.map((p) => p.y);
     const valueLabel = meta.mode === "second" ? "u" : "y";
+    const theme = resolveNumericalChartTheme();
 
     const datasets =
       meta.mode === "second" && series.some((p) => p.v !== undefined)
@@ -2368,7 +2379,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
           {
             label: "u(t)",
             data: ys,
-            borderColor: "#5b8cff",
+            borderColor: theme.primary,
             tension: 0.15,
             fill: false,
             pointRadius: 0,
@@ -2376,7 +2387,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
           {
             label: "u′(t)",
             data: series.map((p) => p.v ?? NaN),
-            borderColor: "#7ae2a8",
+            borderColor: theme.secondary,
             tension: 0.15,
             fill: false,
             pointRadius: 0,
@@ -2386,8 +2397,8 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
           {
             label: `${valueLabel}(t)`,
             data: ys,
-            borderColor: "#5b8cff",
-            backgroundColor: "rgba(91, 140, 255, 0.12)",
+            borderColor: theme.primary,
+            backgroundColor: theme.fill,
             tension: 0.15,
             fill: true,
             pointRadius: 0,
@@ -2405,19 +2416,25 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     series: readonly SeriesPoint[],
     yTitle: string
   ): object {
+    const theme = resolveNumericalChartTheme();
     return {
       responsive: true,
       maintainAspectRatio: false,
       interaction: { mode: "index", intersect: false },
       plugins: {
-        legend: { labels: { color: "#d8e2ff" } },
+        legend: { labels: { color: theme.text } },
         title: {
           display: true,
           text: "Numerical approximation vs time",
-          color: "#f2f5ff",
+          color: theme.text,
           font: { size: 16, weight: "600" },
         },
         tooltip: {
+          backgroundColor: theme.tooltipBackground,
+          titleColor: theme.tooltipText,
+          bodyColor: theme.tooltipText,
+          borderColor: theme.tooltipBorder,
+          borderWidth: 1,
           callbacks: {
             title: (items: { dataIndex?: number }[]) => {
               const i = items[0]?.dataIndex ?? 0;
@@ -2428,14 +2445,14 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       },
       scales: {
         x: {
-          title: { display: true, text: "t", color: "#9fb2df" },
-          ticks: { color: "#9fb2df", maxTicksLimit: 8 },
-          grid: { color: "rgba(255, 255, 255, 0.06)" },
+          title: { display: true, text: "t", color: theme.muted },
+          ticks: { color: theme.muted, maxTicksLimit: 8 },
+          grid: { color: theme.grid },
         },
         y: {
-          title: { display: true, text: yTitle, color: "#9fb2df" },
-          ticks: { color: "#9fb2df" },
-          grid: { color: "rgba(255, 255, 255, 0.06)" },
+          title: { display: true, text: yTitle, color: theme.muted },
+          ticks: { color: theme.muted },
+          grid: { color: theme.grid },
         },
       },
     };
@@ -2519,6 +2536,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     const canvas = app.querySelector<HTMLCanvasElement>("#plot");
     if (!canvas) return;
     chart?.destroy();
+    const theme = resolveNumericalChartTheme();
     chart = new Chart(canvas, {
       type: "line",
       data: {
@@ -2527,14 +2545,14 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
           {
             label: resultA.metadata.displayName,
             data: seriesA.map((p) => p.y),
-            borderColor: "#5b8cff",
+            borderColor: theme.primary,
             tension: 0.15,
             pointRadius: 0,
           },
           {
             label: resultB.metadata.displayName,
             data: seriesB.map((p) => p.y),
-            borderColor: "#ffb86b",
+            borderColor: theme.compare,
             tension: 0.15,
             pointRadius: 0,
           },

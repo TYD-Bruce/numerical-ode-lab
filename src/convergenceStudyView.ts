@@ -63,6 +63,64 @@ interface ChartDatum {
   readonly observedOrder?: number;
 }
 
+export interface NumericalChartTheme {
+  readonly primary: string;
+  readonly secondary: string;
+  readonly theory: string;
+  readonly compare: string;
+  readonly text: string;
+  readonly muted: string;
+  readonly grid: string;
+  readonly fill: string;
+  readonly tooltipBackground: string;
+  readonly tooltipText: string;
+  readonly tooltipBorder: string;
+}
+
+const DEFAULT_NUMERICAL_CHART_THEME: NumericalChartTheme = {
+  primary: "#2563eb",
+  secondary: "#0f766e",
+  theory: "#6d5ce7",
+  compare: "#b85f0a",
+  text: "#33415c",
+  muted: "#61708a",
+  grid: "rgba(54, 74, 107, 0.14)",
+  fill: "rgba(37, 99, 235, 0.1)",
+  tooltipBackground: "#10264a",
+  tooltipText: "#f8fbff",
+  tooltipBorder: "#315385",
+};
+
+function chartThemeValue(name: string, fallback: string): string {
+  if (typeof document === "undefined" || typeof getComputedStyle !== "function") return fallback;
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+}
+
+export function resolveNumericalChartTheme(): NumericalChartTheme {
+  return {
+    primary: chartThemeValue("--color-chart-primary", DEFAULT_NUMERICAL_CHART_THEME.primary),
+    secondary: chartThemeValue("--color-chart-secondary", DEFAULT_NUMERICAL_CHART_THEME.secondary),
+    theory: chartThemeValue("--color-chart-theory", DEFAULT_NUMERICAL_CHART_THEME.theory),
+    compare: chartThemeValue("--color-chart-compare", DEFAULT_NUMERICAL_CHART_THEME.compare),
+    text: chartThemeValue("--color-chart-text", DEFAULT_NUMERICAL_CHART_THEME.text),
+    muted: chartThemeValue("--color-chart-muted", DEFAULT_NUMERICAL_CHART_THEME.muted),
+    grid: chartThemeValue("--color-chart-grid", DEFAULT_NUMERICAL_CHART_THEME.grid),
+    fill: chartThemeValue("--color-chart-fill", DEFAULT_NUMERICAL_CHART_THEME.fill),
+    tooltipBackground: chartThemeValue(
+      "--color-chart-tooltip-background",
+      DEFAULT_NUMERICAL_CHART_THEME.tooltipBackground
+    ),
+    tooltipText: chartThemeValue(
+      "--color-chart-tooltip-text",
+      DEFAULT_NUMERICAL_CHART_THEME.tooltipText
+    ),
+    tooltipBorder: chartThemeValue(
+      "--color-chart-tooltip-border",
+      DEFAULT_NUMERICAL_CHART_THEME.tooltipBorder
+    ),
+  };
+}
+
 function element<K extends keyof HTMLElementTagNameMap>(
   tag: K,
   className?: string,
@@ -98,6 +156,7 @@ export function createConvergenceChartConfiguration(
   result: ConvergenceStudyResult,
   metric: ConvergenceMetric
 ): Record<string, unknown> {
+  const theme = resolveNumericalChartTheme();
   const model = buildConvergenceChartModel(result, metric);
   const measured: ChartDatum[] = model.measured.map((point) => ({
     x: point.stepSize,
@@ -118,8 +177,8 @@ export function createConvergenceChartConfiguration(
         {
           label: metricLabel,
           data: measured,
-          borderColor: "#6c8cff",
-          backgroundColor: "rgba(108, 140, 255, 0.14)",
+          borderColor: theme.primary,
+          backgroundColor: theme.fill,
           pointRadius: 4,
           tension: 0,
           fill: false,
@@ -129,7 +188,7 @@ export function createConvergenceChartConfiguration(
           : [{
               label: `Theoretical slope p = ${result.theoreticalOrder}`,
               data: reference,
-              borderColor: "#7ae2a8",
+              borderColor: theme.theory,
               borderDash: [7, 5],
               pointRadius: 0,
               tension: 0,
@@ -143,8 +202,13 @@ export function createConvergenceChartConfiguration(
       parsing: false,
       interaction: { mode: "nearest", intersect: false },
       plugins: {
-        legend: { labels: { color: "#d8e2ff" } },
+        legend: { labels: { color: theme.text } },
         tooltip: {
+          backgroundColor: theme.tooltipBackground,
+          titleColor: theme.tooltipText,
+          bodyColor: theme.tooltipText,
+          borderColor: theme.tooltipBorder,
+          borderWidth: 1,
           callbacks: {
             title: (items: Array<{ raw?: ChartDatum }>) => {
               const point = items[0]?.raw;
@@ -165,15 +229,15 @@ export function createConvergenceChartConfiguration(
         x: {
           type: "logarithmic",
           reverse: true,
-          title: { display: true, text: "Step size h", color: "#9fb2df" },
-          ticks: { color: "#9fb2df" },
-          grid: { color: "rgba(255, 255, 255, 0.06)" },
+          title: { display: true, text: "Step size h", color: theme.muted },
+          ticks: { color: theme.muted },
+          grid: { color: theme.grid },
         },
         y: {
           type: "logarithmic",
-          title: { display: true, text: metricLabel, color: "#9fb2df" },
-          ticks: { color: "#9fb2df" },
-          grid: { color: "rgba(255, 255, 255, 0.06)" },
+          title: { display: true, text: metricLabel, color: theme.muted },
+          ticks: { color: theme.muted },
+          grid: { color: theme.grid },
         },
       },
     },

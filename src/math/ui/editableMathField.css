@@ -1,7 +1,7 @@
 .editable-math-field {
   display: grid;
   gap: 8px;
-  color: #e9eefc;
+  color: var(--color-text-primary);
 }
 
 .editable-math-row {
@@ -26,14 +26,20 @@
   box-sizing: border-box;
   min-height: 44px;
   padding: 8px 10px;
-  border: 1px solid #2b3968;
-  border-radius: 8px;
-  background: #0b1020;
-  color: #e9eefc;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-primary);
+  color: var(--color-text-primary);
+}
+
+.editable-math-input:focus-within {
+  border-color: var(--color-accent-primary);
+  outline: 3px solid color-mix(in srgb, var(--color-focus-ring) 28%, transparent);
+  outline-offset: 2px;
 }
 
 .editable-math-input[aria-invalid="true"] {
-  border-color: #ff7b91;
+  border-color: var(--color-danger);
 }
 
 .editable-math-input::part(menu-toggle),
@@ -51,15 +57,15 @@
 .editable-math-description,
 .editable-math-status.is-neutral,
 .expression-details-message {
-  color: #9fb2df;
+  color: var(--color-text-secondary);
 }
 
 .editable-math-status.is-ready {
-  color: #7ae2a8;
+  color: var(--color-success);
 }
 
 .editable-math-status.is-error {
-  color: #ff9cab;
+  color: var(--color-danger);
 }
 
 .expression-toolbar {
@@ -74,10 +80,11 @@
 
 .expression-tool-button,
 .expression-error-summary button {
-  border: 1px solid #2b3968;
+  min-height: 36px;
+  border: 1px solid var(--color-border-strong);
   border-radius: 7px;
-  background: #141c38;
-  color: #e9eefc;
+  background: var(--color-surface-soft);
+  color: var(--color-text-primary);
   padding: 5px 9px;
   font: inherit;
   cursor: pointer;
@@ -85,12 +92,12 @@
 
 .expression-tool-button:focus-visible,
 .expression-error-summary button:focus-visible {
-  outline: 2px solid #7ea1ff;
+  outline: 3px solid var(--color-focus-ring);
   outline-offset: 2px;
 }
 
 .expression-details {
-  border-top: 1px solid #2b3968;
+  border-top: 1px solid var(--color-border);
   padding-top: 8px;
 }
 
@@ -110,11 +117,11 @@
 }
 
 .expression-error-summary {
-  border: 1px solid #ff7b91;
+  border: 1px solid var(--color-danger);
   border-radius: 10px;
   padding: 12px;
-  color: #e9eefc;
-  background: rgba(116, 20, 42, 0.18);
+  color: var(--color-text-primary);
+  background: var(--color-danger-surface);
 }
 
 .expression-error-summary h3 {
@@ -125,4 +132,21 @@
 .expression-error-summary ul {
   margin: 0;
   padding-left: 20px;
+}
+
+@media (forced-colors: active) {
+  .editable-math-input,
+  .expression-tool-button,
+  .expression-error-summary,
+  .expression-error-summary button {
+    border-color: CanvasText;
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .editable-math-input:focus-within,
+  .expression-tool-button:focus-visible,
+  .expression-error-summary button:focus-visible {
+    outline-color: Highlight;
+  }
 }

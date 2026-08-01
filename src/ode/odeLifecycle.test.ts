@@ -99,7 +99,8 @@ vi.mock("chart.js", () => {
   };
 });
 
-vi.mock("../convergenceStudyView", () => ({
+vi.mock("../convergenceStudyView", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../convergenceStudyView")>()),
   mountConvergenceStudyView: mountConvergence,
 }));
 

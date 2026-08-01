@@ -292,6 +292,20 @@ describe("Initial Value Problems route", () => {
       mode: "compare_pick",
       first: null,
     });
+    const compareCards = [
+      ...target.querySelectorAll<HTMLButtonElement>(".grid-methods .card"),
+    ];
+    compareCards[0]!.click();
+    const selectedCard = target.querySelector<HTMLButtonElement>(
+      ".grid-methods .card.is-selected"
+    );
+    expect(selectedCard).not.toBeNull();
+    expect(selectedCard?.getAttribute("aria-pressed")).toBe("true");
+    expect(
+      [...target.querySelectorAll<HTMLButtonElement>(".grid-methods .card")]
+        .filter((card) => card !== selectedCard)
+        .every((card) => card.getAttribute("aria-pressed") === "false")
+    ).toBe(true);
     remounted.dispose();
   });
 });

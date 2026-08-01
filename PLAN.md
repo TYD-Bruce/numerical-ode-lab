@@ -128,6 +128,14 @@ remain open, as do the nonblocking `F2-GLOSSARY-VOICE-001` and
 limitation. No push, Preview deployment, or Production deployment was
 authorized or performed; the public deployed site remains unchanged.
 
+A separate bounded frontend visual-polish pass is implemented, locally
+verified, Chrome-reviewed at `1440 × 900` and `390 × 844`, and included in one
+local commit with its
+[review](docs/reviews/2026-07-31-frontend-visual-polish-review.md). Product
+behavior is unchanged. The polish is awaiting maintainer visual review and has
+not been pushed or deployed; it does not replace or advance the active F2
+release decision gate.
+
 ## Current released baseline
 
 The Theme-Ready Platform Shell and Initial Value Problems Lab are implemented,
@@ -339,6 +347,10 @@ product-source change. `COPY-003` remains deferred with the PDE module.
 `COPY-041`, `COPY-042`, `F2-GLOSSARY-VOICE-001`, `BASELINE-EXT-FONT-001`,
 and `F2-EVIDENCE-001` remain nonblocking open items. Push, Preview, and
 Production remain unauthorized.
+
+The independent visual-polish review gate is maintainer review of the local
+commit and ignored before/after evidence. Product behavior is unchanged, and
+nothing from that pass has been pushed or deployed.
 
 ## Parallel content foundation
 

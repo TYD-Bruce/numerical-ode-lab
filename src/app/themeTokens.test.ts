@@ -22,17 +22,39 @@ describe("platform theme tokens", () => {
       "--color-surface-primary",
       "--color-surface-raised",
       "--color-surface-inset",
+      "--color-surface-soft",
+      "--color-surface-accent",
       "--color-text-primary",
       "--color-text-secondary",
       "--color-accent-primary",
       "--color-accent-primary-strong",
       "--color-accent-secondary",
+      "--color-accent-theory",
+      "--color-accent-cyan",
       "--color-border",
+      "--color-border-strong",
       "--color-focus-ring",
       "--color-success",
       "--color-caution",
       "--color-danger",
+      "--color-success-surface",
+      "--color-caution-surface",
+      "--color-danger-surface",
+      "--color-disabled-text",
+      "--color-disabled-surface",
+      "--color-on-accent",
+      "--color-header-background",
+      "--color-header-text",
+      "--color-chart-primary",
+      "--color-chart-secondary",
+      "--color-chart-theory",
+      "--color-chart-compare",
+      "--color-chart-text",
+      "--color-chart-grid",
       "--shadow-card",
+      "--shadow-popover",
+      "--background-page-canvas",
+      "--background-data-ink",
       "--texture-decorative",
       "--space-1",
       "--space-8",
@@ -52,7 +74,7 @@ describe("platform theme tokens", () => {
       expect(theme).toContain(`${token}:`);
     }
     expect(theme).toMatch(/--texture-decorative:\s*none/);
-    expect(theme).toMatch(/color-scheme:\s*dark/);
+    expect(theme).toMatch(/color-scheme:\s*light/);
   });
 
   it("keeps literal colors out of new component CSS", () => {
