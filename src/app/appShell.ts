@@ -68,7 +68,7 @@ export function createAppShell(target: HTMLElement): AppShell {
   const brand = document.createElement("a");
   brand.className = "platform-brand";
   brand.href = "/";
-  brand.textContent = "Numerical T-Lab";
+  brand.textContent = "Numerical T Lab";
 
   const desktopNavigation = createNavigation("Primary", "platform-desktop-nav");
   const themeToggle = createThemeToggle();

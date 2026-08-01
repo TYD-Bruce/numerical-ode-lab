@@ -59,7 +59,7 @@ describe("platform beforeunload", () => {
     added[0]?.({ preventDefault, returnValue: "" } as unknown as Event);
     expect(preventDefault).toHaveBeenCalledOnce();
     expect(app.shell.outlet.querySelector("h1")?.textContent).toBe(
-      "Numerical T-Lab"
+      "Numerical T Lab"
     );
     app.dispose();
     app.dispose();

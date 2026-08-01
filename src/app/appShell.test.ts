@@ -12,7 +12,7 @@ describe("app shell", () => {
     const shell = createAppShell(host);
 
     expect(shell.root.querySelector("header")?.textContent).toContain(
-      "Numerical T-Lab"
+      "Numerical T Lab"
     );
     expect(shell.root.querySelector('nav[aria-label="Primary"]')).not.toBeNull();
     expect(shell.outlet.tagName).toBe("MAIN");

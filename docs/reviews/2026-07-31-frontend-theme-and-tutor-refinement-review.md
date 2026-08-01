@@ -11,7 +11,9 @@ Frontend skill loaded: `frontend-design` — `C:\Users\bruce\.codex\skills\front
 - Starting HEAD: `3fa31fb916da9aab6183792e9b2af7629b608b67`
 - Pre-polish palette authority: `b0f44a540d04a85a5468f99fcb8c700baa80d422`
 - Starting `origin/main`: `b0f44a540d04a85a5468f99fcb8c700baa80d422`
-- Evidence status: locally implemented, fully verified, and Chrome-reviewed; awaiting maintainer visual review
+- Final integration audit: 2026-08-01 from known continuation HEAD `f19aa688c4f8e40ed9709f14a5af3c8a2ec50608`
+- Final learner-facing display brand: `Numerical T Lab`
+- Evidence status: locally implemented and fully verified; the refinement was Chrome-reviewed, and the final integration was re-audited in the Codex in-app browser; awaiting maintainer review
 
 ## 2. Starting state
 
@@ -21,11 +23,11 @@ The pre-edit gate passed exactly: branch `main`; HEAD `3fa31fb916da9aab6183792e9
 
 The dedicated `frontend-design` skill at `C:\Users\bruce\.codex\skills\frontend-design\SKILL.md` was loaded completely and applied. It guided the restrained scientific palette, token-first implementation, clear workflow hierarchy, deliberately limited decoration, and avoidance of generic SaaS or glassmorphism treatment.
 
-Chrome review used `chrome:control-chrome` at `C:\Users\bruce\.codex\plugins\cache\openai-bundled\chrome\26.727.51351\skills\control-chrome\SKILL.md`. The Vercel environment update followed `vercel:env-vars` at `C:\Users\bruce\.codex\plugins\cache\openai-curated-remote\vercel\0.21.4\skills\env-vars\SKILL.md`.
+The refinement review used `chrome:control-chrome` at `C:\Users\bruce\.codex\plugins\cache\openai-bundled\chrome\26.727.51351\skills\control-chrome\SKILL.md`. Because Chrome was not attached during the final integration audit, that audit used `browser:control-in-app-browser` at `C:\Users\bruce\.codex\plugins\cache\openai-bundled\browser\26.727.51351\skills\control-in-app-browser\SKILL.md`. The Vercel environment update followed `vercel:env-vars` at `C:\Users\bruce\.codex\plugins\cache\openai-curated-remote\vercel\0.21.4\skills\env-vars\SKILL.md`.
 
 ## 4. Maintainer feedback
 
-The first polish was visually clean but too bright and uniformly flat. This pass lowers glare, restores the original dark character as an option, strengthens Method/Data/Output/Convergence identity, removes the initial brand focus artifact, and makes the Tutor transcript the dominant working region. It preserves the existing structure, learner copy, workflow, routes, and mathematical ownership.
+The first polish was visually clean but too bright and uniformly flat. This pass lowers glare, restores the original dark character as an option, strengthens Method/Data/Output/Convergence identity, removes the initial brand focus artifact, and makes the Tutor transcript the dominant working region. The final integration audit also applies the accepted `Numerical T Lab` display name and solid crescent. It otherwise preserves the existing structure, learner copy, workflow, routes, and mathematical ownership.
 
 ## 5. Initial-focus root cause
 
@@ -34,13 +36,13 @@ On a fresh pointer-based production hard load before editing, the recorded focus
 - `document.activeElement`: route heading element
 - tag: `h1`
 - classes: none
-- accessible name: `Numerical T-Lab`
+- accessible name: `Numerical T Lab`
 - attributes: `tabindex="-1"` and `data-route-focus="true"`
 - focus owner/caller: `createPlatformRouter().transition()` calling `focusCurrentRoute()` for the `initial` navigation type
 
 The shared `:focus-visible` selector then correctly drew an outline around that programmatically focused heading, producing the unwanted initial frame. No `autofocus` attribute or brand-link focus call caused the artifact.
 
-The router now skips route-owner focus only for initial bootstrap navigation. Internal route transitions retain heading focus. A Chrome hard load now leaves focus on `body`; the first keyboard Tab focuses the `Numerical T-Lab` brand link with a visible `2.66667px` outline. Direct router and bootstrap regression tests protect both behaviors; no outline is globally removed.
+The router now skips route-owner focus only for initial bootstrap navigation. Internal route transitions retain heading focus. A Chrome hard load now leaves focus on `body`; the first keyboard Tab focuses the `Numerical T Lab` brand link with a visible `2.66667px` outline. Direct router and bootstrap regression tests protect both behaviors; no outline is globally removed.
 
 ## 6. Light-theme direction
 
@@ -71,7 +73,7 @@ The Dark theme was recovered directly from `git show b0f44a540d04a85a5468f99fcb8
 
 ## 9. Theme toggle and persistence
 
-The rightmost desktop header control after About is a native button containing local inline SVG only. Narrow layouts keep the icon-only control next to Menu. Light presents a moon with `Switch to dark mode`; Dark presents a sun with `Switch to light mode`. `aria-pressed` tracks Dark activation, and native Enter/Space behavior was confirmed in Chrome.
+The rightmost desktop header control after About is a 40px native button containing a centered 24px local inline SVG. Narrow layouts keep the icon-only control next to Menu. Light presents the accepted single-path solid crescent with no stroke, ring, star, or sparkle and `Switch to dark mode`; Dark presents a visually matched filled sun with `Switch to light mode`. `aria-pressed` tracks Dark activation, and native Enter/Space behavior was confirmed in Chrome.
 
 Only `light` and `dark` are accepted in `localStorage` key `numerical-t-lab-theme`; absent or invalid state defaults to Light. A small guarded inline bootstrap in `index.html` applies the saved value before stylesheet/module startup, preventing a wrong-theme first paint. Chrome confirmed persistence across reload; source-level tests protect the pre-main bootstrap position and allowed-value behavior.
 
@@ -111,13 +113,13 @@ The client converts all non-success API responses to that safe message, and the 
 
 ## 15. Desktop evidence
 
-Chrome reviewed the fresh production build at `1440 × 900` in both themes across `/`, `/about`, `/ode`, and `/ode/initial-value-problems`. IVP evidence covers Method, Forward Data, Backward Data, Single Output, Compare Output, Convergence, selected method, chart recoloring, pinned Glossary, Tutor empty, and Tutor after one local mock response. The brand has no hard-load frame, theme persists, result values survive theme changes, charts remain legible, the Tutor composer remains visible, root overflow is absent, and no app console warning/error appeared.
+Chrome reviewed the fresh production build at `1440 × 900` in both themes across `/`, `/about`, `/ode`, and `/ode/initial-value-problems`; the final integration audit repeated those representative states in the Codex in-app browser. IVP evidence covers Method, Forward Data, Backward Data, Single Output, Compare Output, Convergence, selected method, chart recoloring, pinned Glossary, Tutor empty, Tutor unavailable, and Tutor after one local mock response. The brand has no hard-load frame, theme persists, result values survive theme changes, charts remain legible, the Tutor composer remains visible, root overflow is absent, and no app console warning/error appeared.
 
 The production `/__dev/glossary-playground` route rendered Page Not Found as required.
 
 ## 16. Mobile evidence
 
-Chrome reviewed the same product routes and representative IVP, Glossary, and Tutor states at `390 × 844` in both themes, plus the compact `720 × 450` viewport. The Glossary sheet measured approximately `375 × 692` within the captured content viewport and ended at the viewport bottom. The Tutor sheet retains sticky header/composer, an independent transcript, compact disclosure, and full action visibility. No root horizontal overflow was found. Effective desktop zoom geometry was also reviewed at `1800 × 1125` (80% equivalent) and `720 × 450` (200% equivalent), both without root overflow.
+Chrome reviewed the same product routes and representative IVP, Glossary, and Tutor states at `390 × 844` in both themes, plus the compact `720 × 450` viewport; the final integration audit repeated the contained mobile Glossary and Tutor states in the Codex in-app browser. The Glossary sheet measured approximately `375 × 692` within the captured content viewport and ended at the viewport bottom. The Tutor sheet measured approximately `351 × 776`, retained an independently scrolling transcript, preserved the compact suggestion disclosure and full composer visibility, and kept the background inert with scroll lock active. No root horizontal overflow was found. Effective desktop zoom geometry was also reviewed at `1800 × 1125` (80% equivalent) and `720 × 450` (200% equivalent), both without root overflow and with the 24px icon centered exactly inside the 40px toggle.
 
 ## 17. Accessibility and contrast
 
@@ -133,7 +135,7 @@ Focus remains visible, keyboard navigation is preserved, selection and status me
 
 ## 18. Tests
 
-- Focused theme/focus/chart/Tutor/API suite: 10 files, 135 tests passed.
+- Focused theme/focus/chart/Tutor/API and direct-owner suite: 25 files, 250 tests passed.
 - Full `npm.cmd run verify`: 77 files, 1,107 tests passed.
 - `npm.cmd run typecheck`: passed.
 - `npm.cmd run typecheck:api`: passed.
@@ -143,7 +145,7 @@ Coverage includes default Light, persistence, labels, keyboard toggle, no-flash 
 
 ## 19. Build/bundle
 
-The production build passed with 87 transformed modules. The entry is `54.57 kB` raw / `16.99 kB` gzip; the complete IVP chunk is `292.96 kB` raw / `93.82 kB` gzip; Tutor is `12.14 kB` raw / `4.61 kB` gzip plus `6.61 kB` CSS / `1.81 kB` gzip. Route, Tutor, Glossary, MathLive, and Compute Engine lazy ownership tests remain green. Only the accepted deferred MathLive/Compute Engine large-chunk warning remains.
+The production build passed with 87 transformed modules. The entry is `54.87 kB` raw / `17.14 kB` gzip; the complete IVP chunk is `292.96 kB` raw / `93.82 kB` gzip. Route, Tutor, Glossary, MathLive, and Compute Engine lazy ownership tests remain green. Only the accepted deferred MathLive/Compute Engine large-chunk warning remains.
 
 ## 20. Vercel environment update
 
@@ -166,10 +168,20 @@ Source and tests:
 - `src/app/themeTokens.test.ts`
 - `src/app/appShell.ts`
 - `src/app/appShell.test.ts`
+- `src/app/beforeUnload.test.ts`
+- `src/app/developmentRoutes.test.ts`
+- `src/app/navigationAccessibility.test.ts`
 - `src/app/platform.css`
+- `src/app/platformBootstrap.ts`
+- `src/app/platformBootstrap.test.ts`
+- `src/app/routeDefinitions.ts`
 - `src/app/router.ts`
 - `src/app/router.test.ts`
-- `src/app/platformBootstrap.test.ts`
+- `src/app/viteBase.contract.test.ts`
+- `src/pages/aboutPage.ts`
+- `src/pages/homePage.ts`
+- `src/pages/notFoundPage.ts`
+- `src/pages/pages.test.ts`
 - `src/style.css`
 - `src/ode/odeApp.ts`
 - `src/ode/odeLifecycle.test.ts`
@@ -181,10 +193,12 @@ Source and tests:
 - `src/aiTutorPanel.test.ts`
 - `api/chatHandler.ts`
 - `api/chatHandler.test.ts`
+- `api/chatPrompt.test.ts`
 
 Documentation:
 
 - `PLAN.md`
+- `README.md`
 - `docs/INDEX.md`
 - `docs/PROJECT_HANDOFF.md`
 - `docs/reviews/2026-07-31-frontend-theme-and-tutor-refinement-review.md`
@@ -196,10 +210,11 @@ Ignored local-only evidence/configuration:
 - `references/derived/frontend-polish-v2/light/`
 - `references/derived/frontend-polish-v2/dark/`
 - `references/derived/frontend-polish-v2/tutor/`
+- `references/derived/frontend-polish-v2/final-audit/`
 
 ## 22. Explicit non-changes
 
-No numerical algorithm, coefficient, grid, result, validation, Store, session, persistence, History API, routing, learner copy, Tutor prompt, Tutor mathematical response, Tutor request contract, Glossary content, annotation, binding, order, lifecycle, accessible name, package, lockfile, dependency, font, external resource, Vercel project/domain/Git integration, COPY-041, COPY-042, or private repository changed. Theme switches do not mark meaningful Lab work. No source was pushed and no application deployment occurred.
+No numerical algorithm, coefficient, grid, result, validation, Store, session, persistence, History API, routing behavior, Tutor mathematical instruction/response, Tutor request contract, Glossary content, annotation, binding, order, lifecycle, package, lockfile, dependency, font, external resource, Vercel project/domain/Git integration, COPY-041, COPY-042, or private repository changed. Learner copy, accessible names, metadata, and the Tutor product-identity sentence changed only from the superseded hyphenated/closed-up forms to the accepted `Numerical T Lab` display brand. Theme switches do not mark meaningful Lab work. No source was pushed and no application deployment occurred.
 
 ## 23. Findings
 
@@ -214,4 +229,4 @@ No numerical algorithm, coefficient, grid, result, validation, Store, session, p
 
 ## 25. Push/deployment status
 
-The refinement is included in one local commit with subject `Refine themes and Tutor experience`. It has not been pushed. No Preview or Production deployment was created. The only remote mutation was the explicitly authorized Vercel `AI_TUTOR_MOCK=true` environment update, which requires a future deployment before it can affect runtime behavior.
+The refinement foundation is local commit `f19aa688c4f8e40ed9709f14a5af3c8a2ec50608`; the final brand/icon integration audit is included in a subsequent local commit with subject `Refine themes and Tutor experience`. Neither commit has been pushed. No Preview or Production deployment was created. The only earlier remote mutation was the explicitly authorized Vercel `AI_TUTOR_MOCK=true` environment update, which requires a future deployment before it can affect runtime behavior.

@@ -26,9 +26,9 @@ describe("static platform pages", () => {
 
   it("presents truthful Home modules and a non-mandatory learning path", () => {
     const target = mount(homePage);
-    expect(target.textContent).toContain("Numerical T-Lab");
+    expect(target.textContent).toContain("Numerical T Lab");
     expect(target.querySelector(".platform-home-hero h1")?.textContent).toBe(
-      "Numerical T-Lab"
+      "Numerical T Lab"
     );
     expect(
       target.querySelector(".platform-brand-pillars")?.textContent
@@ -120,7 +120,7 @@ describe("static platform pages", () => {
     const teachingCopy = teachingPillar?.textContent ?? "";
     const currentTeachingCopy = teachingCopy.split("today.")[0];
 
-    expect(target.textContent).toContain("Numerical T-Lab");
+    expect(target.textContent).toContain("Numerical T Lab");
     expect(target.textContent).toContain("currently implemented");
     expect(target.textContent).toContain("Initial Value Problems");
     expect(target.textContent).toContain("AI-assisted");

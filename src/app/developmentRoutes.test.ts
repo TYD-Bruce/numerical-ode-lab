@@ -14,7 +14,7 @@ function developmentRoute(
   return {
     id: "glossary-playground",
     path: "/__dev/glossary-playground",
-    title: "Glossary Playground | Numerical T-Lab",
+    title: "Glossary Playground | Numerical T Lab",
     kind: "page",
     loader,
   };

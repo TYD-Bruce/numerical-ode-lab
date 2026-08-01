@@ -13,7 +13,7 @@ export function createAboutPage(): RouteModule {
         appendPageHeading(
           page,
           "About",
-          "Numerical T-Lab is an interactive, AI-assisted environment for learning numerical analysis through guided computational experiments."
+          "Numerical T Lab is an interactive, AI-assisted environment for learning numerical analysis through guided computational experiments."
         );
 
         const pillars = document.createElement("section");

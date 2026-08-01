@@ -137,9 +137,9 @@ historical evidence; the current
 records the lower-glare default Light theme, restored optional Dark theme,
 initial-focus correction, theme-aware charts, and larger Tutor workspace.
 Product, numerical, Glossary, and Tutor mathematical behavior is unchanged.
-The refinement is included in one local source commit, awaits maintainer visual
-review, and has not been pushed or deployed; it does not replace or advance
-the active F2 release decision gate.
+The refinement foundation and final display-brand/icon audit are included in
+local source commits, await maintainer review, and have not been pushed or
+deployed; they do not replace or advance the active F2 release decision gate.
 
 ## Current released baseline
 
@@ -182,7 +182,7 @@ commit.
 
 ## Completed Project Identity Migration
 
-The canonical product is **Numerical T-Lab** with slug
+The canonical learner-facing product name is **Numerical T Lab** with slug
 `numerical-t-lab`. Active product UI, internal package, route titles, Tutor
 identity wording, migration documentation, and publication-safety preparation
 are recorded by:

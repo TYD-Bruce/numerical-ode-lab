@@ -1,6 +1,6 @@
-# Numerical T-Lab
+# Numerical T Lab
 
-Numerical T-Lab is an interactive, AI-assisted laboratory for learning numerical analysis through theory, computation, visualization, error analysis, and guided experiments.
+Numerical T Lab is an interactive, AI-assisted laboratory for learning numerical analysis through theory, computation, visualization, error analysis, and guided experiments.
 
 **Theory · Tools · Teaching**
 
@@ -145,6 +145,15 @@ See [`docs/INDEX.md`](docs/INDEX.md) for the current architecture, active plan,
 design specifications, implementation plans, reviews, and feature handoffs.
 
 ## Changelog
+
+### 2026-08-01 — Frontend refinement finalized locally
+
+- Audited the lower-glare Light theme, restored Dark theme, theme-aware charts,
+  initial-focus correction, workflow hierarchy, and transcript-led Tutor layout.
+- Finalized the learner-facing display brand as **Numerical T Lab** and retained
+  the accepted solid crescent theme-toggle icon.
+- Full verification and production browser review passed; nothing was pushed or
+  deployed.
 
 ### 2026-07-28 — Glossary framework Playground completed locally
 

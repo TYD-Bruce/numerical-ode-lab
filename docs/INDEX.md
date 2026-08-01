@@ -1,4 +1,4 @@
-# Numerical T-Lab Documentation Index
+# Numerical T Lab Documentation Index
 
 ## Start here
 
@@ -198,7 +198,7 @@ maintainer acceptance of the F2 review commit.
 | [F2 Final Count and Governance Corrections Review](reviews/2026-07-30-f2-final-count-and-governance-corrections-review.md) | Verdict **ALL KNOWN F2 BLOCKING FINDINGS CORRECTED — FINAL INDEPENDENT REVIEW REQUIRED**; Compare stored-point labels and stale current-state claims corrected; historical correction gate before the final F2 rerun |
 | [ODE Glossary Wave 1 Final F2 Cross-Surface Consistency Review](reviews/2026-07-31-ode-glossary-wave-1-final-f2-cross-surface-consistency-review.md) | Verdict **F2 FINAL INDEPENDENT CONSISTENCY PASSED — READY FOR RELEASE DECISION**; seven blockers remain closed; `P0 = P1 = P2 = 0`; no product-source change; push/Preview/Production unauthorized |
 | [Frontend Visual Polish Review](reviews/2026-07-31-frontend-visual-polish-review.md) | Verdict **FRONTEND VISUAL POLISH COMPLETE — READY FOR MAINTAINER REVIEW**; one bounded light-first polish pass, behavior unchanged, locally verified and Chrome-reviewed, no push or deployment |
-| [Frontend Theme and Tutor Refinement Review](reviews/2026-07-31-frontend-theme-and-tutor-refinement-review.md) | Verdict **FRONTEND THEME AND TUTOR REFINEMENT COMPLETE — READY FOR VISUAL REVIEW**; lower-glare Light theme, recovered Dark theme, focus fix, theme-aware charts, expanded Tutor layout, local/Vercel mock configuration, locally committed and unpushed |
+| [Frontend Theme and Tutor Refinement Review](reviews/2026-07-31-frontend-theme-and-tutor-refinement-review.md) | Verdict **FRONTEND THEME AND TUTOR REFINEMENT COMPLETE — READY FOR VISUAL REVIEW**; lower-glare Light theme, recovered Dark theme, focus fix, theme-aware charts, expanded Tutor layout, accepted crescent, final `Numerical T Lab` display brand, local/Vercel mock configuration, locally committed and unpushed |
 
 ## Feature handoffs
 

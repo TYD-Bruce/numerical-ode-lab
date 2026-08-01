@@ -121,7 +121,7 @@ export function createPlatformBootstrap(options: {
           {
             id: "glossary-playground",
             path: GLOSSARY_PLAYGROUND_PATH,
-            title: "Glossary Playground | Numerical T-Lab",
+            title: "Glossary Playground | Numerical T Lab",
             kind: "page",
             loader: () => {
               const modulePath =

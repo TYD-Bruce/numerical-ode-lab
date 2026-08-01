@@ -47,14 +47,19 @@ export function setPlatformTheme(
 }
 
 const MOON_ICON = `
-  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-    <path d="M20 15.4A8.5 8.5 0 0 1 8.6 4a7.6 7.6 0 1 0 11.4 11.4Z" />
+  <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+    <path
+      fill="currentColor"
+      fill-rule="evenodd"
+      d="M9.53 1.72a.75.75 0 0 1 .16.82A8.97 8.97 0 0 0 9 6a9 9 0 0 0 9 9 8.97 8.97 0 0 0 3.46-.69.75.75 0 0 1 .98.98A10.5 10.5 0 1 1 8.71 1.56a.75.75 0 0 1 .82.16Z"
+      clip-rule="evenodd"
+    />
   </svg>`;
 
 const SUN_ICON = `
-  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-    <circle cx="12" cy="12" r="3.5" />
-    <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42" />
+  <svg class="platform-theme-icon platform-theme-icon-sun" viewBox="0 0 28 28" aria-hidden="true" focusable="false">
+    <circle class="platform-theme-icon-fill" cx="14" cy="14" r="5.2" />
+    <path class="platform-theme-icon-rays" d="M14 2.7v3.2M14 22.1v3.2M2.7 14h3.2M22.1 14h3.2M6 6l2.3 2.3M19.7 19.7 22 22M6 22l2.3-2.3M19.7 8.3 22 6" />
   </svg>`;
 
 export function createThemeToggle(): {

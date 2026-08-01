@@ -77,7 +77,7 @@ export function createHomePage(sessionSource?: HomeSessionSource): RouteModule {
       const mounted = mountStaticPage(target, (page) => {
         appendPageHeading(
           page,
-          "Numerical T-Lab",
+          "Numerical T Lab",
           "An Interactive Numerical Analysis Laboratory"
         );
         const hero = page.querySelector<HTMLElement>(".platform-page-heading")!;

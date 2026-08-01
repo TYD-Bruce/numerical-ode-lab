@@ -67,7 +67,7 @@ describe("Vite root-base deployment contract", () => {
   });
 
   it("uses the canonical product title in generated HTML", () => {
-    expect(indexHtml).toContain("<title>Numerical T-Lab</title>");
+    expect(indexHtml).toContain("<title>Numerical T Lab</title>");
     expect(indexHtml).not.toContain("<title>Numerical Analysis Lab</title>");
     expect(indexHtml).not.toContain("<title>Numerical ODE Lab</title>");
   });

@@ -106,6 +106,12 @@ describe("platform theme tokens", () => {
     expect(platform).toContain(":focus-visible");
     expect(platform).toMatch(/overflow-x:\s*hidden/);
     expect(platform).toContain("@media");
+    expect(platform).toMatch(
+      /\.platform-theme-toggle\s*\{[^}]*width:\s*40px[^}]*height:\s*40px/s
+    );
+    expect(platform).toMatch(
+      /\.platform-theme-toggle svg\s*\{[^}]*width:\s*24px[^}]*height:\s*24px/s
+    );
 
     const glossarySurface = readFileSync(
       join(SRC_DIR, "glossary", "surface", "glossarySurface.css"),

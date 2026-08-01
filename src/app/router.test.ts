@@ -88,16 +88,16 @@ describe("route matching and normalization", () => {
   });
 
   it.each([
-    ["home", "Numerical T-Lab"],
-    ["ode-overview", "Numerical ODE | Numerical T-Lab"],
+    ["home", "Numerical T Lab"],
+    ["ode-overview", "Numerical ODE | Numerical T Lab"],
     [
       "ode-initial-value-problems",
-      "Initial Value Problems Lab | Numerical T-Lab",
+      "Initial Value Problems Lab | Numerical T Lab",
     ],
-    ["linear-algebra-overview", "Numerical Linear Algebra | Numerical T-Lab"],
-    ["pde-overview", "Numerical PDE | Numerical T-Lab"],
-    ["about", "About | Numerical T-Lab"],
-    ["not-found", "Page Not Found | Numerical T-Lab"],
+    ["linear-algebra-overview", "Numerical Linear Algebra | Numerical T Lab"],
+    ["pde-overview", "Numerical PDE | Numerical T Lab"],
+    ["about", "About | Numerical T Lab"],
+    ["not-found", "Page Not Found | Numerical T Lab"],
   ] as const)("defines the approved title for %s", (id, title) => {
     expect(routes.find((route) => route.id === id)?.title).toBe(title);
   });
@@ -119,7 +119,7 @@ describe("platform router", () => {
     await settle();
 
     const heading = shell.outlet.querySelector("h1");
-    expect(heading?.textContent).toBe("Numerical T-Lab");
+    expect(heading?.textContent).toBe("Numerical T Lab");
     expect(document.activeElement).not.toBe(heading);
     expect(document.activeElement).toBe(document.body);
     router.dispose();
@@ -160,7 +160,7 @@ describe("platform router", () => {
     const historyLength = history.length;
     window.dispatchEvent(new PopStateEvent("popstate", { state: history.state }));
     await vi.waitFor(() => {
-      expect(document.title).toBe("Page Not Found | Numerical T-Lab");
+      expect(document.title).toBe("Page Not Found | Numerical T Lab");
       expect(shell.outlet.textContent).toContain("/not-a-route");
     });
     expect(history.length).toBe(historyLength);
@@ -248,7 +248,7 @@ describe("platform router", () => {
     expect(mountA).not.toHaveBeenCalled();
     expect(disposeB).not.toHaveBeenCalled();
     expect(shell.outlet.textContent).toContain("Route B");
-    expect(document.title).toBe("About | Numerical T-Lab");
+    expect(document.title).toBe("About | Numerical T Lab");
     expect(document.activeElement?.textContent).toBe("Route B");
     expect(shell.outlet.hasAttribute("aria-busy")).toBe(false);
     expect(

@@ -1,11 +1,11 @@
-# Numerical T-Lab — Project Handoff
+# Numerical T Lab — Project Handoff
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
-**Status (2026-07-30):** Numerical T-Lab is locally verified and
+**Status (2026-08-01):** Numerical T Lab is locally verified and
 Production-verified at `https://numerical-t-lab.vercel.app/`. The GitHub
 repositories, Git remotes, existing Vercel project, Git integration, and
-canonical domain use the Numerical T-Lab identity. The local workspace rename
+canonical domain retain the `numerical-t-lab` slug. The local workspace rename
 and reopen are complete at `D:\numerical-t-lab`; Project Identity Migration is
 complete. See
 [the rename review](./reviews/2026-07-22-numerical-t-lab-rename-review.md).
@@ -93,17 +93,18 @@ passed exact commit `451a0cbe5e67afc58b280795dd13d43db09d16af` with
 `P0 = P1 = P2 = 0` and no product-source change. F2 is independently passed
 pending maintainer acceptance of that review commit.
 
-Separately, the bounded frontend visual-polish pass now has one local
-theme/Tutor refinement commit documented by the
+Separately, the bounded frontend visual-polish pass now has a local
+theme/Tutor refinement foundation and final integration audit documented by the
 [theme and Tutor refinement review](./reviews/2026-07-31-frontend-theme-and-tutor-refinement-review.md).
 The default is a lower-glare Light theme; the pre-polish palette is available
 as Dark; chart presentation redraws without numerical recomputation; the
-initial brand-focus artifact is corrected; and the Tutor gains a larger,
-contained transcript/composer layout. Local and Vercel mock settings are
+initial brand-focus artifact is corrected; the accepted 40px toggle contains a
+solid 24px crescent; the learner-facing display brand is `Numerical T Lab`; and
+the Tutor gains a larger, contained transcript/composer layout. Local and Vercel mock settings are
 enabled for future Development, Preview, and Production deployments. Product
 behavior, numerical contracts, Tutor prompts/mathematical responses, Glossary
 content and lifecycle, routes, and production boundaries are unchanged. The
-source commit awaits maintainer visual review and has not been pushed or
+local source commits await maintainer review and have not been pushed or
 deployed, so the public Production source baseline remains unchanged. Vercel
 requires a future redeployment before the updated environment value can affect
 a deployment; no redeployment was triggered.
@@ -126,7 +127,7 @@ previously deployed commit.
 
 ## 1. Product and public routes
 
-The product is **Numerical T-Lab**. The currently implemented numerical module is **Initial Value Problems Lab**, retaining the released Method -> Data -> Output ODE workflow.
+The learner-facing product is **Numerical T Lab**. The currently implemented numerical module is **Initial Value Problems Lab**, retaining the released Method -> Data -> Output ODE workflow.
 
 | Route | Page | Status |
 |---|---|---|
