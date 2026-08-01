@@ -576,11 +576,13 @@ export async function handleChatRequest(
 
   const apiKey = process.env.OPENAI_API_KEY?.trim();
   if (!apiKey) {
+    console.error(
+      "AI Tutor configuration is unavailable: provider access is missing and mock mode is disabled."
+    );
     return {
       status: 503,
       body: {
-        error:
-          "OPENAI_API_KEY is not configured. For the public demo, set AI_TUTOR_MOCK=true on Vercel. Locally, add it to .env.local (never use VITE_ prefixes).",
+        error: "AI Tutor is temporarily unavailable. Please try again later.",
       },
     };
   }

@@ -94,6 +94,7 @@ import type {
   LabTutorBinding,
   ResumeSummary,
 } from "../app/contracts";
+import { THEME_CHANGE_EVENT } from "../app/theme";
 import type { LabGlossaryBinding } from "../glossary/glossaryController";
 import {
   computeOdeLabMeaningful,
@@ -186,6 +187,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
   let session = options.initialSession.workflow;
   let selected: SelectedMethod | null = options.initialSession.selectedMethod;
   let chart: Chart | null = null;
+  let primaryChartKind: "single" | "second" | "compare" | null = null;
   let lastResult: ReadonlySolverResult | null =
     options.initialSession.output.single?.result ?? null;
   let lastResultExpression: SuccessfulExpressionSnapshot | null =
@@ -480,7 +482,69 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
   function disposePrimaryChart(): void {
     chart?.destroy();
     chart = null;
+    primaryChartKind = null;
   }
+
+  function refreshPrimaryChartTheme(): void {
+    if (!chart || !primaryChartKind) return;
+    const theme = resolveNumericalChartTheme();
+    const datasets = chart.data.datasets as Array<{
+      borderColor?: string;
+      backgroundColor?: string;
+      fill?: boolean | string;
+    }>;
+    datasets.forEach((dataset, index) => {
+      dataset.borderColor =
+        index === 0
+          ? theme.primary
+          : primaryChartKind === "compare"
+            ? theme.compare
+            : theme.secondary;
+      if (dataset.fill) dataset.backgroundColor = theme.fill;
+    });
+
+    const visualOptions = chart.options as unknown as {
+      plugins?: {
+        legend?: { labels?: { color?: string } };
+        title?: { color?: string };
+        tooltip?: {
+          backgroundColor?: string;
+          titleColor?: string;
+          bodyColor?: string;
+          borderColor?: string;
+        };
+      };
+      scales?: Record<
+        string,
+        {
+          title?: { color?: string };
+          ticks?: { color?: string };
+          grid?: { color?: string };
+        }
+      >;
+    };
+    const plugins = visualOptions.plugins;
+    if (plugins?.legend?.labels) plugins.legend.labels.color = theme.text;
+    if (plugins?.title) plugins.title.color = theme.text;
+    if (plugins?.tooltip) {
+      plugins.tooltip.backgroundColor = theme.tooltipBackground;
+      plugins.tooltip.titleColor = theme.tooltipText;
+      plugins.tooltip.bodyColor = theme.tooltipText;
+      plugins.tooltip.borderColor = theme.tooltipBorder;
+    }
+    for (const scale of Object.values(visualOptions.scales ?? {})) {
+      if (scale.title) scale.title.color = theme.muted;
+      if (scale.ticks) scale.ticks.color = theme.muted;
+      if (scale.grid) scale.grid.color = theme.grid;
+    }
+    chart.update("none");
+  }
+
+  const onThemeChange = (): void => {
+    if (disposed) return;
+    refreshPrimaryChartTheme();
+    activeConvergenceView?.refreshTheme?.();
+  };
 
   function closeResetDialog(returnFocus: boolean): void {
     const dialog = activeResetDialog;
@@ -867,6 +931,11 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
         step = "choose";
         main.append(renderChoosePanel(glossaryRender));
       }
+
+      const workflowStage =
+        step === "choose" ? "method" : step === "configure" ? "data" : "output";
+      main.classList.add("workflow-panel", `workflow-stage-${workflowStage}`);
+      main.dataset.workflowStage = workflowStage;
 
       shell.append(main);
       app.append(shell);
@@ -2410,6 +2479,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       data: { labels: ts, datasets },
       options: chartOptions(series, meta.mode === "second" ? "u , u′" : valueLabel),
     });
+    primaryChartKind = meta.mode === "second" ? "second" : "single";
   }
 
   function chartOptions(
@@ -2560,6 +2630,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       },
       options: chartOptions(seriesA, "y"),
     });
+    primaryChartKind = "compare";
   }
 
   function captureMountedDrafts(): void {
@@ -2659,6 +2730,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
   }
 
   render();
+  window.addEventListener(THEME_CHANGE_EVENT, onThemeChange);
 
   return Object.freeze({
     getSession(): OdeSessionState {
@@ -2684,6 +2756,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       disposeExpressionUi();
       disposeConvergenceUi();
       disposePrimaryChart();
+      window.removeEventListener(THEME_CHANGE_EVENT, onThemeChange);
       glossaryRuntime.dispose();
       tutorBindingControl.dispose();
       if (activeOdeMounts.get(app) === mountToken) {

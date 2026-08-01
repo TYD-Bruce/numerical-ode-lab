@@ -53,6 +53,7 @@ export interface ConvergenceStudyViewOptions {
 
 export interface ConvergenceStudyViewHandle {
   update(): void;
+  refreshTheme(): void;
   dispose(): void;
 }
 
@@ -78,17 +79,17 @@ export interface NumericalChartTheme {
 }
 
 const DEFAULT_NUMERICAL_CHART_THEME: NumericalChartTheme = {
-  primary: "#2563eb",
-  secondary: "#0f766e",
-  theory: "#6d5ce7",
-  compare: "#b85f0a",
-  text: "#33415c",
-  muted: "#61708a",
-  grid: "rgba(54, 74, 107, 0.14)",
-  fill: "rgba(37, 99, 235, 0.1)",
-  tooltipBackground: "#10264a",
-  tooltipText: "#f8fbff",
-  tooltipBorder: "#315385",
+  primary: "#315e9d",
+  secondary: "#2e7975",
+  theory: "#675b96",
+  compare: "#a95f18",
+  text: "#27364b",
+  muted: "#53647a",
+  grid: "rgba(52, 72, 99, 0.17)",
+  fill: "rgba(49, 94, 157, 0.11)",
+  tooltipBackground: "#1d304e",
+  tooltipText: "#f7f9fc",
+  tooltipBorder: "#6783a6",
 };
 
 function chartThemeValue(name: string, fallback: string): string {
@@ -644,6 +645,19 @@ export function mountConvergenceStudyView(
   render();
   return {
     update: render,
+    refreshTheme: () => {
+      if (disposed) return;
+      const state = options.getState();
+      const canvas = host.querySelector<HTMLCanvasElement>(
+        'canvas[aria-label="Log-log convergence error chart"]'
+      );
+      if (!state.result || !canvas) return;
+      chart?.destroy();
+      chart = options.chartFactory.create(
+        canvas,
+        createConvergenceChartConfiguration(state.result, state.chartMetric)
+      );
+    },
     dispose: () => {
       if (disposed) return;
       disposed = true;

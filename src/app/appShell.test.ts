@@ -21,6 +21,10 @@ describe("app shell", () => {
     expect(shell.glossaryStatus.getAttribute("role")).toBe("status");
     expect(shell.glossaryStatus.getAttribute("aria-live")).toBe("polite");
     expect(shell.root.textContent).not.toContain("AI Tutor");
+    const toggle = shell.root.querySelector<HTMLButtonElement>("[data-theme-toggle]")!;
+    expect(toggle.getAttribute("aria-label")).toBe("Switch to dark mode");
+    expect(toggle.closest(".platform-header-actions")?.querySelector("nav"))
+      .toBe(shell.root.querySelector('nav[aria-label="Primary"]'));
   });
 
   it("returns modal background siblings without including an active Host ancestor", () => {

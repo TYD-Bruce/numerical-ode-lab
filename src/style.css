@@ -179,6 +179,23 @@
   font-weight: 700;
 }
 
+.pill:nth-of-type(1) {
+  --stage-accent: var(--color-method-accent);
+}
+
+.pill:nth-of-type(3) {
+  --stage-accent: var(--color-data-accent);
+}
+
+.pill:nth-of-type(5) {
+  --stage-accent: var(--color-output-accent);
+}
+
+.pill.active {
+  border-color: var(--stage-accent, var(--accent));
+  background: var(--stage-accent, var(--accent));
+}
+
 .arrow {
   color: var(--muted);
   font-size: 0.85rem;
@@ -229,11 +246,33 @@
 }
 
 .panel {
+  position: relative;
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: clamp(18px, 2vw, 26px);
   box-shadow: var(--shadow-card);
+  overflow: clip;
+}
+
+.workflow-panel::before {
+  position: absolute;
+  inset: 0 0 auto;
+  height: var(--space-1);
+  background: var(--workflow-accent);
+  content: "";
+}
+
+.workflow-stage-method {
+  --workflow-accent: var(--color-method-accent);
+}
+
+.workflow-stage-data {
+  --workflow-accent: var(--color-data-accent);
+}
+
+.workflow-stage-output {
+  --workflow-accent: var(--color-output-accent);
 }
 
 .grid-methods {
@@ -264,6 +303,30 @@
   border: 2px solid var(--accent);
   background: var(--color-surface-accent);
   box-shadow: inset var(--space-1) 0 var(--accent), var(--shadow-card);
+}
+
+.card.is-selected::after,
+.card[aria-pressed="true"]::after {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: grid;
+  width: 1.5rem;
+  height: 1.5rem;
+  place-items: center;
+  border: 2px solid var(--color-method-accent);
+  border-radius: var(--radius-pill);
+  background: var(--color-method-accent);
+  color: var(--color-on-accent);
+  content: "✓";
+  font-size: 0.85rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.card.is-selected h2,
+.card[aria-pressed="true"] h2 {
+  padding-right: 2rem;
 }
 
 .card h2 {
@@ -553,6 +616,24 @@
   border: 0;
 }
 
+.summary {
+  position: relative;
+  margin-bottom: 16px;
+  padding: 16px 16px 18px;
+  border: 1px solid color-mix(in srgb, var(--color-output-accent) 38%, var(--border));
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--color-output-surface), var(--color-surface-soft));
+  overflow: hidden;
+}
+
+.summary::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--space-1);
+  background: var(--color-output-accent);
+  content: "";
+}
+
 .summary h2 {
   margin: 0 0 12px;
 }
@@ -577,6 +658,18 @@
   border-radius: 12px;
   padding: 12px;
   background: var(--color-surface-soft);
+}
+
+.stat:nth-child(3n + 1) {
+  border-top-color: var(--color-method-accent);
+}
+
+.stat:nth-child(3n + 2) {
+  border-top-color: var(--color-data-accent);
+}
+
+.stat:nth-child(3n) {
+  border-top-color: var(--color-output-accent);
 }
 
 .stat-label {
@@ -730,9 +823,9 @@
 
 .convergence-drawer {
   margin: 0 0 16px;
-  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));
+  border: 1px solid color-mix(in srgb, var(--color-convergence-accent) 45%, var(--border));
   border-radius: 12px;
-  background: var(--color-surface-soft);
+  background: var(--color-convergence-surface);
   overflow: clip;
 }
 
@@ -741,7 +834,8 @@
   cursor: pointer;
   font-weight: 700;
   color: var(--text);
-  background: var(--color-surface-accent);
+  border-left: var(--space-1) solid var(--color-convergence-accent);
+  background: var(--color-convergence-surface);
 }
 
 .convergence-drawer-summary:focus-visible,

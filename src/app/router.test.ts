@@ -109,6 +109,22 @@ describe("platform router", () => {
     history.replaceState({ outside: "preserve-me" }, "", "/");
   });
 
+  it("does not assign initial hard-load focus to the route heading", async () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+    const shell = createAppShell(host);
+    const router = createPlatformRouter({ shell, routes: testRoutes() });
+
+    router.start();
+    await settle();
+
+    const heading = shell.outlet.querySelector("h1");
+    expect(heading?.textContent).toBe("Numerical T-Lab");
+    expect(document.activeElement).not.toBe(heading);
+    expect(document.activeElement).toBe(document.body);
+    router.dispose();
+  });
+
   it("pushes and replaces normalized URLs without overwriting unrelated history state", async () => {
     const host = document.createElement("div");
     document.body.append(host);

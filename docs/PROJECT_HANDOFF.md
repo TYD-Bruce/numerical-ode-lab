@@ -93,14 +93,20 @@ passed exact commit `451a0cbe5e67afc58b280795dd13d43db09d16af` with
 `P0 = P1 = P2 = 0` and no product-source change. F2 is independently passed
 pending maintainer acceptance of that review commit.
 
-Separately, one bounded frontend visual-polish pass is implemented in the local
-commit containing the
-[frontend visual-polish review](./reviews/2026-07-31-frontend-visual-polish-review.md).
-The default presentation is now light-first, locally verified, and
-Chrome-reviewed at `1440 × 900` and `390 × 844`. Product behavior, numerical
-contracts, Glossary/Tutor lifecycle, and production boundaries are unchanged.
-The commit is awaiting maintainer visual review and has not been pushed or
-deployed, so the public Production baseline remains unchanged.
+Separately, the bounded frontend visual-polish pass now has one local
+theme/Tutor refinement commit documented by the
+[theme and Tutor refinement review](./reviews/2026-07-31-frontend-theme-and-tutor-refinement-review.md).
+The default is a lower-glare Light theme; the pre-polish palette is available
+as Dark; chart presentation redraws without numerical recomputation; the
+initial brand-focus artifact is corrected; and the Tutor gains a larger,
+contained transcript/composer layout. Local and Vercel mock settings are
+enabled for future Development, Preview, and Production deployments. Product
+behavior, numerical contracts, Tutor prompts/mathematical responses, Glossary
+content and lifecycle, routes, and production boundaries are unchanged. The
+source commit awaits maintainer visual review and has not been pushed or
+deployed, so the public Production source baseline remains unchanged. Vercel
+requires a future redeployment before the updated environment value can affect
+a deployment; no redeployment was triggered.
 
 `E1-BROWSER-EXCEPTION-01` accepts only the unchanged Google Fonts
 stylesheet/font request chain for this E1 evidence gate. The source and

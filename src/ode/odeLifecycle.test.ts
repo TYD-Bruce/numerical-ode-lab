@@ -24,6 +24,7 @@ import {
 } from "../convergenceStudyState";
 import { methodMathContent } from "../math/ui/methodMathContent";
 import { METHOD_CATALOG } from "../methodCatalog";
+import { THEME_CHANGE_EVENT } from "../app/theme";
 
 const destroyChart = vi.fn();
 const chartConfigurations: unknown[] = [];
@@ -32,6 +33,8 @@ const chartInstances: Array<{
     datasets: Array<{
       type?: string;
       pointRadius?: number;
+      data?: unknown;
+      borderColor?: string;
     }>;
   };
   options: {
@@ -336,6 +339,35 @@ describe("mounted ODE lifecycle", () => {
     tutorHost.dispose();
     mounted.dispose();
     expect(chart.options.plugins?.title?.text).toBe(titleBefore);
+  });
+
+  it("recolors the mounted chart without changing result data or axis bounds", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const initial = outputSession();
+    const mounted = mountOdeApp({ target, initialSession: initial });
+    await Promise.resolve();
+
+    const chart = chartInstances[0]!;
+    const datasetData = chart.data.datasets.map((dataset) => dataset.data);
+    const resultPoints = mounted.getSession().output.single?.result.points;
+    chart.options.scales!.x = { min: 0.05, max: 0.15 };
+
+    window.dispatchEvent(new CustomEvent(THEME_CHANGE_EVENT, { detail: "dark" }));
+
+    expect(chart.update).toHaveBeenCalledWith("none");
+    expect(chart.data.datasets.map((dataset) => dataset.data)).toEqual(datasetData);
+    expect(chart.options.scales?.x).toMatchObject({ min: 0.05, max: 0.15 });
+    expect(mounted.getSession().output.single?.result.points).toBe(resultPoints);
+    expect(mounted.getSession().output.single?.result.points).toBe(
+      initial.output.single.result.points
+    );
+
+    mounted.dispose();
+    chart.update.mockClear();
+    window.dispatchEvent(new CustomEvent(THEME_CHANGE_EVENT, { detail: "light" }));
+    expect(chart.update).not.toHaveBeenCalled();
   });
 
   it("keeps one accessible method formula through rerender and final disposal", async () => {

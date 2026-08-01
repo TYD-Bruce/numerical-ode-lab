@@ -575,6 +575,29 @@ describe("chat request and provider contract", () => {
     });
   });
 
+  it("returns public-safe configuration failure copy", async () => {
+    delete process.env.AI_TUTOR_MOCK;
+    delete process.env.OPENAI_API_KEY;
+    const logged = vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+    const response = await handleChatRequest({
+      messages: [{ role: "user", content: "Question" }],
+      context: {},
+    });
+
+    expect(response).toEqual({
+      status: 503,
+      body: {
+        error: "AI Tutor is temporarily unavailable. Please try again later.",
+      },
+    });
+    expect(JSON.stringify(response.body)).not.toMatch(
+      /OPENAI_API_KEY|AI_TUTOR_MOCK|\.env\.local|VITE_/
+    );
+    expect(logged).toHaveBeenCalledOnce();
+    logged.mockRestore();
+  });
+
   it("preserves provider, model, message order, request options, and response shape", async () => {
     delete process.env.AI_TUTOR_MOCK;
     process.env.OPENAI_API_KEY = "test-server-key";

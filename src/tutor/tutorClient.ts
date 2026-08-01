@@ -1,5 +1,8 @@
 import type { ChatRequest, ChatResponse } from "../aiTypes";
 
+export const PUBLIC_TUTOR_UNAVAILABLE_MESSAGE =
+  "AI Tutor is temporarily unavailable. Please try again later.";
+
 export async function sendTutorMessage(
   request: ChatRequest,
   signal?: AbortSignal
@@ -12,11 +15,7 @@ export async function sendTutorMessage(
   });
   const data = (await response.json()) as ChatResponse & { error?: string };
   if (!response.ok) {
-    throw new Error(
-      typeof data.error === "string"
-        ? data.error
-        : `Chat request failed (${response.status})`
-    );
+    throw new Error(PUBLIC_TUTOR_UNAVAILABLE_MESSAGE);
   }
   if (typeof data.message !== "string") {
     throw new Error("Invalid response from tutor API.");

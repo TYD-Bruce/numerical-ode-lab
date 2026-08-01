@@ -128,13 +128,18 @@ remain open, as do the nonblocking `F2-GLOSSARY-VOICE-001` and
 limitation. No push, Preview deployment, or Production deployment was
 authorized or performed; the public deployed site remains unchanged.
 
-A separate bounded frontend visual-polish pass is implemented, locally
-verified, Chrome-reviewed at `1440 × 900` and `390 × 844`, and included in one
-local commit with its
-[review](docs/reviews/2026-07-31-frontend-visual-polish-review.md). Product
-behavior is unchanged. The polish is awaiting maintainer visual review and has
-not been pushed or deployed; it does not replace or advance the active F2
-release decision gate.
+A separate bounded frontend visual-polish pass and one follow-up theme/Tutor
+refinement are implemented, locally verified, and Chrome-reviewed at
+`1440 × 900`, `390 × 844`, and `720 × 450`. The first-pass
+[review](docs/reviews/2026-07-31-frontend-visual-polish-review.md) remains
+historical evidence; the current
+[theme and Tutor refinement review](docs/reviews/2026-07-31-frontend-theme-and-tutor-refinement-review.md)
+records the lower-glare default Light theme, restored optional Dark theme,
+initial-focus correction, theme-aware charts, and larger Tutor workspace.
+Product, numerical, Glossary, and Tutor mathematical behavior is unchanged.
+The refinement is included in one local source commit, awaits maintainer visual
+review, and has not been pushed or deployed; it does not replace or advance
+the active F2 release decision gate.
 
 ## Current released baseline
 
@@ -348,9 +353,12 @@ product-source change. `COPY-003` remains deferred with the PDE module.
 and `F2-EVIDENCE-001` remain nonblocking open items. Push, Preview, and
 Production remain unauthorized.
 
-The independent visual-polish review gate is maintainer review of the local
-commit and ignored before/after evidence. Product behavior is unchanged, and
-nothing from that pass has been pushed or deployed.
+The independent frontend review gate is maintainer visual review of the local
+theme/Tutor refinement commit and ignored evidence. Product behavior is
+unchanged, and the source commit has not been pushed or deployed. The existing
+Vercel project now stores `AI_TUTOR_MOCK=true` for Development, Preview, and
+Production, but that configuration applies only to a future deployment; no
+redeployment was triggered.
 
 ## Parallel content foundation
 

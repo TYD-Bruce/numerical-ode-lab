@@ -1,4 +1,5 @@
 import type { RouteId } from "./contracts";
+import { createThemeToggle } from "./theme";
 import "./theme.css";
 import "./platform.css";
 
@@ -70,6 +71,7 @@ export function createAppShell(target: HTMLElement): AppShell {
   brand.textContent = "Numerical T-Lab";
 
   const desktopNavigation = createNavigation("Primary", "platform-desktop-nav");
+  const themeToggle = createThemeToggle();
   const menuId = `platform-mobile-menu-${++mobileMenuId}`;
   const menuTrigger = document.createElement("button");
   menuTrigger.type = "button";
@@ -79,7 +81,10 @@ export function createAppShell(target: HTMLElement): AppShell {
   menuTrigger.setAttribute("aria-controls", menuId);
   menuTrigger.textContent = "Menu";
 
-  headerInner.append(brand, desktopNavigation, menuTrigger);
+  const headerActions = document.createElement("div");
+  headerActions.className = "platform-header-actions";
+  headerActions.append(desktopNavigation, themeToggle.button, menuTrigger);
+  headerInner.append(brand, headerActions);
   header.append(headerInner);
 
   const mobileMenu = document.createElement("div");
@@ -231,6 +236,7 @@ export function createAppShell(target: HTMLElement): AppShell {
       menuTrigger.removeEventListener("click", onMenuTrigger);
       menuClose.removeEventListener("click", onMenuClose);
       document.removeEventListener("keydown", onKeyDown);
+      themeToggle.dispose();
       root.remove();
     },
   };

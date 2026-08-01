@@ -45,6 +45,10 @@ describe("platform theme tokens", () => {
       "--color-on-accent",
       "--color-header-background",
       "--color-header-text",
+      "--color-method-accent",
+      "--color-data-accent",
+      "--color-output-accent",
+      "--color-convergence-accent",
       "--color-chart-primary",
       "--color-chart-secondary",
       "--color-chart-theory",
@@ -74,7 +78,18 @@ describe("platform theme tokens", () => {
       expect(theme).toContain(`${token}:`);
     }
     expect(theme).toMatch(/--texture-decorative:\s*none/);
+    expect(theme).toContain('html[data-theme="light"]');
+    expect(theme).toContain('html[data-theme="dark"]');
     expect(theme).toMatch(/color-scheme:\s*light/);
+    expect(theme).toMatch(/color-scheme:\s*dark/);
+  });
+
+  it("boots the supported saved theme before the application module", () => {
+    const index = readFileSync(join(dirname(SRC_DIR), "index.html"), "utf8");
+    expect(index).toContain('const key = "numerical-t-lab-theme"');
+    expect(index).toContain('saved === "light" || saved === "dark"');
+    expect(index.indexOf("document.documentElement.dataset.theme"))
+      .toBeLessThan(index.indexOf('src="/src/main.ts"'));
   });
 
   it("keeps literal colors out of new component CSS", () => {

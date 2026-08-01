@@ -14,7 +14,10 @@ import {
   messagesForTutorRequest,
   updateTutorDraft,
 } from "./moduleTutorSession";
-import { sendTutorMessage } from "./tutorClient";
+import {
+  PUBLIC_TUTOR_UNAVAILABLE_MESSAGE,
+  sendTutorMessage,
+} from "./tutorClient";
 import "./tutor.css";
 
 export interface PlatformTutorPanelOptions {
@@ -128,6 +131,10 @@ export function mountPlatformTutorPanel(
         : "Run a method first, then ask the AI Tutor about the result.";
     content.append(unavailable);
   } else {
+    const suggestionDisclosure = document.createElement("details");
+    suggestionDisclosure.className = "ai-suggestion-disclosure";
+    const suggestionSummary = document.createElement("summary");
+    suggestionSummary.textContent = "Suggested questions";
     const suggestions = document.createElement("div");
     suggestions.className = "ai-suggestions";
     suggestions.setAttribute("role", "group");
@@ -140,6 +147,7 @@ export function mountPlatformTutorPanel(
       button.dataset.tutorSuggestion = question;
       suggestions.append(button);
     });
+    suggestionDisclosure.append(suggestionSummary, suggestions);
     const messages = document.createElement("div");
     messages.className = "ai-messages";
     messages.setAttribute("role", "log");
@@ -173,13 +181,37 @@ export function mountPlatformTutorPanel(
     send.textContent = "Send";
     actions.append(clear, send);
     form.append(label, input, actions);
-    content.append(suggestions, messages, error, form);
+    content.append(suggestionDisclosure, messages, error, form);
+
+    let suggestionsCollapsedForConversation = false;
+    const syncSuggestions = (): void => {
+      const hasUserMessage = options.sessionAccess
+        .getSession()
+        .items.some((item) => item.kind === "message" && item.role === "user");
+      suggestionSummary.hidden = !hasUserMessage;
+      suggestionDisclosure.classList.toggle("is-collapsed", hasUserMessage);
+      if (!hasUserMessage) {
+        suggestionsCollapsedForConversation = false;
+        suggestionDisclosure.open = true;
+      } else if (!suggestionsCollapsedForConversation) {
+        suggestionsCollapsedForConversation = true;
+        suggestionDisclosure.open = false;
+      }
+    };
+
+    const resizeComposer = (): void => {
+      input.style.height = "auto";
+      const nextHeight = Math.min(Math.max(input.scrollHeight, 56), 144);
+      input.style.height = `${nextHeight}px`;
+    };
 
     const render = (): void => {
       if (disposed || !options.isCurrent()) return;
       renderTranscript(messages, options.sessionAccess.getSession().items);
+      syncSuggestions();
       if (document.activeElement !== input) {
         input.value = options.sessionAccess.getSession().draftMessage;
+        resizeComposer();
       }
     };
     refresh = render;
@@ -205,6 +237,7 @@ export function mountPlatformTutorPanel(
         updateTutorDraft(appendTutorMessage(current, "user", trimmed), "")
       );
       input.value = "";
+      resizeComposer();
       render();
       requestController?.abort();
       const controller = new AbortController();
@@ -234,9 +267,9 @@ export function mountPlatformTutorPanel(
         if (response.chartInstruction && isChartInstruction(response.chartInstruction)) {
           options.binding.applyChartInstruction?.(response.chartInstruction);
         }
-      } catch (cause) {
+      } catch {
         if (disposed || controller.signal.aborted || request !== requestGeneration || !options.isCurrent()) return;
-        error.textContent = cause instanceof Error ? cause.message : String(cause);
+        error.textContent = PUBLIC_TUTOR_UNAVAILABLE_MESSAGE;
         error.hidden = false;
       } finally {
         if (!disposed && request === requestGeneration && options.isCurrent()) {
@@ -248,6 +281,7 @@ export function mountPlatformTutorPanel(
 
     input.addEventListener("input", () => {
       options.sessionAccess.updateSession((current) => updateTutorDraft(current, input.value));
+      resizeComposer();
     });
     form.addEventListener("submit", (event) => {
       event.preventDefault();
@@ -265,6 +299,7 @@ export function mountPlatformTutorPanel(
       const button = (event.target as Element).closest<HTMLButtonElement>("[data-tutor-suggestion]");
       if (button) void submit(button.dataset.tutorSuggestion ?? "");
     });
+    resizeComposer();
     render();
   }
 

@@ -227,7 +227,9 @@ export function createPlatformRouter({
     }
 
     shell.navigationSucceeded();
-    await focusCurrentRoute(generation);
+    if (navigation !== "initial") {
+      await focusCurrentRoute(generation);
+    }
     if (disposed || generation !== navigationGeneration) return;
     const scrollY = scrollRestoration.resolveRestoration({
       routeId: match.definition.id,

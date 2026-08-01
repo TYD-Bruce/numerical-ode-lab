@@ -85,6 +85,71 @@ describe("shared Tutor panel", () => {
     expect(panel.contains(actions)).toBe(true);
     expect(actions.textContent).toContain("Clear chat");
     expect(actions.textContent).toContain("Send");
+    expect(host.querySelector<HTMLDetailsElement>(".ai-suggestion-disclosure")?.open)
+      .toBe(true);
+    expect(host.querySelector(".ai-suggestion-disclosure summary")?.hasAttribute("hidden"))
+      .toBe(true);
+    mounted.dispose();
+  });
+
+  it("collapses suggestions behind a disclosure after the first user message", async () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+    const store = createAppSessionStore();
+    const mounted = mountPlatformTutorPanel(host, {
+      binding: {
+        moduleId: "ode",
+        promptProfile: "ode",
+        suggestedQuestions: ["Explain this result.", "What does the graph show?"],
+        getContext: source,
+      },
+      sessionAccess: store.createTutorSessionAccess("ode"),
+      onClose: vi.fn(),
+      isCurrent: () => true,
+      sendMessage: async () => ({ message: "Grounded reply." }),
+    });
+
+    await submit(host, "My first question");
+    const disclosure = host.querySelector<HTMLDetailsElement>(
+      ".ai-suggestion-disclosure"
+    )!;
+    const summary = disclosure.querySelector("summary")!;
+    expect(disclosure.open).toBe(false);
+    expect(summary.hidden).toBe(false);
+    expect(summary.textContent).toBe("Suggested questions");
+    expect(host.querySelectorAll("[data-tutor-suggestion]")).toHaveLength(2);
+    mounted.dispose();
+  });
+
+  it("never exposes internal environment guidance in learner-facing errors", async () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+    const store = createAppSessionStore();
+    const mounted = mountPlatformTutorPanel(host, {
+      binding: {
+        moduleId: "ode",
+        promptProfile: "ode",
+        suggestedQuestions: [],
+        getContext: source,
+      },
+      sessionAccess: store.createTutorSessionAccess("ode"),
+      onClose: vi.fn(),
+      isCurrent: () => true,
+      sendMessage: async () => {
+        throw new Error(
+          "OPENAI_API_KEY missing; set AI_TUTOR_MOCK in .env.local without a VITE_ prefix"
+        );
+      },
+    });
+
+    await submit(host, "Can you explain this?");
+    const error = host.querySelector<HTMLElement>(".ai-error")!;
+    expect(error.textContent).toBe(
+      "AI Tutor is temporarily unavailable. Please try again later."
+    );
+    expect(host.textContent).not.toMatch(
+      /OPENAI_API_KEY|AI_TUTOR_MOCK|\.env\.local|VITE_/
+    );
     mounted.dispose();
   });
 

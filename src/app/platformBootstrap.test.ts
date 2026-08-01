@@ -219,8 +219,11 @@ describe("public platform bootstrap", () => {
       testLabModule({ mountedSessions })
     );
     await vi.waitFor(() =>
-      expect(document.activeElement).toBe(app.shell.outlet.querySelector("h1"))
+      expect(app.shell.outlet.querySelector("h1")?.textContent).toBe(
+        "Initial Value Problems Lab"
+      )
     );
+    expect(document.activeElement).not.toBe(app.shell.outlet.querySelector("h1"));
     await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
     app.shell.outlet.querySelector<HTMLButtonElement>("[data-test-lab-edit]")!.click();
     document.documentElement.scrollTop = 725;
