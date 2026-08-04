@@ -163,8 +163,8 @@ design specifications, implementation plans, reviews, and feature handoffs.
   initial-focus correction, workflow hierarchy, and transcript-led Tutor layout.
 - Finalized the learner-facing display brand as **Numerical T Lab** and retained
   the accepted solid crescent theme-toggle icon.
-- Full verification and browser review passed; the refinement is committed to
-  public `main` and ready for the synchronized Production release.
+- Full verification and Preview/Production browser review passed; canonical
+  Production serves the synchronized refinement.
 
 ### 2026-07-28 — Glossary framework Playground completed locally
 
