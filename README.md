@@ -6,13 +6,13 @@ Numerical T Lab is an interactive, AI-assisted laboratory for learning numerical
 
 **An Interactive Numerical Analysis Laboratory**
 
-The implemented module is the **Initial Value Problems Lab**, a browser-based teaching environment for scalar fixed-step ODE methods. It preserves the established **Method -> Data -> Output** workflow, numerical plots and tables, method comparison, exact-solution checks, Convergence Study, and grounded AI Method Tutor.
+The implemented module is the **Initial Value Problems Lab**, a browser-based teaching environment for scalar fixed-step ODE methods. It preserves the established **Method -> Data -> Output** workflow, numerical plots and tables, method comparison, exact-solution checks, Convergence Study, an interactive numerical Glossary, and a grounded AI Method Tutor.
 
-**Production address:** [numerical-t-lab.vercel.app](https://numerical-t-lab.vercel.app/)
+## Live Demo
 
-The former address,
-[numerical-ode-lab-wai.vercel.app](https://numerical-ode-lab-wai.vercel.app/),
-was retained and verified as an alias serving the same Production deployment.
+[**Open Numerical T Lab →**](https://numerical-t-lab.vercel.app/)
+
+The canonical Production URL is `https://numerical-t-lab.vercel.app/`.
 
 ## Routes and module status
 
@@ -41,11 +41,22 @@ The mathematical editor supports the controlled Version 1 expression language: a
 
 Convergence Study is available after a successful single-method first-order run with an exact solution. Compare and Leap-Frog do not offer Convergence Study, and Tutor is available for successful single-method output rather than Compare output.
 
+The interface defaults to a lower-glare Light theme and offers an optional,
+persisted Dark theme from the global header. Existing charts redraw with
+theme-aware colors without rerunning a solver. Ten reviewed Glossary Wave 1
+cards and ten explicit annotations are available only in the complete Initial
+Value Problems Lab, with desktop popovers and a contained mobile sheet. The
+`/ode` overview and all other routes remain unannotated, Compare output remains
+Glossary-plain, and no Glossary-to-Tutor handoff exists.
+
 ## Sessions, Resume, and New experiment
 
 Lab and Tutor sessions are held **in memory for the current tab only**. Internal navigation preserves the current Lab, Tutor conversation, meaningful-work metadata, Resume card, and approved scroll positions.
 
-There is no browser storage or account persistence. Refreshing, closing the tab, or closing the browser loses the session. Resume cards are current-tab navigation aids, not saved history.
+Experiment and Tutor sessions are not written to browser storage or an account.
+Refreshing, closing the tab, or closing the browser loses the session. Resume
+cards are current-tab navigation aids, not saved history. The only persistent
+browser preference is the selected Light or Dark theme.
 
 **New experiment** restores the authoritative Beginner Starter. It can clear the Tutor conversation or preserve it behind a typed divider, and it resets visible, per-Lab, and current-history-entry scroll state so the old experiment position cannot return.
 
@@ -131,13 +142,13 @@ Key locations:
 - Convergence Study is single-method, first-order, exact-solution-based, and synchronous.
 - MathLive and editable/Compute Engine chunks are intentionally deferred but substantial.
 - Numerical Linear Algebra is in development; Numerical PDE is planned.
-- The final semantic theme is not a theme switch or final fantasy brand treatment.
+- Theme selection supports Light and Dark only; there is no system/automatic third mode.
 
-The **Content-Agnostic Interactive Glossary Framework** is complete and locally
-accepted. **Numerical T-Lab Project Language Standard v1** is approved, while
-the reconciled catalog and copy plan remain non-runtime. Production still has
-no Glossary terms, definitions, annotations, ODE binding, or visible Glossary
-behavior. A **Linear Systems Lab** remains a later milestone.
+The **Content-Agnostic Interactive Glossary Framework** and reviewed ODE Wave 1
+integration are implemented. Runtime annotations remain explicit and
+scope-owned; the development Playground remains excluded from production.
+**Numerical T Lab Project Language Standard v1** is approved. A **Linear
+Systems Lab** remains a later milestone.
 
 ## Project documentation
 
@@ -146,14 +157,14 @@ design specifications, implementation plans, reviews, and feature handoffs.
 
 ## Changelog
 
-### 2026-08-01 — Frontend refinement finalized locally
+### 2026-08-01 — Frontend refinement
 
 - Audited the lower-glare Light theme, restored Dark theme, theme-aware charts,
   initial-focus correction, workflow hierarchy, and transcript-led Tutor layout.
 - Finalized the learner-facing display brand as **Numerical T Lab** and retained
   the accepted solid crescent theme-toggle icon.
-- Full verification and production browser review passed; nothing was pushed or
-  deployed.
+- Full verification and browser review passed; the refinement is committed to
+  public `main` and ready for the synchronized Production release.
 
 ### 2026-07-28 — Glossary framework Playground completed locally
 
