@@ -15,6 +15,33 @@
   box-sizing: border-box;
 }
 
+.linear-systems-shell .structured-math {
+  display: inline-block;
+  color: inherit;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.linear-systems-shell .structured-math sub,
+.linear-systems-shell .structured-math sup {
+  position: relative;
+  font-size: 0.72em;
+  line-height: 0;
+}
+
+.linear-systems-shell .structured-math sub {
+  bottom: -0.18em;
+}
+
+.linear-systems-shell .structured-math sup {
+  top: -0.34em;
+}
+
+.linear-systems-shell .structured-math-number[data-math-number="scientific"] {
+  white-space: nowrap;
+}
+
 .linear-systems-shell .sr-only {
   position: absolute !important;
   width: 1px !important;
@@ -264,15 +291,37 @@
 }
 
 .ls-equation-editor {
-  display: flex;
+  display: grid;
   max-width: 100%;
-  align-items: center;
   gap: var(--space-3);
-  overflow-x: auto;
+  overflow: hidden;
   padding: var(--space-4);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-surface-inset);
+}
+
+.ls-equation-formula {
+  width: fit-content;
+  color: var(--color-accent-theory);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.ls-equation-data {
+  display: flex;
+  min-width: 0;
+  max-width: 100%;
+  align-items: center;
+  gap: var(--space-3);
+  overflow-x: auto;
+}
+
+.ls-equation-term {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--space-2);
 }
 
 .ls-equation-label,
@@ -419,6 +468,12 @@
   font-weight: 700;
 }
 
+.ls-formula-line {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+}
+
 .ls-factorization-equation {
   font-size: clamp(1.2rem, 4vw, 1.75rem);
   letter-spacing: 0.06em;
@@ -464,6 +519,15 @@
   text-transform: uppercase;
 }
 
+.ls-evidence-table tr[data-pivot-selected="true"] > * {
+  background: var(--color-data-surface);
+  font-weight: 700;
+}
+
+.ls-evidence-table tr[data-pivot-selected="true"] > :first-child {
+  border-left: var(--space-1) solid var(--color-accent-primary);
+}
+
 .ls-reference-difference {
   margin: 0;
   color: var(--color-accent-theory);
@@ -489,6 +553,42 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-surface-raised);
+}
+
+.ls-substitution-chain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ls-substitution-chain li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.ls-substitution-chain li:not(:last-child)::after {
+  color: var(--color-text-secondary);
+  content: "→";
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-weight: 700;
+}
+
+.ls-table-formula-group {
+  margin: 0;
+}
+
+.ls-residual-chain {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin-block: var(--space-3);
+  color: var(--color-accent-theory);
+  font-weight: 700;
 }
 
 .ls-arithmetic-details {
@@ -602,7 +702,24 @@
   }
 
   .ls-equation-editor {
+    overflow: visible;
+  }
+
+  .ls-equation-data {
+    align-items: stretch;
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  .ls-equation-term {
+    width: 100%;
     align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .ls-equation-operator {
+    width: 100%;
+    text-align: center;
   }
 
   .ls-input-matrix input {
@@ -630,6 +747,61 @@
 
   .ls-computation-step {
     padding: var(--space-3);
+  }
+
+  .ls-evidence-table-stacked {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .ls-evidence-table-stacked thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .ls-evidence-table-stacked tbody {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .ls-evidence-table-stacked tr {
+    display: grid;
+    min-width: 0;
+    padding: var(--space-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-primary);
+  }
+
+  .ls-evidence-table-stacked th,
+  .ls-evidence-table-stacked td {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: minmax(7rem, 0.8fr) minmax(0, 1fr);
+    gap: var(--space-3);
+    padding: 0.45rem;
+    overflow-wrap: anywhere;
+  }
+
+  .ls-evidence-table-stacked th::before,
+  .ls-evidence-table-stacked td::before {
+    color: var(--color-text-secondary);
+    content: attr(data-label);
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .ls-evidence-table-stacked tr[data-pivot-selected="true"] > :first-child {
+    border-left: 0;
+    box-shadow: inset var(--space-1) 0 var(--color-accent-primary);
   }
 }
 

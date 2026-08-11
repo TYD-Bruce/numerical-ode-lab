@@ -46,9 +46,10 @@ describe("Linear Systems computation walkthrough", () => {
       expect(renderedKinds).toContain(kind);
     }
     expect(view.textContent).toContain("P A = L U");
-    expect(view.textContent).toContain("The presentation does not rerun the solver");
+    expect(view.textContent).toContain("Each step comes from the computation that produced this result");
     expect(view.textContent).not.toContain('"kind"');
     expect(view.textContent).not.toContain('"steps"');
+    expect(view.textContent).not.toMatch(/structured evidence|exact stored result|stored row evidence/i);
   });
 
   it("preserves pivot candidates, elimination, substitution, and residual order from trace", () => {
@@ -67,6 +68,11 @@ describe("Linear Systems computation walkthrough", () => {
     expect(pivotRows).toEqual(
       firstPivot.candidates.map((candidate) => String(candidate.row + 1))
     );
+    const selected = view.querySelector<HTMLElement>(
+      "[data-trace-kind='pivot_selection'] [data-pivot-selected='true']"
+    );
+    expect(selected?.textContent).toContain("Selected");
+    expect(selected?.getAttribute("aria-current")).toBe("true");
 
     const firstElimination = result.trace.steps.find(
       (step) => step.kind === "elimination"
@@ -192,6 +198,92 @@ describe("Linear Systems computation walkthrough", () => {
     expect(
       withoutCard.querySelector("[data-accumulated-known-term-sum]")
     ).toBeNull();
+  });
+
+  it("uses structured indices, named subscripts, powers, and single formula owners", () => {
+    const result = solvePreset("starter_3x3");
+    const view = createComputationWalkthrough(result.trace, { headingLevel: 3 });
+    document.body.append(view);
+
+    const matrixNorm = view.querySelector<HTMLElement>("[data-math='matrix-inf-norm']")!;
+    const residualNorm = view.querySelector<HTMLElement>("[data-math='residual-inf-norm']")!;
+    const tau = view.querySelector<HTMLElement>("[data-math='tau-pivot']")!;
+    const multiplier = view.querySelector<HTMLElement>("[data-math='multiplier']")!;
+    const matrixEntry = view.querySelector<HTMLElement>("[data-math='matrix-entry']")!;
+    const component = view.querySelector<HTMLElement>("[data-math='solution-component']")!;
+    const rowOperation = view.querySelector<HTMLElement>("[data-math='row-operation']")!;
+    const scientific = view.querySelector<HTMLElement>("[data-math-number='scientific']")!;
+
+    expect(matrixNorm.querySelector("sub")?.textContent).toBe("∞");
+    expect(residualNorm.querySelector("sub")?.textContent).toBe("∞");
+    expect(tau.querySelector("sub")?.textContent).toBe("pivot");
+    expect(multiplier.querySelector("sub")).not.toBeNull();
+    expect(matrixEntry.querySelector("sub")).not.toBeNull();
+    expect(component.querySelector("sub")).not.toBeNull();
+    expect(rowOperation.querySelectorAll("sub").length).toBeGreaterThan(1);
+    expect(scientific.querySelector("sup")).not.toBeNull();
+    for (const formula of view.querySelectorAll<HTMLElement>("[role='math']")) {
+      expect(formula.getAttribute("aria-label")).toBeTruthy();
+      expect(formula.querySelector(":scope > [aria-hidden='true']")).not.toBeNull();
+      expect(formula.querySelectorAll("[aria-label]")).toHaveLength(0);
+    }
+  });
+
+  it("uses approximation for rounded arithmetic and retains exact symbolic definitions", () => {
+    const result = solvePreset("starter_3x3");
+    const view = createComputationWalkthrough(result.trace, { headingLevel: 3 });
+    const elimination = view.querySelector<HTMLElement>("[data-trace-kind='elimination']")!;
+    const multiplier = elimination.querySelector<HTMLElement>("[data-math='multiplier']")!;
+    const roundedArithmetic = elimination.querySelector<HTMLElement>(
+      "details [data-rounded-arithmetic]"
+    )!;
+
+    expect(multiplier.textContent).toContain("=");
+    expect(roundedArithmetic.textContent).toContain("≈");
+    expect(roundedArithmetic.textContent).not.toMatch(/2\s*÷\s*3\s*=/);
+  });
+
+  it("starts every substitution chain from the stored right-hand side", () => {
+    const result = solvePreset("starter_3x3");
+    const view = createComputationWalkthrough(result.trace, { headingLevel: 3 });
+    const steps = result.trace.steps.filter(
+      (step): step is Extract<
+        (typeof result.trace.steps)[number],
+        { kind: "forward_substitution" | "backward_substitution" }
+      > => step.kind === "forward_substitution" || step.kind === "backward_substitution"
+    );
+    const cards = [...view.querySelectorAll<HTMLElement>(
+      "[data-trace-kind='forward_substitution'], [data-trace-kind='backward_substitution']"
+    )];
+
+    expect(cards).toHaveLength(steps.length);
+    cards.forEach((card, index) => {
+      const firstStage = card.querySelector<HTMLElement>("[data-substitution-stage='rhs']")!;
+      expect(firstStage).not.toBeNull();
+      expect(firstStage.textContent).toContain(
+        formatLinearSystemsNumber(steps[index]!.rightHandSideValue, "detail")
+      );
+      expect(card.querySelector("[data-substitution-stage='numerator']")).not.toBeNull();
+      expect(card.querySelector("[data-substitution-stage='diagonal']")).not.toBeNull();
+      expect(card.querySelector("[data-substitution-stage='result']")).not.toBeNull();
+    });
+  });
+
+  it("avoids baseline pseudo-notation and raw JavaScript exponent notation", () => {
+    const result = solvePreset("starter_3x3");
+    const view = createComputationWalkthrough(result.trace, { headingLevel: 3 });
+
+    const walker = document.createTreeWalker(view, NodeFilter.SHOW_TEXT);
+    const textNodes: string[] = [];
+    while (walker.nextNode()) textNodes.push(walker.currentNode.textContent ?? "");
+    const primaryText = textNodes.join("\n");
+    expect(primaryText).not.toMatch(/e-\d+/i);
+    expect(primaryText).not.toContain("τpivot");
+    expect(primaryText).not.toMatch(/m\(\d+,\s*\d+\)/);
+    expect(primaryText).not.toMatch(/(?:x̂|y|r)\d/);
+    expect(primaryText).not.toContain("‖r‖∞");
+    expect(primaryText).not.toContain("‖A‖∞");
+    expect(primaryText).not.toMatch(/[\\{}]|\^[-−]?\d/);
   });
 
   it("represents finite omission and unbounded continuation metadata without inventing a final step", () => {

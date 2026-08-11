@@ -30,8 +30,15 @@ import {
 import {
   createComputationWalkthrough,
   createNumericMatrixTable,
-  formatLinearSystemsNumber,
 } from "./computationWalkthrough";
+import {
+  createMathNumber,
+  createStructuredMath,
+  formatMathNumber,
+  subscript,
+  type MathNumberContext,
+  type StructuredMathContent,
+} from "../../math/structuredMath";
 import "./linearSystems.css";
 
 const METHOD_LABEL = "Gaussian elimination with partial pivoting";
@@ -77,12 +84,50 @@ function button(
   return control;
 }
 
-function createMetric(label: string, value: number): HTMLElement {
-  const metric = el("div", undefined, "ls-metric");
-  metric.append(
-    el("dt", label),
-    el("dd", formatLinearSystemsNumber(value))
+type Content = string | Node;
+
+function appendContent(target: Node, content: Content): void {
+  target.appendChild(
+    typeof content === "string" ? document.createTextNode(content) : content
   );
+}
+
+function paragraph(contents: readonly Content[], className?: string): HTMLParagraphElement {
+  const node = el("p", undefined, className);
+  contents.forEach((content) => appendContent(node, content));
+  return node;
+}
+
+function math(
+  content: StructuredMathContent,
+  accessibleText: string,
+  dataMath: string,
+  className = "ls-inline-math"
+): HTMLElement {
+  return createStructuredMath(content, accessibleText, { className, dataMath });
+}
+
+function number(value: number, context: MathNumberContext): HTMLElement {
+  return createMathNumber(value, context);
+}
+
+function numberCell(value: number, context: MathNumberContext): HTMLTableCellElement {
+  const cell = el("td");
+  cell.append(number(value, context));
+  return cell;
+}
+
+function createMetric(
+  label: Content,
+  value: number,
+  context: MathNumberContext
+): HTMLElement {
+  const metric = el("div", undefined, "ls-metric");
+  const term = el("dt");
+  appendContent(term, label);
+  const description = el("dd");
+  description.append(number(value, context));
+  metric.append(term, description);
   return metric;
 }
 
@@ -111,7 +156,7 @@ function createPivotTable(result: LinearSystemSolveSuccess): HTMLElement {
     row.append(
       column,
       el("td", String(pivot.selectedRow + 1)),
-      el("td", formatLinearSystemsNumber(pivot.pivotValue))
+      numberCell(pivot.pivotValue, "ordinary")
     );
     body.append(row);
   });
@@ -254,12 +299,30 @@ export function mountLinearSystemsApp(
     const heading = el("h2", METHOD_LABEL);
     heading.tabIndex = -1;
     const sequence = el("ol", undefined, "ls-method-sequence");
-    [
-      "Choose the largest available absolute pivot magnitude in the active column.",
-      "Exchange rows when needed, then eliminate entries below the pivot.",
-      "Record the factors in the public relation P A = L U.",
-      "Solve L y = P b and U x̂ = y with triangular substitution.",
-    ].forEach((text) => sequence.append(el("li", text)));
+    sequence.append(
+      el("li", "Choose the largest available absolute pivot magnitude in the active column."),
+      el("li", "Use a row swap when needed, then eliminate entries below the pivot."),
+      (() => {
+        const item = el("li");
+        item.append(
+          document.createTextNode("Record the factors in the public relation "),
+          math("P A = L U", "P times A equals L times U", "factorization-relation"),
+          document.createTextNode(".")
+        );
+        return item;
+      })(),
+      (() => {
+        const item = el("li");
+        item.append(
+          document.createTextNode("Solve "),
+          math("L y = P b", "L times y equals P times b", "forward-substitution-relation"),
+          document.createTextNode(" and "),
+          math("U x̂ = y", "U times x hat equals y", "backward-substitution-relation"),
+          document.createTextNode(" with triangular substitution.")
+        );
+        return item;
+      })()
+    );
     const boundary = el("aside", undefined, "ls-teaching-note");
     boundary.append(
       el("strong", "Why pivoting matters"),
@@ -354,12 +417,18 @@ export function mountLinearSystemsApp(
 
   function createEditableMatrix(): HTMLElement {
     const layout = el("div", undefined, "ls-equation-editor");
+    layout.dataset.equationEditor = "true";
+    layout.append(
+      math("A x = b", "A times x equals b", "system-equation", "ls-equation-formula")
+    );
+    const equationData = el("div", undefined, "ls-equation-data");
+    equationData.dataset.equationData = "true";
     const matrixRegion = el("div", undefined, "ls-matrix-region ls-editor-region");
     matrixRegion.setAttribute("role", "region");
-    matrixRegion.setAttribute("aria-label", "Editable matrix A");
+    matrixRegion.setAttribute("aria-label", "Editable matrix A input grid");
     matrixRegion.tabIndex = 0;
     const table = el("table", undefined, "ls-input-matrix");
-    table.append(el("caption", "Matrix A", "sr-only"));
+    table.append(el("caption", "Matrix A entries", "sr-only"));
     const body = document.createElement("tbody");
     for (let row = 0; row < session.dimension; row += 1) {
       const tr = document.createElement("tr");
@@ -385,14 +454,14 @@ export function mountLinearSystemsApp(
     table.append(body);
     matrixRegion.append(table);
 
-    const equals = el("span", "=", "ls-equation-symbol");
+    const equals = el("span", "=", "ls-equation-symbol ls-equation-operator");
     equals.setAttribute("aria-hidden", "true");
     const vectorRegion = el("div", undefined, "ls-matrix-region ls-editor-region");
     vectorRegion.setAttribute("role", "region");
-    vectorRegion.setAttribute("aria-label", "Editable vector b");
+    vectorRegion.setAttribute("aria-label", "Editable right-hand-side vector b input grid");
     vectorRegion.tabIndex = 0;
     const vector = el("table", undefined, "ls-input-matrix");
-    vector.append(el("caption", "Vector b", "sr-only"));
+    vector.append(el("caption", "Right-hand-side vector b entries", "sr-only"));
     const vectorBody = document.createElement("tbody");
     for (let row = 0; row < session.dimension; row += 1) {
       const tr = document.createElement("tr");
@@ -411,14 +480,20 @@ export function mountLinearSystemsApp(
     }
     vector.append(vectorBody);
     vectorRegion.append(vector);
-    layout.append(
-      el("span", "A", "ls-equation-label"),
-      matrixRegion,
-      el("span", "x", "ls-equation-label"),
-      equals,
-      el("span", "b", "ls-equation-label"),
-      vectorRegion
-    );
+    const matrixTerm = el("div", undefined, "ls-equation-term");
+    matrixTerm.dataset.equationTerm = "A";
+    const matrixLabel = el("span", "A", "ls-equation-label");
+    matrixLabel.setAttribute("aria-hidden", "true");
+    matrixTerm.append(matrixLabel, matrixRegion);
+    const x = el("span", "x", "ls-equation-label ls-equation-operator");
+    x.setAttribute("aria-hidden", "true");
+    const vectorTerm = el("div", undefined, "ls-equation-term");
+    vectorTerm.dataset.equationTerm = "b";
+    const vectorLabel = el("span", "b", "ls-equation-label");
+    vectorLabel.setAttribute("aria-hidden", "true");
+    vectorTerm.append(vectorLabel, vectorRegion);
+    equationData.append(matrixTerm, x, equals, vectorTerm);
+    layout.append(equationData);
     return layout;
   }
 
@@ -431,6 +506,19 @@ export function mountLinearSystemsApp(
         ? `Preset identity: ${LINEAR_SYSTEMS_PRESETS.find((preset) => preset.id === session.selectedPresetId)?.name ?? "Approved preset"}. Reference authority is available after a successful run.`
         : "Preset identity: Custom. No preset reference solution is authoritative.";
     }
+  }
+
+  function experimentIdentityText(): string {
+    const identity = session.selectedPresetId
+      ? `${LINEAR_SYSTEMS_PRESETS.find((preset) => preset.id === session.selectedPresetId)?.name ?? "Approved preset"} · ${session.dimension} × ${session.dimension}`
+      : `Custom · ${session.dimension} × ${session.dimension}`;
+    if (session.resultStatus === "absent") return identity;
+    return `${identity}${session.resultStatus === "current" ? " · result current" : " · result stale"}`;
+  }
+
+  function updateExperimentIdentity(): void {
+    const identity = app.querySelector<HTMLElement>("[data-experiment-identity]");
+    if (identity) identity.textContent = experimentIdentityText();
   }
 
   function createFailurePanel(
@@ -447,10 +535,21 @@ export function mountLinearSystemsApp(
         .find((step) => step.kind === "pivot_selection");
       if (rejected?.kind === "pivot_selection") {
         panel.append(
-          el(
-            "p",
-            `Computation stopped in pivot column ${rejected.column + 1}: selected magnitude ${formatLinearSystemsNumber(rejected.selectedAbsoluteMagnitude)}, threshold ${formatLinearSystemsNumber(rejected.tauPivot)}.`
-          )
+          paragraph([
+            `Computation stopped in pivot column ${rejected.column + 1}: selected magnitude `,
+            number(rejected.selectedAbsoluteMagnitude, "detail"),
+            ", ",
+            math(
+              [
+                subscript("τ", "pivot"),
+                " ≈ ",
+                ...formatMathNumber(rejected.tauPivot, "threshold").parts,
+              ],
+              `tau pivot, the pivot acceptance threshold, is approximately ${formatMathNumber(rejected.tauPivot, "threshold").accessibleText}`,
+              "tau-pivot"
+            ),
+            ".",
+          ])
         );
       }
       const controlledId = `ls-failure-computation-${instanceId}`;
@@ -603,6 +702,7 @@ export function mountLinearSystemsApp(
       session = replaceLinearSystemsDraft(session, currentDraftFromForm(form));
       markMeaningful();
       updateDataIdentity(form);
+      updateExperimentIdentity();
       publish();
       if (session.resultStatus !== previousStatus) {
         announce(
@@ -645,9 +745,12 @@ export function mountLinearSystemsApp(
       el("p", "Main answer", "ls-eyebrow"),
       heading
     );
+    const solutionLabel = math("x̂ =", "x hat equals", "computed-solution-label");
     const solution = createNumericMatrixTable(
       "Computed solution x hat",
-      result.xHat.map((value) => [value])
+      result.xHat.map((value) => [value]),
+      solutionLabel,
+      "solution"
     );
     solution.classList.add("ls-solution-vector");
     header.append(solution);
@@ -674,7 +777,24 @@ export function mountLinearSystemsApp(
     relation.setAttribute("aria-labelledby", `ls-factorization-title-${instanceId}`);
     const title = el("h3", "Factorization evidence");
     title.id = `ls-factorization-title-${instanceId}`;
-    relation.append(title, el("p", "P A = L U", "ls-factorization-equation"));
+    relation.append(
+      title,
+      math(
+        "P A = L U",
+        "P times A equals L times U",
+        "factorization-relation",
+        "ls-factorization-equation"
+      ),
+      paragraph([
+        "The matrices below display rounded entries, so their numerical comparison is ",
+        math(
+          "P A ≈ L U",
+          "P times A is approximately equal to L times U",
+          "rounded-factorization"
+        ),
+        ".",
+      ], "ls-muted")
+    );
     const factors = el("div", undefined, "ls-factor-grid");
     factors.append(
       createNumericMatrixTable("Permutation matrix P", result.P, "P"),
@@ -694,9 +814,7 @@ export function mountLinearSystemsApp(
       const reference = el("p", undefined, "ls-reference-difference");
       reference.append(
         el("strong", "Difference from preset reference solution: "),
-        document.createTextNode(
-          formatLinearSystemsNumber(result.referenceDifferenceInf)
-        )
+        number(result.referenceDifferenceInf, "diagnostic")
       );
       summary.append(reference);
     }
@@ -720,7 +838,7 @@ export function mountLinearSystemsApp(
       toggle,
       el(
         "p",
-        "Open the numerical evidence that produced this exact stored result.",
+        "Open the computation steps that produced this result.",
         "ls-muted"
       )
     );
@@ -767,7 +885,18 @@ export function mountLinearSystemsApp(
         "p",
         "The residual measures how closely the computed solution satisfies the original equations."
       ),
-      el("p", "r = b − A x̂", "ls-factorization-equation")
+      math(
+        "r = b − A x̂",
+        "r equals b minus A times x hat",
+        "residual-relation",
+        "ls-factorization-equation"
+      ),
+      math(
+        ["A x̂ → b − A x̂ → r → ", subscript("‖r‖", "∞")],
+        "A times x hat, then b minus A times x hat, then residual r, then the infinity norm of r",
+        "residual-chain",
+        "ls-residual-chain"
+      )
     );
     const diagnostics = el("div", undefined, "ls-diagnostics-layout");
     const residual = el("section", undefined, "ls-diagnostic-card");
@@ -775,16 +904,34 @@ export function mountLinearSystemsApp(
       el("h3", "Residual vector"),
       createNumericMatrixTable(
         "Residual vector r",
-        result.residual.map((value) => [value])
+        result.residual.map((value) => [value]),
+        math("r =", "residual vector r equals", "residual-vector-label"),
+        "diagnostic"
       )
     );
     const metrics = el("section", undefined, "ls-diagnostic-card");
     metrics.append(el("h3", "Scale and threshold"));
     const list = el("dl", undefined, "ls-metric-grid");
     list.append(
-      createMetric("Residual infinity norm ‖r‖∞", result.residualInfNorm),
-      createMetric("Matrix infinity norm ‖A‖∞", result.matrixInfNorm),
-      createMetric("Pivot acceptance threshold τpivot", result.tauPivot)
+      createMetric(
+        math(subscript("‖r‖", "∞"), "the infinity norm of r", "residual-inf-norm"),
+        result.residualInfNorm,
+        "diagnostic"
+      ),
+      createMetric(
+        math(subscript("‖A‖", "∞"), "the infinity norm of A", "matrix-inf-norm"),
+        result.matrixInfNorm,
+        "ordinary"
+      ),
+      createMetric(
+        math(
+          subscript("τ", "pivot"),
+          "tau pivot, the pivot acceptance threshold",
+          "tau-pivot"
+        ),
+        result.tauPivot,
+        "threshold"
+      )
     );
     metrics.append(list);
     diagnostics.append(residual, metrics);
@@ -947,24 +1094,20 @@ export function mountLinearSystemsApp(
     header.append(
       breadcrumb,
       titleRow,
-      el(
-        "p",
-        "Solve A x = b, inspect how partial pivoting builds P A = L U, and check the computed solution against the original equations.",
+      paragraph(
+        [
+          "Solve ",
+          math("A x = b", "A times x equals b", "system-equation"),
+          ", inspect how partial pivoting builds ",
+          math("P A = L U", "P times A equals L times U", "factorization-relation"),
+          ", and check the computed solution against the original equations.",
+        ],
         "ls-lede"
       )
     );
     const identity = el("p", undefined, "ls-experiment-identity");
     identity.dataset.experimentIdentity = "true";
-    identity.textContent = session.selectedPresetId
-      ? `${LINEAR_SYSTEMS_PRESETS.find((preset) => preset.id === session.selectedPresetId)?.name ?? "Approved preset"} · ${session.dimension} × ${session.dimension}`
-      : `Custom · ${session.dimension} × ${session.dimension}`;
-    if (session.resultStatus !== "absent") {
-      identity.append(
-        document.createTextNode(
-          session.resultStatus === "current" ? " · result current" : " · result stale"
-        )
-      );
-    }
+    identity.textContent = experimentIdentityText();
     header.append(identity);
     root.append(header, createWorkflowRail());
     if (session.step === "method") root.append(createMethodPanel());

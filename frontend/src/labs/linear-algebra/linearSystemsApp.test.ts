@@ -78,6 +78,14 @@ describe("Linear Systems Lab application", () => {
         (option) => option.textContent
       )
     ).toEqual(["Starter 3×3", "Row swap required", "Custom"]);
+    const equation = target.querySelector<HTMLElement>(
+      "[data-equation-editor] [data-math='system-equation']"
+    )!;
+    expect(equation.getAttribute("role")).toBe("math");
+    expect(equation.getAttribute("aria-label")).toBe("A times x equals b");
+    expect(equation.querySelector(":scope > [aria-hidden='true']")?.textContent).toBe("A x = b");
+    expect(target.querySelector("[data-equation-data] [data-equation-term='A']")).not.toBeNull();
+    expect(target.querySelector("[data-equation-data] [data-equation-term='b']")).not.toBeNull();
     expect(mounted.getSession()).toMatchObject({
       step: "data",
       dimension: 3,
@@ -172,6 +180,7 @@ describe("Linear Systems Lab application", () => {
     expect(target.querySelector("[aria-label='Computed solution x hat']")?.textContent).toContain(
       "-1"
     );
+    expect(target.querySelector("[data-math='computed-solution-label'] sub")).toBeNull();
     for (const label of [
       "Permutation matrix P",
       "Unit lower triangular matrix L",
@@ -186,6 +195,19 @@ describe("Linear Systems Lab application", () => {
     expect(target.querySelector("[data-computation-walkthrough]")).not.toBeNull();
     expect(target.textContent).toContain("Matrix scale and pivot threshold");
     expect(target.querySelector("details > summary")?.textContent).toBe("Show arithmetic");
+    const walkthroughTau = target.querySelector<HTMLElement>(
+      "[data-trace-kind='matrix_scale'] [data-math='tau-pivot'][data-display-value]"
+    )?.dataset.displayValue;
+    const walkthroughResidual = target.querySelector<HTMLElement>(
+      "[data-trace-kind='residual_inf_norm'] [data-math='residual-inf-norm'][data-display-value]"
+    )?.dataset.displayValue;
+    const outputSolution = target.querySelector<HTMLElement>(
+      "[aria-label='Computed solution x hat'] [data-math-number-context='solution']"
+    )?.textContent;
+    const walkthroughSolution = [...target.querySelectorAll<HTMLElement>(
+      "[data-trace-kind='backward_substitution'] [data-substitution-stage='result']"
+    )].at(-1)?.querySelector<HTMLElement>("[data-display-value-context='solution']")?.dataset.displayValue;
+    expect(walkthroughSolution).toBe(outputSolution);
     expect(mounted.getSession().latestSuccessfulResult).toBe(result);
     target.querySelector<HTMLButtonElement>("[data-show-computation]")!.click();
     target.querySelector<HTMLButtonElement>("[data-show-computation]")!.click();
@@ -193,15 +215,36 @@ describe("Linear Systems Lab application", () => {
 
     target.querySelector<HTMLButtonElement>("[data-workflow-step='diagnostics']")!.click();
     expect(target.textContent).toContain("Residual vector");
-    expect(target.textContent).toContain("Residual infinity norm");
-    expect(target.textContent).toContain("Matrix infinity norm");
-    expect(target.textContent).toContain("Pivot acceptance threshold");
+    expect(
+      target.querySelector("[data-math='residual-inf-norm']")?.getAttribute("aria-label")
+    ).toBe("the infinity norm of r");
+    expect(
+      target.querySelector("[data-math='matrix-inf-norm']")?.getAttribute("aria-label")
+    ).toBe("the infinity norm of A");
+    expect(
+      target.querySelector("[data-math='tau-pivot']")?.getAttribute("aria-label")
+    ).toContain("pivot acceptance threshold");
     expect(target.textContent).toContain(
       "The residual measures how closely the computed solution satisfies the original equations."
     );
     expect(target.textContent).toContain(
       "A small residual does not necessarily mean a small solution error."
     );
+    expect(target.querySelector("[data-math='residual-chain'] sub")?.textContent).toBe("∞");
+    expect(target.querySelector("[data-math='residual-inf-norm'] sub")?.textContent).toBe("∞");
+    expect(target.querySelector("[data-math='matrix-inf-norm'] sub")?.textContent).toBe("∞");
+    expect(target.querySelector("[data-math='tau-pivot'] sub")?.textContent).toBe("pivot");
+    expect(target.textContent).not.toMatch(/e-\d+/i);
+    expect(
+      target.querySelector<HTMLElement>(
+        ".ls-metric:has([data-math='tau-pivot']) [data-math-number-context='threshold']"
+      )?.textContent
+    ).toBe(walkthroughTau);
+    expect(
+      target.querySelector<HTMLElement>(
+        ".ls-metric:has([data-math='residual-inf-norm']) [data-math-number-context='diagnostic']"
+      )?.textContent
+    ).toBe(walkthroughResidual);
     expect(recordMeaningfulInteraction).toHaveBeenCalled();
     expect(updateSession).toHaveBeenCalled();
     mounted.dispose();
@@ -216,6 +259,9 @@ describe("Linear Systems Lab application", () => {
     input(target, "[data-vector-b-row='0']", "7");
     expect(mounted.getSession()).toMatchObject({ resultStatus: "stale" });
     expect(mounted.getSession().latestSuccessfulResult).toBe(result);
+    expect(target.querySelector("[data-experiment-identity]")?.textContent).toContain(
+      "Custom · 3 × 3 · result stale"
+    );
     target.querySelector<HTMLButtonElement>("[data-workflow-step='output']")!.click();
     expect(target.querySelector("[data-result-stale]")).not.toBeNull();
 
@@ -223,6 +269,9 @@ describe("Linear Systems Lab application", () => {
     input(target, "[data-vector-b-row='0']", "6.0");
     expect(mounted.getSession()).toMatchObject({ resultStatus: "current" });
     expect(mounted.getSession().latestSuccessfulResult).toBe(result);
+    expect(target.querySelector("[data-experiment-identity]")?.textContent).toContain(
+      "Starter 3×3 · 3 × 3 · result current"
+    );
     target.querySelector<HTMLButtonElement>("[data-workflow-step='output']")!.click();
     expect(target.querySelector("[data-result-stale]")).toBeNull();
     mounted.dispose();

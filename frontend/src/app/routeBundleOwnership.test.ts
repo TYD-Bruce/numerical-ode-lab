@@ -92,6 +92,12 @@ describe("public route bundle ownership", () => {
     expect(walkthrough).not.toMatch(
       /solveLinearSystem|runLinearSystemsSession|Gaussian elimination\s*\(/
     );
+    const graph = eagerGraph("labs/linear-algebra/linearSystemsRoute.ts");
+    expect(graph.has("math/structuredMath.ts")).toBe(true);
+    expect([...graph].some((path) => path.startsWith("math/ui/"))).toBe(false);
+    expect(source("math/structuredMath.ts")).not.toMatch(
+      /mathlive|compute-engine|readonlyMath|innerHTML/i
+    );
   });
 
   it("keeps static pages, shell, Host, and ODE route outside complete Tutor runtime", () => {
