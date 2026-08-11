@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import type {
   ConvergenceLevelResult,
   ConvergenceStudyResult,
-} from "./convergenceStudy";
+} from "@numerical-t-lab/numerics/convergence";
 import {
   buildConvergenceConclusion,
   buildConvergenceTeachingSections,

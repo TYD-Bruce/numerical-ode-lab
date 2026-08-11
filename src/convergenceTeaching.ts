@@ -3,7 +3,7 @@ import type {
   ConvergenceMetric,
   ConvergenceStudyResult,
   ObservedOrderAssessment,
-} from "./convergenceStudy";
+} from "@numerical-t-lab/numerics/convergence";
 
 export type TeachingSectionId =
   | "what_testing"

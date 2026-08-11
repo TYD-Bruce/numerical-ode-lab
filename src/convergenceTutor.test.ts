@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { ObservedOrderStatus, ConvergenceStudyResult } from "./convergenceStudy";
+import type { ObservedOrderStatus, ConvergenceStudyResult } from "@numerical-t-lab/numerics/convergence";
 import {
   createConvergenceUiState,
   createSuccessfulFirstOrderRunSnapshot,
@@ -13,8 +13,8 @@ import {
   type ConvergenceUiState,
 } from "./convergenceStudyState";
 import { getTutorConvergenceStudy } from "./convergenceTutor";
-import { ConvergenceStudyFailure } from "./convergenceStudy";
-import { createMathExpressionFromLegacy } from "./math/legacyAdapter";
+import { ConvergenceStudyFailure } from "@numerical-t-lab/numerics/convergence";
+import { createMathExpressionFromLegacy } from "@numerical-t-lab/numerics/expressions/legacy-adapter";
 
 function state(): ConvergenceUiState {
   return createConvergenceUiState(

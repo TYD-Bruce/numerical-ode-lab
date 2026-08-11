@@ -8,11 +8,11 @@ import {
   type ConvergenceStudyResult,
   type ConvergenceStudyFailureCode,
   type FirstOrderMethodFamily,
-} from "./convergenceStudy";
-import type { ExactSolutionCheckResult } from "./exactSolution";
-import type { MathExpression } from "./math/expression";
+} from "@numerical-t-lab/numerics/convergence";
+import type { ExactSolutionCheckResult } from "@numerical-t-lab/numerics/ode/exact-solution";
+import type { MathExpression } from "@numerical-t-lab/numerics/expressions/expression";
 import { cloneMathExpression } from "./math/problemExpressions";
-import type { SolverMetadata } from "./solvers";
+import type { SolverMetadata } from "@numerical-t-lab/numerics/ode/solvers";
 import type { TeachingSectionId } from "./convergenceTeaching";
 
 export const TEACHING_SECTION_IDS: readonly TeachingSectionId[] = [

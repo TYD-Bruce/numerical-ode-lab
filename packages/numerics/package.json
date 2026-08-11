@@ -2,5 +2,27 @@
   "name": "@numerical-t-lab/numerics",
   "private": true,
   "version": "0.1.0",
-  "type": "module"
+  "type": "module",
+  "exports": {
+    "./convergence": "./src/convergence/convergenceStudy.ts",
+    "./expressions/ast": "./src/expressions/ast.ts",
+    "./expressions/canonical": "./src/expressions/canonical.ts",
+    "./expressions/errors": "./src/expressions/errors.ts",
+    "./expressions/evaluator": "./src/expressions/evaluator.ts",
+    "./expressions/expression": "./src/expressions/expression.ts",
+    "./expressions/legacy-adapter": "./src/expressions/legacyAdapter.ts",
+    "./expressions/projection": "./src/expressions/projection.ts",
+    "./expressions/validation": "./src/expressions/validation.ts",
+    "./linear-algebra/linear-systems-numerics": "./src/linear-algebra/linearSystemsNumerics.ts",
+    "./linear-algebra/linear-systems-presets": "./src/linear-algebra/linearSystemsPresets.ts",
+    "./ode/exact-solution": "./src/ode/exactSolution.ts",
+    "./ode/grid": "./src/ode/grid.ts",
+    "./ode/method-catalog": "./src/ode/methodCatalog.ts",
+    "./ode/polynomial": "./src/ode/polynomial.ts",
+    "./ode/solvers": "./src/ode/solvers.ts",
+    "./trace/computation-trace": "./src/trace/computationTrace.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  }
 }

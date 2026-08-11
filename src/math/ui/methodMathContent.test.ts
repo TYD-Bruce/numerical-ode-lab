@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { METHOD_CATALOG } from "../../methodCatalog";
+import { METHOD_CATALOG } from "@numerical-t-lab/numerics/ode/method-catalog";
 import { methodMathContent } from "./methodMathContent";
 
 describe("methodMathContent", () => {

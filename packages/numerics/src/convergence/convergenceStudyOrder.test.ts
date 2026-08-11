@@ -1,7 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
-import { createMathExpressionFromLegacy } from "./math/legacyAdapter";
-import type { FirstOrderParams, MethodConfig, SolverMetadata, SolverResult } from "./solvers";
-import { checkExactSolution } from "./exactSolution";
+import { createMathExpressionFromLegacy } from "../expressions/legacyAdapter";
+import type {
+  FirstOrderParams,
+  MethodConfig,
+  SolverMetadata,
+  SolverResult,
+} from "../ode/solvers";
+import { checkExactSolution } from "../ode/exactSolution";
 import {
   assessObservedOrder,
   attachObservedOrders,

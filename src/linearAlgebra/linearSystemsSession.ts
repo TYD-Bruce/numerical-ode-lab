@@ -2,13 +2,13 @@ import {
   solveLinearSystem,
   type LinearSystemSolveError,
   type LinearSystemSolveSuccess,
-} from "./linearSystemsNumerics";
+} from "@numerical-t-lab/numerics/linear-algebra/linear-systems-numerics";
 import {
   createLinearSystemsInputFingerprint,
   linearSystemsPresetById,
   matchLinearSystemsPreset,
   type LinearSystemsPresetId,
-} from "./linearSystemsPresets";
+} from "@numerical-t-lab/numerics/linear-algebra/linear-systems-presets";
 
 export interface LinearSystemsDraft {
   readonly dimension: number;

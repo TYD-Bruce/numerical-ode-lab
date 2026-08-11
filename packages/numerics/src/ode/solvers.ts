@@ -15,7 +15,6 @@ import {
   type ScalarNonlinearProblem,
 } from "./nonlinearSolver";
 import { catalogByFamily, displayNameFor } from "./methodCatalog";
-import { runCoefficientValidation, runSanityCheck } from "./coefficientValidation";
 
 export type MethodFamily =
   | "forward_euler"
@@ -744,6 +743,3 @@ export function integrateFirstOrderPoints(
 ): SeriesPoint[] {
   return integrateFirstOrder(config, p).points;
 }
-
-runCoefficientValidation();
-runSanityCheck();

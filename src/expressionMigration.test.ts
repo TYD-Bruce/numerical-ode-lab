@@ -8,7 +8,7 @@ function source(path: string): string {
 describe("production expression migration boundary", () => {
   const main = source("./main.ts");
   const odeApp = source("./ode/odeApp.ts");
-  const solvers = source("./solvers.ts");
+  const solvers = source("../packages/numerics/src/ode/solvers.ts");
   const productionExpression = source("./math/problemExpressions.ts");
   const convergenceView = source("./convergenceStudyView.ts");
 

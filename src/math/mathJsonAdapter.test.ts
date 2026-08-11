@@ -12,9 +12,9 @@ import {
   variableNode,
   type MathAst,
   type MathVariableProfile,
-} from "./ast";
-import { canonicalizeMathAst, serializeMathAst } from "./canonical";
-import { MathExpressionError } from "./errors";
+} from "@numerical-t-lab/numerics/expressions/ast";
+import { canonicalizeMathAst, serializeMathAst } from "@numerical-t-lab/numerics/expressions/canonical";
+import { MathExpressionError } from "@numerical-t-lab/numerics/expressions/errors";
 import {
   convertRawMathJson,
   createMathExpressionFromLatex,

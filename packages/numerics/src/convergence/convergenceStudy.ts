@@ -1,16 +1,22 @@
-import { MAX_FIXED_STEPS, validateFixedStepGrid } from "./grid";
-import { serializeMathAst } from "./math/canonical";
-import type { ExactSolutionEvaluator } from "./math/evaluator";
-import { compileMathExpression, type MathExpression } from "./math/expression";
+import { MAX_FIXED_STEPS, validateFixedStepGrid } from "../ode/grid";
+import { serializeMathAst } from "../expressions/canonical";
+import type { ExactSolutionEvaluator } from "../expressions/evaluator";
+import {
+  compileMathExpression,
+  type MathExpression,
+} from "../expressions/expression";
 import type {
   MethodFamily,
   SeriesPoint,
   SolverMetadata,
   SolverResult,
   integrateFirstOrder,
-} from "./solvers";
-import { integrateFirstOrder as defaultIntegrateFirstOrder } from "./solvers";
-import { checkExactSolution, type ExactSolutionCheckResult } from "./exactSolution";
+} from "../ode/solvers";
+import { integrateFirstOrder as defaultIntegrateFirstOrder } from "../ode/solvers";
+import {
+  checkExactSolution,
+  type ExactSolutionCheckResult,
+} from "../ode/exactSolution";
 
 export const MAX_CONVERGENCE_STUDY_STEPS = 250_000;
 export const RUN_FINGERPRINT_VERSION = "ode-run-v1" as const;

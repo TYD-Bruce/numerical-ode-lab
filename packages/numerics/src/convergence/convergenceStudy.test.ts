@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
-import { createMathExpression } from "./math/expression";
-import { createMathExpressionFromLegacy } from "./math/legacyAdapter";
-import type { SolverMetadata, SolverResult } from "./solvers";
+import { createMathExpression } from "../expressions/expression";
+import { createMathExpressionFromLegacy } from "../expressions/legacyAdapter";
+import type { SolverMetadata, SolverResult } from "../ode/solvers";
 import {
   MAX_CONVERGENCE_STUDY_STEPS,
   buildConvergencePreview,
@@ -16,7 +16,7 @@ import {
   type ConvergencePreviewInput,
   type SuccessfulFirstOrderRunFingerprintInput,
 } from "./convergenceStudy";
-import { checkExactSolution } from "./exactSolution";
+import { checkExactSolution } from "../ode/exactSolution";
 
 function metadata(
   family: SolverMetadata["family"] = "rk4",
@@ -365,7 +365,7 @@ describe("consistency permission and pure convergence scope", () => {
   });
 
   it("keeps the convergence modules pure and free of Phase D UI or Tutor integration", () => {
-    const source = ["./exactSolution.ts", "./convergenceStudy.ts"]
+    const source = ["../ode/exactSolution.ts", "./convergenceStudy.ts"]
       .map((path) => readFileSync(new URL(path, import.meta.url), "utf8"))
       .join("\n");
     expect(source).toContain(

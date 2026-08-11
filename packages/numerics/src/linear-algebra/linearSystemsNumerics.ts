@@ -8,7 +8,7 @@ import {
 import {
   createComputationTrace,
   type ComputationTrace,
-} from "../numerics/computationTrace";
+} from "../trace/computationTrace";
 
 export type { LinearSystemsMatrix, LinearSystemsVector };
 

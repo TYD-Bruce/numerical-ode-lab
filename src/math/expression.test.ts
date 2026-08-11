@@ -7,18 +7,18 @@ import {
   negateNode,
   numberNode,
   variableNode,
-} from "./ast";
-import { serializeMathAst } from "./canonical";
-import { MathExpressionError } from "./errors";
+} from "@numerical-t-lab/numerics/expressions/ast";
+import { serializeMathAst } from "@numerical-t-lab/numerics/expressions/canonical";
+import { MathExpressionError } from "@numerical-t-lab/numerics/expressions/errors";
 import {
   compileMathExpression,
   createMathExpression,
   type MathExpression,
-} from "./expression";
+} from "@numerical-t-lab/numerics/expressions/expression";
 import {
   createMathExpressionFromLegacy,
   parseLegacyExpression,
-} from "./legacyAdapter";
+} from "@numerical-t-lab/numerics/expressions/legacy-adapter";
 import {
   convertRawMathJson,
   createMathExpressionFromRawMathJson,

@@ -3,7 +3,7 @@ import {
   adamsMoultonCoefficients,
   approxEqualArrays,
   bdfCoefficients,
-} from "./polynomial";
+} from "@numerical-t-lab/numerics/ode/polynomial";
 
 export function runCoefficientValidation(): void {
   const checks: { name: string; ok: boolean }[] = [];

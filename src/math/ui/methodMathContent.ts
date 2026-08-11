@@ -1,4 +1,4 @@
-import type { MethodCatalogEntry } from "../../methodCatalog";
+import type { MethodCatalogEntry } from "@numerical-t-lab/numerics/ode/method-catalog";
 import type { ReadonlyMathContent } from "./readonlyMath";
 
 export interface MethodMathContent {

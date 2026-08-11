@@ -1,4 +1,4 @@
-import type { SeriesPoint, SolverResult } from "./solvers";
+import type { SeriesPoint, SolverResult } from "@numerical-t-lab/numerics/ode/solvers";
 import type {
   ChartInstruction,
   ChatRequest,

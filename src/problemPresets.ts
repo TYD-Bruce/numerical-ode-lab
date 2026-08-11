@@ -1,7 +1,7 @@
-import type { MethodFamily } from "./solvers";
-import { serializeMathAst } from "./math/canonical";
-import type { MathExpression } from "./math/expression";
-import { createMathExpressionFromLegacy } from "./math/legacyAdapter";
+import type { MethodFamily } from "@numerical-t-lab/numerics/ode/solvers";
+import { serializeMathAst } from "@numerical-t-lab/numerics/expressions/canonical";
+import type { MathExpression } from "@numerical-t-lab/numerics/expressions/expression";
+import { createMathExpressionFromLegacy } from "@numerical-t-lab/numerics/expressions/legacy-adapter";
 import type {
   PersistedMathExpressionState,
   PersistedOptionalMathExpressionState,

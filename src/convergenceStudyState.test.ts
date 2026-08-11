@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { createMathExpressionFromLegacy } from "./math/legacyAdapter";
+import { createMathExpressionFromLegacy } from "@numerical-t-lab/numerics/expressions/legacy-adapter";
 import {
   ConvergenceStudyFailure,
   type ConvergenceStudyResult,
-} from "./convergenceStudy";
+} from "@numerical-t-lab/numerics/convergence";
 import {
   canRunConfirmedWarning,
   cancelWarningConfirmation,

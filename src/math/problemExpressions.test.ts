@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createMathExpressionFromLegacy } from "./legacyAdapter";
+import { createMathExpressionFromLegacy } from "@numerical-t-lab/numerics/expressions/legacy-adapter";
 import {
   compileProductionExpression,
   createDefaultMathExpressionState,
@@ -9,7 +9,7 @@ import {
 } from "./problemExpressions";
 import { validateMathFieldDraft } from "./ui/mathFieldState";
 import { buildOdeLabContext } from "../aiTutor";
-import { integrateFirstOrder } from "../solvers";
+import { integrateFirstOrder } from "@numerical-t-lab/numerics/ode/solvers";
 
 describe("production problem expressions", () => {
   it("provides AST-backed first- and second-order defaults", () => {

@@ -1,4 +1,7 @@
-import type { ExactSolutionEvaluator, RhsEvaluator } from "./math/evaluator";
+import type {
+  ExactSolutionEvaluator,
+  RhsEvaluator,
+} from "../expressions/evaluator";
 
 export const EXACT_SOLUTION_CHECK_STATEMENT =
   "This is a numerical consistency check, not a formal proof." as const;

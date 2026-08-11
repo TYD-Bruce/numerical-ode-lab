@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { serializeMathAst } from "../math/canonical";
+import { serializeMathAst } from "@numerical-t-lab/numerics/expressions/canonical";
 import {
   createPresetFormStateFromPreset,
   problemPresetById,

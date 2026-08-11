@@ -6,8 +6,8 @@ import {
   type ConvergenceStateRecord,
   type SuccessfulFirstOrderRunSnapshot,
 } from "../convergenceStudyState";
-import { displayNameFor } from "../methodCatalog";
-import { serializeMathAst } from "../math/canonical";
+import { displayNameFor } from "@numerical-t-lab/numerics/ode/method-catalog";
+import { serializeMathAst } from "@numerical-t-lab/numerics/expressions/canonical";
 import {
   createEmptyExactExpressionState,
   createDefaultMathExpressionState,
@@ -27,7 +27,7 @@ import type {
   SeriesPoint,
   SolverMetadata,
   SolverResult,
-} from "../solvers";
+} from "@numerical-t-lab/numerics/ode/solvers";
 
 export {
   getConvergenceState,

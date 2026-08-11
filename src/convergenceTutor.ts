@@ -2,7 +2,7 @@ import type {
   TutorConvergenceStudy,
   TutorObservedOrderAssessment,
 } from "./aiTypes";
-import type { ObservedOrderAssessment } from "./convergenceStudy";
+import type { ObservedOrderAssessment } from "@numerical-t-lab/numerics/convergence";
 import {
   currentStudyFingerprint,
   type ConvergenceUiState,

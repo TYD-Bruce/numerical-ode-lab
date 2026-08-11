@@ -1,9 +1,9 @@
 import { ComputeEngine } from "@cortex-js/compute-engine";
 
-import type { MathAst, MathVariableProfile } from "./ast";
-import { canonicalizeMathAst, normalizeMultiplication, normalizeSubtraction } from "./canonical";
-import { MathExpressionError } from "./errors";
-import { createMathExpression, type MathExpression } from "./expression";
+import type { MathAst, MathVariableProfile } from "@numerical-t-lab/numerics/expressions/ast";
+import { canonicalizeMathAst, normalizeMultiplication, normalizeSubtraction } from "@numerical-t-lab/numerics/expressions/canonical";
+import { MathExpressionError } from "@numerical-t-lab/numerics/expressions/errors";
+import { createMathExpression, type MathExpression } from "@numerical-t-lab/numerics/expressions/expression";
 
 const computeEngine = new ComputeEngine();
 

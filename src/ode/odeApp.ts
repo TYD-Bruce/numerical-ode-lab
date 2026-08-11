@@ -12,22 +12,22 @@ import {
   LogarithmicScale,
   type ChartConfiguration,
 } from "chart.js";
-import type { MethodConfig, SeriesPoint, SolverResult } from "../solvers";
-import { integrateFirstOrder, integrateSecondOrder } from "../solvers";
+import type { MethodConfig, SeriesPoint, SolverResult } from "@numerical-t-lab/numerics/ode/solvers";
+import { integrateFirstOrder, integrateSecondOrder } from "@numerical-t-lab/numerics/ode/solvers";
 import {
   METHOD_CATALOG,
   FIRST_ORDER_CATALOG,
   catalogByFamily,
   displayNameFor,
   type MethodCatalogEntry,
-} from "../methodCatalog";
+} from "@numerical-t-lab/numerics/ode/method-catalog";
 import { escapeHtml, formatCoefficients } from "../mathDisplay";
 import type { ChartInstruction } from "../aiTypes";
 import { methodMathContent } from "../math/ui/methodMathContent";
 import { renderReadonlyMath } from "../math/ui/readonlyMath";
-import { validateFixedStepGrid } from "../grid";
-import { serializeMathAst } from "../math/canonical";
-import type { MathExpression } from "../math/expression";
+import { validateFixedStepGrid } from "@numerical-t-lab/numerics/ode/grid";
+import { serializeMathAst } from "@numerical-t-lab/numerics/expressions/canonical";
+import type { MathExpression } from "@numerical-t-lab/numerics/expressions/expression";
 import {
   compileProductionExpression,
   createSuccessfulExpressionSnapshot,
@@ -61,7 +61,7 @@ import {
   runConvergenceStudy,
   validateConsistencyPermission,
   type ConvergenceStudyConfig,
-} from "../convergenceStudy";
+} from "@numerical-t-lab/numerics/convergence";
 import {
   canRunConfirmedWarning,
   cancelWarningConfirmation,
@@ -97,6 +97,10 @@ import type {
 import { THEME_CHANGE_EVENT } from "../app/theme";
 import type { LabGlossaryBinding } from "../glossary/glossaryController";
 import {
+  runCoefficientValidation,
+  runSanityCheck,
+} from "./coefficientValidation";
+import {
   computeOdeLabMeaningful,
   createBeginnerStarterSession,
   createOdeResumeSummary,
@@ -116,6 +120,9 @@ import {
   type OdeWave1AnnotationId,
 } from "./odeGlossary";
 import "../style.css";
+
+runCoefficientValidation();
+runSanityCheck();
 
 Chart.register(
   LineController,

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { compileMathExpression } from "./math/expression";
-import { createMathExpressionFromLegacy } from "./math/legacyAdapter";
+import { compileMathExpression } from "@numerical-t-lab/numerics/expressions/expression";
+import { createMathExpressionFromLegacy } from "@numerical-t-lab/numerics/expressions/legacy-adapter";
 import {
   createEmptyExactExpressionState,
   createDefaultMathExpressionState,

@@ -1,8 +1,8 @@
-import type { MathVariableProfile } from "../ast";
-import { MathExpressionError, isMathExpressionError } from "../errors";
+import type { MathVariableProfile } from "@numerical-t-lab/numerics/expressions/ast";
+import { MathExpressionError, isMathExpressionError } from "@numerical-t-lab/numerics/expressions/errors";
 import { createMathExpressionFromLatex } from "../mathJsonAdapter";
-import { createMathExpressionFromLegacy } from "../legacyAdapter";
-import type { MathExpression } from "../expression";
+import { createMathExpressionFromLegacy } from "@numerical-t-lab/numerics/expressions/legacy-adapter";
+import type { MathExpression } from "@numerical-t-lab/numerics/expressions/expression";
 
 export type IncompleteLatexKind =
   | "empty_expression"

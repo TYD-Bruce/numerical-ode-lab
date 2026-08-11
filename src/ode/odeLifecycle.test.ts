@@ -3,8 +3,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { assertPureValue, createAppSessionStore } from "../app/appSessionStore";
 import { createPlatformTutorHost } from "../app/platformTutorHost";
-import { validateFixedStepGrid } from "../grid";
-import type { SolverResult } from "../solvers";
+import { validateFixedStepGrid } from "@numerical-t-lab/numerics/ode/grid";
+import type { SolverResult } from "@numerical-t-lab/numerics/ode/solvers";
 import type { EditableMathFieldHandle } from "../math/ui/editableMathField";
 import { createSuccessfulExpressionSnapshot } from "../math/problemExpressions";
 import { updatePresetProblemFields } from "../problemPresets";
@@ -23,7 +23,7 @@ import {
   setTeachingAccordion,
 } from "../convergenceStudyState";
 import { methodMathContent } from "../math/ui/methodMathContent";
-import { METHOD_CATALOG } from "../methodCatalog";
+import { METHOD_CATALOG } from "@numerical-t-lab/numerics/ode/method-catalog";
 import { THEME_CHANGE_EVENT } from "../app/theme";
 
 const destroyChart = vi.fn();

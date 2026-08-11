@@ -3,7 +3,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { GlossaryHostPort } from "../glossary/glossaryRuntimeTypes";
 import { createSuccessfulExpressionSnapshot } from "../math/problemExpressions";
-import type { SolverResult } from "../solvers";
+import type { SolverResult } from "@numerical-t-lab/numerics/ode/solvers";
 import {
   createBeginnerStarterSession,
   createReadonlySolverResult,

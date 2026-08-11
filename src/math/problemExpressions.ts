@@ -1,6 +1,6 @@
-import type { MathAst, MathVariableProfile } from "./ast";
-import { compileMathExpression, createMathExpression, type MathExpression } from "./expression";
-import { createMathExpressionFromLegacy } from "./legacyAdapter";
+import type { MathAst, MathVariableProfile } from "@numerical-t-lab/numerics/expressions/ast";
+import { compileMathExpression, createMathExpression, type MathExpression } from "@numerical-t-lab/numerics/expressions/expression";
+import { createMathExpressionFromLegacy } from "@numerical-t-lab/numerics/expressions/legacy-adapter";
 import type { MathFieldSnapshot } from "./ui/mathFieldState";
 import type { ReadonlyMathContent } from "./ui/readonlyMath";
 

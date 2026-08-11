@@ -1,7 +1,7 @@
-import type { MathVariableProfile } from "../ast";
-import type { MathExpression } from "../expression";
-import type { MathExpressionError } from "../errors";
-import { projectParsedExpression } from "../projection";
+import type { MathVariableProfile } from "@numerical-t-lab/numerics/expressions/ast";
+import type { MathExpression } from "@numerical-t-lab/numerics/expressions/expression";
+import type { MathExpressionError } from "@numerical-t-lab/numerics/expressions/errors";
+import { projectParsedExpression } from "@numerical-t-lab/numerics/expressions/projection";
 import { mountExpressionToolbar, type ExpressionToolbarHandle } from "./expressionToolbar";
 import type { ExpressionFieldIssue } from "./expressionErrorSummary";
 import {

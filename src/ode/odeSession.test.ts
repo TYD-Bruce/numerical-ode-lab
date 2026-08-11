@@ -3,7 +3,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { createAppSessionStore } from "../app/appSessionStore";
-import type { SolverResult } from "../solvers";
+import type { SolverResult } from "@numerical-t-lab/numerics/ode/solvers";
 import { createSuccessfulExpressionSnapshot } from "../math/problemExpressions";
 import { updatePresetProblemFields } from "../problemPresets";
 import {

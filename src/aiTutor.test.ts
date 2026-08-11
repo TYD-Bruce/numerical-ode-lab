@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { buildOdeLabContext, sanitizeTutorText, type ProblemInputs } from "./aiTutor";
 import type { TutorConvergenceStudy } from "./aiTypes";
-import { integrateFirstOrder } from "./solvers";
+import { integrateFirstOrder } from "@numerical-t-lab/numerics/ode/solvers";
 import { sendTutorMessage } from "./tutor/tutorClient";
 
 afterEach(() => vi.unstubAllGlobals());

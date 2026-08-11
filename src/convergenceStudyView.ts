@@ -3,7 +3,7 @@ import {
   type ConvergenceMetric,
   type ConvergenceStudyResult,
   type ObservedOrderAssessment,
-} from "./convergenceStudy";
+} from "@numerical-t-lab/numerics/convergence";
 import type {
   ConvergenceUiState,
   SuccessfulFirstOrderRunSnapshot,
@@ -19,7 +19,7 @@ import {
   type ReadonlyMathContent,
   type ReadonlyMathDisplay,
 } from "./math/ui/readonlyMath";
-import { displayNameFor } from "./methodCatalog";
+import { displayNameFor } from "@numerical-t-lab/numerics/ode/method-catalog";
 
 export type ConvergenceStudyIntent =
   | { readonly type: "drawer"; readonly open: boolean }

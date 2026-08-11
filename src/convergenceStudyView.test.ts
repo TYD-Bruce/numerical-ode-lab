@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
 
 import { describe, expect, it, vi } from "vitest";
-import { createMathExpressionFromLegacy } from "./math/legacyAdapter";
-import type { ConvergenceStudyResult } from "./convergenceStudy";
-import { ConvergenceStudyFailure } from "./convergenceStudy";
+import { createMathExpressionFromLegacy } from "@numerical-t-lab/numerics/expressions/legacy-adapter";
+import type { ConvergenceStudyResult } from "@numerical-t-lab/numerics/convergence";
+import { ConvergenceStudyFailure } from "@numerical-t-lab/numerics/convergence";
 import {
   createConvergenceChartConfiguration,
   mountConvergenceStudyView,
