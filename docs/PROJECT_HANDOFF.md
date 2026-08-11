@@ -2,6 +2,59 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
+## Architecture v1 migration checkpoint — 2026-08-10
+
+Numerical T Lab now has explicit npm-workspace ownership without a product or
+numerical behavior change:
+
+- `frontend/` owns the Vite browser application, platform lifecycle, pages,
+  Labs, workflow sessions, Tutor client/panel, Glossary, and browser math;
+- `backend/` owns the server Tutor handler and local API entry;
+- `packages/numerics/` owns ODE, Convergence, closed-expression, Linear
+  Systems, and Computation Trace authority;
+- `packages/contracts/` owns only serializable browser/server Tutor DTOs; and
+- root `api/chat.ts` remains the thin `/api/chat` Vercel adapter.
+
+Current architecture authority is split deliberately across
+[the implemented map](./architecture/CURRENT_ARCHITECTURE.md),
+[dependency rules](./architecture/DEPENDENCY_RULES.md),
+[deployment architecture](./architecture/DEPLOYMENT_ARCHITECTURE.md), and
+[numerical contracts](./contracts/NUMERICAL_CONTRACTS.md). The root commands
+remain `dev`, `dev:api`, `test:run`, `typecheck`, `typecheck:api`, `build`, and
+`verify`; `verify` now also runs the repository-owned import-boundary checker.
+
+Migration problems and resolutions:
+
+- The solver module previously ran a Vite-specific coefficient diagnostic at
+  import time. The diagnostic remains ODE/frontend development ownership and
+  runs when the ODE application module loads in DEV; the solver package is now
+  DOM/Vite-independent without changing numerical output.
+- Vite workspace execution changes its root. `frontend/vite.config.ts`
+  explicitly owns `frontend/` and still emits to root `dist/` with base `/`.
+- Workspace execution could also change local API environment-file lookup.
+  Root `dev:api` invokes `backend/src/dev.ts` directly, preserving repository-
+  root `.env.local`/`.env` lookup.
+- A server handler move could weaken the Vercel edge. Root `api/chat.ts` stays
+  in place and has direct tests for `405` plus `Allow: POST` and exact handler
+  status/body forwarding.
+- Browser/session TypeScript is not necessarily numerical authority. Editable
+  Linear Systems drafts and ODE workflow state remain frontend-owned; only
+  algorithms, trace evidence, and immutable presets moved to numerics.
+- A broad numerical barrel could eagerly execute unrelated domains. The
+  numerical package exposes deliberate subpaths and route-bundle tests protect
+  the existing lazy graph.
+
+The migration did not add the Linear Systems route, computation renderer,
+Tutor integration, Glossary content, ODE trace, PDE work, dependency upgrade,
+push, Preview, or deployment. After final equivalence review, the next task is
+Linear Systems Day 2 product integration on these workspace boundaries.
+
+Automated migration evidence is green: 82 test files / 1,168 tests, frontend,
+numerics, contracts, and backend TypeScript checks, the 87-module Vite
+production build, the four-owner import-boundary check, and `git diff --check`.
+The accepted large deferred MathLive/Compute Engine chunk warning remains; no
+`manualChunks` or dependency change was introduced merely to silence it.
+
 **Status (2026-08-01):** Numerical T Lab is locally verified and
 Production-verified at `https://numerical-t-lab.vercel.app/`. The GitHub
 repositories, Git remotes, existing Vercel project, Git integration, and
@@ -145,15 +198,15 @@ data residual diagnostics, and exact approved-preset reference matching.
 
 The exact checkpoint files are:
 
-- `src/linearAlgebra/linearSystemsNumerics.ts`
-- `src/linearAlgebra/linearSystemsNumerics.test.ts`
-- `src/linearAlgebra/linearSystemsPresets.ts`
-- `src/linearAlgebra/linearSystemsPresets.test.ts`
-- `src/linearAlgebra/linearSystemsSession.ts`
-- `src/linearAlgebra/linearSystemsSession.test.ts`
+- `packages/numerics/src/linear-algebra/linearSystemsNumerics.ts`
+- `packages/numerics/src/linear-algebra/linearSystemsNumerics.test.ts`
+- `packages/numerics/src/linear-algebra/linearSystemsPresets.ts`
+- `packages/numerics/src/linear-algebra/linearSystemsPresets.test.ts`
+- `frontend/src/labs/linear-algebra/linearSystemsSession.ts`
+- `frontend/src/labs/linear-algebra/linearSystemsSession.test.ts`
 - `docs/superpowers/specs/2026-08-10-linear-systems-lab-v1-design.md`
 - `docs/superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md`
-- `docs/NUMERICAL_CONTRACTS.md`
+- `docs/contracts/NUMERICAL_CONTRACTS.md`
 - `PLAN.md`
 - `docs/INDEX.md`
 - `docs/PROJECT_HANDOFF.md`
@@ -229,14 +282,14 @@ deployment is included.
 
 The exact checkpoint paths are:
 
-- `src/numerics/computationTrace.ts`
-- `src/numerics/computationTrace.test.ts`
-- `src/linearAlgebra/linearSystemsNumerics.ts`
-- `src/linearAlgebra/linearSystemsNumerics.test.ts`
-- `src/linearAlgebra/linearSystemsSession.test.ts`
+- `packages/numerics/src/trace/computationTrace.ts`
+- `packages/numerics/src/trace/computationTrace.test.ts`
+- `packages/numerics/src/linear-algebra/linearSystemsNumerics.ts`
+- `packages/numerics/src/linear-algebra/linearSystemsNumerics.test.ts`
+- `frontend/src/labs/linear-algebra/linearSystemsSession.test.ts`
 - `docs/superpowers/specs/2026-08-10-linear-systems-lab-v1-design.md`
 - `docs/superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md`
-- `docs/NUMERICAL_CONTRACTS.md`
+- `docs/contracts/NUMERICAL_CONTRACTS.md`
 - `PLAN.md`
 - `docs/INDEX.md`
 - `docs/PROJECT_HANDOFF.md`
@@ -526,7 +579,7 @@ serving the same Production deployment without redirecting the browser.
 
 ## 3. Platform architecture
 
-`src/main.ts` is a thin platform bootstrap. `src/app/platformBootstrap.ts` composes exactly one:
+`frontend/src/main.ts` is a thin platform bootstrap. `frontend/src/app/platformBootstrap.ts` composes exactly one:
 
 - project-owned History API router;
 - persistent App Shell;
@@ -536,7 +589,7 @@ serving the same Production deployment without redirecting the browser.
 - scroll/history lifecycle service;
 - minimal `beforeunload` listener.
 
-Static pages remain in `src/pages/`. The complete ODE Lab loads through the dynamic route boundary in `src/app/moduleRegistry.ts`. A generic Lab route adapter obtains or creates the opaque pure Lab session, mounts it, connects its Lab-owned Tutor binding to live Tutor session access, snapshots state on navigation, disconnects the Host before Lab disposal, and retains no hidden Lab DOM.
+Static pages remain in `frontend/src/pages/`. The complete ODE Lab loads through the dynamic route boundary in `frontend/src/app/moduleRegistry.ts`. A generic Lab route adapter obtains or creates the opaque pure Lab session, mounts it, connects its Lab-owned Tutor binding to live Tutor session access, snapshots state on navigation, disconnects the Host before Lab disposal, and retains no hidden Lab DOM.
 
 The platform bootstrap and static pages do not statically import ODE implementation, solvers, Chart.js, Convergence, complete Tutor runtime, ODE Tutor grounding, MathLive, or Compute Engine.
 
@@ -630,7 +683,7 @@ MathLive draft LaTeX
 
 `MathAst` is numerical authority. LaTeX and raw MathJSON are adapter/display data. Production user expressions use neither `eval` nor `new Function`. Solvers accept numeric closures and do not import MathLive, MathJSON, LaTeX, DOM, or Tutor rendering.
 
-Implemented methods and all fixed-grid, coefficient, Newton, diagnostic, exact-solution, failed-run ownership, comparison, and Convergence rules are unchanged. See `docs/NUMERICAL_CONTRACTS.md`; Phase 6 did not modify it because no numerical contract changed.
+Implemented methods and all fixed-grid, coefficient, Newton, diagnostic, exact-solution, failed-run ownership, comparison, and Convergence rules are unchanged. See `docs/contracts/NUMERICAL_CONTRACTS.md`; Architecture v1 did not modify those contracts because no numerical behavior changed.
 
 ## 9. Lazy-loading and final bundle evidence
 

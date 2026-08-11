@@ -2,8 +2,7 @@
 
 ## Current status
 
-**Active milestone: Linear Systems Lab Version 1 — Day 1.5 structured
-Computation Trace foundation.**
+**Active milestone: Numerical T Lab Architecture v1 — final local verification.**
 
 The maintainer accepts public baseline
 `b58584a5f7a1d5b09874479d3b413a063b94e061` and tree
@@ -11,7 +10,7 @@ The maintainer accepts public baseline
 Initial Value Problems Lab and closed Glossary E1/E2/E3/F2 gates. Those gates
 remain closed unless current work exposes a real regression.
 
-The approved
+The accepted Linear Systems
 [Linear Systems Lab v1 design](docs/superpowers/specs/2026-08-10-linear-systems-lab-v1-design.md)
 and
 [repository-grounded implementation plan](docs/superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md)
@@ -19,13 +18,15 @@ establish a bounded dense `A x = b` Lab. The accepted Day 1 commit implements
 the pure Gaussian-elimination-with-partial-pivoting core, immutable presets,
 and pure session/fingerprint foundation. Day 1.5 adds a small platform-level
 structured Computation Trace contract and makes that same single numerical
-path its first producer. It adds no renderer or visible behavior. Route/UI,
-Tutor, platform status, browser, bundle, and release work remain later
-separately gated phases.
+path its first producer.
 
-The current review gate is maintainer acceptance of the locally verified Day
-1.5 computation-trace commit. After acceptance, the next implementation task
-is route/UI integration and a presentation-only trace renderer behind
+Architecture v1 reorganizes the same product into `frontend`, `backend`,
+`packages/numerics`, and `packages/contracts` workspaces while retaining the
+root Vercel API adapter. No product feature, numerical contract, route, Tutor,
+Glossary, session, or deployment behavior is added or changed. The current
+gate is complete local automated, bundle, and browser equivalence evidence.
+After maintainer acceptance, the next implementation task is Linear Systems
+Day 2 route/UI integration and a presentation-only trace renderer behind
 `/linear-algebra/linear-systems`. Do not begin Tutor, Preview, Production,
 push, or deployment work at this gate.
 

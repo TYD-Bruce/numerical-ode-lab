@@ -9,7 +9,7 @@ Authoritative design:
 [Linear Systems Lab Version 1 Design](../specs/2026-08-10-linear-systems-lab-v1-design.md)
 
 Authoritative numerical behavior:
-[Numerical contracts](../../NUMERICAL_CONTRACTS.md)
+[Numerical contracts](../../contracts/NUMERICAL_CONTRACTS.md)
 
 ## 1. Starting point and constraints
 
@@ -24,9 +24,9 @@ boundaries; this plan does not reopen or redesign them.
 
 No new framework or dependency is required. The platform already provides:
 
-- project-owned routes in `src/app/routeDefinitions.ts`;
-- dynamic complete-Lab registration in `src/app/moduleRegistry.ts`;
-- the generic lifecycle adapter in `src/app/labRouteAdapter.ts`;
+- project-owned routes in `frontend/src/app/routeDefinitions.ts`;
+- dynamic complete-Lab registration in `frontend/src/app/moduleRegistry.ts`;
+- the generic lifecycle adapter in `frontend/src/app/labRouteAdapter.ts`;
 - pure per-module Store/Tutor session isolation;
 - lazy Tutor and optional Glossary ports; and
 - Home Resume and route scroll infrastructure.
@@ -40,17 +40,17 @@ Status: **implemented in this checkpoint**
 
 ### Production files
 
-- `src/linearAlgebra/linearSystemsPresets.ts`
+- `packages/numerics/src/linear-algebra/linearSystemsPresets.ts`
   - owns exactly two deeply immutable presets;
   - owns deterministic parsed-input fingerprints and exact preset matching.
-- `src/linearAlgebra/linearSystemsNumerics.ts`
+- `packages/numerics/src/linear-algebra/linearSystemsNumerics.ts`
   - validates the `2..6` dense square contract;
   - computes deterministic partial-pivot `P A = L U`;
   - performs forward/backward substitution;
   - computes original-data residual diagnostics;
   - attaches reference comparison only for an exact approved preset; and
   - returns deeply frozen success/failure data without caller aliases.
-- `src/linearAlgebra/linearSystemsSession.ts`
+- `frontend/src/labs/linear-algebra/linearSystemsSession.ts`
   - owns controlled numeric drafts, preset/Custom identity, fingerprints,
     current/stale status, immutable latest success, and meaningful-work state;
   - preserves success across edits and failures; and
@@ -58,9 +58,9 @@ Status: **implemented in this checkpoint**
 
 ### Tests
 
-- `src/linearAlgebra/linearSystemsNumerics.test.ts`
-- `src/linearAlgebra/linearSystemsPresets.test.ts`
-- `src/linearAlgebra/linearSystemsSession.test.ts`
+- `packages/numerics/src/linear-algebra/linearSystemsNumerics.test.ts`
+- `packages/numerics/src/linear-algebra/linearSystemsPresets.test.ts`
+- `frontend/src/labs/linear-algebra/linearSystemsSession.test.ts`
 
 The focused gate covers both presets, dimensions 2 and 6, invalid dimensions
 and shapes, finite input, deterministic ties, one/multiple/later-column swaps,
@@ -79,15 +79,15 @@ core yet.
 
 Status: **implemented in this checkpoint**
 
-- `src/numerics/computationTrace.ts` owns the small content-agnostic process,
+- `packages/numerics/src/trace/computationTrace.ts` owns the small content-agnostic process,
   retention, count, continuation, and immutable-step contract.
-- `src/linearAlgebra/linearSystemsNumerics.ts` emits its discriminated semantic
+- `packages/numerics/src/linear-algebra/linearSystemsNumerics.ts` emits its discriminated semantic
   trace from the existing matrix-scale, pivot/swap/elimination,
   forward/backward-substitution, residual, and preset-reference loops.
 - Successful results carry the complete bounded trace. Pivot-threshold
   failures may carry valid evidence through the rejected pivot without
   publishing partial success.
-- `src/linearAlgebra/linearSystemsSession.ts` is unchanged: the session retains
+- `frontend/src/labs/linear-algebra/linearSystemsSession.ts` is unchanged: the session retains
   the trace only through its existing immutable successful result reference.
 
 Focused tests prove generic finite/unbounded retention semantics, defensive
@@ -102,12 +102,12 @@ Status: **planned; do not implement in Day 1.5**
 
 ### Likely new Linear Algebra owners
 
-- `src/linearAlgebra/linearSystemsApp.ts`
-- `src/linearAlgebra/linearSystemsApp.test.ts`
-- `src/linearAlgebra/linearSystemsLifecycle.test.ts`
-- `src/linearAlgebra/linearSystemsRoute.ts`
-- `src/linearAlgebra/linearSystemsRoute.test.ts`
-- `src/linearAlgebra/linearSystems.css`
+- `frontend/src/labs/linear-algebra/linearSystemsApp.ts`
+- `frontend/src/labs/linear-algebra/linearSystemsApp.test.ts`
+- `frontend/src/labs/linear-algebra/linearSystemsLifecycle.test.ts`
+- `frontend/src/labs/linear-algebra/linearSystemsRoute.ts`
+- `frontend/src/labs/linear-algebra/linearSystemsRoute.test.ts`
+- `frontend/src/labs/linear-algebra/linearSystems.css`
 
 The mounted app will own Method → Data → Output → Diagnostics DOM, cell draft
 adapters, Run/reset interactions, semantic matrices/tables, a
@@ -118,27 +118,27 @@ factors or the solution.
 
 ### Existing integration seams
 
-- `src/app/contracts.ts`
+- `frontend/src/app/contracts.ts`
   - add the Linear Systems route ID;
   - generalize Resume step labels to include Diagnostics only if required by
     the approved UI/Resume decision.
-- `src/app/moduleRegistry.ts`
+- `frontend/src/app/moduleRegistry.ts`
   - add one cached dynamic loader for the complete Linear Systems route;
   - reuse `createCompleteLabRoute` with module ID `linear_algebra`.
-- `src/app/routeDefinitions.ts`
+- `frontend/src/app/routeDefinitions.ts`
   - register `/linear-algebra/linear-systems` as a complete Lab route.
-- `src/app/platformBootstrap.ts`
+- `frontend/src/app/platformBootstrap.ts`
   - pass the new registry loader to route definitions.
-- `src/app/appShell.ts`
+- `frontend/src/app/appShell.ts`
   - generalize parent-section navigation state for the Linear Algebra nested
     route while preserving exact `aria-current` behavior.
-- `src/pages/pageContracts.ts`
+- `frontend/src/pages/pageContracts.ts`
   - generalize the current ODE-specific intent-prefetch option to an explicit
     route target.
-- `src/pages/linearAlgebraOverviewPage.ts`
+- `frontend/src/pages/linearAlgebraOverviewPage.ts`
   - change the truthful module status only after the complete route exists;
   - link to the runnable Linear Systems Lab.
-- `src/pages/homePage.ts` and `src/pages/aboutPage.ts`
+- `frontend/src/pages/homePage.ts` and `frontend/src/pages/aboutPage.ts`
   - update status/entry copy only after runtime availability is real.
 
 ### Focused route/UI tests
@@ -171,8 +171,8 @@ Status: **planned; do not implement in Day 1.5**
 
 Likely new files:
 
-- `src/linearAlgebra/linearSystemsTutorBinding.ts`
-- `src/linearAlgebra/linearSystemsTutorBinding.test.ts`
+- `frontend/src/labs/linear-algebra/linearSystemsTutorBinding.ts`
+- `frontend/src/labs/linear-algebra/linearSystemsTutorBinding.test.ts`
 
 The binding will expose a compact, current-only context containing the
 approved input, factorization/pivot evidence, computed `xHat`, residual, and
@@ -181,18 +181,18 @@ or fingerprint-mismatched output and must not claim conditioning was computed.
 
 ### Shared Tutor changes
 
-- `src/aiTypes.ts`
+- `packages/contracts/src/tutor.ts`
   - replace the ODE-only request context with a prompt-profile-discriminated
     request while preserving ODE compatibility.
-- `src/tutor/platformTutorPanel.ts`
+- `frontend/src/tutor/platformTutorPanel.ts`
   - build context by `binding.promptProfile` rather than rejecting every
     non-ODE binding;
   - keep transcript/request lifecycle module-isolated.
-- `api/chatHandler.ts`
+- `backend/src/ai/chatHandler.ts`
   - select bounded ODE or Linear Algebra system/mock behavior by validated
     profile;
   - preserve safe plain-text/math rendering and server-only provider access.
-- `src/tutor/tutorClient.ts` and focused tests only if the shared request shape
+- `frontend/src/tutor/tutorClient.ts` and focused tests only if the shared request shape
   requires a narrow transport update.
 
 No Linear Systems chart instruction is needed. No real provider migration or
@@ -214,7 +214,7 @@ owners:
 
 - `AGENTS.md` for durable implemented baseline/milestone pointers;
 - `GOALS.md` only if the durable product direction materially changes;
-- `ARCHITECTURE.md` for implemented Linear Systems ownership and lazy boundary;
+- `docs/architecture/CURRENT_ARCHITECTURE.md` for implemented Linear Systems ownership and lazy boundary;
 - `PLAN.md` for the current release phase and next gate;
 - `docs/INDEX.md` for authoritative documents/reviews;
 - `docs/PROJECT_HANDOFF.md` for verified implementation state and limitations;

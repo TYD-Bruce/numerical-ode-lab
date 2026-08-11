@@ -125,14 +125,14 @@ AppSessionStore -> TutorSessionAccess -> Platform Tutor Host
 
 Key locations:
 
-- `src/app/`: router, shell, store, Tutor Host, scroll/history lifecycle, theme tokens, and platform bootstrap.
-- `src/pages/`: Home, overview, About, and Not Found route modules.
-- `src/ode/`: pure ODE session, mountable Lab, route adapter, Beginner Starter, Tutor binding, and New experiment behavior.
-- `src/tutor/`: pure Tutor session operations, lazy panel, and API client.
-- `src/math/`: AST, validation, serialization, evaluator, adapters, and deferred mathematical UI.
-- `src/solvers.ts`: numerical integration APIs and algorithms.
+- `frontend/src/`: browser application, pages, Labs, Tutor, Glossary, and math UI.
+- `backend/src/`: server-only Tutor handler and local API process.
+- `packages/numerics/src/`: ODE, Convergence, expression, Linear Systems, and Computation Trace authority.
+- `packages/contracts/src/`: shared serializable browser/server DTOs.
+- `api/chat.ts`: thin Vercel `/api/chat` adapter.
+- `docs/architecture/`: current ownership, dependency, and deployment maps.
 - `docs/PROJECT_HANDOFF.md`: current contributor handoff.
-- `docs/NUMERICAL_CONTRACTS.md`: numerical correctness boundaries.
+- `docs/contracts/NUMERICAL_CONTRACTS.md`: numerical correctness boundaries.
 
 ## Current limitations
 

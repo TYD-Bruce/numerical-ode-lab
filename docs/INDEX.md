@@ -7,25 +7,34 @@
 - [AGENTS](../AGENTS.md) — Codex repository map and operating contract.
 - [PLAN](../PLAN.md) — active milestone, next action, and review gate.
 - [GOALS](../GOALS.md) — durable product direction.
-- [ARCHITECTURE](../ARCHITECTURE.md) — current implemented architecture.
+- [Current architecture](architecture/CURRENT_ARCHITECTURE.md) — implemented
+  Architecture v1 ownership and runtime map.
+- [Dependency rules](architecture/DEPENDENCY_RULES.md) — allowed and forbidden
+  workspace dependency directions.
+- [Deployment architecture](architecture/DEPLOYMENT_ARCHITECTURE.md) — local
+  build, Vercel adapter, SPA fallback, and evidence boundary.
 - [Project handoff](PROJECT_HANDOFF.md) — latest released platform state.
-- [Numerical contracts](NUMERICAL_CONTRACTS.md) — authoritative numerical
+- [Numerical contracts](contracts/NUMERICAL_CONTRACTS.md) — authoritative numerical
   behavior.
 
 ## Current active milestone
 
-[PLAN.md](../PLAN.md) points to **Linear Systems Lab Version 1**. The accepted
-Day 1 checkpoint owns the authoritative pure numerical core, immutable
-approved presets, and pure session/fingerprint foundation. Day 1.5 adds the
-content-agnostic structured Computation Trace contract and complete bounded
-Linear Systems evidence emitted by that same numerical path. The
+[PLAN.md](../PLAN.md) points to **Numerical T Lab Architecture v1**. The
+migration establishes explicit frontend, backend, pure numerical, shared
+contract, and Vercel-adapter ownership while preserving existing behavior.
+The accepted Linear Systems Day 1 checkpoint owns the authoritative pure
+numerical core, immutable approved presets, and pure session/fingerprint
+foundation. Day 1.5 adds the content-agnostic structured Computation Trace
+contract and complete bounded Linear Systems evidence emitted by that same
+numerical path. The
 [approved design](superpowers/specs/2026-08-10-linear-systems-lab-v1-design.md)
 and
 [repository-grounded plan](superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md)
 separate these checkpoints from later route/UI rendering, Tutor, platform
-synchronization, and release verification phases. No route, visible product
-status, Tutor, Glossary, ODE, PDE, README release claim, push, or deployment
-changes in Day 1.5.
+synchronization, and release verification phases. Architecture v1 adds no
+route, visible product feature, Tutor behavior, Glossary behavior, ODE/PDE
+behavior, push, or deployment. After its review gate, the next task is Linear
+Systems Day 2 product integration on the new workspace structure.
 
 The accepted production baseline includes the production-ready Initial Value
 Problems Lab and closed Glossary E1/E2/E3/F2 gates. The historical record below
@@ -252,7 +261,7 @@ maintainer acceptance of the F2 review commit.
 Older specifications, plans, and review packages preserve design intent and
 point-in-time evidence. They may describe migration baselines or test totals
 that have since changed. Check the relevant final review,
-[ARCHITECTURE.md](../ARCHITECTURE.md), current source, and
+[CURRENT_ARCHITECTURE.md](architecture/CURRENT_ARCHITECTURE.md), current source, and
 [PROJECT_HANDOFF.md](PROJECT_HANDOFF.md) before treating a historical statement
 as current behavior.
 

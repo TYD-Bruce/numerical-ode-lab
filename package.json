@@ -13,9 +13,10 @@
     "dev:api": "tsx backend/src/dev.ts",
     "test": "vitest",
     "test:run": "vitest run",
+    "verify:boundaries": "node scripts/verify/importBoundaries.mjs",
     "typecheck": "npm run typecheck --workspace @numerical-t-lab/frontend && npm run typecheck --workspace @numerical-t-lab/numerics && npm run typecheck --workspace @numerical-t-lab/contracts",
     "typecheck:api": "npm run typecheck --workspace @numerical-t-lab/backend",
-    "verify": "npm run test:run && npm run typecheck && npm run typecheck:api && npm run build",
+    "verify": "npm run verify:boundaries && npm run test:run && npm run typecheck && npm run typecheck:api && npm run build",
     "build": "npm run typecheck && npm run build --workspace @numerical-t-lab/frontend",
     "preview": "npm run preview --workspace @numerical-t-lab/frontend"
   },

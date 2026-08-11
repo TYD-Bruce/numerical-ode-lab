@@ -26,9 +26,8 @@ It is intentionally detailed, but it is still a map—not a substitute for appro
 - Numerical Linear Algebra — Lab not implemented; roadmap page available
 - Numerical PDE — Lab not implemented; roadmap page available
 
-**Current active milestone:** Content-Agnostic Interactive Glossary Framework
-
-The active milestone is framework-first. It must not publish unreviewed notation, definitions, formulas, or production Glossary terms. Production content remains deferred until the evidence review and approval chain is complete.
+**Current active milestone:** Numerical T Lab Architecture v1 migration, followed
+by Linear Systems v1 Day 2 product integration after the migration review gate.
 
 All new user-facing product UI is English-only unless the maintainer explicitly approves another language strategy.
 
@@ -53,8 +52,8 @@ Before editing any file:
    5. the active feature HANDOFF, if one exists
    6. the authoritative feature design specification, if one exists
    7. the authoritative repository-grounded implementation plan, if one exists
-   8. `ARCHITECTURE.md`
-   9. `docs/NUMERICAL_CONTRACTS.md`
+   8. `docs/architecture/CURRENT_ARCHITECTURE.md`
+   9. `docs/contracts/NUMERICAL_CONTRACTS.md`
    10. `docs/PROJECT_HANDOFF.md`
    11. the latest relevant review document, if one exists
 4. Inspect actual source, callers, tests, lifecycle, and imports before proposing paths or APIs.
@@ -67,10 +66,10 @@ If the worktree is dirty, inspect the exact status and diff before continuing. C
 Use each document only for its intended responsibility:
 
 - `GOALS.md` — durable product direction
-- `ARCHITECTURE.md` — current implemented architecture
+- `docs/architecture/CURRENT_ARCHITECTURE.md` — current implemented architecture
 - `PLAN.md` — current milestone, phase, and next action
 - `docs/PROJECT_HANDOFF.md` — latest released state and continuation context
-- `docs/NUMERICAL_CONTRACTS.md` — numerical behavior contracts
+- `docs/contracts/NUMERICAL_CONTRACTS.md` — numerical behavior contracts
 - `docs/superpowers/specs/` — approved designs
 - `docs/superpowers/plans/` — repository-grounded implementation plans
 - `docs/reviews/` — evidence and release verdicts
@@ -85,7 +84,8 @@ Use each document only for its intended responsibility:
 2. `AGENTS.md`
 3. Relevant approved feature design
 4. Relevant approved implementation plan
-5. `docs/NUMERICAL_CONTRACTS.md` for numerical behavior and `ARCHITECTURE.md` for implemented ownership
+5. `docs/contracts/NUMERICAL_CONTRACTS.md` for numerical behavior and
+   `docs/architecture/CURRENT_ARCHITECTURE.md` for implemented ownership
 6. `PLAN.md` for the active phase and next action
 7. Active feature HANDOFF
 8. `docs/PROJECT_HANDOFF.md`
@@ -254,7 +254,7 @@ Classify the task before acting.
 
 ## 9. Numerical invariants
 
-`docs/NUMERICAL_CONTRACTS.md` is authoritative.
+`docs/contracts/NUMERICAL_CONTRACTS.md` is authoritative.
 
 Unless explicitly authorized, do not change:
 
@@ -325,7 +325,7 @@ Reconstruct runtime objects from pure state after mount.
 Current dependency direction:
 
 ```text
-src/main.ts
+frontend/src/main.ts
   → Platform bootstrap
   → Router / AppShell / Store / static pages
   → dynamically loaded complete Lab route
@@ -424,16 +424,17 @@ All new UI must be keyboard operable and mobile-safe.
 
 Do not claim jsdom validates geometry, typography, real custom-element lifecycle, or virtual-keyboard behavior. Use browser evidence.
 
-## 16. Active Glossary milestone guardrails
+## 16. Accepted Glossary guardrails
 
-The active milestone is **Content-Agnostic Interactive Glossary Framework**. Its authoritative design is `docs/superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md`.
+The **Content-Agnostic Interactive Glossary Framework** and reviewed ODE Wave 1
+integration are accepted baseline behavior. Their authoritative design is
+`docs/superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md`.
+Do not reopen or redesign those gates without a present-day regression or
+separate maintainer authorization.
 
-The design is approved and implementation has not started. Do not implement it from chat memory alone; create and approve the repository-grounded implementation plan first.
+Accepted direction:
 
-Approved design direction:
-
-- framework before formal content;
-- no production mathematical entries in the framework phase;
+- framework before formal content, followed by separately reviewed content;
 - explicit stable term IDs and explicit scopes;
 - no automatic DOM text scanning;
 - first enhanced occurrence per term per scope;
@@ -448,7 +449,7 @@ Approved design direction:
 - dev-only Playground is excluded from production;
 - Tutor handoff contract first; real queue/API integration later.
 
-Do not add during the content-agnostic phase:
+Do not add without a separately approved content/integration phase:
 
 - canonical notation;
 - formal production definitions;
@@ -458,13 +459,14 @@ Do not add during the content-agnostic phase:
 - notation profiles;
 - source-audit runtime;
 - private-reference tooling;
-- placeholder production terms.
+- placeholder or unreviewed production terms.
 
 The committed Glossary specification is authoritative. This summary is only a guardrail and must remain consistent with that specification.
 
 ## 17. Notation, definitions, and private references
 
-Formal production notation and definitions are deferred until the evidence review and notation-decision chain are complete.
+New formal production notation and definitions remain gated by the approved
+evidence and notation-decision chain.
 
 - Private local material belongs under `references/private/`.
 - It must remain ignored and untracked.
@@ -558,7 +560,7 @@ Current milestone, status, authoritative design/plan, next action, exclusions, r
 ### `GOALS.md`
 Durable product direction. Update rarely.
 
-### `ARCHITECTURE.md`
+### `docs/architecture/CURRENT_ARCHITECTURE.md`
 Current implemented architecture only. Planned extensions must be clearly labeled and linked. Do not present conceptual APIs as existing source.
 
 ### `docs/INDEX.md`

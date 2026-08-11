@@ -75,7 +75,7 @@ The Glossary will provide:
 
 ## Non-negotiable numerical principles
 
-`docs/NUMERICAL_CONTRACTS.md` is authoritative for fixed-grid behavior,
+`docs/contracts/NUMERICAL_CONTRACTS.md` is authoritative for fixed-grid behavior,
 expression evaluation, nonlinear solves, exact-solution checks, error metrics,
 and convergence-study calculations. This document does not duplicate or relax
 those contracts.
