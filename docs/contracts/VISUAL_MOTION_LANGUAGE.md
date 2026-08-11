@@ -1,7 +1,9 @@
 # Numerical T Lab Visual + Motion Language v1
 
-**Status:** Implemented contract  
-**Version:** 1  
+**Status:** Implemented contract
+
+**Version:** 1
+
 **Effective:** 2026-08-11
 
 ## 1. Scope and authority

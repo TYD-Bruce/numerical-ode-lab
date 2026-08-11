@@ -2,9 +2,8 @@
 
 ## Current status
 
-**Active milestone: Linear Systems mathematical-readability corrections —
-locally implemented and verified; independent mathematical-readability audit
-pending.**
+**Active milestone: Visual + Motion Language v1 — locally implemented and
+verified; independent Visual + Motion audit pending.**
 
 The maintainer accepts public baseline
 `b58584a5f7a1d5b09874479d3b413a063b94e061` and tree
@@ -61,8 +60,35 @@ near-machine residuals, computation/arithmetic disclosures, Light/Dark,
 1440 × 900, 390 × 844, and 320-pixel reflow with no page-level overflow or
 console warning/error. Numerical algorithms/contracts, Computation Trace,
 Architecture v1, routes, Tutor, Glossary, ODE, dependencies, push, and
-deployment remain unchanged. The next gate is an **independent mathematical-
-readability audit**; Tutor integration is not the current task.
+deployment remain unchanged. That mathematical-presentation state is the
+accepted prerequisite for the current motion milestone.
+
+Visual + Motion Language v1 starts from accepted commit
+`302f0369820751c637d57d76bfda03feb1e8ced9` (tree
+`128f45a5652b1e2c40b9b48115f807897b29a927`). The canonical
+[Visual + Motion contract](docs/contracts/VISUAL_MOTION_LANGUAGE.md) now owns
+the restrained duration/easing vocabulary, semantic source/target/change
+markers, presentation-only lifecycle, trace boundary, reduced-motion policy,
+and explicit negative list. Linear Systems is its first consuming
+presentation: row-swap and elimination cards alone expose local Replay step
+controls; whole rows move with measured transforms, while elimination values
+switch once between trace-provided before/after records. A 320-pixel threshold
+formula uses local contained scrolling without changing mathematical authority.
+
+Focused verification passes 4 files / 40 tests and the full suite passes 87
+files / 1,209 tests. All workspace/API typechecks, four-owner import boundaries,
+production build, complete `verify`, and diff checks pass. The build remains at
+97 modules; the independently lazy Linear Systems assets are 62.96 kB raw /
+18.42 kB gzip JavaScript and 16.50 kB raw / 3.49 kB gzip CSS. Bounded in-app
+browser replay covers Light/Dark, 1440 × 900, 390 × 844, 320-pixel containment,
+row swap, elimination, rapid replay, edit/preset/Run/collapse/route-leave
+cancellation, focus preservation, and clean console/overflow state. The
+browser surface exposes no reduced-motion media emulator, so that path is
+verified by deterministic DOM tests plus the shipped CSS contract rather than
+claimed as emulated browser evidence. No numerical, Computation Trace,
+Architecture v1, Mathematical Presentation v1, Tutor, Glossary, dependency,
+push, or deployment change is included. The next gate is an **independent
+Visual + Motion audit**; Tutor integration is not the current task.
 
 The remainder of this document preserves the prior Glossary execution record
 as historical evidence. Its former pending-acceptance language is superseded

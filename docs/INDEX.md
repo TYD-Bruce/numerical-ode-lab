@@ -19,11 +19,13 @@
 - [Mathematical presentation contract](contracts/MATHEMATICAL_PRESENTATION.md) —
   authoritative learner-facing number, notation, approximation, and accessible
   formula-display policy.
+- [Visual + Motion Language v1](contracts/VISUAL_MOTION_LANGUAGE.md) —
+  authoritative visual hierarchy, semantic change markers, motion ownership,
+  replay, reduced-motion, and interruption policy.
 
 ## Current active milestone
 
-[PLAN.md](../PLAN.md) points to **Linear Systems mathematical-readability
-corrections**. Architecture v1
+[PLAN.md](../PLAN.md) points to **Visual + Motion Language v1**. Architecture v1
 remains frozen. The accepted Day 1 core owns the numerical algorithm, presets,
 and immutable results; Day 1.5 owns the structured trace. Day 2 now implements
 the independently lazy learner-facing route, frontend session/workflow,
@@ -42,8 +44,16 @@ Focused tests pass at 5 files / 43 tests, the full suite at 87 files / 1,201
 tests, all typechecks and boundaries pass, the 96-module production build
 retains an independent Linear Systems chunk, and desktop/mobile/theme/reflow
 browser replay is clean. No numerical, Architecture v1, Tutor, Glossary,
-dependency, push, or deployment change occurred. The next gate is an
-independent mathematical-readability audit.
+dependency, push, or deployment change occurred. The subsequent Visual +
+Motion implementation establishes the
+[canonical contract](contracts/VISUAL_MOTION_LANGUAGE.md), shared tokens and
+markers, local row-swap/elimination Replay, cancellation/disposal, reduced-
+motion equivalence, and the 320-pixel containment correction. Focused tests
+pass at 4 files / 40 tests and the full suite at 87 files / 1,209 tests; all
+typechecks, boundaries, build, complete verification, and bounded browser
+replay are green. No numerical, Computation Trace, Architecture v1,
+Mathematical Presentation v1, Tutor, Glossary, dependency, push, or deployment
+change is included. The next gate is an independent Visual + Motion audit.
 
 Latest architecture prerequisite review:
 [Architecture v1 Migration Review](reviews/2026-08-11-architecture-v1-migration-review.md)

@@ -2,6 +2,100 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
+## Visual + Motion Language v1 — 2026-08-11
+
+Visual + Motion Language v1 starts from accepted commit
+`302f0369820751c637d57d76bfda03feb1e8ced9` (tree
+`128f45a5652b1e2c40b9b48115f807897b29a927`). The contract foundation is
+commit `528ea005de0df9dfa75c5cb542c8419d8975f719` (tree
+`20e9f0458988cef045bb91d245e9a9858e7ffd59`), and the Linear Systems replay
+implementation is commit `c7d8c18bcdf4f3cf9cdec7e8ac9a18f291f23b46` (tree
+`939f60a837bf880dce090ab7201c75324cc429c8`). The resulting finding severity
+is `P0 = P1 = P2 = P3 = 0`; the next gate is an **independent Visual + Motion
+audit**, followed by Linear Algebra Tutor work only after that gate.
+
+The new authoritative
+`docs/contracts/VISUAL_MOTION_LANGUAGE.md` separates static visual hierarchy,
+semantic change markers, presentation motion, numerical evidence, and
+accessibility. It establishes three duration tokens, two restrained easing
+tokens, an explicit negative list, reduced-motion equivalence, local
+cancellation rules, and mounted-presentation ownership. Computation Trace and
+immutable numerical results remain the only mathematical evidence authority;
+the renderer neither reruns nor reconstructs an algorithm.
+
+The first consuming implementation is limited to Linear Systems row-swap and
+elimination cards:
+
+- `frontend/src/labs/linear-algebra/computationMotion.ts` owns one local,
+  generation-checked controller per mounted walkthrough. Row swap uses measured
+  whole-row transforms; elimination changes once between trace-provided before
+  and after rows. Neither path interpolates numerical text or creates a second
+  numerical timeline.
+- `frontend/src/labs/linear-algebra/computationWalkthrough.ts` exposes native
+  local **Replay step** buttons only for those two approved operations. Visible
+  source/target/change labels and static before/operation/after evidence remain
+  understandable without motion. P, L, pivot, substitution, residual, and
+  diagnostics evidence remain static.
+- `frontend/src/labs/linear-algebra/linearSystemsApp.ts` cancels or disposes
+  transient motion before input edits, Run, preset or dimension changes, New
+  experiment, render replacement, failure-surface removal, and route disposal.
+  Collapse and navigation dispose through the existing mounted walkthrough
+  lifecycle. Replay never changes session, meaningful-work, fingerprint,
+  current/stale, or successful-result publication state.
+- `frontend/src/app/theme.css` owns the minimal platform duration/easing and
+  semantic-marker tokens. `frontend/src/labs/linear-algebra/linearSystems.css`
+  owns the local stage layout, transform presentation, quiet phase spine,
+  reduced-motion behavior, and contained 320-pixel mathematical overflow.
+- Focused coverage lives in `frontend/src/app/themeTokens.test.ts`,
+  `frontend/src/app/routeBundleOwnership.test.ts`, and the Linear Systems app
+  and walkthrough tests beside their sources.
+
+Validation passes the focused gate at 4 files / 40 tests and the complete
+suite at 87 files / 1,209 tests. Frontend, numerics, contracts, and backend
+typechecks pass; dependency boundaries pass for four owners plus the Vercel
+adapter; full `verify`, `git diff --check`, and the 97-module production build
+pass. The manifest keeps the Linear Systems route independently lazy with no
+static or dynamic child imports. Its assets move from the accepted baseline
+56.52 kB raw / 16.47 kB gzip JavaScript and 14.12 kB raw / 3.09 kB gzip CSS to
+62.96 kB raw / 18.42 kB gzip JavaScript and 16.50 kB raw / 3.49 kB gzip CSS.
+ODE, Tutor, Glossary, MathLive, and Compute Engine remain separately owned.
+
+Bounded in-app browser replay covered Light and Dark themes at 1440 × 900 and
+390 x 844, plus 320-pixel reflow. It verified exact stored row-swap and
+elimination endpoints, rapid replay, source/target/change markers, local
+formula overflow with zero document overflow, focus preservation, and
+cancellation on edit, Run, preset, collapse, and route leave. No browser
+warning/error remained. The in-app browser does not expose reduced-motion
+media emulation, so reduced behavior is supported by deterministic DOM tests
+and source inspection rather than claimed as emulated browser evidence.
+
+Problems and reusable resolutions:
+
+- A styled grid replay stage initially overrode the HTML `hidden` behavior and
+  left an empty bar before replay. When a hidden element also owns an explicit
+  display mode, preserve the platform contract with a local `[hidden] {
+  display: none; }` rule and confirm the actual browser DOM before acceptance.
+- A structurally changed walkthrough remained in an older hot-reloaded tab.
+  For browser verification after markup ownership changes, open a fresh
+  cache-busted route and re-inspect containment rather than trusting stale DOM.
+- The first local Vite launch listened through an unsuitable host binding for
+  the in-app browser. Use an explicit loopback listener for bounded local
+  verification and stop the task-owned process afterward.
+- Reduced-motion media emulation is unavailable in the current in-app browser.
+  Keep the path deterministic at the DOM/controller boundary, verify the
+  shipped media rule, and state the browser limitation instead of inventing
+  evidence.
+- Reusable replay remains safe because committed state changes first, trace
+  before/after data is the only display source, and every invalidating action
+  cancels a generation-local frontend controller. Reuse that ownership pattern
+  instead of adding motion to sessions, history, storage, or numerical code.
+
+No numerical algorithm or contract, Computation Trace, Architecture v1,
+Mathematical Presentation v1, route, AppSessionStore, Tutor, Glossary, ODE,
+backend/API, dependency, or deployment file changed. Nothing was pushed or
+deployed. Preserve this checkpoint and perform the independent motion audit
+before beginning Linear Algebra Tutor integration.
+
 ## Linear Systems mathematical-readability corrections — 2026-08-11
 
 Implementation commit `d84573c193f369d620982b9def3927d51197344a`
