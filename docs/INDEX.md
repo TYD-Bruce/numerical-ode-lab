@@ -14,8 +14,22 @@
 
 ## Current active milestone
 
-[PLAN.md](../PLAN.md) points to the ODE Glossary Wave 1 final F2 consistency
-review acceptance gate.
+[PLAN.md](../PLAN.md) points to **Linear Systems Lab Version 1**. Day 1 owns the
+authoritative pure numerical core, immutable approved presets, and pure
+session/fingerprint foundation. The
+[approved design](superpowers/specs/2026-08-10-linear-systems-lab-v1-design.md)
+and
+[repository-grounded plan](superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md)
+separate this checkpoint from later route/UI, Tutor, platform synchronization,
+and release verification phases. No route, visible product status, Tutor,
+Glossary, ODE, PDE, README release claim, push, or deployment changes in Day 1.
+
+The accepted production baseline includes the production-ready Initial Value
+Problems Lab and closed Glossary E1/E2/E3/F2 gates. The historical record below
+is retained for traceability and does not reopen those gates.
+
+### Historical accepted Glossary record
+
 The underlying Content-Agnostic Interactive Glossary Framework's approved
 design and repository-grounded implementation plan are documented. The
 corrected framework plan passed conservative re-audit, Commit 1 was
@@ -158,6 +172,7 @@ maintainer acceptance of the F2 review commit.
 
 | Document | Status |
 |---|---|
+| [Linear Systems Lab Version 1 Design](superpowers/specs/2026-08-10-linear-systems-lab-v1-design.md) | Maintainer-approved numerical/product design; Day 1 pure core implemented locally; route/UI and Tutor pending |
 | [Theme-Ready Platform Shell Design](superpowers/specs/2026-07-13-theme-ready-platform-shell-design.md) | Implemented, Vercel Preview-verified, safe to release |
 | [Human-Friendly Math Expressions Design](superpowers/specs/2026-07-10-human-friendly-math-expressions-design.md) | Implemented and verified |
 | [Observed Convergence Order Experiment Design](superpowers/specs/2026-07-10-convergence-study-design.md) | Implemented, verified, release ready |
@@ -169,6 +184,7 @@ maintainer acceptance of the F2 review commit.
 
 | Document | Status |
 |---|---|
+| [Linear Systems Lab Version 1 Implementation Plan](superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md) | Repository-grounded; Day 1 pure core implemented locally; route/UI, Tutor, platform synchronization, and release verification not started |
 | [Theme-Ready Platform Shell Implementation Plan](superpowers/plans/2026-07-13-theme-ready-platform-shell-implementation-plan.md) | Implemented historical plan; check the final review and architecture map for current state |
 | [Numerical T-Lab Rename Migration Plan](superpowers/plans/2026-07-22-numerical-t-lab-rename-migration-plan.md) | Project Identity Migration completed and verified |
 | [Content-Agnostic Interactive Glossary Framework Implementation Plan](superpowers/plans/2026-07-23-content-agnostic-interactive-glossary-framework-implementation-plan.md) | Fully executed locally; historical blocked-review findings closed; final verdict APPROVED FOR LOCAL FRAMEWORK RELEASE; no production content or visible behavior |

@@ -1,6 +1,35 @@
 # Active Project Plan
 
-## Status
+## Current status
+
+**Active milestone: Linear Systems Lab Version 1 — Day 1 numerical core.**
+
+The maintainer accepts public baseline
+`b58584a5f7a1d5b09874479d3b413a063b94e061` and tree
+`406430a598182fbecfb313f68552e44c473c7367`, including the production-ready
+Initial Value Problems Lab and closed Glossary E1/E2/E3/F2 gates. Those gates
+remain closed unless current work exposes a real regression.
+
+The approved
+[Linear Systems Lab v1 design](docs/superpowers/specs/2026-08-10-linear-systems-lab-v1-design.md)
+and
+[repository-grounded implementation plan](docs/superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md)
+establish a bounded dense `A x = b` Lab. Day 1 implements only the pure
+Gaussian-elimination-with-partial-pivoting core, immutable presets, and pure
+session/fingerprint foundation. Route/UI, Tutor, platform status, browser,
+bundle, and release work remain later separately gated phases.
+
+The current review gate is maintainer acceptance of the locally verified Day 1
+core commit. After acceptance, the next implementation task is route/UI
+integration behind `/linear-algebra/linear-systems`. Do not begin Tutor,
+Preview, Production, push, or deployment work at this gate.
+
+The remainder of this document preserves the prior Glossary execution record
+as historical evidence. Its former pending-acceptance language is superseded
+for current planning by the maintainer-accepted baseline above and is not a
+request to reopen those gates.
+
+## Historical accepted Glossary record
 
 Project Identity Migration complete. The Content-Agnostic Interactive Glossary
 Framework design is approved and committed. Its repository-grounded
@@ -148,7 +177,7 @@ locally verified, Preview-verified, and Production-verified at
 `https://numerical-t-lab.vercel.app/`. The release state is recorded in
 `docs/PROJECT_HANDOFF.md` and the Numerical T-Lab rename review.
 
-## Active milestone
+## Historical Glossary milestone
 
 **ODE Glossary Wave 1 F2 — Final Consistency Review Acceptance Gate**
 
@@ -343,7 +372,7 @@ independent final review. No production content or ODE binding was added.**
     commit.
 34. Push only when explicitly requested by the maintainer.
 
-## Current next action
+## Historical next action (superseded)
 
 Maintainer acceptance of the documentation-only
 [final F2 consistency review](docs/reviews/2026-07-31-ode-glossary-wave-1-final-f2-cross-surface-consistency-review.md),
@@ -428,7 +457,7 @@ copy iterations was pushed or deployed.
 - No Linear Algebra or PDE Glossary content.
 - No private-reference processing in runtime or CI.
 
-## Review gate
+## Historical Glossary review gate (closed)
 
 The framework release gate is closed with
 **APPROVED FOR LOCAL FRAMEWORK RELEASE**. The prior **RELEASE BLOCKED** review

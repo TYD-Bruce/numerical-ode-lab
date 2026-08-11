@@ -150,3 +150,83 @@ order may be approximately five. Tests require measured evidence in the range
 4.5-5.5 rather than falsely requiring order six. No startup rule, method
 coefficient, grid contract, nonlinear solve, metadata field, or diagnostic was
 changed for the convergence feature.
+
+## Linear Systems Version 1 contract
+
+The Linear Systems v1 numerical core solves `A x = b` for dense real square
+matrices with integer dimension `2 <= n <= 6`. Its only method is Gaussian
+elimination with partial pivoting, and its public factorization convention is
+
+`P A = L U`,
+
+where `A` is the original input matrix, `P` is the row-permutation matrix, `L`
+is unit lower triangular, and `U` is upper triangular. All supplied entries and
+all relevant generated values must remain finite JavaScript binary64 `Number`
+values.
+
+At elimination column `k`, the selected pivot row is the first row `p` in
+`k..n-1` attaining the maximum `abs(U[p][k])`. Equal magnitudes therefore keep
+the first matching row. When `p != k`, complete rows of `U` and `P` are
+exchanged, as are the permutation entries. Only the already-computed columns
+`0..k-1` of those two rows in `L` are exchanged. This prior-column `L` swap is
+required to preserve `P A = L U`.
+
+Using the original matrix, the matrix infinity norm and product safeguard are
+
+`||A||_inf = max_i sum_j abs(A[i][j])`
+
+and
+
+`tauPivot = 64 * Number.EPSILON * ||A||_inf`.
+
+If `||A||_inf == 0`, the solve is rejected immediately. At every elimination
+column, the attempt is rejected when
+
+`abs(selectedPivot) <= tauPivot`.
+
+The threshold scales directly with `A`; it must not use a
+`max(1, ||A||_inf)` normalization. This threshold is an explicit engineering
+safeguard for this educational Lab, not a theorem proving singularity. The
+safe learner-facing failure is: **The system is singular or too close to
+singular for this Lab's pivot acceptance threshold.**
+
+After factorization, forward substitution solves `L y = P b`, and backward
+substitution solves `U xHat = y`. Every input-dependent division and generated
+intermediate is checked for finite output. A failure publishes no partial
+result and cannot replace a prior successful session snapshot.
+
+Residual is evaluated with the original input in the stored left-to-right loop
+order:
+
+`r = b - A xHat`
+
+and
+
+`||r||_inf = max_i abs(r[i])`.
+
+Residual measures equation mismatch. It is not solution error, and product
+copy must preserve that **a small residual does not necessarily mean a small
+solution error**. Version 1 computes no condition number, backward error,
+forward-error estimate, or forward-error bound.
+
+Only an exact approved preset input fingerprint authorizes a reference vector.
+For an authorized preset, the core reports
+
+`referenceDifferenceInf = ||xHat - xRef||_inf`.
+
+The learner-facing label is **Difference from preset reference solution** or
+an equivalently qualified phrase. It must not be called unqualified “exact
+error.” Editing any preset input removes preset/reference authority; restoring
+the exact parsed numerical fingerprint restores it.
+
+The two and only two v1 presets are:
+
+- `Starter 3×3`: `A = [[3,1,-1],[2,4,1],[-1,2,5]]`,
+  `b = [6,9,-2]`, `xRef = [1,2,-1]`;
+- `Row swap required`: `A = [[0,2,1],[1,-2,-3],[2,3,1]]`,
+  `b = [0,-3,1]`, `xRef = [1,-1,2]`.
+
+Preset values, copied input, factor work arrays, and successful returned data
+must not expose mutable aliases. Determinant, inverse, condition number,
+backward/forward error bounds, growth-factor claims, Jacobi, Gauss-Seidel, and
+iterative refinement are outside the Version 1 numerical contract.

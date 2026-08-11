@@ -125,6 +125,98 @@ occurred. No push, Preview deployment, or Production deployment was authorized
 or performed, so the public deployed site remains unchanged from its
 previously deployed commit.
 
+## Linear Systems v1 Day 1 checkpoint — 2026-08-10
+
+The maintainer accepted public baseline
+`b58584a5f7a1d5b09874479d3b413a063b94e061`, tree
+`406430a598182fbecfb313f68552e44c473c7367`, as the starting point for a
+three-day portfolio-grade v1. The production-ready Initial Value Problems Lab
+and closed Glossary E1/E2/E3/F2 gates remain accepted and were not reopened.
+
+This checkpoint establishes the authoritative Linear Systems numerical core
+without adding a route or visible product behavior. The approved method is
+Gaussian elimination with deterministic partial pivoting for dense real
+`A x = b`, `2 <= n <= 6`, using the public factorization `P A = L U`. The
+product pivot safeguard is
+`64 * Number.EPSILON * ||A||_inf`, using the original matrix norm directly.
+The implementation performs the required prior-column `L` swap during later
+pivots, forward/backward substitution, finite-intermediate checks, original-
+data residual diagnostics, and exact approved-preset reference matching.
+
+The exact checkpoint files are:
+
+- `src/linearAlgebra/linearSystemsNumerics.ts`
+- `src/linearAlgebra/linearSystemsNumerics.test.ts`
+- `src/linearAlgebra/linearSystemsPresets.ts`
+- `src/linearAlgebra/linearSystemsPresets.test.ts`
+- `src/linearAlgebra/linearSystemsSession.ts`
+- `src/linearAlgebra/linearSystemsSession.test.ts`
+- `docs/superpowers/specs/2026-08-10-linear-systems-lab-v1-design.md`
+- `docs/superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md`
+- `docs/NUMERICAL_CONTRACTS.md`
+- `PLAN.md`
+- `docs/INDEX.md`
+- `docs/PROJECT_HANDOFF.md`
+
+Successful numerical results defensively copy input, deeply freeze all exposed
+arrays/records, and contain only the approved factors, solution, pivot,
+residual, threshold, fingerprint, and optional preset-reference data. The pure
+session owns controlled string drafts, selected preset or Custom identity,
+input fingerprint, latest immutable successful result, current/stale status,
+and meaningful-work state. An edit preserves prior output and marks it stale;
+restoring its successful fingerprint makes it current again. A failed run
+returns a pure failure record and the unchanged session. A later successful run
+atomically replaces the prior snapshot. AppSessionStore, Resume, route, UI,
+Tutor, Glossary, and deployment integration remain unimplemented.
+
+Problems encountered and resolved:
+
+- The prior PLAN/INDEX still used pending Glossary gate language although the
+  maintainer's current baseline accepts those gates. Current milestone blocks
+  now establish Linear Systems v1 and label the detailed Glossary record as
+  historical instead of rewriting that evidence.
+- The local knowledge packages are retrieval-ready but their exact direct-
+  method algorithms remain mathematical-review gated. The maintainer-approved
+  task contract therefore supplies the exact algorithm, factor convention,
+  and threshold; the knowledge packages were used only to preserve terminology
+  and the residual/error/conditioning boundary.
+- A solution-only elimination can appear correct while returning an invalid
+  `L` after a later row swap. The implementation swaps only the previously
+  computed `L` columns and directly tests a later-pivot example plus
+  `P A ~= L U`.
+- A conventional `max(1, ||A||_inf)` scale would incorrectly reject small
+  proportionally sound systems under this product contract. The implementation
+  uses the original norm without normalization and tests threshold equality,
+  just-above acceptance, direct magnitude scaling, and a `1e-100` system.
+- Mutable input/work/result aliases would violate later Store ownership. Input
+  and preset data are copied or deeply frozen, and direct mutation/identity
+  regressions verify the boundary.
+
+Reusable resolution for future numerical contracts:
+
+1. Declare the public factorization/sign/index convention before coding and
+   test its full identity, not only the final solution.
+2. Separate the mathematical problem, finite-precision algorithm, project
+   engineering safeguard, and safe learner-facing claim.
+3. Compute diagnostics from the original problem data and name the equation,
+   norm, reference authority, and unavailable conditioning context.
+4. Tie result currency and reference authority to one deterministic parsed-
+   input fingerprint.
+5. Publish immutable success only after the complete operation; preserve it by
+   reference across failed attempts and stale drafts.
+
+Validation for this checkpoint:
+
+- focused Linear Systems gate: 3 files, 42 tests passed;
+- full unit suite: 80 files, 1,149 tests passed;
+- application TypeScript typecheck passed;
+- browser automation, production smoke, build/deployment, remote contact,
+  push, and KnowledgeBase regeneration were intentionally not run.
+
+The next gate is maintainer acceptance of this Day 1 commit. Day 2 may then
+implement route/UI integration behind `/linear-algebra/linear-systems`; Tutor
+work remains a later phase after route lifecycle verification.
+
 ## 1. Product and public routes
 
 The learner-facing product is **Numerical T Lab**. The currently implemented numerical module is **Initial Value Problems Lab**, retaining the released Method -> Data -> Output ODE workflow.
@@ -139,10 +231,11 @@ The learner-facing product is **Numerical T Lab**. The currently implemented num
 | `/about` | Platform/project overview | Available |
 | any other page path | In-shell Not Found | Available |
 
-Linear Algebra and PDE are truthful roadmap pages with no runnable controls.
-The active milestone is **ODE Glossary Wave 1 F2 — Final Consistency Review
-Acceptance Gate**;
-**Linear Systems Lab** is later. The
+Linear Algebra and PDE remain truthful roadmap pages with no runnable controls
+at this Day 1 checkpoint. The active milestone is **Linear Systems Lab Version
+1**; its pure numerical/session core is implemented locally while the route/UI
+remains the next separately gated phase. The prior accepted Glossary milestone
+record begins below. The
 [authoritative Glossary design](./superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md)
 is approved and committed. Commit 1, the content-agnostic Glossary model and
 scope lifecycle, is implemented and accepted after conservative audit.
@@ -574,7 +667,9 @@ Contributor rules:
 - Keep `beforeunload` minimal and synchronous.
 - Run `npm run verify` after changes and add focused tests first.
 
-*Last updated: 2026-07-30. Project Identity Migration and prior Production
+*Historical Glossary snapshot (last updated 2026-07-30; superseded for current
+milestone status by the 2026-08-10 Linear Systems checkpoint above). Project
+Identity Migration and prior Production
 verification remain complete. The Glossary framework is locally accepted as
 complete after all three historical blocked-review findings were repaired and
 closed by repeated independent final review. No push, Preview deployment, or
