@@ -2,8 +2,9 @@
 
 ## Current status
 
-**Active milestone: Linear Systems v1 independent-audit corrections — locally
-implemented and verified; independent correction re-audit pending.**
+**Active milestone: Linear Systems mathematical-readability corrections —
+locally implemented and verified; independent mathematical-readability audit
+pending.**
 
 The maintainer accepts public baseline
 `b58584a5f7a1d5b09874479d3b413a063b94e061` and tree
@@ -37,19 +38,31 @@ independent dynamic asset. No Tutor, Linear Algebra Glossary, numerical-
 contract change, dependency change, push, Preview deployment, or Production
 deployment is included.
 
-An independent Product Audit then found LS1 and LS2 at P2 and LS3 at P3.
-Correction commit `d52946f626084fae7bdbed2d5bd018a211b15332` (tree
-`03bf0a8a84aacc81b3b626684c6b69ec43d00c99`) now removes invalidated failure
-UI immediately without clearing prior success, supplies mount-aware native
-walkthrough heading levels, and presents optional stored substitution
-aggregates only inside detailed arithmetic. The correction passed 4 Linear
-Algebra files / 30 tests, the four-owner import-boundary gate, full `verify`
-at 86 files / 1,193 tests, all typechecks, the 95-module build, and bounded
-desktop/mobile browser replay. Architecture, numerical contracts, routes,
-CSS, Tutor, Glossary, ODE, dependencies, push, and deployment remain
-unchanged. The next gate is an independent correction re-audit, followed by
-the separate mathematical rendering/readability review; Tutor integration is
-not the current task.
+The independent Product Audit corrections remain accepted. The following
+mathematical-readability review identified MR-01 through MR-08, and the
+maintainer promoted structured scripts/powers MR-09 from P3 to a P2 release
+requirement. Commit `d84573c193f369d620982b9def3927d51197344a` (tree
+`cd71c5346c0a7da0245414a71daf9f7eec539f06`) closes all nine findings with a
+lightweight structured-math DOM helper, contextual presentation-only number
+formatting, exact-versus-approximate notation, complete substitution chains,
+one controlled accessible formula owner, responsive Data/arithmetic layouts,
+learner-centered trace disclosure, fingerprint-derived visible identity, and
+an explicit selected-pivot marker. The canonical
+[mathematical presentation contract](docs/contracts/MATHEMATICAL_PRESENTATION.md)
+records Display Number Policy v1 and Mathematical Display Policy v1.
+
+Focused verification passes 5 files / 43 tests; the full suite passes 87 files
+/ 1,201 tests; all workspace/API typechecks, the four-owner import-boundary
+gate, `git diff --check`, and the 96-module production build pass. A manifest
+build keeps the 56.52 kB raw / 16.47 kB gzip Linear Systems chunk independent
+of MathLive, Compute Engine, ODE, Tutor, and Glossary. Bounded in-app browser
+replay covers both presets, custom decimal and stale states, pivot failure,
+near-machine residuals, computation/arithmetic disclosures, Light/Dark,
+1440 × 900, 390 × 844, and 320-pixel reflow with no page-level overflow or
+console warning/error. Numerical algorithms/contracts, Computation Trace,
+Architecture v1, routes, Tutor, Glossary, ODE, dependencies, push, and
+deployment remain unchanged. The next gate is an **independent mathematical-
+readability audit**; Tutor integration is not the current task.
 
 The remainder of this document preserves the prior Glossary execution record
 as historical evidence. Its former pending-acceptance language is superseded

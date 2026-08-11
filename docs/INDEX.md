@@ -16,10 +16,13 @@
 - [Project handoff](PROJECT_HANDOFF.md) — latest released platform state.
 - [Numerical contracts](contracts/NUMERICAL_CONTRACTS.md) — authoritative numerical
   behavior.
+- [Mathematical presentation contract](contracts/MATHEMATICAL_PRESENTATION.md) —
+  authoritative learner-facing number, notation, approximation, and accessible
+  formula-display policy.
 
 ## Current active milestone
 
-[PLAN.md](../PLAN.md) points to **Linear Systems v1 independent-audit
+[PLAN.md](../PLAN.md) points to **Linear Systems mathematical-readability
 corrections**. Architecture v1
 remains frozen. The accepted Day 1 core owns the numerical algorithm, presets,
 and immutable results; Day 1.5 owns the structured trace. Day 2 now implements
@@ -31,14 +34,16 @@ and
 [repository-grounded plan](superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md)
 separate numerical authority from the frontend renderer and from the still-
 pending Linear Algebra Tutor. The independent Day 2 product audit's LS1/LS2
-P2 findings and LS3 P3 finding are corrected in
-`d52946f626084fae7bdbed2d5bd018a211b15332`, with mount-aware native headings,
-attempt-scoped failure cleanup, and optional stored substitution-aggregate
-presentation. The correction is locally verified with 4 Linear Algebra files
-/ 30 tests, full `verify` at 86 files / 1,193 tests, typechecks, a 95-module
-build, import boundaries, and desktop/mobile browser replay. No push or
-deployment occurred. The next gate is the independent correction re-audit,
-then the separate mathematical rendering/readability review.
+P2 findings and LS3 P3 finding remain closed. Mathematical-readability commit
+`d84573c193f369d620982b9def3927d51197344a` closes MR-01 through MR-09 and
+establishes the
+[mathematical presentation contract](contracts/MATHEMATICAL_PRESENTATION.md).
+Focused tests pass at 5 files / 43 tests, the full suite at 87 files / 1,201
+tests, all typechecks and boundaries pass, the 96-module production build
+retains an independent Linear Systems chunk, and desktop/mobile/theme/reflow
+browser replay is clean. No numerical, Architecture v1, Tutor, Glossary,
+dependency, push, or deployment change occurred. The next gate is an
+independent mathematical-readability audit.
 
 Latest architecture prerequisite review:
 [Architecture v1 Migration Review](reviews/2026-08-11-architecture-v1-migration-review.md)

@@ -2,6 +2,108 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
+## Linear Systems mathematical-readability corrections — 2026-08-11
+
+Implementation commit `d84573c193f369d620982b9def3927d51197344a`
+(tree `cd71c5346c0a7da0245414a71daf9f7eec539f06`) closes MR-01 through
+MR-09 from the independent mathematical-readability review. MR-09 was
+originally reported as P3 and was promoted by maintainer decision to a P2
+release requirement because baseline pseudo-notation was mathematically
+ambiguous and hostile to read-aloud use. The task result is
+`P0 = P1 = P2 = P3 = 0` for this finding set.
+
+Corrections and ownership:
+
+- MR-01 replaces exact equality after rounded substituted arithmetic with
+  approximation while preserving exact definitions and symbolic relations.
+  The public convention remains `P A = L U`; displayed rounded factors use
+  `P A ≈ L U`, and residual components separate the exact definition from the
+  rounded diagnostic.
+- MR-02 adds contextual, presentation-only number formatting for ordinary,
+  matrix/vector, solution, multiplier, detail, reference-detail, diagnostic,
+  and threshold contexts. It trims unnecessary zeros, renders visible `-0` as
+  `0`, never hides a nonzero diagnostic as zero, and renders exponent notation
+  with multiplication and a real superscript.
+- MR-03 presents each forward/backward substitution from its trace-owned
+  right-hand side through ordered known contributions, stored numerator,
+  diagonal division, and resulting component. It does not recompute any
+  arithmetic.
+- MR-04 gives each major formula one `role="math"` accessible owner with an
+  explicit learner-facing name and one hidden structured visual child. The
+  Data relationship reads “A times x equals b”; matrix/vector input regions
+  retain separate, non-duplicated names.
+- MR-05 stacks the Data equation at narrow widths so A, x, equals, and b remain
+  discoverable, and converts wide detail tables into labeled semantic rows.
+  Page-level horizontal overflow remains absent.
+- MR-06 keeps every trace step but moves pivot candidates, before/after matrix
+  state, and ordered arithmetic under Show arithmetic. Level 1 now emphasizes
+  mathematical purpose, operation, and result without implementation-oriented
+  “stored” or “structured evidence” language.
+- MR-07 derives the visible preset/result identity directly from the existing
+  session fingerprint status after every edit. No second dirty flag or state
+  owner was introduced.
+- MR-08 preserves pivot-candidate computation order while marking the selected
+  row with visible “Selected” text, `aria-current`, weight, and a non-color
+  border marker.
+- MR-09 uses real DOM `sub`/`sup` structures for indices, norm types, named
+  qualifiers, row operations, and scientific exponents. No LaTeX parser,
+  Unicode subscript authority, `innerHTML`, MathLive, or Compute Engine was
+  added.
+
+The relevant paths are
+`frontend/src/math/structuredMath.ts` and its test,
+`frontend/src/labs/linear-algebra/computationWalkthrough.ts` and its test,
+`frontend/src/labs/linear-algebra/linearSystemsApp.ts` and its test,
+`frontend/src/labs/linear-algebra/linearSystems.css`,
+`frontend/src/app/routeBundleOwnership.test.ts`, and the new authoritative
+`docs/contracts/MATHEMATICAL_PRESENTATION.md`. Numerical packages,
+Computation Trace, routes, platform state, backend, ODE, Tutor, Glossary,
+dependencies, and deployment files are untouched.
+
+Validation passes the focused readability/session/bundle gate at 5 files / 43
+tests and the full suite at 87 files / 1,201 tests. Frontend, numerics,
+contracts, and backend typechecks pass; import boundaries pass for four owners
+plus the Vercel adapter; `git diff --check` passes; and the production build
+passes at 96 modules. A 30-entry manifest build reports the Linear Systems
+asset at 56.52 kB raw / 16.47 kB gzip with no static imports; MathLive,
+readonly math, ODE, Tutor, and Glossary remain distinct assets.
+
+The dedicated in-app browser replay covered Starter 3×3, Row swap required,
+a non-integer Custom edit/run, stale prior Output, controlled second-column
+pivot rejection, near-machine residual and reference evidence, Show
+computation, Show arithmetic, Light/Dark, 1440 × 900, 390 × 844, and a
+320-pixel reflow stress. Evidence included 292 formula owners with zero
+ownership violations, 109 structured subscripts, 14 structured superscripts,
+an ordered and explicitly selected pivot row, stacked mobile arithmetic, both
+Data terms within the viewport, no page-level overflow, no eager forbidden
+assets among 39 observed page assets, and no browser warning/error.
+
+Problems and reusable resolutions:
+
+- The existing readonly-math helper starts deferred MathLive enhancement even
+  for simple authored notation. For a lightweight Lab needing only controlled
+  text, operators, and scripts, use the small safe DOM helper and guard its
+  import graph rather than weakening lazy ownership or building another math
+  parser.
+- Rounded values initially shared one formatter and exact equality, making
+  otherwise correct binary64 evidence look inconsistent. Keep stored values
+  authoritative, select display precision by semantic context, and pair exact
+  symbolic definitions with approximate rounded substitutions.
+- The visible hero identity was only rebuilt on the central render path while
+  draft edits intentionally avoid rerendering to preserve input focus. Update
+  that one derived DOM label from the fingerprint-backed session transition;
+  do not add a dirty flag.
+- The optional `agent-browser` CLI was not installed, and the first external-
+  Chrome fallback stopped because it could not establish safe URL ownership.
+  The maintainer explicitly authorized the dedicated in-app browser, which
+  supplied the complete local replay without touching the unrelated Chrome
+  session. Reuse the in-app browser for isolated local visual verification.
+
+No Tutor, Glossary, animation, dependency, numerical-contract, Computation
+Trace, or Architecture v1 change is included. Nothing was pushed or deployed.
+The next gate is an **independent mathematical-readability audit**. Do not
+begin Tutor integration or motion before that gate.
+
 ## Linear Systems v1 independent-audit corrections — 2026-08-11
 
 Implementation commit `d52946f626084fae7bdbed2d5bd018a211b15332`
