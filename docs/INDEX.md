@@ -36,6 +36,13 @@ route, visible product feature, Tutor behavior, Glossary behavior, ODE/PDE
 behavior, push, or deployment. After its review gate, the next task is Linear
 Systems Day 2 product integration on the new workspace structure.
 
+Current review:
+[Architecture v1 Migration Review](reviews/2026-08-11-architecture-v1-migration-review.md)
+— verdict **ARCHITECTURE V1 LOCALLY MIGRATION-COMPLETE — READY FOR MAINTAINER
+ACCEPTANCE**; 82 files / 1,168 tests, all workspace typechecks, build,
+dependency boundaries, manifest exclusions, and local desktop/mobile browser
+equivalence are green; no push or deployment.
+
 The accepted production baseline includes the production-ready Initial Value
 Problems Lab and closed Glossary E1/E2/E3/F2 gates. The historical record below
 is retained for traceability and does not reopen those gates.

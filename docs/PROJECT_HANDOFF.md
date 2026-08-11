@@ -55,6 +55,16 @@ production build, the four-owner import-boundary check, and `git diff --check`.
 The accepted large deferred MathLive/Compute Engine chunk warning remains; no
 `manualChunks` or dependency change was introduced merely to silence it.
 
+The
+[Architecture v1 migration review](./reviews/2026-08-11-architecture-v1-migration-review.md)
+records verdict **ARCHITECTURE V1 LOCALLY MIGRATION-COMPLETE — READY FOR
+MAINTAINER ACCEPTANCE**. Manifest evidence retains separate ODE, Tutor,
+Glossary, MathLive, and editable/Compute Engine boundaries and contains no DEV
+Glossary or private-reference markers. Bounded local browser verification
+passed all public routes, unknown-route handling, internal navigation, theme,
+IVP Run, Convergence, mock Tutor, Glossary, mobile containment, and console
+health. Nothing was pushed or deployed.
+
 **Status (2026-08-01):** Numerical T Lab is locally verified and
 Production-verified at `https://numerical-t-lab.vercel.app/`. The GitHub
 repositories, Git remotes, existing Vercel project, Git integration, and

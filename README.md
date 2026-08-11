@@ -157,6 +157,19 @@ design specifications, implementation plans, reviews, and feature handoffs.
 
 ## Changelog
 
+### 2026-08-11 — Architecture v1 completed locally
+
+- Reorganized the same application into explicit frontend, backend, pure
+  numerics, and shared-contract npm workspaces while preserving the root
+  `/api/chat` Vercel adapter and root developer commands.
+- Added deterministic import-boundary verification and current architecture,
+  dependency, deployment, and contract documentation.
+- Passed 82 files / 1,168 tests, workspace/API typechecks, production build,
+  manifest/private-marker review, and local desktop/mobile browser
+  equivalence. No feature, push, or deployment was included.
+- Detailed verdict:
+  [`docs/reviews/2026-08-11-architecture-v1-migration-review.md`](docs/reviews/2026-08-11-architecture-v1-migration-review.md)
+
 ### 2026-08-01 — Frontend refinement
 
 - Audited the lower-glare Light theme, restored Dark theme, theme-aware charts,

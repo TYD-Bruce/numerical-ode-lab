@@ -2,7 +2,8 @@
 
 ## Current status
 
-**Active milestone: Numerical T Lab Architecture v1 — final local verification.**
+**Active milestone: Numerical T Lab Architecture v1 — locally migration-complete,
+pending maintainer acceptance.**
 
 The maintainer accepts public baseline
 `b58584a5f7a1d5b09874479d3b413a063b94e061` and tree
@@ -24,8 +25,10 @@ Architecture v1 reorganizes the same product into `frontend`, `backend`,
 `packages/numerics`, and `packages/contracts` workspaces while retaining the
 root Vercel API adapter. No product feature, numerical contract, route, Tutor,
 Glossary, session, or deployment behavior is added or changed. The current
-gate is complete local automated, bundle, and browser equivalence evidence.
-After maintainer acceptance, the next implementation task is Linear Systems
+gate is maintainer acceptance of the completed
+[Architecture v1 migration review](docs/reviews/2026-08-11-architecture-v1-migration-review.md),
+whose automated, manifest, and browser equivalence evidence is green. After
+acceptance, the next implementation task is Linear Systems
 Day 2 route/UI integration and a presentation-only trace renderer behind
 `/linear-algebra/linear-systems`. Do not begin Tutor, Preview, Production,
 push, or deployment work at this gate.
