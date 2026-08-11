@@ -217,6 +217,88 @@ The next gate is maintainer acceptance of this Day 1 commit. Day 2 may then
 implement route/UI integration behind `/linear-algebra/linear-systems`; Tutor
 work remains a later phase after route lifecycle verification.
 
+## Linear Systems v1 Day 1.5 Computation Trace checkpoint — 2026-08-10
+
+Starting from accepted local Day 1 commit
+`d323fec9b4752290f0a88723db31f8c89ec4f0c5`, tree
+`27895631400cd862e02398b51c43db5625b09249`, this checkpoint establishes the
+first platform-level structured Computation Trace contract and makes the pure
+Linear Systems core its first producer. No route, renderer, Tutor integration,
+ODE trace, AppSessionStore change, browser behavior, dependency, push, or
+deployment is included.
+
+The exact checkpoint paths are:
+
+- `src/numerics/computationTrace.ts`
+- `src/numerics/computationTrace.test.ts`
+- `src/linearAlgebra/linearSystemsNumerics.ts`
+- `src/linearAlgebra/linearSystemsNumerics.test.ts`
+- `src/linearAlgebra/linearSystemsSession.test.ts`
+- `docs/superpowers/specs/2026-08-10-linear-systems-lab-v1-design.md`
+- `docs/superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md`
+- `docs/NUMERICAL_CONTRACTS.md`
+- `PLAN.md`
+- `docs/INDEX.md`
+- `docs/PROJECT_HANDOFF.md`
+
+The generic pure contract distinguishes bounded finite, repetitive finite, and
+unbounded processes. It represents all-meaningful-step,
+first-five-plus-distinct-final, and first-five-plus-continuation retention;
+derives retained counts; validates finite known totals and retention limits;
+and defensively copies and deeply freezes semantic steps and continuation
+metadata. Linear Systems is bounded at `n <= 6` and retains all approved
+meaningful steps.
+
+The one existing numerical path now emits structured records for original-
+matrix scale and `tauPivot`, pivot candidates and acceptance, exact row swaps,
+each elimination row update, completed `P A = L U` factors, every forward and
+backward substitution component, original-data residual arithmetic and norm,
+and authorized preset-reference difference. A `pivot_rejected` error may carry
+valid evidence through its rejected selection without publishing partial
+success. All existing Day 1 numerical fields and session publication,
+fingerprint, preset-authority, current/stale, and by-reference snapshot
+semantics remain unchanged.
+
+Problems encountered and resolved:
+
+- A second trace-only sum of triangular-solve contributions can overflow even
+  when the released sequential `value -= product` path remains finite. Ordered
+  products and actual sequential accumulators therefore remain authoritative;
+  the separately accumulated sum is included only while finite and never
+  changes success/failure classification.
+- Failure evidence needed to remain compatible with the existing atomic result
+  union. The existing error record gained only an optional immutable trace, and
+  only pivot-threshold rejection currently supplies it; no partial success
+  shape or session copy was introduced.
+- Generic freezing alone could freeze producer-owned input objects or retain
+  aliases. The trace factory instead validates/copies pure arrays and records,
+  then deeply freezes its own copy.
+
+Reusable resolution for later numerical producers:
+
+1. Emit semantic evidence inside the authoritative numerical loop; never rerun
+   or reconstruct an algorithm for presentation.
+2. Bound retention at generation time according to process kind.
+3. Preserve released arithmetic order and never let trace-only diagnostics
+   change numerical acceptance.
+4. Keep traces as immutable result-owned pure data; sessions retain them only
+   through the existing successful result snapshot.
+5. Keep renderers and Tutor presentation/explanation downstream of numerical
+   authority.
+
+Validation for this checkpoint:
+
+- focused trace/Linear Systems gate: 3 files, 55 tests passed;
+- full unit suite: 81 files, 1,166 tests passed;
+- application TypeScript typecheck passed;
+- final Git whitespace and authorized-scope checks passed before commit;
+- browser automation, Production smoke, Preview/Production deployment,
+  remote contact, push, and KnowledgeBase work were intentionally not run.
+
+The next gate is maintainer acceptance of the Day 1.5 trace commit. Day 2 may
+then implement the complete route/UI and presentation-only trace renderer;
+Tutor work remains a later gate after route lifecycle verification.
+
 ## 1. Product and public routes
 
 The learner-facing product is **Numerical T Lab**. The currently implemented numerical module is **Initial Value Problems Lab**, retaining the released Method -> Data -> Output ODE workflow.

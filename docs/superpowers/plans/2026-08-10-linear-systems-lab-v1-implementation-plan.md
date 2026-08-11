@@ -1,7 +1,7 @@
 # Linear Systems Lab Version 1 Implementation Plan
 
-Status: **Repository-grounded; Day 1 core implemented locally; later phases
-not started**
+Status: **Repository-grounded; Day 1 core and Day 1.5 structured computation
+evidence implemented locally; later phases not started**
 
 Date: 2026-08-10
 
@@ -16,6 +16,9 @@ Authoritative numerical behavior:
 The accepted public baseline is commit
 `b58584a5f7a1d5b09874479d3b413a063b94e061`, tree
 `406430a598182fbecfb313f68552e44c473c7367`, on `main` with a clean worktree.
+The accepted local Day 1 core starting point for the Day 1.5 trace checkpoint
+is commit `d323fec9b4752290f0a88723db31f8c89ec4f0c5`, tree
+`27895631400cd862e02398b51c43db5625b09249`.
 The Initial Value Problems Lab and accepted Glossary gates are regressions-only
 boundaries; this plan does not reopen or redesign them.
 
@@ -72,9 +75,30 @@ tests, the design/plan, and narrow current-state documentation updates. It does
 not alter an existing runtime import graph because no route imports the new
 core yet.
 
+### Day 1.5 — structured computation evidence
+
+Status: **implemented in this checkpoint**
+
+- `src/numerics/computationTrace.ts` owns the small content-agnostic process,
+  retention, count, continuation, and immutable-step contract.
+- `src/linearAlgebra/linearSystemsNumerics.ts` emits its discriminated semantic
+  trace from the existing matrix-scale, pivot/swap/elimination,
+  forward/backward-substitution, residual, and preset-reference loops.
+- Successful results carry the complete bounded trace. Pivot-threshold
+  failures may carry valid evidence through the rejected pivot without
+  publishing partial success.
+- `src/linearAlgebra/linearSystemsSession.ts` is unchanged: the session retains
+  the trace only through its existing immutable successful result reference.
+
+Focused tests prove generic finite/unbounded retention semantics, defensive
+copy/freeze behavior, every Linear Systems trace phase, exact Day 1 numerical
+output compatibility, pivot-failure evidence, and current/stale session
+reference preservation. No renderer, route, UI, Tutor, ODE trace, Store,
+dependency, or persistence work belongs to this checkpoint.
+
 ## 3. Later phase 1 — route and UI integration
 
-Status: **planned; do not implement in Day 1**
+Status: **planned; do not implement in Day 1.5**
 
 ### Likely new Linear Algebra owners
 
@@ -86,9 +110,11 @@ Status: **planned; do not implement in Day 1**
 - `src/linearAlgebra/linearSystems.css`
 
 The mounted app will own Method → Data → Output → Diagnostics DOM, cell draft
-adapters, Run/reset interactions, semantic matrices/tables, current/stale
-presentation, focus, announcements, and idempotent cleanup. It will use the
-Day 1 session as its only pure domain state.
+adapters, Run/reset interactions, semantic matrices/tables, a
+presentation-only computation-trace renderer, current/stale presentation,
+focus, announcements, and idempotent cleanup. It will use the Day 1 session as
+its only pure domain state and must not reconstruct numerical steps from final
+factors or the solution.
 
 ### Existing integration seams
 
@@ -122,6 +148,8 @@ Day 1 session as its only pure domain state.
 - preset identity/reference visibility follows fingerprints;
 - dimension changes remain within `2..6` and preserve accessible cell names;
 - factor/residual tables match the pure result;
+- computation presentation consumes semantic trace records without running a
+  second elimination or synthesizing missing steps;
 - one Run publishes all result sections atomically;
 - New experiment and route disposal are idempotent;
 - session capture/restoration stores pure data only;
@@ -137,7 +165,7 @@ and console health. Inspect the Vite manifest before making any chunk claim.
 
 ## 4. Later phase 2 — Tutor integration
 
-Status: **planned; do not implement in Day 1**
+Status: **planned; do not implement in Day 1.5**
 
 ### Domain context and binding
 
@@ -179,7 +207,7 @@ bound, and unchanged first-open Tutor lazy loading.
 
 ## 5. Later phase 3 — platform and current-state synchronization
 
-Status: **planned; do not implement in Day 1**
+Status: **planned; do not implement in Day 1.5**
 
 After route and Tutor behavior are verified, synchronize only current-state
 owners:
@@ -198,7 +226,7 @@ it or claim Preview/Production before those gates occur.
 
 ## 6. Later phase 4 — release verification
 
-Status: **planned; do not implement in Day 1**
+Status: **planned; do not implement in Day 1.5**
 
 Run, in order:
 
@@ -233,7 +261,8 @@ Cut before release if necessary:
 
 ## 8. Exact next gate
 
-Maintainer review and acceptance of the Day 1 core commit. After acceptance,
-begin later phase 1 with the complete Linear Systems route shell and tests
-against the already-frozen numerical/session contract. Do not begin Tutor work
-until route/UI lifecycle behavior is locally verified.
+Maintainer review and acceptance of the Day 1.5 computation-trace commit.
+After acceptance, begin later phase 1 with the complete Linear Systems route
+shell and presentation-only trace renderer tested against the already-frozen
+numerical/session contract. Do not begin Tutor work until route/UI lifecycle
+behavior is locally verified.

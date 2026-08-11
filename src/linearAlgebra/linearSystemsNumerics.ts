@@ -5,6 +5,10 @@ import {
   type LinearSystemsPresetId,
   type LinearSystemsVector,
 } from "./linearSystemsPresets";
+import {
+  createComputationTrace,
+  type ComputationTrace,
+} from "../numerics/computationTrace";
 
 export type { LinearSystemsMatrix, LinearSystemsVector };
 
@@ -23,6 +27,188 @@ export interface LinearSystemPivotStep {
   readonly pivotValue: number;
 }
 
+export interface LinearSystemMatrixScaleTerm {
+  readonly column: number;
+  readonly value: number;
+  readonly absoluteValue: number;
+}
+
+export interface LinearSystemMatrixScaleRow {
+  readonly row: number;
+  readonly terms: readonly LinearSystemMatrixScaleTerm[];
+  readonly absoluteSum: number;
+}
+
+export interface LinearSystemMatrixScaleTraceStep {
+  readonly kind: "matrix_scale";
+  readonly rows: readonly LinearSystemMatrixScaleRow[];
+  readonly selectedMaximumRow: number;
+  readonly matrixInfNorm: number;
+  readonly pivotUlpFactor: number;
+  readonly numberEpsilon: number;
+  readonly tauPivot: number;
+}
+
+export interface LinearSystemPivotCandidate {
+  readonly row: number;
+  readonly value: number;
+  readonly absoluteValue: number;
+}
+
+export interface LinearSystemPivotSelectionTraceStep {
+  readonly kind: "pivot_selection";
+  readonly column: number;
+  readonly candidates: readonly LinearSystemPivotCandidate[];
+  readonly selectedRow: number;
+  readonly selectedPivotValue: number;
+  readonly selectedAbsoluteMagnitude: number;
+  readonly tauPivot: number;
+  readonly accepted: boolean;
+}
+
+export interface LinearSystemIndexedRow {
+  readonly row: number;
+  readonly values: readonly number[];
+}
+
+export interface LinearSystemPriorLRow {
+  readonly row: number;
+  readonly entries: readonly {
+    readonly column: number;
+    readonly value: number;
+  }[];
+}
+
+export interface LinearSystemRowSwapTraceStep {
+  readonly kind: "row_swap";
+  readonly column: number;
+  readonly firstRow: number;
+  readonly secondRow: number;
+  readonly uRowsBefore: readonly LinearSystemIndexedRow[];
+  readonly uRowsAfter: readonly LinearSystemIndexedRow[];
+  readonly pRowsBefore: readonly LinearSystemIndexedRow[];
+  readonly pRowsAfter: readonly LinearSystemIndexedRow[];
+  readonly permutationBefore: readonly number[];
+  readonly permutationAfter: readonly number[];
+  readonly lPriorColumnsBefore: readonly LinearSystemPriorLRow[];
+  readonly lPriorColumnsAfter: readonly LinearSystemPriorLRow[];
+}
+
+export interface LinearSystemEliminationTraceStep {
+  readonly kind: "elimination";
+  readonly column: number;
+  readonly pivotRow: number;
+  readonly targetRow: number;
+  readonly pivotValue: number;
+  readonly targetColumnValueBefore: number;
+  readonly multiplier: number;
+  readonly targetRowBefore: readonly number[];
+  readonly pivotRowUsed: readonly number[];
+  readonly targetRowAfter: readonly number[];
+  readonly multiplierLocation: {
+    readonly row: number;
+    readonly column: number;
+    readonly value: number;
+  };
+}
+
+export interface LinearSystemFactorizationCompleteTraceStep {
+  readonly kind: "factorization_complete";
+  readonly P: LinearSystemsMatrix;
+  readonly L: LinearSystemsMatrix;
+  readonly U: LinearSystemsMatrix;
+  readonly permutation: readonly number[];
+}
+
+export interface LinearSystemSubstitutionContribution {
+  readonly column: number;
+  readonly coefficient: number;
+  readonly knownValue: number;
+  readonly product: number;
+  readonly accumulatedKnownTermSum?: number;
+  readonly accumulatorAfterSubtraction: number;
+}
+
+export interface LinearSystemForwardSubstitutionTraceStep {
+  readonly kind: "forward_substitution";
+  readonly row: number;
+  readonly rightHandSideValue: number;
+  readonly contributions: readonly LinearSystemSubstitutionContribution[];
+  readonly accumulatedKnownTermSum?: number;
+  readonly numeratorBeforeDivision: number;
+  readonly diagonalValue: number;
+  readonly resultingY: number;
+}
+
+export interface LinearSystemBackwardSubstitutionTraceStep {
+  readonly kind: "backward_substitution";
+  readonly row: number;
+  readonly rightHandSideValue: number;
+  readonly contributions: readonly LinearSystemSubstitutionContribution[];
+  readonly accumulatedKnownTermSum?: number;
+  readonly numeratorBeforeDivision: number;
+  readonly diagonalValue: number;
+  readonly resultingXHat: number;
+}
+
+export interface LinearSystemResidualProductTerm {
+  readonly column: number;
+  readonly coefficient: number;
+  readonly solutionValue: number;
+  readonly product: number;
+  readonly accumulatedMatrixVectorValue: number;
+}
+
+export interface LinearSystemResidualComponentTraceStep {
+  readonly kind: "residual_component";
+  readonly row: number;
+  readonly originalARow: readonly number[];
+  readonly xHatValues: readonly number[];
+  readonly terms: readonly LinearSystemResidualProductTerm[];
+  readonly matrixVectorValue: number;
+  readonly originalBValue: number;
+  readonly residualComponent: number;
+}
+
+export interface LinearSystemResidualNormTraceStep {
+  readonly kind: "residual_inf_norm";
+  readonly components: readonly {
+    readonly row: number;
+    readonly value: number;
+    readonly absoluteValue: number;
+  }[];
+  readonly selectedMaximumRow: number;
+  readonly residualInfNorm: number;
+}
+
+export interface LinearSystemPresetReferenceTraceStep {
+  readonly kind: "preset_reference_difference";
+  readonly presetId: LinearSystemsPresetId;
+  readonly components: readonly {
+    readonly index: number;
+    readonly computedValue: number;
+    readonly referenceValue: number;
+    readonly difference: number;
+    readonly absoluteDifference: number;
+  }[];
+  readonly selectedMaximumIndex: number;
+  readonly referenceDifferenceInf: number;
+}
+
+export type LinearSystemTraceStep =
+  | LinearSystemMatrixScaleTraceStep
+  | LinearSystemPivotSelectionTraceStep
+  | LinearSystemRowSwapTraceStep
+  | LinearSystemEliminationTraceStep
+  | LinearSystemFactorizationCompleteTraceStep
+  | LinearSystemForwardSubstitutionTraceStep
+  | LinearSystemBackwardSubstitutionTraceStep
+  | LinearSystemResidualComponentTraceStep
+  | LinearSystemResidualNormTraceStep
+  | LinearSystemPresetReferenceTraceStep;
+
+export type LinearSystemComputationTrace = ComputationTrace<LinearSystemTraceStep>;
+
 export interface LinearSystemSolveSuccess {
   readonly dimension: number;
   readonly originalA: LinearSystemsMatrix;
@@ -40,6 +226,7 @@ export interface LinearSystemSolveSuccess {
   readonly tauPivot: number;
   readonly matrixInfNorm: number;
   readonly inputFingerprint: string;
+  readonly trace: LinearSystemComputationTrace;
   readonly presetId?: LinearSystemsPresetId;
   readonly presetName?: string;
   readonly referenceSolution?: LinearSystemsVector;
@@ -60,6 +247,7 @@ export interface LinearSystemSolveError {
   readonly code: LinearSystemSolveFailureCode;
   readonly message: string;
   readonly column?: number;
+  readonly trace?: LinearSystemComputationTrace;
 }
 
 export type LinearSystemSolveOutcome =
@@ -79,12 +267,23 @@ function deepFreeze<T>(value: T): T {
 function failure(
   code: LinearSystemSolveFailureCode,
   message: string,
-  column?: number
+  column?: number,
+  traceSteps?: readonly LinearSystemTraceStep[]
 ): LinearSystemSolveOutcome {
   const error = Object.freeze({
     code,
     message,
     ...(column === undefined ? {} : { column }),
+    ...(traceSteps
+      ? {
+          trace: createComputationTrace<LinearSystemTraceStep>({
+            processKind: "bounded_finite",
+            retentionPolicy: "all_meaningful_steps",
+            finalStepRetained: traceSteps.length > 0,
+            steps: traceSteps,
+          }),
+        }
+      : {}),
   });
   return Object.freeze({ ok: false as const, error });
 }
@@ -143,18 +342,27 @@ export function solveLinearSystem(input: LinearSystemInput): LinearSystemSolveOu
 
   const originalA = cloneMatrix(input.A);
   const originalB = [...input.b];
+  const traceSteps: LinearSystemTraceStep[] = [];
+  const matrixScaleRows: LinearSystemMatrixScaleRow[] = [];
   let matrixInfNorm = 0;
-  for (const row of originalA) {
+  let selectedMaximumRow = 0;
+  for (let row = 0; row < dimension; row += 1) {
+    const terms: LinearSystemMatrixScaleTerm[] = [];
     let rowSum = 0;
-    for (const value of row) {
-      rowSum += Math.abs(value);
+    for (let column = 0; column < dimension; column += 1) {
+      const value = originalA[row]![column]!;
+      const absoluteValue = Math.abs(value);
+      rowSum += absoluteValue;
       if (!finite(rowSum)) {
         return failure(
           "non_finite_intermediate",
           "The matrix infinity norm overflowed during finite arithmetic."
         );
       }
+      terms.push({ column, value, absoluteValue });
     }
+    matrixScaleRows.push({ row, terms, absoluteSum: rowSum });
+    if (rowSum > matrixInfNorm) selectedMaximumRow = row;
     matrixInfNorm = Math.max(matrixInfNorm, rowSum);
   }
   if (matrixInfNorm === 0) {
@@ -173,6 +381,16 @@ export function solveLinearSystem(input: LinearSystemInput): LinearSystemSolveOu
     );
   }
 
+  traceSteps.push({
+    kind: "matrix_scale",
+    rows: matrixScaleRows,
+    selectedMaximumRow,
+    matrixInfNorm,
+    pivotUlpFactor: LINEAR_SYSTEMS_PIVOT_ULP_FACTOR,
+    numberEpsilon: Number.EPSILON,
+    tauPivot,
+  });
+
   const U = cloneMatrix(originalA);
   const L = identityMatrix(dimension);
   const P = identityMatrix(dimension);
@@ -181,10 +399,23 @@ export function solveLinearSystem(input: LinearSystemInput): LinearSystemSolveOu
   let rowSwapCount = 0;
 
   for (let column = 0; column < dimension; column += 1) {
+    const candidates: LinearSystemPivotCandidate[] = [
+      {
+        row: column,
+        value: U[column]![column]!,
+        absoluteValue: Math.abs(U[column]![column]!),
+      },
+    ];
     let selectedRow = column;
-    let selectedMagnitude = Math.abs(U[column]![column]!);
+    let selectedMagnitude = candidates[0]!.absoluteValue;
     for (let row = column + 1; row < dimension; row += 1) {
-      const candidateMagnitude = Math.abs(U[row]![column]!);
+      const candidateValue = U[row]![column]!;
+      const candidateMagnitude = Math.abs(candidateValue);
+      candidates.push({
+        row,
+        value: candidateValue,
+        absoluteValue: candidateMagnitude,
+      });
       if (candidateMagnitude > selectedMagnitude) {
         selectedMagnitude = candidateMagnitude;
         selectedRow = row;
@@ -199,16 +430,45 @@ export function solveLinearSystem(input: LinearSystemInput): LinearSystemSolveOu
         column
       );
     }
+    const pivotSelectionStep: LinearSystemPivotSelectionTraceStep = {
+      kind: "pivot_selection",
+      column,
+      candidates,
+      selectedRow,
+      selectedPivotValue: selectedPivot,
+      selectedAbsoluteMagnitude: selectedMagnitude,
+      tauPivot,
+      accepted: selectedMagnitude > tauPivot,
+    };
+    traceSteps.push(pivotSelectionStep);
     if (selectedMagnitude <= tauPivot) {
       return failure(
         "pivot_rejected",
         "The system is singular or too close to singular for this Lab's pivot acceptance threshold.",
-        column
+        column,
+        traceSteps
       );
     }
 
     pivots.push({ column, selectedRow, pivotValue: selectedPivot });
     if (selectedRow !== column) {
+      const uRowsBefore = [
+        { row: column, values: [...U[column]!] },
+        { row: selectedRow, values: [...U[selectedRow]!] },
+      ];
+      const pRowsBefore = [
+        { row: column, values: [...P[column]!] },
+        { row: selectedRow, values: [...P[selectedRow]!] },
+      ];
+      const permutationBefore = [...permutation];
+      const lPriorColumnsBefore = [column, selectedRow].map((row) => ({
+        row,
+        entries: Array.from({ length: column }, (_, priorColumn) => ({
+          column: priorColumn,
+          value: L[row]![priorColumn]!,
+        })),
+      }));
+
       const uRow = U[column]!;
       U[column] = U[selectedRow]!;
       U[selectedRow] = uRow;
@@ -227,11 +487,41 @@ export function solveLinearSystem(input: LinearSystemInput): LinearSystemSolveOu
         L[selectedRow]![priorColumn] = multiplier;
       }
       rowSwapCount += 1;
+
+      traceSteps.push({
+        kind: "row_swap",
+        column,
+        firstRow: column,
+        secondRow: selectedRow,
+        uRowsBefore,
+        uRowsAfter: [
+          { row: column, values: [...U[column]!] },
+          { row: selectedRow, values: [...U[selectedRow]!] },
+        ],
+        pRowsBefore,
+        pRowsAfter: [
+          { row: column, values: [...P[column]!] },
+          { row: selectedRow, values: [...P[selectedRow]!] },
+        ],
+        permutationBefore,
+        permutationAfter: [...permutation],
+        lPriorColumnsBefore,
+        lPriorColumnsAfter: [column, selectedRow].map((row) => ({
+          row,
+          entries: Array.from({ length: column }, (_, priorColumn) => ({
+            column: priorColumn,
+            value: L[row]![priorColumn]!,
+          })),
+        })),
+      });
     }
 
     const pivot = U[column]![column]!;
     for (let row = column + 1; row < dimension; row += 1) {
-      const multiplier = U[row]![column]! / pivot;
+      const targetRowBefore = [...U[row]!];
+      const pivotRowUsed = [...U[column]!];
+      const targetColumnValueBefore = U[row]![column]!;
+      const multiplier = targetColumnValueBefore / pivot;
       if (!finite(multiplier)) {
         return failure(
           "non_finite_intermediate",
@@ -253,16 +543,47 @@ export function solveLinearSystem(input: LinearSystemInput): LinearSystemSolveOu
         }
         U[row]![trailingColumn] = updated;
       }
+      traceSteps.push({
+        kind: "elimination",
+        column,
+        pivotRow: column,
+        targetRow: row,
+        pivotValue: pivot,
+        targetColumnValueBefore,
+        multiplier,
+        targetRowBefore,
+        pivotRowUsed,
+        targetRowAfter: [...U[row]!],
+        multiplierLocation: { row, column, value: L[row]![column]! },
+      });
     }
   }
+
+  traceSteps.push({
+    kind: "factorization_complete",
+    P: cloneMatrix(P),
+    L: cloneMatrix(L),
+    U: cloneMatrix(U),
+    permutation: [...permutation],
+  });
 
   const permutedB = permutation.map((originalRow) => originalB[originalRow]!);
   const y = Array<number>(dimension).fill(0);
   for (let row = 0; row < dimension; row += 1) {
+    const contributions: LinearSystemSubstitutionContribution[] = [];
+    let knownTermSum: number | undefined = 0;
     let value = permutedB[row]!;
     for (let column = 0; column < row; column += 1) {
-      const product = L[row]![column]! * y[column]!;
+      const coefficient = L[row]![column]!;
+      const knownValue = y[column]!;
+      const product = coefficient * knownValue;
       value -= product;
+      const nextKnownTermSum: number | undefined =
+        knownTermSum === undefined ? undefined : knownTermSum + product;
+      knownTermSum =
+        nextKnownTermSum !== undefined && finite(nextKnownTermSum)
+          ? nextKnownTermSum
+          : undefined;
       if (!finite(product) || !finite(value)) {
         return failure(
           "non_finite_intermediate",
@@ -270,8 +591,17 @@ export function solveLinearSystem(input: LinearSystemInput): LinearSystemSolveOu
           row
         );
       }
+      contributions.push({
+        column,
+        coefficient,
+        knownValue,
+        product,
+        ...(knownTermSum === undefined ? {} : { accumulatedKnownTermSum: knownTermSum }),
+        accumulatorAfterSubtraction: value,
+      });
     }
-    const solved = value / L[row]![row]!;
+    const diagonalValue = L[row]![row]!;
+    const solved = value / diagonalValue;
     if (!finite(solved)) {
       return failure(
         "non_finite_intermediate",
@@ -280,14 +610,34 @@ export function solveLinearSystem(input: LinearSystemInput): LinearSystemSolveOu
       );
     }
     y[row] = solved;
+    traceSteps.push({
+      kind: "forward_substitution",
+      row,
+      rightHandSideValue: permutedB[row]!,
+      contributions,
+      ...(knownTermSum === undefined ? {} : { accumulatedKnownTermSum: knownTermSum }),
+      numeratorBeforeDivision: value,
+      diagonalValue,
+      resultingY: solved,
+    });
   }
 
   const xHat = Array<number>(dimension).fill(0);
   for (let row = dimension - 1; row >= 0; row -= 1) {
+    const contributions: LinearSystemSubstitutionContribution[] = [];
+    let knownTermSum: number | undefined = 0;
     let value = y[row]!;
     for (let column = row + 1; column < dimension; column += 1) {
-      const product = U[row]![column]! * xHat[column]!;
+      const coefficient = U[row]![column]!;
+      const knownValue = xHat[column]!;
+      const product = coefficient * knownValue;
       value -= product;
+      const nextKnownTermSum: number | undefined =
+        knownTermSum === undefined ? undefined : knownTermSum + product;
+      knownTermSum =
+        nextKnownTermSum !== undefined && finite(nextKnownTermSum)
+          ? nextKnownTermSum
+          : undefined;
       if (!finite(product) || !finite(value)) {
         return failure(
           "non_finite_intermediate",
@@ -295,8 +645,17 @@ export function solveLinearSystem(input: LinearSystemInput): LinearSystemSolveOu
           row
         );
       }
+      contributions.push({
+        column,
+        coefficient,
+        knownValue,
+        product,
+        ...(knownTermSum === undefined ? {} : { accumulatedKnownTermSum: knownTermSum }),
+        accumulatorAfterSubtraction: value,
+      });
     }
-    const solved = value / U[row]![row]!;
+    const diagonalValue = U[row]![row]!;
+    const solved = value / diagonalValue;
     if (!finite(solved)) {
       return failure(
         "non_finite_intermediate",
@@ -305,14 +664,28 @@ export function solveLinearSystem(input: LinearSystemInput): LinearSystemSolveOu
       );
     }
     xHat[row] = solved;
+    traceSteps.push({
+      kind: "backward_substitution",
+      row,
+      rightHandSideValue: y[row]!,
+      contributions,
+      ...(knownTermSum === undefined ? {} : { accumulatedKnownTermSum: knownTermSum }),
+      numeratorBeforeDivision: value,
+      diagonalValue,
+      resultingXHat: solved,
+    });
   }
 
   const residual: number[] = [];
   let residualInfNorm = 0;
+  let selectedResidualMaximumRow = 0;
   for (let row = 0; row < dimension; row += 1) {
+    const terms: LinearSystemResidualProductTerm[] = [];
     let productSum = 0;
     for (let column = 0; column < dimension; column += 1) {
-      const product = originalA[row]![column]! * xHat[column]!;
+      const coefficient = originalA[row]![column]!;
+      const solutionValue = xHat[column]!;
+      const product = coefficient * solutionValue;
       productSum += product;
       if (!finite(product) || !finite(productSum)) {
         return failure(
@@ -321,6 +694,13 @@ export function solveLinearSystem(input: LinearSystemInput): LinearSystemSolveOu
           row
         );
       }
+      terms.push({
+        column,
+        coefficient,
+        solutionValue,
+        product,
+        accumulatedMatrixVectorValue: productSum,
+      });
     }
     const component = originalB[row]! - productSum;
     if (!finite(component)) {
@@ -331,13 +711,36 @@ export function solveLinearSystem(input: LinearSystemInput): LinearSystemSolveOu
       );
     }
     residual.push(component);
+    if (Math.abs(component) > residualInfNorm) selectedResidualMaximumRow = row;
     residualInfNorm = Math.max(residualInfNorm, Math.abs(component));
+    traceSteps.push({
+      kind: "residual_component",
+      row,
+      originalARow: [...originalA[row]!],
+      xHatValues: [...xHat],
+      terms,
+      matrixVectorValue: productSum,
+      originalBValue: originalB[row]!,
+      residualComponent: component,
+    });
   }
+  traceSteps.push({
+    kind: "residual_inf_norm",
+    components: residual.map((value, row) => ({
+      row,
+      value,
+      absoluteValue: Math.abs(value),
+    })),
+    selectedMaximumRow: selectedResidualMaximumRow,
+    residualInfNorm,
+  });
 
   const inputFingerprint = createLinearSystemsInputFingerprint(originalA, originalB);
   const preset = matchLinearSystemsPreset(originalA, originalB);
   let referenceDifferenceInf: number | undefined;
   if (preset) {
+    const components: LinearSystemPresetReferenceTraceStep["components"][number][] = [];
+    let selectedMaximumIndex = 0;
     referenceDifferenceInf = 0;
     for (let index = 0; index < dimension; index += 1) {
       const difference = xHat[index]! - preset.xRef[index]!;
@@ -347,9 +750,32 @@ export function solveLinearSystem(input: LinearSystemInput): LinearSystemSolveOu
           "The preset reference comparison produced a non-finite value."
         );
       }
-      referenceDifferenceInf = Math.max(referenceDifferenceInf, Math.abs(difference));
+      const absoluteDifference = Math.abs(difference);
+      if (absoluteDifference > referenceDifferenceInf) selectedMaximumIndex = index;
+      referenceDifferenceInf = Math.max(referenceDifferenceInf, absoluteDifference);
+      components.push({
+        index,
+        computedValue: xHat[index]!,
+        referenceValue: preset.xRef[index]!,
+        difference,
+        absoluteDifference,
+      });
     }
+    traceSteps.push({
+      kind: "preset_reference_difference",
+      presetId: preset.id,
+      components,
+      selectedMaximumIndex,
+      referenceDifferenceInf,
+    });
   }
+
+  const trace = createComputationTrace<LinearSystemTraceStep>({
+    processKind: "bounded_finite",
+    retentionPolicy: "all_meaningful_steps",
+    finalStepRetained: true,
+    steps: traceSteps,
+  });
 
   const result = deepFreeze({
     dimension,
@@ -367,6 +793,7 @@ export function solveLinearSystem(input: LinearSystemInput): LinearSystemSolveOu
     tauPivot,
     matrixInfNorm,
     inputFingerprint,
+    trace,
     ...(preset
       ? {
           presetId: preset.id,

@@ -14,15 +14,18 @@
 
 ## Current active milestone
 
-[PLAN.md](../PLAN.md) points to **Linear Systems Lab Version 1**. Day 1 owns the
-authoritative pure numerical core, immutable approved presets, and pure
-session/fingerprint foundation. The
+[PLAN.md](../PLAN.md) points to **Linear Systems Lab Version 1**. The accepted
+Day 1 checkpoint owns the authoritative pure numerical core, immutable
+approved presets, and pure session/fingerprint foundation. Day 1.5 adds the
+content-agnostic structured Computation Trace contract and complete bounded
+Linear Systems evidence emitted by that same numerical path. The
 [approved design](superpowers/specs/2026-08-10-linear-systems-lab-v1-design.md)
 and
 [repository-grounded plan](superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md)
-separate this checkpoint from later route/UI, Tutor, platform synchronization,
-and release verification phases. No route, visible product status, Tutor,
-Glossary, ODE, PDE, README release claim, push, or deployment changes in Day 1.
+separate these checkpoints from later route/UI rendering, Tutor, platform
+synchronization, and release verification phases. No route, visible product
+status, Tutor, Glossary, ODE, PDE, README release claim, push, or deployment
+changes in Day 1.5.
 
 The accepted production baseline includes the production-ready Initial Value
 Problems Lab and closed Glossary E1/E2/E3/F2 gates. The historical record below

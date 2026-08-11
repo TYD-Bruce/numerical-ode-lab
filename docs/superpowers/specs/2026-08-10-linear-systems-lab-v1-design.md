@@ -1,7 +1,7 @@
 # Linear Systems Lab Version 1 Design
 
 Status: **Maintainer-approved numerical and product design; Day 1 numerical
-core implemented locally**
+core and Day 1.5 structured computation evidence implemented locally**
 
 Date: 2026-08-10
 
@@ -22,6 +22,8 @@ The learner should be able to:
 - compute one numerical approximation with Gaussian elimination and partial
   pivoting;
 - connect row pivoting to the public factorization `P A = L U`;
+- inspect the structured numerical evidence that produced the factors and
+  solution;
 - inspect the computed solution and residual; and
 - understand that a small residual measures equation mismatch, not necessarily
   small solution error.
@@ -121,6 +123,8 @@ attempt; no partial result is published.
 - Input arrays are copied before factorization.
 - Successful results are deeply frozen and share no mutable arrays with caller
   input or internal work arrays.
+- The numerical loops emit semantic computation evidence as they execute; no
+  renderer or Tutor reconstructs the algorithm from final output.
 - A failed run cannot overwrite or partially mutate the latest successful
   session snapshot.
 - Successful publication is atomic.
@@ -142,11 +146,47 @@ A successful pure result contains only the data needed by the planned UI:
 - row-swap count;
 - residual vector and residual infinity norm;
 - original matrix infinity norm and `tauPivot`;
-- input fingerprint; and
+- input fingerprint;
+- a complete bounded structured computation trace; and
 - approved preset/reference metadata when the input exactly matches a preset.
 
 The result deliberately excludes determinant, inverse, condition number,
 backward error, forward-error bounds, and growth-factor claims.
+
+### 5.1 Computation Trace ownership and retention
+
+Computation Trace is numerical evidence owned by the computation that produced
+the result. Its records contain operation identities, indices, binary64
+numbers, vectors, matrices, and semantic metadata. They do not contain HTML,
+Markdown, learner-facing prose, or generated LaTeX as numerical authority. A
+later renderer may format this evidence but may not rerun or invent the
+algorithm. Tutor may eventually explain current trace evidence, but Tutor is
+not computation authority.
+
+Linear Systems is a naturally bounded finite process for `2 <= n <= 6`, so v1
+retains every pedagogically meaningful setup, pivot, swap, elimination,
+factorization, substitution, residual, and authorized reference-comparison
+step. The generic platform policy is:
+
+- retain all meaningful steps for bounded small computations;
+- for large repetitive finite computations, retain at most the first five
+  sequential computations plus distinct final computation/result evidence;
+- for unbounded or infinite processes, retain at most the first five
+  sequential computations plus structured continuation metadata and never
+  invent a final step; and
+- bound trace generation at the numerical producer for future high-step-count
+  methods rather than retaining an arbitrary trace for a renderer to slice.
+
+Triangular-solve evidence preserves the released sequential
+`value -= product` evaluation. It records ordered contribution products and
+each resulting accumulator. A separately accumulated known-term sum is
+included only while finite, so trace-only aggregation cannot reject a solve
+whose authoritative arithmetic remains finite.
+
+A pivot-threshold failure may expose the valid setup and algorithm evidence
+through its rejected pivot selection. It remains a failed outcome and cannot
+publish a partial successful result or replace the latest successful session
+snapshot.
 
 ## 6. Residual and reference semantics
 
@@ -229,6 +269,10 @@ factorization data. Diagnostics will show the residual vector, residual
 infinity norm, pivot/row-swap evidence, threshold context, and the optional
 preset reference difference.
 
+A later presentation-only renderer will expose the approved trace without
+recomputing numerical steps. Its exact interaction, responsive layout, and
+accessible formula/table presentation remain Day 2 work.
+
 No chart is required. Matrices, vectors, pivots, and diagnostics use semantic
 tables or structured definition-style groups with contained horizontal
 scrolling only where necessary.
@@ -254,7 +298,8 @@ Tutor integration is a later separately tested phase. The Linear Algebra Lab
 will own a fresh, current-only context assembled from the latest successful
 result. Stale, failed, partial, or fingerprint-mismatched evidence must be
 excluded. The platform retains transcript and presentation ownership. No chart
-instruction is needed for this Lab.
+instruction is needed for this Lab. Tutor may explain selected trace evidence
+but must never generate or replace numerical trace authority.
 
 No Linear Algebra Glossary cards or annotations are part of v1. The complete
 Lab route may later expose the existing optional Lab-owned Glossary binding,
@@ -297,8 +342,9 @@ The product must not claim that:
 
 ## 14. Acceptance boundary
 
-Day 1 is complete only when the pure numerics, presets, and session modules
-pass focused tests covering the complete maintainer-authorized contract, the
-full existing unit suite remains green, application typecheck passes, the
-authorized documentation is synchronized, and the final diff contains no
-route, UI, Tutor, Glossary, ODE, CSS, deployment, dependency, or README change.
+Day 1.5 is complete only when the shared trace contract and instrumented pure
+Linear Systems path pass focused tests, the accepted Day 1 output values remain
+exactly unchanged, trace/session immutability holds, the full existing unit
+suite remains green, application typecheck passes, the authorized
+documentation is synchronized, and the final diff contains no route, UI,
+Tutor, Glossary, ODE, CSS, deployment, dependency, or README change.

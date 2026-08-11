@@ -2,7 +2,8 @@
 
 ## Current status
 
-**Active milestone: Linear Systems Lab Version 1 — Day 1 numerical core.**
+**Active milestone: Linear Systems Lab Version 1 — Day 1.5 structured
+Computation Trace foundation.**
 
 The maintainer accepts public baseline
 `b58584a5f7a1d5b09874479d3b413a063b94e061` and tree
@@ -14,15 +15,19 @@ The approved
 [Linear Systems Lab v1 design](docs/superpowers/specs/2026-08-10-linear-systems-lab-v1-design.md)
 and
 [repository-grounded implementation plan](docs/superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md)
-establish a bounded dense `A x = b` Lab. Day 1 implements only the pure
-Gaussian-elimination-with-partial-pivoting core, immutable presets, and pure
-session/fingerprint foundation. Route/UI, Tutor, platform status, browser,
-bundle, and release work remain later separately gated phases.
+establish a bounded dense `A x = b` Lab. The accepted Day 1 commit implements
+the pure Gaussian-elimination-with-partial-pivoting core, immutable presets,
+and pure session/fingerprint foundation. Day 1.5 adds a small platform-level
+structured Computation Trace contract and makes that same single numerical
+path its first producer. It adds no renderer or visible behavior. Route/UI,
+Tutor, platform status, browser, bundle, and release work remain later
+separately gated phases.
 
-The current review gate is maintainer acceptance of the locally verified Day 1
-core commit. After acceptance, the next implementation task is route/UI
-integration behind `/linear-algebra/linear-systems`. Do not begin Tutor,
-Preview, Production, push, or deployment work at this gate.
+The current review gate is maintainer acceptance of the locally verified Day
+1.5 computation-trace commit. After acceptance, the next implementation task
+is route/UI integration and a presentation-only trace renderer behind
+`/linear-algebra/linear-systems`. Do not begin Tutor, Preview, Production,
+push, or deployment work at this gate.
 
 The remainder of this document preserves the prior Glossary execution record
 as historical evidence. Its former pending-acceptance language is superseded

@@ -100,6 +100,28 @@ describe("Linear Systems pure session", () => {
     expect(failed.session.resultStatus).toBe("stale");
   });
 
+  it("carries pivot-failure evidence without replacing the traced success", () => {
+    const successful = successfulRun(createLinearSystemsSession());
+    const prior = successful.latestSuccessfulResult;
+    const draft = editableDraft(successful);
+    draft.A = [
+      ["1", "1", "1"],
+      ["1", "1", "1"],
+      ["1", "1", "1"],
+    ];
+    draft.b = ["3", "3", "3"];
+    const singularDraft = replaceLinearSystemsDraft(successful, draft);
+    const failed = runLinearSystemsSession(singularDraft);
+
+    expect(failed.ok).toBe(false);
+    if (failed.ok) throw new Error("Expected pivot-threshold failure.");
+    expect(failed.error).toMatchObject({ code: "pivot_rejected" });
+    expect("trace" in failed.error).toBe(true);
+    expect(failed.session).toBe(singularDraft);
+    expect(failed.session.latestSuccessfulResult).toBe(prior);
+    expect(failed.session.latestSuccessfulResult?.trace).toBe(prior?.trace);
+  });
+
   it("atomically replaces a successful snapshot only after a later success", () => {
     const first = successfulRun(createLinearSystemsSession());
     const prior = first.latestSuccessfulResult;
@@ -115,16 +137,22 @@ describe("Linear Systems pure session", () => {
 
   it("marks output stale on edit and current again when the successful fingerprint returns", () => {
     const successful = successfulRun(createLinearSystemsSession());
+    const tracedSuccess = successful.latestSuccessfulResult;
+    const trace = tracedSuccess?.trace;
     const draft = editableDraft(successful);
     draft.b[0] = "7";
     const stale = replaceLinearSystemsDraft(successful, draft);
     expect(stale.resultStatus).toBe("stale");
+    expect(stale.latestSuccessfulResult).toBe(tracedSuccess);
+    expect(stale.latestSuccessfulResult?.trace).toBe(trace);
 
     const restoredDraft = editableDraft(stale);
     restoredDraft.b[0] = "6";
     const restored = replaceLinearSystemsDraft(stale, restoredDraft);
     expect(restored.resultStatus).toBe("current");
-    expect(restored.latestSuccessfulResult).toBe(successful.latestSuccessfulResult);
+    expect(restored.latestSuccessfulResult).toBe(tracedSuccess);
+    expect(restored.latestSuccessfulResult?.trace).toBe(trace);
+    expect(Object.isFrozen(trace)).toBe(true);
   });
 
   it("tracks meaningful work from input changes, alternate presets, and successful output", () => {
