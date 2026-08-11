@@ -19,7 +19,57 @@
   --glossary-popover-max-width: 26.25rem;
   --glossary-viewport-margin: 0.75rem;
   --glossary-trigger-gap: 0.5rem;
+  --motion-fast: 140ms;
+  --motion-state: 220ms;
+  --motion-transform: 420ms;
+  --ease-standard: cubic-bezier(.2, 0, 0, 1);
+  --ease-transform: cubic-bezier(.22, 1, .36, 1);
   --texture-decorative: none;
+}
+
+.computation-marker {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid var(--color-border);
+  border-inline-start-width: 0.25rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-soft);
+  color: var(--color-text-primary);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.computation-marker.is-selected {
+  border-inline-start-color: var(--color-accent-primary);
+  border-inline-start-width: 0.4rem;
+}
+
+.computation-marker.is-source {
+  border-inline-start-color: var(--color-accent-primary);
+}
+
+.computation-marker.is-target {
+  border-inline-start-color: var(--color-accent-secondary);
+  border-inline-start-style: double;
+}
+
+.computation-marker.is-changed {
+  border-inline-start-color: var(--color-accent-theory);
+  background: var(--color-output-surface);
+}
+
+.computation-marker.is-solved {
+  border-inline-start-color: var(--color-success);
+  background: var(--color-success-surface);
+}
+
+.computation-marker.is-maximum {
+  border-inline-start-color: var(--color-caution);
+  border-inline-start-style: dashed;
+  background: var(--color-caution-surface);
 }
 
 html[data-theme="light"] {

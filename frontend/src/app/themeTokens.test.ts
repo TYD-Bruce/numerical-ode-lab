@@ -74,6 +74,11 @@ describe("platform theme tokens", () => {
       "--glossary-popover-max-width",
       "--glossary-viewport-margin",
       "--glossary-trigger-gap",
+      "--motion-fast",
+      "--motion-state",
+      "--motion-transform",
+      "--ease-standard",
+      "--ease-transform",
     ]) {
       expect(theme).toContain(`${token}:`);
     }
@@ -82,6 +87,20 @@ describe("platform theme tokens", () => {
     expect(theme).toContain('html[data-theme="dark"]');
     expect(theme).toMatch(/color-scheme:\s*light/);
     expect(theme).toMatch(/color-scheme:\s*dark/);
+    expect(theme).toMatch(/--motion-fast:\s*140ms/);
+    expect(theme).toMatch(/--motion-state:\s*220ms/);
+    expect(theme).toMatch(/--motion-transform:\s*420ms/);
+    expect(theme).toContain(".computation-marker");
+    for (const state of [
+      "is-selected",
+      "is-source",
+      "is-target",
+      "is-changed",
+      "is-solved",
+      "is-maximum",
+    ]) {
+      expect(theme).toContain(`.${state}`);
+    }
   });
 
   it("boots the supported saved theme before the application module", () => {
