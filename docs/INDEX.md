@@ -19,24 +19,22 @@
 
 ## Current active milestone
 
-[PLAN.md](../PLAN.md) points to **Numerical T Lab Architecture v1**. The
-migration establishes explicit frontend, backend, pure numerical, shared
-contract, and Vercel-adapter ownership while preserving existing behavior.
-The accepted Linear Systems Day 1 checkpoint owns the authoritative pure
-numerical core, immutable approved presets, and pure session/fingerprint
-foundation. Day 1.5 adds the content-agnostic structured Computation Trace
-contract and complete bounded Linear Systems evidence emitted by that same
-numerical path. The
+[PLAN.md](../PLAN.md) points to **Linear Systems v1 Day 2**. Architecture v1
+remains frozen. The accepted Day 1 core owns the numerical algorithm, presets,
+and immutable results; Day 1.5 owns the structured trace. Day 2 now implements
+the independently lazy learner-facing route, frontend session/workflow,
+presentation-only trace renderer, lifecycle, Resume, accessibility, and
+responsive integration. The
 [approved design](superpowers/specs/2026-08-10-linear-systems-lab-v1-design.md)
 and
 [repository-grounded plan](superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md)
-separate these checkpoints from later route/UI rendering, Tutor, platform
-synchronization, and release verification phases. Architecture v1 adds no
-route, visible product feature, Tutor behavior, Glossary behavior, ODE/PDE
-behavior, push, or deployment. After its review gate, the next task is Linear
-Systems Day 2 product integration on the new workspace structure.
+separate numerical authority from the frontend renderer and from the still-
+pending Linear Algebra Tutor. Day 2 is locally verified with 86 files / 1,189
+tests, typechecks, build/manifest evidence, and desktop/mobile browser checks.
+No push or deployment occurred. The next task is Linear Algebra Tutor
+integration after maintainer acceptance.
 
-Current review:
+Latest architecture prerequisite review:
 [Architecture v1 Migration Review](reviews/2026-08-11-architecture-v1-migration-review.md)
 — verdict **ARCHITECTURE V1 LOCALLY MIGRATION-COMPLETE — READY FOR MAINTAINER
 ACCEPTANCE**; 82 files / 1,168 tests, all workspace typechecks, build,
@@ -191,7 +189,7 @@ maintainer acceptance of the F2 review commit.
 
 | Document | Status |
 |---|---|
-| [Linear Systems Lab Version 1 Design](superpowers/specs/2026-08-10-linear-systems-lab-v1-design.md) | Maintainer-approved numerical/product design; Day 1 pure core implemented locally; route/UI and Tutor pending |
+| [Linear Systems Lab Version 1 Design](superpowers/specs/2026-08-10-linear-systems-lab-v1-design.md) | Maintainer-approved design; Day 1/1.5 numerical evidence and Day 2 route/UI implemented locally; Tutor pending |
 | [Theme-Ready Platform Shell Design](superpowers/specs/2026-07-13-theme-ready-platform-shell-design.md) | Implemented, Vercel Preview-verified, safe to release |
 | [Human-Friendly Math Expressions Design](superpowers/specs/2026-07-10-human-friendly-math-expressions-design.md) | Implemented and verified |
 | [Observed Convergence Order Experiment Design](superpowers/specs/2026-07-10-convergence-study-design.md) | Implemented, verified, release ready |
@@ -203,7 +201,7 @@ maintainer acceptance of the F2 review commit.
 
 | Document | Status |
 |---|---|
-| [Linear Systems Lab Version 1 Implementation Plan](superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md) | Repository-grounded; Day 1 pure core implemented locally; route/UI, Tutor, platform synchronization, and release verification not started |
+| [Linear Systems Lab Version 1 Implementation Plan](superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md) | Repository-grounded; Day 1/1.5 and Day 2 route/UI/platform verification implemented locally; Tutor remains the next gate |
 | [Theme-Ready Platform Shell Implementation Plan](superpowers/plans/2026-07-13-theme-ready-platform-shell-implementation-plan.md) | Implemented historical plan; check the final review and architecture map for current state |
 | [Numerical T-Lab Rename Migration Plan](superpowers/plans/2026-07-22-numerical-t-lab-rename-migration-plan.md) | Project Identity Migration completed and verified |
 | [Content-Agnostic Interactive Glossary Framework Implementation Plan](superpowers/plans/2026-07-23-content-agnostic-interactive-glossary-framework-implementation-plan.md) | Fully executed locally; historical blocked-review findings closed; final verdict APPROVED FOR LOCAL FRAMEWORK RELEASE; no production content or visible behavior |

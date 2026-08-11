@@ -2,7 +2,7 @@
 
 ## Current status
 
-**Active milestone: Numerical T Lab Architecture v1 — locally migration-complete,
+**Active milestone: Linear Systems v1 Day 2 — locally implemented and verified,
 pending maintainer acceptance.**
 
 The maintainer accepts public baseline
@@ -21,17 +21,22 @@ and pure session/fingerprint foundation. Day 1.5 adds a small platform-level
 structured Computation Trace contract and makes that same single numerical
 path its first producer.
 
-Architecture v1 reorganizes the same product into `frontend`, `backend`,
-`packages/numerics`, and `packages/contracts` workspaces while retaining the
-root Vercel API adapter. No product feature, numerical contract, route, Tutor,
-Glossary, session, or deployment behavior is added or changed. The current
-gate is maintainer acceptance of the completed
-[Architecture v1 migration review](docs/reviews/2026-08-11-architecture-v1-migration-review.md),
-whose automated, manifest, and browser equivalence evidence is green. After
-acceptance, the next implementation task is Linear Systems
-Day 2 route/UI integration and a presentation-only trace renderer behind
-`/linear-algebra/linear-systems`. Do not begin Tutor, Preview, Production,
-push, or deployment work at this gate.
+Architecture v1 remains frozen. Day 2 adds the independently lazy
+`/linear-algebra/linear-systems` route, the frontend-owned Method → Data →
+Output → Diagnostics workflow, matrix editor, accessible validation,
+current/stale lifecycle, Resume/New experiment integration, and a
+presentation-only Computation Walkthrough that consumes the immutable trace
+emitted by the existing numerical core. Home, About, and the Linear Algebra
+overview now describe this locally available Lab; PDE remains Planned.
+
+The Day 2 gate passed 12 focused files / 95 tests, 86 full-suite files / 1,189
+tests, all workspace and API typechecks, import-boundary verification, the
+95-module production build, manifest/private-marker review, and bounded
+desktop/mobile browser verification. The Linear Systems chunk remains an
+independent dynamic asset. No Tutor, Linear Algebra Glossary, numerical-
+contract change, dependency change, push, Preview deployment, or Production
+deployment is included. The next task after maintainer acceptance is the
+separately gated Linear Algebra Tutor integration.
 
 The remainder of this document preserves the prior Glossary execution record
 as historical evidence. Its former pending-acceptance language is superseded

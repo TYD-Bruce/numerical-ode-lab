@@ -13,9 +13,10 @@ packages/contracts/       serializable cross-boundary Tutor DTOs
 api/chat.ts               thin Vercel function adapter
 ```
 
-The migration changed physical ownership, imports, and tooling. It did not add
-a product feature or change routes, numerical algorithms, Tutor behavior,
-Glossary behavior, session semantics, accessibility, or deployment paths.
+The migration changed physical ownership, imports, and tooling. Subsequent
+Linear Systems product integration uses those frozen boundaries without
+moving packages or changing numerical, Tutor, Glossary, or deployment
+authority.
 
 ## Workspace ownership
 
@@ -29,8 +30,9 @@ Browser ownership is organized as:
 - `frontend/src/pages/`: Home, About, module overviews, and Not Found;
 - `frontend/src/labs/ode/`: the mountable Initial Value Problems Lab, ODE
   workflow/session state, Convergence presentation, presets, and bindings;
-- `frontend/src/labs/linear-algebra/`: the pure product/session foundation for
-  the future Linear Systems route; no visible Lab exists yet;
+- `frontend/src/labs/linear-algebra/`: the pure editable session, complete
+  Linear Systems route, Method/Data/Output/Diagnostics application, and
+  presentation-only Computation Walkthrough renderer;
 - `frontend/src/tutor/`: browser Tutor session, panel, and `/api/chat` client;
 - `frontend/src/glossary/`: production Glossary model, registry, controller,
   and lazy surface;
@@ -105,6 +107,11 @@ frontend entry
   -> first-open Tutor panel
   -> interaction-deferred MathLive and Compute Engine
 
+frontend entry
+  -> dynamic Linear Systems route
+  -> frontend session and matrix/workflow presentation
+  -> Linear Systems numerical package and immutable computation trace
+
 first valid Glossary request
   -> dynamic Glossary surface
 
@@ -112,10 +119,11 @@ development only
   -> dynamic Glossary controls and Playground
 ```
 
-Public routes remain `/`, `/about`, `/ode`,
-`/ode/initial-value-problems`, `/linear-algebra`, and `/pde`; unknown routes
-render the in-shell Not Found page. `/linear-algebra/linear-systems` remains a
-planned Day 2 route and was not added by Architecture v1.
+Public routes are `/`, `/about`, `/ode`, `/ode/initial-value-problems`,
+`/linear-algebra`, `/linear-algebra/linear-systems`, and `/pde`; unknown routes
+render the in-shell Not Found page. Both complete Labs have independent dynamic
+route boundaries. The Linear Systems route intentionally exposes neither a
+Tutor binding nor a Glossary binding at this gate.
 
 The route module registry, Tutor Host, Glossary Host, and editable-math loader
 retain distinct dynamic imports. Package extraction does not create an eager
@@ -131,6 +139,11 @@ mounted instances remain route-owned runtime state.
 Complete-Lab disposal closes/disconnects platform surfaces, captures pure
 session and scroll state, invalidates stale work, disposes Lab-owned runtime
 handles, and clears route DOM. Session data remains memory-only.
+
+Linear Systems reuses this generic lifecycle. Its Store state contains only
+the deeply frozen frontend session and the immutable numerical result/trace
+reference. Resume metadata contains workflow, method, and current/stale labels
+but no matrix, right-hand side, solution, residual, or trace arithmetic.
 
 ## Numerical and expression invariants
 

@@ -6,7 +6,7 @@ Numerical T Lab is an interactive, AI-assisted laboratory for learning numerical
 
 **An Interactive Numerical Analysis Laboratory**
 
-The implemented module is the **Initial Value Problems Lab**, a browser-based teaching environment for scalar fixed-step ODE methods. It preserves the established **Method -> Data -> Output** workflow, numerical plots and tables, method comparison, exact-solution checks, Convergence Study, an interactive numerical Glossary, and a grounded AI Method Tutor.
+The locally implemented Labs are the **Initial Value Problems Lab**, a browser-based environment for scalar fixed-step ODE methods, and the **Linear Systems Lab**, a small dense `A x = b` environment for Gaussian elimination with partial pivoting and structured computation evidence.
 
 ## Live Demo
 
@@ -14,18 +14,40 @@ The implemented module is the **Initial Value Problems Lab**, a browser-based te
 
 The canonical Production URL is `https://numerical-t-lab.vercel.app/`.
 
-## Routes and module status
+## Local routes and module status
+
+This table describes the locally verified current repository. The Linear
+Systems work has not been pushed or deployed, so the live demo may remain on
+the prior accepted release until a separate deployment gate is completed.
 
 | Route | Page | Status |
 |---|---|---|
 | `/` | Platform Home | Available |
 | `/ode` | Numerical ODE overview | Available |
 | `/ode/initial-value-problems` | Initial Value Problems Lab | Available |
-| `/linear-algebra` | Numerical Linear Algebra roadmap | In development |
+| `/linear-algebra` | Numerical Linear Algebra overview | Available locally |
+| `/linear-algebra/linear-systems` | Linear Systems Lab | Available locally |
 | `/pde` | Numerical PDE roadmap | Planned |
 | `/about` | Platform and project overview | Available |
 
-Unknown page paths render the in-shell Not Found page. Linear Algebra and PDE are roadmap pages only; they do not contain runnable Labs.
+Unknown page paths render the in-shell Not Found page. Numerical PDE remains a
+roadmap page; Numerical Linear Algebra has one complete local Lab while Least
+Squares, SVD, and Eigenvalues remain planned.
+
+## Linear Systems Lab
+
+The Linear Systems Lab follows **Method -> Data -> Output -> Diagnostics** for
+dense real square systems of dimension 2 through 6. It uses the two approved
+presets or controlled decimal/scientific custom input, then presents the
+computed solution, `P A = L U` factors, pivot evidence, residual vector, and
+qualified preset-reference difference when authoritative.
+
+**Show computation** renders the immutable structured evidence emitted by the
+numerical algorithm, including pivot selection, row swaps, elimination,
+triangular solves, and residual arithmetic. The renderer never reruns the
+solver. A small residual is described as equation mismatch and is not claimed
+to prove small solution error. Linear Algebra Tutor and Linear Algebra Glossary
+content are not part of this local checkpoint.
 
 ## Initial Value Problems Lab
 
@@ -103,7 +125,7 @@ The production Vite base is `/`, so generated entry, stylesheet, font, and neste
 
 ## Architecture
 
-The public entry contains the project-owned router, static pages, in-memory store, shared Tutor Host placement, semantic theme tokens, and lifecycle services. The complete ODE Lab is dynamically imported only for `/ode/initial-value-problems`. The complete Tutor panel and networking load on first Tutor open. MathLive and editable/Compute Engine support remain later deferred boundaries.
+The public entry contains the project-owned router, static pages, in-memory store, shared Tutor Host placement, semantic theme tokens, and lifecycle services. The complete ODE and Linear Systems Labs have independent dynamic route boundaries. The complete Tutor panel and networking load on first Tutor open. MathLive and editable/Compute Engine support remain later deferred boundaries.
 
 Expression ownership is:
 
@@ -141,14 +163,15 @@ Key locations:
 - Tutor and Convergence Study are not available for Compare output.
 - Convergence Study is single-method, first-order, exact-solution-based, and synchronous.
 - MathLive and editable/Compute Engine chunks are intentionally deferred but substantial.
-- Numerical Linear Algebra is in development; Numerical PDE is planned.
+- Numerical Linear Algebra currently contains only the local Linear Systems v1
+  slice; additional matrix topics and Numerical PDE are planned.
 - Theme selection supports Light and Dark only; there is no system/automatic third mode.
 
 The **Content-Agnostic Interactive Glossary Framework** and reviewed ODE Wave 1
 integration are implemented. Runtime annotations remain explicit and
 scope-owned; the development Playground remains excluded from production.
 **Numerical T Lab Project Language Standard v1** is approved. A **Linear
-Systems Lab** remains a later milestone.
+Systems Tutor** remains the next separately gated milestone.
 
 ## Project documentation
 
@@ -156,6 +179,18 @@ See [`docs/INDEX.md`](docs/INDEX.md) for the current architecture, active plan,
 design specifications, implementation plans, reviews, and feature handoffs.
 
 ## Changelog
+
+### 2026-08-11 — Linear Systems Lab completed locally
+
+- Added the independently lazy `/linear-algebra/linear-systems` route with the
+  Method/Data/Output/Diagnostics workflow, accessible matrix editor,
+  current/stale result lifecycle, Resume, and New experiment integration.
+- Added the presentation-only Computation Walkthrough for the existing
+  immutable trace, including bounded pivot-failure evidence and stored
+  arithmetic disclosure.
+- Passed 86 files / 1,189 tests, workspace/API typechecks, boundary checks,
+  production build and manifest review, and desktop/mobile browser checks.
+  Linear Algebra Tutor, push, and deployment remain pending.
 
 ### 2026-08-11 — Architecture v1 completed locally
 

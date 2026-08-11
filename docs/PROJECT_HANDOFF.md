@@ -2,6 +2,64 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
+## Linear Systems v1 Day 2 product checkpoint — 2026-08-11
+
+Commit `e5e43f2d62ed9b36969679b0c91c318417574d36` implements the first complete
+Numerical Linear Algebra Lab at `/linear-algebra/linear-systems` on the frozen
+Architecture v1 boundaries. The frontend owns the Method → Data → Output →
+Diagnostics workflow, accessible 2-through-6 matrix editor, controlled draft
+validation, current/stale presentation, New experiment, Resume metadata, and
+responsive Light/Dark UI. The pre-existing numerical package remains the sole
+solver, factorization, residual, reference, and Computation Trace authority.
+
+The Computation Walkthrough is a presentation-only trace consumer. It renders
+all current semantic trace kinds, preserves stored ordering, offers native
+Show computation/Show arithmetic disclosure, respects generic retention
+metadata, and shows controlled failure evidence only through a rejected pivot.
+It does not call or reconstruct the solver. Failed runs preserve the prior
+immutable success; exact fingerprint restoration makes that same result
+current again.
+
+Platform integration adds an independent lazy route, parent-section
+navigation, intent prefetch, generic optional-Tutor handling, in-memory Store
+capture/restoration, privacy-safe Resume labels, and truthful Home/About/Linear
+Algebra overview status. The route deliberately has no Linear Algebra Tutor
+binding and no Glossary binding. ODE, the accepted ODE Glossary, PDE, backend,
+dependencies, and deployment configuration are unchanged.
+
+Day 2 verification:
+
+- focused route/UI/platform gate: 12 files, 95 tests passed;
+- full suite: 86 files, 1,189 tests passed;
+- frontend, numerics, contracts, and backend TypeScript checks passed;
+- four-owner plus Vercel-adapter import-boundary verification passed;
+- production build: 95 modules, with a separate Linear Systems JavaScript
+  chunk of 44.44 kB raw / 13.58 kB gzip and stylesheet of 11.25 kB raw /
+  2.61 kB gzip;
+- manifest and browser resource evidence confirmed that Home does not eagerly
+  load Linear Systems and that ODE, Tutor, Glossary, MathLive, and Compute
+  Engine remain separate/deferred; emitted assets contained no DEV Glossary or
+  private-reference markers;
+- local desktop and 390 × 844 browser verification covered both presets,
+  editing/validation, current/stale restoration, successful and pivot-failed
+  traces, arithmetic disclosure, reset, route restore, Resume, Light/Dark,
+  keyboard operation, contained overflow, direct nested navigation, console
+  health, and an ODE Forward Euler smoke run; and
+- `git diff --check` passed. No push, Preview deployment, or Production
+  deployment occurred.
+
+Problems found during verification were narrow presentation issues: the shared
+screen-reader-only class had previously arrived only with ODE CSS, so the
+Linear Systems route now owns its scoped equivalent; narrow factor matrices
+needed explicit P/L/U labels and smaller contained cells; and successful Run
+needed a focusable result heading plus a controlled live announcement. Each
+was corrected inside the Linear Systems frontend and covered by focused tests
+and browser recheck.
+
+The exact next task is separately gated **Linear Algebra Tutor integration**.
+Do not add Linear Algebra Glossary content, change numerical contracts, push,
+or deploy as part of that handoff.
+
 ## Architecture v1 migration checkpoint — 2026-08-10
 
 Numerical T Lab now has explicit npm-workspace ownership without a product or
@@ -46,8 +104,8 @@ Migration problems and resolutions:
 
 The migration did not add the Linear Systems route, computation renderer,
 Tutor integration, Glossary content, ODE trace, PDE work, dependency upgrade,
-push, Preview, or deployment. After final equivalence review, the next task is
-Linear Systems Day 2 product integration on these workspace boundaries.
+push, Preview, or deployment. At that checkpoint, Linear Systems Day 2 was the
+next task; it has since been completed on those boundaries as recorded above.
 
 Automated migration evidence is green: 82 test files / 1,168 tests, frontend,
 numerics, contracts, and backend TypeScript checks, the 87-module Vite
@@ -364,23 +422,24 @@ Tutor work remains a later gate after route lifecycle verification.
 
 ## 1. Product and public routes
 
-The learner-facing product is **Numerical T Lab**. The currently implemented numerical module is **Initial Value Problems Lab**, retaining the released Method -> Data -> Output ODE workflow.
+The learner-facing product is **Numerical T Lab**. The locally implemented
+complete Labs are the Initial Value Problems Lab and the Linear Systems Lab.
 
 | Route | Page | Status |
 |---|---|---|
 | `/` | Platform Home | Available |
 | `/ode` | Numerical ODE overview | Available |
 | `/ode/initial-value-problems` | Initial Value Problems Lab | Available |
-| `/linear-algebra` | Numerical Linear Algebra roadmap | In development |
+| `/linear-algebra` | Numerical Linear Algebra overview | Available locally |
+| `/linear-algebra/linear-systems` | Linear Systems Lab | Available locally |
 | `/pde` | Numerical PDE roadmap | Planned |
 | `/about` | Platform/project overview | Available |
 | any other page path | In-shell Not Found | Available |
 
-Linear Algebra and PDE remain truthful roadmap pages with no runnable controls
-at this Day 1 checkpoint. The active milestone is **Linear Systems Lab Version
-1**; its pure numerical/session core is implemented locally while the route/UI
-remains the next separately gated phase. The prior accepted Glossary milestone
-record begins below. The
+Numerical Linear Algebra now has one locally verified runnable Lab; Least
+Squares, SVD, and Eigenvalues remain planned, and PDE remains a truthful
+roadmap. Linear Algebra Tutor and Glossary integration remain separately
+gated. The prior accepted Glossary milestone record begins below. The
 [authoritative Glossary design](./superpowers/specs/2026-07-22-content-agnostic-interactive-glossary-framework-design.md)
 is approved and committed. Commit 1, the content-agnostic Glossary model and
 scope lifecycle, is implemented and accepted after conservative audit.

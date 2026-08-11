@@ -1,7 +1,7 @@
 # Linear Systems Lab Version 1 Implementation Plan
 
-Status: **Repository-grounded; Day 1 core and Day 1.5 structured computation
-evidence implemented locally; later phases not started**
+Status: **Repository-grounded; Day 1 core, Day 1.5 structured evidence, and
+Day 2 route/UI/platform verification implemented locally; Tutor pending**
 
 Date: 2026-08-10
 
@@ -96,20 +96,21 @@ output compatibility, pivot-failure evidence, and current/stale session
 reference preservation. No renderer, route, UI, Tutor, ODE trace, Store,
 dependency, or persistence work belongs to this checkpoint.
 
-## 3. Later phase 1 — route and UI integration
+## 3. Phase 1 — route and UI integration
 
-Status: **planned; do not implement in Day 1.5**
+Status: **implemented and locally verified in Day 2**
 
-### Likely new Linear Algebra owners
+### Implemented Linear Algebra owners
 
 - `frontend/src/labs/linear-algebra/linearSystemsApp.ts`
 - `frontend/src/labs/linear-algebra/linearSystemsApp.test.ts`
-- `frontend/src/labs/linear-algebra/linearSystemsLifecycle.test.ts`
+- `frontend/src/labs/linear-algebra/computationWalkthrough.ts`
+- `frontend/src/labs/linear-algebra/computationWalkthrough.test.ts`
 - `frontend/src/labs/linear-algebra/linearSystemsRoute.ts`
 - `frontend/src/labs/linear-algebra/linearSystemsRoute.test.ts`
 - `frontend/src/labs/linear-algebra/linearSystems.css`
 
-The mounted app will own Method → Data → Output → Diagnostics DOM, cell draft
+The mounted app owns Method → Data → Output → Diagnostics DOM, cell draft
 adapters, Run/reset interactions, semantic matrices/tables, a
 presentation-only computation-trace renderer, current/stale presentation,
 focus, announcements, and idempotent cleanup. It will use the Day 1 session as
@@ -163,9 +164,9 @@ direct navigation, refresh, matrix editing, both presets, successful/failed
 runs, stale/restored state, focus, semantic table containment, page overflow,
 and console health. Inspect the Vite manifest before making any chunk claim.
 
-## 4. Later phase 2 — Tutor integration
+## 4. Phase 2 — Tutor integration
 
-Status: **planned; do not implement in Day 1.5**
+Status: **planned; next separately gated task**
 
 ### Domain context and binding
 
@@ -205,9 +206,9 @@ context per message, stale exclusion, abort/generation safety, independent ODE
 behavior, deterministic demo responses, no invented condition number/error
 bound, and unchanged first-open Tutor lazy loading.
 
-## 5. Later phase 3 — platform and current-state synchronization
+## 5. Phase 3 — platform and current-state synchronization
 
-Status: **planned; do not implement in Day 1.5**
+Status: **Day 2 current-state owners synchronized; Tutor/release update pending**
 
 After route and Tutor behavior are verified, synchronize only current-state
 owners:
@@ -224,9 +225,9 @@ owners:
 Historical Glossary evidence remains historical and accepted. Do not rewrite
 it or claim Preview/Production before those gates occur.
 
-## 6. Later phase 4 — release verification
+## 6. Phase 4 — release verification
 
-Status: **planned; do not implement in Day 1.5**
+Status: **Day 2 route/UI gate verified locally; complete v1 Tutor/release gate pending**
 
 Run, in order:
 
@@ -261,8 +262,7 @@ Cut before release if necessary:
 
 ## 8. Exact next gate
 
-Maintainer review and acceptance of the Day 1.5 computation-trace commit.
-After acceptance, begin later phase 1 with the complete Linear Systems route
-shell and presentation-only trace renderer tested against the already-frozen
-numerical/session contract. Do not begin Tutor work until route/UI lifecycle
-behavior is locally verified.
+Maintainer review and acceptance of the locally verified Day 2 route/UI and
+presentation-only Computation Walkthrough. After acceptance, begin the
+separately scoped Linear Algebra Tutor integration. Do not add Linear Algebra
+Glossary content, new numerical methods, push, or deploy at this gate.

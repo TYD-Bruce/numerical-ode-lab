@@ -285,6 +285,16 @@ an equivalently qualified phrase. It must not be called unqualified “exact
 error.” Editing any preset input removes preset/reference authority; restoring
 the exact parsed numerical fingerprint restores it.
 
+The frontend Computation Walkthrough is presentation-only. It renders the
+ordered `matrix_scale`, `pivot_selection`, `row_swap`, `elimination`,
+`factorization_complete`, `forward_substitution`, `backward_substitution`,
+`residual_component`, `residual_inf_norm`, and conditional
+`preset_reference_difference` records directly from the trace. It may format,
+group, expand, and contain that evidence, but it must not call the solver,
+recompute arithmetic, reorder stored terms, infer missing steps, or turn Tutor
+output into numerical authority. Trace expansion does not change experiment
+identity or the immutable successful result.
+
 The two and only two v1 presets are:
 
 - `Starter 3×3`: `A = [[3,1,-1],[2,4,1],[-1,2,5]]`,

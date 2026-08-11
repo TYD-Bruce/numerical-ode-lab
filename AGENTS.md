@@ -18,16 +18,17 @@ It is intentionally detailed, but it is still a map—not a substitute for appro
 
 > Understand → Compute → Visualize → Analyze
 
-**Current complete Lab:** Initial Value Problems Lab
+**Current complete Labs:** Initial Value Problems Lab and Linear Systems Lab
 
 **Product domains:**
 
 - Numerical ODE — implemented
-- Numerical Linear Algebra — Lab not implemented; roadmap page available
+- Numerical Linear Algebra — Linear Systems Lab implemented locally
 - Numerical PDE — Lab not implemented; roadmap page available
 
-**Current active milestone:** Numerical T Lab Architecture v1 migration, followed
-by Linear Systems v1 Day 2 product integration after the migration review gate.
+**Current active milestone:** Linear Systems v1 Day 2 product integration is
+implemented and locally verified. Maintainer acceptance is the gate before the
+separate Linear Algebra Tutor task.
 
 All new user-facing product UI is English-only unless the maintainer explicitly approves another language strategy.
 
@@ -101,7 +102,9 @@ The implemented platform includes:
 - Platform Home and History API routes
 - Numerical ODE overview
 - Initial Value Problems Lab at `/ode/initial-value-problems`
-- Linear Algebra and PDE roadmap pages
+- Numerical Linear Algebra overview and the Linear Systems Lab at
+  `/linear-algebra/linear-systems`
+- Numerical PDE roadmap page
 - Human-Friendly Math Expressions
 - safe editable and readonly math
 - controlled legacy expression import
@@ -328,16 +331,18 @@ Current dependency direction:
 frontend/src/main.ts
   → Platform bootstrap
   → Router / AppShell / Store / static pages
-  → dynamically loaded complete Lab route
+  → dynamically loaded complete ODE or Linear Systems Lab route
   → ODE UI / solvers / Chart.js / Convergence / Lab-owned bindings
-  → first-open Tutor runtime
-  → deferred MathLive and Compute Engine
+      → first-open Tutor runtime
+      → deferred MathLive and Compute Engine
+  → Linear Systems UI / pure session / numerical result and trace presentation
 ```
 
 Required:
 
 - Home/static pages do not statically import ODE runtime.
 - ODE remains behind the complete-Lab route boundary.
+- Linear Systems remains behind its independent complete-Lab route boundary.
 - Tutor UI/networking remains behind first open.
 - MathLive and Compute Engine remain deferred.
 - Route loaders share cached attempts and use Retry.
@@ -627,7 +632,8 @@ Unless explicitly approved, do not add:
 
 - new numerical methods or adaptive stepping;
 - Compare/Leap-Frog convergence;
-- Linear Algebra solvers or matrix editor;
+- additional Linear Algebra methods, conditioning diagnostics, or editor scope
+  beyond the approved Linear Systems v1 contract;
 - PDE solvers or visualizations;
 - accounts, authentication, persistent history, cross-tab sync, or offline mode;
 - localStorage, sessionStorage, or IndexedDB;

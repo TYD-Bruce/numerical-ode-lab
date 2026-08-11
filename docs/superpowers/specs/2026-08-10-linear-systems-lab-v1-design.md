@@ -1,7 +1,7 @@
 # Linear Systems Lab Version 1 Design
 
-Status: **Maintainer-approved numerical and product design; Day 1 numerical
-core and Day 1.5 structured computation evidence implemented locally**
+Status: **Maintainer-approved design; Day 1 numerical core, Day 1.5 structured
+evidence, and Day 2 learner-facing route/UI implemented locally; Tutor pending**
 
 Date: 2026-08-10
 
