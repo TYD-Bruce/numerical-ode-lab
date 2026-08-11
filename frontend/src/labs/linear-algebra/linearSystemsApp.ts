@@ -199,6 +199,12 @@ export function mountLinearSystemsApp(
     });
   }
 
+  function invalidateFailedAttempt(form?: HTMLFormElement): void {
+    lastFailure = undefined;
+    failureComputationExpanded = false;
+    form?.querySelector("[data-solve-failure]")?.remove();
+  }
+
   function goToStep(step: LinearSystemsWorkflowStep): void {
     if (
       (step === "output" || step === "diagnostics") &&
@@ -462,7 +468,9 @@ export function mountLinearSystemsApp(
       toggle.setAttribute("aria-controls", controlledId);
       panel.append(toggle);
       if (failureComputationExpanded) {
-        const evidence = createComputationWalkthrough(error.trace);
+        const evidence = createComputationWalkthrough(error.trace, {
+          headingLevel: 4,
+        });
         evidence.id = controlledId;
         evidence.dataset.failureWalkthrough = "true";
         panel.append(evidence);
@@ -590,8 +598,7 @@ export function mountLinearSystemsApp(
     form.addEventListener("input", (event) => {
       if (!(event.target instanceof HTMLInputElement)) return;
       clearFieldErrors(form);
-      lastFailure = undefined;
-      failureComputationExpanded = false;
+      invalidateFailedAttempt(form);
       const previousStatus = session.resultStatus;
       session = replaceLinearSystemsDraft(session, currentDraftFromForm(form));
       markMeaningful();
@@ -609,7 +616,7 @@ export function mountLinearSystemsApp(
       const next = resizeLinearSystemsDraft(session, Number(dimension.value));
       if (next === session) return;
       session = next;
-      lastFailure = undefined;
+      invalidateFailedAttempt();
       markMeaningful();
       publish();
       render();
@@ -621,7 +628,7 @@ export function mountLinearSystemsApp(
         preset.value as LinearSystemsPresetId
       );
       session = setLinearSystemsWorkflowStep(session, "data");
-      lastFailure = undefined;
+      invalidateFailedAttempt();
       markMeaningful();
       publish();
       render();
@@ -718,7 +725,9 @@ export function mountLinearSystemsApp(
       )
     );
     if (computationExpanded) {
-      const walkthrough = createComputationWalkthrough(result.trace);
+      const walkthrough = createComputationWalkthrough(result.trace, {
+        headingLevel: 3,
+      });
       walkthrough.id = computationControlId;
       computation.append(walkthrough);
     }

@@ -16,6 +16,12 @@ type TraceRetentionMetadata = Pick<
   readonly continuation?: object;
 };
 
+type HeadingLevel = 3 | 4 | 5 | 6;
+
+export interface ComputationWalkthroughOptions {
+  readonly headingLevel: 3 | 4;
+}
+
 function element<K extends keyof HTMLElementTagNameMap>(
   tag: K,
   text?: string,
@@ -25,6 +31,13 @@ function element<K extends keyof HTMLElementTagNameMap>(
   if (text !== undefined) node.textContent = text;
   if (className) node.className = className;
   return node;
+}
+
+function heading(level: HeadingLevel, text: string): HTMLHeadingElement {
+  if (level === 3) return element("h3", text);
+  if (level === 4) return element("h4", text);
+  if (level === 5) return element("h5", text);
+  return element("h6", text);
 }
 
 export function formatLinearSystemsNumber(value: number): string {
@@ -129,17 +142,22 @@ export function createTraceRetentionNotice(
   return notice;
 }
 
-function stepCard(step: LinearSystemTraceStep, title: string): HTMLElement {
+function stepCard(
+  step: LinearSystemTraceStep,
+  title: string,
+  headingLevel: HeadingLevel
+): HTMLElement {
   const card = element("article", undefined, "ls-computation-step");
   card.dataset.traceKind = step.kind;
-  card.append(element("h4", title));
+  card.append(heading(headingLevel, title));
   return card;
 }
 
 function renderMatrixScale(
-  step: Extract<LinearSystemTraceStep, { kind: "matrix_scale" }>
+  step: Extract<LinearSystemTraceStep, { kind: "matrix_scale" }>,
+  headingLevel: HeadingLevel
 ): HTMLElement {
-  const card = stepCard(step, "Matrix scale and pivot threshold");
+  const card = stepCard(step, "Matrix scale and pivot threshold", headingLevel);
   card.append(
     element(
       "p",
@@ -177,9 +195,14 @@ function renderMatrixScale(
 }
 
 function renderPivotSelection(
-  step: Extract<LinearSystemTraceStep, { kind: "pivot_selection" }>
+  step: Extract<LinearSystemTraceStep, { kind: "pivot_selection" }>,
+  headingLevel: HeadingLevel
 ): HTMLElement {
-  const card = stepCard(step, `Choose the pivot in column ${step.column + 1}`);
+  const card = stepCard(
+    step,
+    `Choose the pivot in column ${step.column + 1}`,
+    headingLevel
+  );
   card.append(
     element(
       "p",
@@ -206,11 +229,13 @@ function renderPivotSelection(
 }
 
 function renderRowSwap(
-  step: Extract<LinearSystemTraceStep, { kind: "row_swap" }>
+  step: Extract<LinearSystemTraceStep, { kind: "row_swap" }>,
+  headingLevel: HeadingLevel
 ): HTMLElement {
   const card = stepCard(
     step,
-    `Swap row ${step.firstRow + 1} and row ${step.secondRow + 1}`
+    `Swap row ${step.firstRow + 1} and row ${step.secondRow + 1}`,
+    headingLevel
   );
   card.append(
     element(
@@ -278,9 +303,10 @@ function renderRowSwap(
 }
 
 function renderElimination(
-  step: Extract<LinearSystemTraceStep, { kind: "elimination" }>
+  step: Extract<LinearSystemTraceStep, { kind: "elimination" }>,
+  headingLevel: HeadingLevel
 ): HTMLElement {
-  const card = stepCard(step, `Eliminate row ${step.targetRow + 1}`);
+  const card = stepCard(step, `Eliminate row ${step.targetRow + 1}`, headingLevel);
   card.append(
     element(
       "p",
@@ -318,9 +344,10 @@ function renderElimination(
 }
 
 function renderFactorizationComplete(
-  step: Extract<LinearSystemTraceStep, { kind: "factorization_complete" }>
+  step: Extract<LinearSystemTraceStep, { kind: "factorization_complete" }>,
+  headingLevel: HeadingLevel
 ): HTMLElement {
-  const card = stepCard(step, "Factorization complete");
+  const card = stepCard(step, "Factorization complete", headingLevel);
   card.append(
     element("p", "The stored factors now represent the public relation P A = L U."),
     element(
@@ -342,14 +369,16 @@ function renderFactorizationComplete(
 function renderSubstitution(
   step:
     | Extract<LinearSystemTraceStep, { kind: "forward_substitution" }>
-    | Extract<LinearSystemTraceStep, { kind: "backward_substitution" }>
+    | Extract<LinearSystemTraceStep, { kind: "backward_substitution" }>,
+  headingLevel: HeadingLevel
 ): HTMLElement {
   const forward = step.kind === "forward_substitution";
   const symbol = forward ? "y" : "x̂";
   const result = forward ? step.resultingY : step.resultingXHat;
   const card = stepCard(
     step,
-    `${forward ? "Solve forward for" : "Solve backward for"} ${symbol}${step.row + 1}`
+    `${forward ? "Solve forward for" : "Solve backward for"} ${symbol}${step.row + 1}`,
+    headingLevel
   );
   card.append(
     element(
@@ -369,7 +398,18 @@ function renderSubstitution(
         formatLinearSystemsNumber(contribution.product),
         formatLinearSystemsNumber(contribution.accumulatorAfterSubtraction),
       ])
-    ),
+    )
+  );
+  if (step.accumulatedKnownTermSum !== undefined) {
+    const accumulated = element(
+      "p",
+      `Accumulated known-term sum: ${formatLinearSystemsNumber(step.accumulatedKnownTermSum)}.`,
+      "ls-formula-line"
+    );
+    accumulated.dataset.accumulatedKnownTermSum = "true";
+    arithmetic.append(accumulated);
+  }
+  arithmetic.append(
     element(
       "p",
       `Numerator ${formatLinearSystemsNumber(step.numeratorBeforeDivision)} ÷ diagonal ${formatLinearSystemsNumber(step.diagonalValue)} = ${formatLinearSystemsNumber(result)}`,
@@ -381,9 +421,14 @@ function renderSubstitution(
 }
 
 function renderResidualComponent(
-  step: Extract<LinearSystemTraceStep, { kind: "residual_component" }>
+  step: Extract<LinearSystemTraceStep, { kind: "residual_component" }>,
+  headingLevel: HeadingLevel
 ): HTMLElement {
-  const card = stepCard(step, `Check residual component ${step.row + 1}`);
+  const card = stepCard(
+    step,
+    `Check residual component ${step.row + 1}`,
+    headingLevel
+  );
   card.append(
     element(
       "p",
@@ -409,9 +454,10 @@ function renderResidualComponent(
 }
 
 function renderResidualNorm(
-  step: Extract<LinearSystemTraceStep, { kind: "residual_inf_norm" }>
+  step: Extract<LinearSystemTraceStep, { kind: "residual_inf_norm" }>,
+  headingLevel: HeadingLevel
 ): HTMLElement {
-  const card = stepCard(step, "Take the residual infinity norm");
+  const card = stepCard(step, "Take the residual infinity norm", headingLevel);
   card.append(
     element(
       "p",
@@ -431,9 +477,14 @@ function renderResidualNorm(
 }
 
 function renderPresetReference(
-  step: Extract<LinearSystemTraceStep, { kind: "preset_reference_difference" }>
+  step: Extract<LinearSystemTraceStep, { kind: "preset_reference_difference" }>,
+  headingLevel: HeadingLevel
 ): HTMLElement {
-  const card = stepCard(step, "Compare with the preset reference solution");
+  const card = stepCard(
+    step,
+    "Compare with the preset reference solution",
+    headingLevel
+  );
   card.append(
     element(
       "p",
@@ -461,37 +512,56 @@ function renderPresetReference(
 function phase(
   title: string,
   description: string,
-  steps: readonly LinearSystemTraceStep[]
+  steps: readonly LinearSystemTraceStep[],
+  headingLevel: HeadingLevel,
+  stepHeadingLevel: HeadingLevel
 ): HTMLElement | undefined {
   if (steps.length === 0) return undefined;
   const section = element("section", undefined, "ls-walkthrough-phase");
-  section.append(element("h3", title), element("p", description, "ls-muted"));
+  section.append(heading(headingLevel, title), element("p", description, "ls-muted"));
   for (const step of steps) {
-    if (step.kind === "matrix_scale") section.append(renderMatrixScale(step));
-    if (step.kind === "pivot_selection") section.append(renderPivotSelection(step));
-    if (step.kind === "row_swap") section.append(renderRowSwap(step));
-    if (step.kind === "elimination") section.append(renderElimination(step));
-    if (step.kind === "factorization_complete") {
-      section.append(renderFactorizationComplete(step));
+    if (step.kind === "matrix_scale") {
+      section.append(renderMatrixScale(step, stepHeadingLevel));
     }
-    if (step.kind === "forward_substitution") section.append(renderSubstitution(step));
-    if (step.kind === "backward_substitution") section.append(renderSubstitution(step));
-    if (step.kind === "residual_component") section.append(renderResidualComponent(step));
-    if (step.kind === "residual_inf_norm") section.append(renderResidualNorm(step));
+    if (step.kind === "pivot_selection") {
+      section.append(renderPivotSelection(step, stepHeadingLevel));
+    }
+    if (step.kind === "row_swap") section.append(renderRowSwap(step, stepHeadingLevel));
+    if (step.kind === "elimination") {
+      section.append(renderElimination(step, stepHeadingLevel));
+    }
+    if (step.kind === "factorization_complete") {
+      section.append(renderFactorizationComplete(step, stepHeadingLevel));
+    }
+    if (step.kind === "forward_substitution") {
+      section.append(renderSubstitution(step, stepHeadingLevel));
+    }
+    if (step.kind === "backward_substitution") {
+      section.append(renderSubstitution(step, stepHeadingLevel));
+    }
+    if (step.kind === "residual_component") {
+      section.append(renderResidualComponent(step, stepHeadingLevel));
+    }
+    if (step.kind === "residual_inf_norm") {
+      section.append(renderResidualNorm(step, stepHeadingLevel));
+    }
     if (step.kind === "preset_reference_difference") {
-      section.append(renderPresetReference(step));
+      section.append(renderPresetReference(step, stepHeadingLevel));
     }
   }
   return section;
 }
 
 export function createComputationWalkthrough(
-  trace: LinearSystemComputationTrace
+  trace: LinearSystemComputationTrace,
+  options: ComputationWalkthroughOptions
 ): HTMLElement {
+  const phaseHeadingLevel = (options.headingLevel + 1) as HeadingLevel;
+  const stepHeadingLevel = (options.headingLevel + 2) as HeadingLevel;
   const walkthrough = element("div", undefined, "ls-computation-walkthrough");
   walkthrough.dataset.computationWalkthrough = "true";
   walkthrough.append(
-    element("h2", "Computation walkthrough"),
+    heading(options.headingLevel, "Computation walkthrough"),
     element(
       "p",
       "These steps present the structured evidence emitted by the numerical computation. The presentation does not rerun the solver.",
@@ -511,22 +581,30 @@ export function createComputationWalkthrough(
     phase(
       "1. Matrix scale and pivot threshold",
       "The original matrix sets the scale used by the Lab's engineering safeguard.",
-      trace.steps.filter((step) => step.kind === "matrix_scale")
+      trace.steps.filter((step) => step.kind === "matrix_scale"),
+      phaseHeadingLevel,
+      stepHeadingLevel
     ),
     phase(
       "2. Factorization and elimination",
       "Pivot decisions, row exchanges, and eliminations build P A = L U in recorded order.",
-      trace.steps.filter((step) => factorizationKinds.has(step.kind))
+      trace.steps.filter((step) => factorizationKinds.has(step.kind)),
+      phaseHeadingLevel,
+      stepHeadingLevel
     ),
     phase(
       "3. Forward substitution",
       "Solve L y = P b from the first row to the last.",
-      trace.steps.filter((step) => step.kind === "forward_substitution")
+      trace.steps.filter((step) => step.kind === "forward_substitution"),
+      phaseHeadingLevel,
+      stepHeadingLevel
     ),
     phase(
       "4. Backward substitution",
       "Solve U x̂ = y from the last row to the first.",
-      trace.steps.filter((step) => step.kind === "backward_substitution")
+      trace.steps.filter((step) => step.kind === "backward_substitution"),
+      phaseHeadingLevel,
+      stepHeadingLevel
     ),
     phase(
       "5. Residual check",
@@ -534,12 +612,16 @@ export function createComputationWalkthrough(
       trace.steps.filter(
         (step) =>
           step.kind === "residual_component" || step.kind === "residual_inf_norm"
-      )
+      ),
+      phaseHeadingLevel,
+      stepHeadingLevel
     ),
     phase(
       "6. Preset reference comparison",
       "This qualified comparison appears only for an authoritative preset fingerprint.",
-      trace.steps.filter((step) => step.kind === "preset_reference_difference")
+      trace.steps.filter((step) => step.kind === "preset_reference_difference"),
+      phaseHeadingLevel,
+      stepHeadingLevel
     ),
   ].filter((section): section is HTMLElement => section !== undefined);
   walkthrough.append(...sections);

@@ -261,6 +261,143 @@ describe("Linear Systems Lab application", () => {
     mounted.dispose();
   });
 
+  it("removes stale failed-attempt UI on A or b edits while preserving prior success", () => {
+    const success = successfulSession();
+    const singular = replaceLinearSystemsDraft(success, {
+      dimension: 3,
+      A: [
+        ["1", "1", "1"],
+        ["1", "1", "1"],
+        ["1", "1", "1"],
+      ],
+      b: ["3", "3", "3"],
+    });
+    const initial = setLinearSystemsWorkflowStep(singular, "data");
+    const prior = initial.latestSuccessfulResult;
+    const { target, mounted } = mount(initial);
+
+    runControl(target).click();
+    const firstFailure = target.querySelector<HTMLElement>("[data-solve-failure]")!;
+    expect(firstFailure.textContent).toContain("Computation stopped in pivot column");
+    target.querySelector<HTMLButtonElement>("[data-show-failure-computation]")!.click();
+    expect(target.querySelector("[data-failure-walkthrough]")).not.toBeNull();
+
+    input(target, "[data-matrix-a-row='0'][data-matrix-a-column='0']", "2");
+    expect(target.querySelector("[data-solve-failure]")).toBeNull();
+    expect(target.querySelector("[data-failure-walkthrough]")).toBeNull();
+    expect(target.textContent).not.toContain("Computation stopped in pivot column");
+    expect(target.textContent).not.toContain("Show computation before failure");
+    expect(mounted.getSession().latestSuccessfulResult).toBe(prior);
+    expect(mounted.getSession().resultStatus).toBe("stale");
+
+    runControl(target).click();
+    const secondFailure = target.querySelector<HTMLElement>("[data-solve-failure]")!;
+    expect(secondFailure).not.toBe(firstFailure);
+    expect(secondFailure.textContent).toContain("Computation stopped in pivot column");
+    expect(
+      secondFailure.querySelector("[data-show-failure-computation]")?.getAttribute(
+        "aria-expanded"
+      )
+    ).toBe("false");
+
+    target.querySelector<HTMLButtonElement>("[data-show-failure-computation]")!.click();
+    expect(target.querySelector("[data-failure-walkthrough]")).not.toBeNull();
+    input(target, "[data-vector-b-row='0']", "4");
+    expect(target.querySelector("[data-solve-failure]")).toBeNull();
+    expect(target.querySelector("[data-failure-walkthrough]")).toBeNull();
+    expect(target.textContent).not.toContain("Computation stopped in pivot column");
+    expect(mounted.getSession().latestSuccessfulResult).toBe(prior);
+    expect(mounted.getSession().resultStatus).toBe("stale");
+    mounted.dispose();
+  });
+
+  it("clears failed-attempt UI after an edit without inventing Output", () => {
+    const singular = replaceLinearSystemsDraft(createLinearSystemsSession(), {
+      dimension: 3,
+      A: [
+        ["1", "1", "1"],
+        ["1", "1", "1"],
+        ["1", "1", "1"],
+      ],
+      b: ["3", "3", "3"],
+    });
+    const { target, mounted } = mount(
+      setLinearSystemsWorkflowStep(singular, "data")
+    );
+
+    runControl(target).click();
+    expect(target.querySelector("[data-solve-failure]")).not.toBeNull();
+    input(target, "[data-vector-b-row='0']", "4");
+    expect(target.querySelector("[data-solve-failure]")).toBeNull();
+    expect(mounted.getSession().latestSuccessfulResult).toBeUndefined();
+    expect(mounted.getSession().resultStatus).toBe("absent");
+    expect(target.textContent).not.toContain("Computed solution");
+    mounted.dispose();
+  });
+
+  it("uses subordinate native headings for successful and failed computation evidence", () => {
+    const { target, mounted } = mount();
+    goToData(target);
+    runControl(target).click();
+    target.querySelector<HTMLButtonElement>("[data-show-computation]")!.click();
+
+    const output = target.querySelector<HTMLElement>("[data-workflow-panel='output']")!;
+    const successWalkthrough = output.querySelector<HTMLElement>(
+      "[data-computation-walkthrough]"
+    )!;
+    expect(output.querySelector(":scope > header h2")?.textContent).toBe(
+      "Computed solution"
+    );
+    expect(successWalkthrough.querySelector(":scope > h3")?.textContent).toBe(
+      "Computation walkthrough"
+    );
+    expect(successWalkthrough.querySelector(".ls-walkthrough-phase > h4")).not.toBeNull();
+    expect(successWalkthrough.querySelector(".ls-computation-step > h5")).not.toBeNull();
+    const successToggle = target.querySelector<HTMLButtonElement>("[data-show-computation]")!;
+    expect(successToggle.getAttribute("aria-expanded")).toBe("true");
+    expect(successToggle.getAttribute("aria-controls")).toBe(successWalkthrough.id);
+
+    target.querySelector<HTMLButtonElement>("[data-workflow-step='data']")!.click();
+    input(target, "[data-matrix-a-row='0'][data-matrix-a-column='0']", "1");
+    input(target, "[data-matrix-a-row='0'][data-matrix-a-column='1']", "1");
+    input(target, "[data-matrix-a-row='0'][data-matrix-a-column='2']", "1");
+    input(target, "[data-matrix-a-row='1'][data-matrix-a-column='0']", "1");
+    input(target, "[data-matrix-a-row='1'][data-matrix-a-column='1']", "1");
+    input(target, "[data-matrix-a-row='1'][data-matrix-a-column='2']", "1");
+    input(target, "[data-matrix-a-row='2'][data-matrix-a-column='0']", "1");
+    input(target, "[data-matrix-a-row='2'][data-matrix-a-column='1']", "1");
+    input(target, "[data-matrix-a-row='2'][data-matrix-a-column='2']", "1");
+    input(target, "[data-vector-b-row='0']", "3");
+    input(target, "[data-vector-b-row='1']", "3");
+    input(target, "[data-vector-b-row='2']", "3");
+    runControl(target).click();
+    target.querySelector<HTMLButtonElement>("[data-show-failure-computation]")!.click();
+
+    const data = target.querySelector<HTMLElement>("[data-workflow-panel='data']")!;
+    const failedAttempt = data.querySelector<HTMLElement>("[data-solve-failure]")!;
+    const failureWalkthrough = failedAttempt.querySelector<HTMLElement>(
+      "[data-failure-walkthrough]"
+    )!;
+    expect(data.querySelector(":scope > h2")?.textContent).toContain("Data");
+    expect(failedAttempt.querySelector(":scope > h3")?.textContent).toBe(
+      "The system was not solved"
+    );
+    expect(failureWalkthrough.querySelector(":scope > h4")?.textContent).toBe(
+      "Computation walkthrough"
+    );
+    expect(failureWalkthrough.querySelector(".ls-walkthrough-phase > h5")).not.toBeNull();
+    expect(failureWalkthrough.querySelector(".ls-computation-step > h6")).not.toBeNull();
+    const failureToggle = failedAttempt.querySelector<HTMLButtonElement>(
+      "[data-show-failure-computation]"
+    )!;
+    expect(failureToggle.getAttribute("aria-expanded")).toBe("true");
+    expect(failureToggle.getAttribute("aria-controls")).toBe(failureWalkthrough.id);
+
+    const ids = [...target.querySelectorAll<HTMLElement>("[id]")].map((node) => node.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    mounted.dispose();
+  });
+
   it("resets to Starter 3×3, clears presentation state, and disposes idempotently", () => {
     const applyConfirmedReset = vi.fn();
     const { target, mounted } = mount(successfulSession(), {
