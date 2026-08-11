@@ -2,5 +2,17 @@
   "name": "@numerical-t-lab/frontend",
   "private": true,
   "version": "0.1.0",
-  "type": "module"
+  "type": "module",
+  "scripts": {
+    "build": "vite build --config vite.config.ts",
+    "dev": "vite --config vite.config.ts",
+    "preview": "vite preview --config vite.config.ts",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@cortex-js/compute-engine": "0.58.0",
+    "@numerical-t-lab/numerics": "0.1.0",
+    "chart.js": "^4.4.0",
+    "mathlive": "0.110.0"
+  }
 }
