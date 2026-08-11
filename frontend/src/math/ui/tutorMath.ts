@@ -1,4 +1,4 @@
-import type { TutorMessage } from "../../aiTypes";
+import type { TutorMessage } from "@numerical-t-lab/contracts/tutor";
 import {
   renderReadonlyMath,
   type ReadonlyMathBackendLoader,

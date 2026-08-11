@@ -1,7 +1,7 @@
 import type {
   TutorConvergenceStudy,
   TutorObservedOrderAssessment,
-} from "../../aiTypes";
+} from "@numerical-t-lab/contracts/tutor";
 import type { ObservedOrderAssessment } from "@numerical-t-lab/numerics/convergence";
 import {
   currentStudyFingerprint,

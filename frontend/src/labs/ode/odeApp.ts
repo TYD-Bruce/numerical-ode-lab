@@ -22,7 +22,7 @@ import {
   type MethodCatalogEntry,
 } from "@numerical-t-lab/numerics/ode/method-catalog";
 import { escapeHtml, formatCoefficients } from "./mathDisplay";
-import type { ChartInstruction } from "../../aiTypes";
+import type { ChartInstruction } from "@numerical-t-lab/contracts/tutor";
 import { methodMathContent } from "../../math/ui/methodMathContent";
 import { renderReadonlyMath } from "../../math/ui/readonlyMath";
 import { validateFixedStepGrid } from "@numerical-t-lab/numerics/ode/grid";

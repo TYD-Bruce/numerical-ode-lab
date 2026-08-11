@@ -31,7 +31,7 @@ loadEnvFile(".env");
 import {
   handleChatRequest,
   type ChatHandlerBody,
-} from "../api/chatHandler.js";
+} from "./ai/chatHandler.js";
 
 const PORT = Number(process.env.API_PORT ?? 3001);
 

@@ -3,10 +3,9 @@
  * OPENAI_API_KEY must only exist in server/serverless environment.
  */
 
-export interface ChatHandlerBody {
-  messages: Array<{ role: "user" | "assistant"; content: string }>;
-  context: Record<string, unknown>;
-}
+import type { ChatRequest } from "@numerical-t-lab/contracts/tutor";
+
+export type ChatHandlerBody = ChatRequest<Record<string, unknown>>;
 
 export interface ChatHandlerResult {
   status: number;

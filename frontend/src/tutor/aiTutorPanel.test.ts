@@ -3,7 +3,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createAppSessionStore } from "../app/appSessionStore";
 import type { LabTutorBinding } from "../app/contracts";
-import type { ChatRequest } from "../aiTypes";
+import type { ChatRequest } from "@numerical-t-lab/contracts/tutor";
 import type { OdeTutorSource } from "../labs/ode/odeTutorBinding";
 import { createReadonlySolverResult } from "../labs/ode/odeSession";
 import { createBeginnerStarterSession, createOdeResumeSummary } from "../labs/ode/odeSession";

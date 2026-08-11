@@ -3,7 +3,7 @@ import type {
   TutorSessionAccess,
   TutorTranscriptItem,
 } from "../app/contracts";
-import type { ChatRequest, ChatResponse } from "../aiTypes";
+import type { ChatRequest, ChatResponse } from "@numerical-t-lab/contracts/tutor";
 import { buildOdeLabContext, isChartInstruction, sanitizeTutorText } from "./aiTutor";
 import { getTutorConvergenceStudy } from "../labs/ode/convergenceTutor";
 import { renderTutorMessageContent } from "../math/ui/tutorMath";

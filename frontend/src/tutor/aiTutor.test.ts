@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { buildOdeLabContext, sanitizeTutorText, type ProblemInputs } from "./aiTutor";
-import type { TutorConvergenceStudy } from "../aiTypes";
+import type { TutorConvergenceStudy } from "@numerical-t-lab/contracts/tutor";
 import { integrateFirstOrder } from "@numerical-t-lab/numerics/ode/solvers";
 import { sendTutorMessage } from "./tutorClient";
 

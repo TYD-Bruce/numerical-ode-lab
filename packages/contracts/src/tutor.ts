@@ -94,17 +94,6 @@ export interface OdeLabContext {
   convergenceStudy?: TutorConvergenceStudy;
 }
 
-export interface OdeTutorProblemInputs {
-  kind: "first_order" | "second_order";
-  equationDisplay: string;
-  t0: number;
-  tEnd: number;
-  h: number;
-  y0?: number;
-  u0?: number;
-  v0?: number;
-}
-
 export interface ChartInstruction {
   type: "line_chart" | "error_table" | "zoom_range" | "none";
   title?: string;
@@ -117,12 +106,12 @@ export interface ChartInstruction {
   tableRows?: Array<Record<string, string | number>>;
 }
 
-export interface ChatRequest {
+export interface ChatRequest<TContext extends object = OdeLabContext> {
   messages: Array<{
     role: "user" | "assistant";
     content: string;
   }>;
-  context: OdeLabContext;
+  context: TContext;
 }
 
 export interface ChatResponse {

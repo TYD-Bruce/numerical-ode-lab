@@ -1,4 +1,5 @@
-import type { ChartInstruction, OdeTutorProblemInputs } from "../../aiTypes";
+import type { ChartInstruction } from "@numerical-t-lab/contracts/tutor";
+import type { OdeTutorProblemInputs } from "./odeTutorTypes";
 import type { LabTutorBinding } from "../../app/contracts";
 import type { ConvergenceUiState } from "./convergenceStudyState";
 import type { ReadonlySolverResult } from "./odeSession";

@@ -6,8 +6,8 @@ import type {
   OdeLabContext,
   TutorConvergenceStudy,
   TutorMessage,
-  OdeTutorProblemInputs,
-} from "../aiTypes";
+} from "@numerical-t-lab/contracts/tutor";
+import type { OdeTutorProblemInputs } from "../labs/ode/odeTutorTypes";
 import { sendTutorMessage } from "./tutorClient";
 import { ODE_TUTOR_SUGGESTED_QUESTIONS } from "../labs/ode/odeTutorBinding";
 

@@ -1,4 +1,4 @@
-import type { ChatRequest, ChatResponse } from "../aiTypes";
+import type { ChatRequest, ChatResponse } from "@numerical-t-lab/contracts/tutor";
 
 export const PUBLIC_TUTOR_UNAVAILABLE_MESSAGE =
   "AI Tutor is temporarily unavailable. Please try again later.";

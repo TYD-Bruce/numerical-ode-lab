@@ -2,5 +2,11 @@
   "name": "@numerical-t-lab/contracts",
   "private": true,
   "version": "0.1.0",
-  "type": "module"
+  "type": "module",
+  "exports": {
+    "./tutor": "./src/tutor.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  }
 }
