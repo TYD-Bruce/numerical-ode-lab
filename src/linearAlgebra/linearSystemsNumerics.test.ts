@@ -212,6 +212,17 @@ describe("Gaussian elimination with partial pivoting", () => {
     );
     expect(result.pivots[0]).toMatchObject({ column: 0, selectedRow: 0 });
     expect(result.rowSwapCount).toBe(0);
+
+    const [pivotSelection] = traceStepsOfKind(result, "pivot_selection");
+    expect(pivotSelection).toMatchObject({
+      column: 0,
+      candidates: [
+        { row: 0, value: 2, absoluteValue: 2 },
+        { row: 1, value: -2, absoluteValue: 2 },
+      ],
+      selectedRow: 0,
+      accepted: true,
+    });
   });
 
   it("records a required first-column row swap", () => {
