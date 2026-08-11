@@ -33,7 +33,10 @@ export const odeOverviewPage: RouteModule = {
         createRouteLink(
           "Open Initial Value Problems Lab",
           "/ode/initial-value-problems",
-          { className: "platform-action", prefetchCompleteLab: true }
+          {
+            className: "platform-action",
+            prefetchRouteId: "ode-initial-value-problems",
+          }
         )
       );
 

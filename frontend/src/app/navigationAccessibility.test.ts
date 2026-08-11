@@ -18,7 +18,7 @@ function clickEvent(overrides: MouseEventInit = {}): MouseEvent {
 describe("navigation accessibility", () => {
   beforeEach(() => document.body.replaceChildren());
 
-  it("uses exact page semantics and location semantics for the ODE parent", () => {
+  it("uses exact page semantics and location semantics for complete-Lab parents", () => {
     const host = document.createElement("div");
     document.body.append(host);
     const shell = createAppShell(host);
@@ -26,6 +26,20 @@ describe("navigation accessibility", () => {
     shell.setActiveRoute("ode-overview");
     for (const link of shell.root.querySelectorAll('[data-route-id="ode-overview"]')) {
       expect(link.getAttribute("aria-current")).toBe("page");
+    }
+
+    shell.setActiveRoute("linear-algebra-overview");
+    for (const link of shell.root.querySelectorAll(
+      '[data-route-id="linear-algebra-overview"]'
+    )) {
+      expect(link.getAttribute("aria-current")).toBe("page");
+    }
+    shell.setActiveRoute("linear-algebra-linear-systems");
+    for (const link of shell.root.querySelectorAll(
+      '[data-route-id="linear-algebra-overview"]'
+    )) {
+      expect(link.getAttribute("aria-current")).toBe("location");
+      expect(link.classList.contains("is-module-active")).toBe(true);
     }
 
     shell.setActiveRoute("ode-initial-value-problems");
@@ -72,10 +86,11 @@ describe("navigation accessibility", () => {
     expect(isInterceptableNavigation(clickEvent(), anchor, location.origin)).toBe(true);
   });
 
-  it("prefetches the complete ODE route once on hover or keyboard focus", async () => {
+  it("prefetches each complete Lab route once on hover or keyboard focus", async () => {
     history.replaceState({}, "", "/");
     const pending = new Promise<RouteModule>(() => undefined);
     let loadCount = 0;
+    let linearLoadCount = 0;
     const host = document.createElement("div");
     document.body.append(host);
     const shell = createAppShell(host);
@@ -84,6 +99,10 @@ describe("navigation accessibility", () => {
       routes: createRouteDefinitions({
         initialValueProblemsLoader: () => {
           loadCount += 1;
+          return pending;
+        },
+        linearSystemsLoader: () => {
+          linearLoadCount += 1;
           return pending;
         },
       }),
@@ -98,11 +117,14 @@ describe("navigation accessibility", () => {
     openLab.dispatchEvent(new FocusEvent("focusin", { bubbles: true }));
     expect(loadCount).toBe(1);
 
-    const roadmap = shell.outlet.querySelector<HTMLAnchorElement>(
-      'a[href="/linear-algebra"]'
+    const linearLab = shell.outlet.querySelector<HTMLAnchorElement>(
+      'a[href="/linear-algebra/linear-systems"]'
     )!;
-    roadmap.dispatchEvent(new MouseEvent("mouseover", { bubbles: true }));
+    linearLab.dispatchEvent(new MouseEvent("mouseover", { bubbles: true }));
     expect(loadCount).toBe(1);
+    expect(linearLoadCount).toBe(1);
+    linearLab.dispatchEvent(new FocusEvent("focusin", { bubbles: true }));
+    expect(linearLoadCount).toBe(1);
     router.dispose();
   });
 

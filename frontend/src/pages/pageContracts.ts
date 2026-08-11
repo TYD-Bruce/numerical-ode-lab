@@ -51,14 +51,20 @@ export function createTextElement(
 export function createRouteLink(
   label: string,
   href: string,
-  options: { className?: string; prefetchCompleteLab?: boolean } = {}
+  options: {
+    className?: string;
+    prefetchRouteId?: Extract<
+      import("../app/contracts").RouteId,
+      "ode-initial-value-problems" | "linear-algebra-linear-systems"
+    >;
+  } = {}
 ): HTMLAnchorElement {
   const link = document.createElement("a");
   link.href = href;
   link.textContent = label;
   if (options.className) link.className = options.className;
-  if (options.prefetchCompleteLab) {
-    link.dataset.prefetchRouteId = "ode-initial-value-problems";
+  if (options.prefetchRouteId) {
+    link.dataset.prefetchRouteId = options.prefetchRouteId;
   }
   return link;
 }

@@ -46,6 +46,7 @@ export function createPlatformBootstrap(options: {
   readonly tutorHost?: PlatformTutorHost;
   readonly glossaryHost?: PlatformGlossaryHost;
   readonly initialValueProblemsLoader?: () => Promise<LabRouteModule<unknown>>;
+  readonly linearSystemsLoader?: () => Promise<LabRouteModule<unknown>>;
   readonly developmentRoutes?: readonly DevelopmentRouteDefinitionInput[];
   readonly enableDevelopmentTools?: boolean;
   readonly loadDevelopmentControls?: () => Promise<
@@ -112,9 +113,11 @@ export function createPlatformBootstrap(options: {
     glossaryHost,
     scrollRestoration,
     initialValueProblemsLoader: options.initialValueProblemsLoader,
+    linearSystemsLoader: options.linearSystemsLoader,
   });
   const routes = createRouteDefinitions({
     initialValueProblemsLoader: registry.loadInitialValueProblems,
+    linearSystemsLoader: registry.loadLinearSystems,
     homeSessionSource: store,
     developmentRoutes: developmentToolsEnabled
       ? options.developmentRoutes ?? [

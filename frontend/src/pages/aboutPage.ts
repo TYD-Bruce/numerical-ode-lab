@@ -54,7 +54,7 @@ export function createAboutPage(): RouteModule {
           createTextElement("h2", "What is available now"),
           createTextElement(
             "p",
-            "The currently implemented product is the Numerical ODE Initial Value Problems Lab, including fixed-step methods, visual comparison, exact-solution support, and convergence analysis."
+            "The currently implemented product includes the Numerical ODE Initial Value Problems Lab and the Numerical Linear Algebra Linear Systems Lab. The ODE Lab supports fixed-step methods, visual comparison, exact-solution support, and convergence analysis. The Linear Systems Lab supports Gaussian elimination with partial pivoting, structured computation evidence, and residual diagnostics."
           )
         );
 
@@ -63,7 +63,7 @@ export function createAboutPage(): RouteModule {
           createTextElement("h2", "Future platform direction"),
           createTextElement(
             "p",
-            "The planned platform expands toward Numerical Linear Algebra and Numerical PDE while retaining a computation-first learning cycle and carefully grounded AI assistance. Planned modules are presented as roadmaps, not released tools."
+            "Future work may expand Numerical Linear Algebra beyond linear systems and add Numerical PDE while retaining a computation-first learning cycle and carefully grounded AI assistance. Planned areas remain clearly labeled rather than presented as released tools."
           )
         );
 

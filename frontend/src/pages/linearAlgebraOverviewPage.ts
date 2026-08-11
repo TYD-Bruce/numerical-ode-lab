@@ -1,6 +1,7 @@
 import type { RouteModule } from "../app/contracts";
 import {
   appendPageHeading,
+  createRouteLink,
   createStatus,
   createTextElement,
   mountStaticPage,
@@ -16,29 +17,36 @@ export const linearAlgebraOverviewPage: RouteModule = {
       );
       const statusLine = document.createElement("p");
       statusLine.append(
-        createStatus("In development", "development"),
+        createStatus("Available", "available"),
         document.createTextNode(
-          " — this module is a roadmap today and does not yet contain runnable controls."
+          " — one complete Lab is ready for small dense linear systems."
         )
       );
 
-      const roadmap = document.createElement("section");
-      roadmap.className = "platform-card platform-feature-card";
-      roadmap.append(
-        createTextElement("h2", "Planned learning sequence"),
+      const available = document.createElement("section");
+      available.className = "platform-card platform-feature-card";
+      available.append(
+        createTextElement("h2", "Linear Systems Lab"),
         createTextElement(
           "p",
-          "Linear Systems is the first planned Lab and will establish the shared matrix workflow."
-        )
+          "Solve A x = b with Gaussian elimination and partial pivoting, inspect P A = L U, and check the residual against the original equations."
+        ),
+        createRouteLink("Open Linear Systems Lab", "/linear-algebra/linear-systems", {
+          className: "platform-action",
+          prefetchRouteId: "linear-algebra-linear-systems",
+        })
       );
+      const roadmap = document.createElement("section");
+      roadmap.className = "platform-reading-section";
+      roadmap.append(createTextElement("h2", "Future learning sequence"));
       const list = document.createElement("ul");
-      for (const item of ["Linear Systems", "Least Squares", "SVD", "Eigenvalues"]) {
+      for (const item of ["Least Squares", "SVD", "Eigenvalues"]) {
         const entry = document.createElement("li");
         entry.append(document.createTextNode(`${item} `), createStatus("Planned", "planned"));
         list.append(entry);
       }
       roadmap.append(list);
-      page.append(statusLine, roadmap);
+      page.append(statusLine, available, roadmap);
     });
   },
 };

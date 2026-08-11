@@ -27,7 +27,7 @@ export const notFoundPage: RouteModule = {
         createRouteLink("Home", "/", { className: "platform-action" }),
         createRouteLink("Initial Value Problems Lab", "/ode/initial-value-problems", {
           className: "platform-action platform-action-secondary",
-          prefetchCompleteLab: true,
+          prefetchRouteId: "ode-initial-value-problems",
         })
       );
 

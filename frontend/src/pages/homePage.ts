@@ -46,10 +46,24 @@ function resumeCard(summary: ResumeSummary): HTMLElement {
       )
     );
   }
+  if (summary.resultLabel) {
+    card.append(
+      createTextElement(
+        "p",
+        summary.resultLabel,
+        "platform-resume-analysis"
+      )
+    );
+  }
   card.append(
     createRouteLink("Resume Lab", summary.route, {
       className: "platform-action",
-      prefetchCompleteLab: summary.moduleId === "ode",
+      prefetchRouteId:
+        summary.moduleId === "ode"
+          ? "ode-initial-value-problems"
+          : summary.moduleId === "linear_algebra"
+            ? "linear-algebra-linear-systems"
+            : undefined,
     })
   );
   return card;
@@ -116,16 +130,17 @@ export function createHomePage(sessionSource?: HomeSessionSource): RouteModule {
               "Experiment with fixed-step methods for initial value problems and analyze numerical error.",
             action: createRouteLink("Open Lab", "/ode/initial-value-problems", {
               className: "platform-action",
-              prefetchCompleteLab: true,
+              prefetchRouteId: "ode-initial-value-problems",
             }),
           }),
           moduleCard({
             title: "Numerical Linear Algebra",
-            status: createStatus("In development", "development"),
+            status: createStatus("Available", "available"),
             description:
-              "Build intuition for the matrix computations that support numerical models.",
-            action: createRouteLink("View roadmap", "/linear-algebra", {
-              className: "platform-action platform-action-secondary",
+              "Solve small dense linear systems and inspect the numerical evidence behind pivoting, factorization, and residual checks.",
+            action: createRouteLink("Open Lab", "/linear-algebra/linear-systems", {
+              className: "platform-action",
+              prefetchRouteId: "linear-algebra-linear-systems",
             }),
           }),
           moduleCard({
@@ -148,7 +163,7 @@ export function createHomePage(sessionSource?: HomeSessionSource): RouteModule {
         const second = document.createElement("li");
         second.append(
           document.createTextNode("Linear Systems "),
-          createStatus("Future Lab", "development")
+          createStatus("Available", "available")
         );
         const third = document.createElement("li");
         third.append(

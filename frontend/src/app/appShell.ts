@@ -178,14 +178,21 @@ export function createAppShell(target: HTMLElement): AppShell {
         link.classList.remove("is-module-active");
       }
 
-      const activeRouteId =
-        routeId === "ode-initial-value-problems" ? "ode-overview" : routeId;
+      const parentRouteId =
+        routeId === "ode-initial-value-problems"
+          ? "ode-overview"
+          : routeId === "linear-algebra-linear-systems"
+            ? "linear-algebra-overview"
+            : routeId;
       if (routeId === "not-found") return;
 
       for (const link of root.querySelectorAll<HTMLElement>(
-        `[data-route-id="${activeRouteId}"]`
+        `[data-route-id="${parentRouteId}"]`
       )) {
-        if (routeId === "ode-initial-value-problems") {
+        if (
+          routeId === "ode-initial-value-problems" ||
+          routeId === "linear-algebra-linear-systems"
+        ) {
           link.setAttribute("aria-current", "location");
           link.classList.add("is-module-active");
         } else {

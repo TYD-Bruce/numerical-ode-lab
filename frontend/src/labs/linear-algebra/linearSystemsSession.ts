@@ -1,4 +1,6 @@
 import {
+  LINEAR_SYSTEMS_MAX_DIMENSION,
+  LINEAR_SYSTEMS_MIN_DIMENSION,
   solveLinearSystem,
   type LinearSystemSolveError,
   type LinearSystemSolveSuccess,
@@ -9,6 +11,13 @@ import {
   matchLinearSystemsPreset,
   type LinearSystemsPresetId,
 } from "@numerical-t-lab/numerics/linear-algebra/linear-systems-presets";
+import type { ResumeSummary } from "../../app/contracts";
+
+export type LinearSystemsWorkflowStep =
+  | "method"
+  | "data"
+  | "output"
+  | "diagnostics";
 
 export interface LinearSystemsDraft {
   readonly dimension: number;
@@ -20,6 +29,7 @@ export type LinearSystemsResultStatus = "absent" | "current" | "stale";
 
 export interface LinearSystemsSessionState {
   readonly version: 1;
+  readonly step: LinearSystemsWorkflowStep;
   readonly dimension: number;
   readonly ADraft: readonly (readonly string[])[];
   readonly bDraft: readonly string[];
@@ -32,7 +42,23 @@ export interface LinearSystemsSessionState {
 
 export type LinearSystemsSessionFailureCode =
   | "draft_shape_mismatch"
+  | "incomplete_numeric_draft"
+  | "non_finite_numeric_draft"
   | "invalid_numeric_draft";
+
+export type LinearSystemsDraftIssueCode =
+  | "shape"
+  | "incomplete"
+  | "malformed"
+  | "non_finite";
+
+export interface LinearSystemsDraftIssue {
+  readonly code: LinearSystemsDraftIssueCode;
+  readonly message: string;
+  readonly field?: "A" | "b";
+  readonly row?: number;
+  readonly column?: number;
+}
 
 export interface LinearSystemsSessionFailure {
   readonly code: LinearSystemsSessionFailureCode;
@@ -86,6 +112,76 @@ function parseNumericLiteral(value: string): number | undefined {
   return Number.isFinite(parsed) ? parsed : undefined;
 }
 
+export function validateLinearSystemsDraft(
+  draft: LinearSystemsDraft
+): readonly LinearSystemsDraftIssue[] {
+  if (
+    !Number.isInteger(draft.dimension) ||
+    draft.dimension < LINEAR_SYSTEMS_MIN_DIMENSION ||
+    draft.dimension > LINEAR_SYSTEMS_MAX_DIMENSION ||
+    draft.A.length !== draft.dimension ||
+    draft.b.length !== draft.dimension ||
+    draft.A.some((row) => row.length !== draft.dimension)
+  ) {
+    return Object.freeze([
+      Object.freeze({
+        code: "shape" as const,
+        message:
+          "The matrix and right-hand side drafts must match a square dimension from 2 through 6.",
+      }),
+    ]);
+  }
+
+  const issues: LinearSystemsDraftIssue[] = [];
+  const inspect = (
+    value: string,
+    field: "A" | "b",
+    row: number,
+    column?: number
+  ): void => {
+    const trimmed = value.trim();
+    const location =
+      field === "A"
+        ? `Matrix A, row ${row + 1}, column ${(column ?? 0) + 1}`
+        : `Vector b, row ${row + 1}`;
+    if (trimmed.length === 0) {
+      issues.push({
+        code: "incomplete",
+        field,
+        row,
+        ...(column === undefined ? {} : { column }),
+        message: `${location} is incomplete. Enter a decimal number.`,
+      });
+      return;
+    }
+    if (!NUMERIC_LITERAL.test(trimmed)) {
+      issues.push({
+        code: "malformed",
+        field,
+        row,
+        ...(column === undefined ? {} : { column }),
+        message: `${location} must use decimal or scientific notation.`,
+      });
+      return;
+    }
+    if (!Number.isFinite(Number(trimmed))) {
+      issues.push({
+        code: "non_finite",
+        field,
+        row,
+        ...(column === undefined ? {} : { column }),
+        message: `${location} must be finite.`,
+      });
+    }
+  };
+
+  draft.A.forEach((row, rowIndex) =>
+    row.forEach((value, column) => inspect(value, "A", rowIndex, column))
+  );
+  draft.b.forEach((value, row) => inspect(value, "b", row));
+  return deepFreeze(issues);
+}
+
 function parseDraft(draft: LinearSystemsDraft): DraftParseOutcome {
   if (
     !Number.isInteger(draft.dimension) ||
@@ -99,6 +195,20 @@ function parseDraft(draft: LinearSystemsDraft): DraftParseOutcome {
         "draft_shape_mismatch",
         "The matrix and right-hand side drafts must match the selected square dimension."
       ),
+    };
+  }
+
+  const issue = validateLinearSystemsDraft(draft)[0];
+  if (issue) {
+    const code: LinearSystemsSessionFailureCode =
+      issue.code === "incomplete"
+        ? "incomplete_numeric_draft"
+        : issue.code === "non_finite"
+          ? "non_finite_numeric_draft"
+          : "invalid_numeric_draft";
+    return {
+      ok: false,
+      error: sessionFailure(code, issue.message),
     };
   }
 
@@ -159,7 +269,8 @@ function resultStatusFor(
 
 function buildSession(
   draft: LinearSystemsDraft,
-  latestSuccessfulResult?: LinearSystemSolveSuccess
+  latestSuccessfulResult?: LinearSystemSolveSuccess,
+  step: LinearSystemsWorkflowStep = "method"
 ): LinearSystemsSessionState {
   const copiedDraft = {
     dimension: draft.dimension,
@@ -177,10 +288,13 @@ function buildSession(
   const meaningful =
     latestSuccessfulResult !== undefined ||
     inputFingerprint === null ||
-    inputFingerprint !== starterFingerprint;
+    inputFingerprint !== starterFingerprint ||
+    step === "output" ||
+    step === "diagnostics";
 
   return deepFreeze({
     version: 1 as const,
+    step,
     dimension: copiedDraft.dimension,
     ADraft: copiedDraft.A,
     bDraft: copiedDraft.b,
@@ -219,7 +333,11 @@ export function loadLinearSystemsPreset(
   session: LinearSystemsSessionState,
   presetId: LinearSystemsPresetId
 ): LinearSystemsSessionState {
-  return buildSession(draftFromPreset(presetId), session.latestSuccessfulResult);
+  return buildSession(
+    draftFromPreset(presetId),
+    session.latestSuccessfulResult,
+    session.step
+  );
 }
 
 export function replaceLinearSystemsDraft(
@@ -227,7 +345,52 @@ export function replaceLinearSystemsDraft(
   draft: LinearSystemsDraft
 ): LinearSystemsSessionState {
   if (draftsEqual(session, draft)) return session;
-  return buildSession(draft, session.latestSuccessfulResult);
+  return buildSession(draft, session.latestSuccessfulResult, session.step);
+}
+
+export function resizeLinearSystemsDraft(
+  session: LinearSystemsSessionState,
+  dimension: number
+): LinearSystemsSessionState {
+  if (
+    !Number.isInteger(dimension) ||
+    dimension < LINEAR_SYSTEMS_MIN_DIMENSION ||
+    dimension > LINEAR_SYSTEMS_MAX_DIMENSION
+  ) {
+    return session;
+  }
+  if (dimension === session.dimension) return session;
+  const A = Array.from({ length: dimension }, (_, row) =>
+    Array.from(
+      { length: dimension },
+      (_, column) => session.ADraft[row]?.[column] ?? ""
+    )
+  );
+  const b = Array.from(
+    { length: dimension },
+    (_, row) => session.bDraft[row] ?? ""
+  );
+  return buildSession(
+    { dimension, A, b },
+    session.latestSuccessfulResult,
+    "data"
+  );
+}
+
+export function setLinearSystemsWorkflowStep(
+  session: LinearSystemsSessionState,
+  step: LinearSystemsWorkflowStep
+): LinearSystemsSessionState {
+  if (session.step === step) return session;
+  return buildSession(
+    {
+      dimension: session.dimension,
+      A: session.ADraft,
+      b: session.bDraft,
+    },
+    session.latestSuccessfulResult,
+    step
+  );
 }
 
 export function runLinearSystemsSession(
@@ -253,7 +416,8 @@ export function runLinearSystemsSession(
       A: session.ADraft,
       b: session.bDraft,
     },
-    solve.result
+    solve.result,
+    "output"
   );
   return Object.freeze({
     ok: true as const,
@@ -266,4 +430,34 @@ export function computeLinearSystemsLabMeaningful(
   session: LinearSystemsSessionState
 ): boolean {
   return session.meaningful;
+}
+
+export function createLinearSystemsResumeSummary(
+  session: LinearSystemsSessionState,
+  timestamp: number
+): ResumeSummary {
+  const stepLabel: ResumeSummary["stepLabel"] =
+    session.step === "method"
+      ? "Method"
+      : session.step === "data"
+        ? "Data"
+        : session.step === "output"
+          ? "Output"
+          : "Diagnostics";
+  return Object.freeze({
+    moduleId: "linear_algebra" as const,
+    route: "/linear-algebra/linear-systems",
+    labTitle: "Linear Systems Lab",
+    stepLabel,
+    methodLabel: "Gaussian elimination with partial pivoting",
+    ...(session.resultStatus === "absent"
+      ? {}
+      : {
+          resultLabel:
+            session.resultStatus === "current"
+              ? ("Result current" as const)
+              : ("Result stale" as const),
+        }),
+    lastMeaningfulInteraction: timestamp,
+  });
 }

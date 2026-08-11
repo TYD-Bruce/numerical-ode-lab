@@ -1,0 +1,643 @@
+.linear-systems-shell {
+  --ls-stage-accent: var(--color-method-accent);
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--space-6);
+  color: var(--color-text-primary);
+  font-family: "DM Sans", system-ui, sans-serif;
+  line-height: 1.55;
+}
+
+.linear-systems-shell *,
+.linear-systems-shell *::before,
+.linear-systems-shell *::after {
+  box-sizing: border-box;
+}
+
+.linear-systems-shell .sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.ls-hero {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.ls-breadcrumb {
+  color: var(--color-text-secondary);
+  font-size: 0.86rem;
+}
+
+.ls-breadcrumb a {
+  color: var(--color-accent-primary);
+}
+
+.ls-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.ls-title-row h1 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3rem);
+  letter-spacing: -0.04em;
+}
+
+.ls-lede,
+.ls-muted,
+.ls-walkthrough-intro {
+  max-width: 74ch;
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.ls-experiment-identity,
+.ls-preset-identity {
+  width: fit-content;
+  margin: 0;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-accent);
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+}
+
+.ls-workflow-rail {
+  overflow-x: auto;
+  padding-block: 0.15rem;
+}
+
+.ls-workflow-rail ol {
+  display: grid;
+  min-width: 36rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ls-workflow-rail li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.ls-workflow-number {
+  display: grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 50%;
+  color: var(--color-text-secondary);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.75rem;
+}
+
+.ls-workflow-step {
+  width: 100%;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-raised);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+.ls-workflow-step[aria-current="step"] {
+  border-color: var(--color-accent-primary);
+  background: var(--color-accent-primary);
+  color: var(--color-on-accent);
+}
+
+.ls-workflow-step:disabled {
+  border-color: var(--color-border);
+  background: var(--color-disabled-surface);
+  color: var(--color-disabled-text);
+  cursor: not-allowed;
+}
+
+.ls-panel {
+  position: relative;
+  min-width: 0;
+  overflow: clip;
+  padding: clamp(1.1rem, 3vw, 2rem);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-primary);
+  box-shadow: var(--shadow-card);
+}
+
+.ls-workflow-panel::before {
+  position: absolute;
+  inset: 0 0 auto;
+  height: var(--space-1);
+  background: var(--ls-stage-accent);
+  content: "";
+}
+
+.ls-stage-method { --ls-stage-accent: var(--color-method-accent); }
+.ls-stage-data { --ls-stage-accent: var(--color-data-accent); }
+.ls-stage-output { --ls-stage-accent: var(--color-output-accent); }
+.ls-stage-diagnostics { --ls-stage-accent: var(--color-convergence-accent); }
+
+.ls-panel > h2,
+.ls-result-header h2,
+.ls-factorization-rail h3,
+.ls-walkthrough-phase h3,
+.ls-computation-step h4 {
+  margin-top: 0;
+}
+
+.ls-method-sequence {
+  display: grid;
+  gap: var(--space-3);
+  max-width: 68ch;
+  margin-block: var(--space-6);
+  padding-left: 1.4rem;
+}
+
+.ls-teaching-note,
+.ls-stale-notice,
+.ls-trace-retention {
+  margin-block: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-left: var(--space-1) solid var(--color-accent-secondary);
+  border-radius: var(--radius-sm);
+  background: var(--color-data-surface);
+}
+
+.ls-teaching-note p {
+  margin: var(--space-2) 0 0;
+}
+
+.ls-stale-notice {
+  border-left-color: var(--color-caution);
+  background: var(--color-caution-surface);
+}
+
+.ls-button {
+  min-height: 2.65rem;
+  padding: 0.65rem 1rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ls-button-primary {
+  border-color: var(--color-accent-primary);
+  background: var(--color-accent-primary);
+  color: var(--color-on-accent);
+}
+
+.ls-button-secondary {
+  border-color: var(--color-accent-primary);
+  background: var(--color-surface-accent);
+  color: var(--color-accent-primary-strong);
+}
+
+.ls-button-ghost {
+  border-color: var(--color-border-strong);
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+}
+
+.ls-button-danger {
+  border-color: var(--color-danger);
+  background: var(--color-danger-surface);
+  color: var(--color-danger);
+}
+
+.ls-workflow-step:focus-visible,
+.ls-button:focus-visible,
+.ls-input-matrix input:focus-visible,
+.ls-control-field select:focus-visible,
+.ls-matrix-region:focus-visible,
+.ls-table-region:focus-visible,
+.ls-arithmetic-details summary:focus-visible {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 3px;
+}
+
+.ls-data-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-block: var(--space-6) var(--space-3);
+}
+
+.ls-control-field {
+  display: grid;
+  gap: var(--space-2);
+  color: var(--color-text-secondary);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.ls-control-field select {
+  min-width: 11rem;
+  min-height: 2.65rem;
+  padding: 0.55rem 2.2rem 0.55rem 0.7rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  font: inherit;
+}
+
+.ls-equation-editor {
+  display: flex;
+  max-width: 100%;
+  align-items: center;
+  gap: var(--space-3);
+  overflow-x: auto;
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-inset);
+}
+
+.ls-equation-label,
+.ls-equation-symbol {
+  color: var(--color-accent-theory);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.ls-matrix-region,
+.ls-table-region {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  border-radius: var(--radius-sm);
+}
+
+.ls-editor-region {
+  flex: 0 0 auto;
+  overflow: visible;
+}
+
+.ls-input-matrix,
+.ls-numeric-matrix,
+.ls-evidence-table {
+  border-collapse: separate;
+  border-spacing: 0.35rem;
+  color: var(--color-text-primary);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.ls-input-matrix input {
+  width: 5.25rem;
+  min-height: 2.65rem;
+  padding: 0.45rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 0.45rem;
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  font: inherit;
+  text-align: right;
+}
+
+.ls-input-matrix input[aria-invalid="true"] {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 1px var(--color-danger);
+}
+
+.ls-field-error {
+  display: block;
+  width: 5.25rem;
+  margin-top: 0.25rem;
+  color: var(--color-danger);
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: 0.72rem;
+  line-height: 1.25;
+}
+
+.ls-form-actions,
+.ls-panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.ls-error-summary,
+.ls-solve-failure {
+  margin-bottom: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-sm);
+  background: var(--color-danger-surface);
+  color: var(--color-text-primary);
+}
+
+.ls-error-summary h3,
+.ls-solve-failure h3 {
+  margin-top: 0;
+  color: var(--color-danger);
+}
+
+.ls-preserved-result {
+  font-weight: 700;
+}
+
+.ls-result-header {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-2);
+}
+
+.ls-eyebrow {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.ls-solution-vector {
+  border: 1px solid var(--color-output-accent);
+  background: var(--color-output-surface);
+}
+
+.ls-numeric-matrix {
+  margin: 0;
+  padding: 0.35rem;
+}
+
+.ls-matrix-visible-label {
+  margin: 0 0 var(--space-2);
+  color: var(--color-accent-theory);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.ls-numeric-matrix td {
+  min-width: 4.5rem;
+  padding: 0.45rem 0.6rem;
+  border-bottom: 1px solid var(--color-border);
+  text-align: right;
+}
+
+.ls-factorization-rail {
+  margin-block: var(--space-8);
+  padding: clamp(1rem, 3vw, 1.5rem);
+  border: 1px solid var(--color-output-accent);
+  border-radius: var(--radius-md);
+  background: var(--color-output-surface);
+}
+
+.ls-factorization-equation,
+.ls-formula-line {
+  overflow-wrap: anywhere;
+  color: var(--color-accent-theory);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.ls-factorization-equation {
+  font-size: clamp(1.2rem, 4vw, 1.75rem);
+  letter-spacing: 0.06em;
+}
+
+.ls-factor-grid,
+.ls-row-state-grid,
+.ls-diagnostics-layout {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: var(--space-4);
+}
+
+.ls-output-summary,
+.ls-computation-shell {
+  display: grid;
+  gap: var(--space-3);
+  margin-block: var(--space-6);
+}
+
+.ls-evidence-table {
+  width: max-content;
+  min-width: 100%;
+  border-spacing: 0;
+  font-size: 0.84rem;
+}
+
+.ls-evidence-table th,
+.ls-evidence-table td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.ls-evidence-table thead th {
+  background: var(--color-surface-inset);
+  color: var(--color-text-secondary);
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ls-reference-difference {
+  margin: 0;
+  color: var(--color-accent-theory);
+}
+
+.ls-computation-walkthrough {
+  display: grid;
+  gap: var(--space-8);
+  min-width: 0;
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
+}
+
+.ls-walkthrough-phase {
+  display: grid;
+  min-width: 0;
+  gap: var(--space-4);
+}
+
+.ls-computation-step {
+  min-width: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+}
+
+.ls-arithmetic-details {
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border);
+}
+
+.ls-arithmetic-details summary {
+  width: fit-content;
+  color: var(--color-accent-primary-strong);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.ls-arithmetic-details[open] summary {
+  margin-bottom: var(--space-3);
+}
+
+.ls-evidence-ok {
+  color: var(--color-success);
+  font-weight: 700;
+}
+
+.ls-evidence-stop {
+  color: var(--color-danger);
+  font-weight: 700;
+}
+
+.ls-diagnostic-card {
+  min-width: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+}
+
+.ls-diagnostic-card h3 {
+  margin-top: 0;
+}
+
+.ls-metric-grid {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.ls-metric {
+  display: grid;
+  gap: 0.2rem;
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ls-metric dt {
+  color: var(--color-text-secondary);
+  font-size: 0.82rem;
+}
+
+.ls-metric dd {
+  margin: 0;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.ls-diagnostic-boundary {
+  border-left-color: var(--color-caution);
+  background: var(--color-caution-surface);
+}
+
+.ls-reset-backdrop {
+  position: fixed;
+  z-index: var(--layer-platform-modal);
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  background: var(--color-modal-scrim);
+}
+
+.ls-reset-dialog {
+  width: min(100%, 32rem);
+  padding: var(--space-6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-popover);
+}
+
+.ls-reset-dialog h2 {
+  margin-top: 0;
+}
+
+@media (max-width: 44rem) {
+  .linear-systems-shell {
+    gap: var(--space-4);
+  }
+
+  .ls-title-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .ls-title-row .ls-button {
+    width: fit-content;
+  }
+
+  .ls-panel {
+    padding: var(--space-4);
+  }
+
+  .ls-equation-editor {
+    align-items: flex-start;
+  }
+
+  .ls-input-matrix input {
+    width: 4.5rem;
+  }
+
+  .ls-field-error {
+    width: 4.5rem;
+  }
+
+  .ls-numeric-matrix td {
+    min-width: 3.7rem;
+    padding: 0.4rem;
+  }
+
+  .ls-form-actions,
+  .ls-panel-actions {
+    justify-content: stretch;
+  }
+
+  .ls-form-actions .ls-button,
+  .ls-panel-actions .ls-button {
+    flex: 1 1 10rem;
+  }
+
+  .ls-computation-step {
+    padding: var(--space-3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .linear-systems-shell *,
+  .linear-systems-shell *::before,
+  .linear-systems-shell *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

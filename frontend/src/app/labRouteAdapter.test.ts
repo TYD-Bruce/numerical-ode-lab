@@ -69,6 +69,43 @@ function glossaryHost(events: string[] = []): PlatformGlossaryHost {
 }
 
 describe("complete Lab meaningful metadata", () => {
+  it("supports a complete Lab with no Tutor or Glossary binding", () => {
+    const tutor = host();
+    const glossary = glossaryHost();
+    const module: LabRouteModule<{ value: string }> = {
+      createBeginnerStarterSession: () => ({ value: "starter" }),
+      mount() {
+        return {
+          getSession: () => ({ value: "starter" }),
+          getResumeSummary: () => undefined,
+          dispose: vi.fn(),
+        };
+      },
+    };
+    const route = createCompleteLabRoute({
+      moduleId: "linear_algebra",
+      routeId: "linear-algebra-linear-systems",
+      labModule: module,
+      store: createAppSessionStore(),
+      tutorHost: tutor,
+      glossaryHost: glossary,
+      scrollRestoration: createScrollRestoration({}),
+    });
+    const mounted = route.mount({
+      target: document.createElement("div"),
+      navigate: vi.fn(),
+      location: {
+        pathname: "/linear-algebra/linear-systems",
+        search: "",
+        hash: "",
+      },
+    });
+    expect(tutor.connect).not.toHaveBeenCalled();
+    expect(tutor.disconnect).toHaveBeenCalledOnce();
+    expect(glossary.connect).not.toHaveBeenCalled();
+    mounted.dispose();
+  });
+
   it("maintains activity through core updates without reordering on presentation, remount, or disposal", () => {
     let lifecycle: LabLifecycleCallbacks<{ value: string }> | undefined;
     let current = { value: "starter" };

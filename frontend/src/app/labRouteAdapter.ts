@@ -83,10 +83,15 @@ export function createCompleteLabRoute<TSession>(options: {
       try {
         const glossaryBinding = mountedLab.getGlossaryBinding?.();
         if (glossaryBinding) options.glossaryHost.connect(glossaryBinding);
-        options.tutorHost.connect(
-          mountedLab.getTutorBinding(),
-          options.store.createTutorSessionAccess(options.moduleId)
-        );
+        const tutorBinding = mountedLab.getTutorBinding?.();
+        if (tutorBinding) {
+          options.tutorHost.connect(
+            tutorBinding,
+            options.store.createTutorSessionAccess(options.moduleId)
+          );
+        } else {
+          options.tutorHost.disconnect();
+        }
       } catch (cause) {
         options.glossaryHost.close({ restoreFocus: false });
         options.glossaryHost.disconnect();

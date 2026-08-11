@@ -160,6 +160,7 @@ function sameResumeSummary(
       a?.stepLabel === b?.stepLabel &&
       a?.methodLabel === b?.methodLabel &&
       a?.analysisLabel === b?.analysisLabel &&
+      a?.resultLabel === b?.resultLabel &&
       a?.lastMeaningfulInteraction === b?.lastMeaningfulInteraction)
   );
 }

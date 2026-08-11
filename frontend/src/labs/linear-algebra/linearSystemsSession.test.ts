@@ -3,9 +3,13 @@ import { describe, expect, it } from "vitest";
 import {
   computeLinearSystemsLabMeaningful,
   createLinearSystemsSession,
+  createLinearSystemsResumeSummary,
   loadLinearSystemsPreset,
   replaceLinearSystemsDraft,
+  resizeLinearSystemsDraft,
   runLinearSystemsSession,
+  setLinearSystemsWorkflowStep,
+  validateLinearSystemsDraft,
   type LinearSystemsDraft,
   type LinearSystemsSessionState,
 } from "./linearSystemsSession";
@@ -34,6 +38,7 @@ describe("Linear Systems pure session", () => {
     const session = createLinearSystemsSession();
     expect(session).toMatchObject({
       version: 1,
+      step: "method",
       dimension: 3,
       selectedPresetId: "starter_3x3",
       resultStatus: "absent",
@@ -49,6 +54,54 @@ describe("Linear Systems pure session", () => {
     expect(Object.isFrozen(session)).toBe(true);
     expect(Object.isFrozen(session.ADraft)).toBe(true);
     expect(Object.isFrozen(session.ADraft[0])).toBe(true);
+  });
+
+  it("owns workflow, deterministic resize, field validation, and privacy-safe Resume metadata", () => {
+    const starter = createLinearSystemsSession();
+    const data = setLinearSystemsWorkflowStep(starter, "data");
+    expect(data.step).toBe("data");
+    expect(computeLinearSystemsLabMeaningful(data)).toBe(false);
+
+    const two = resizeLinearSystemsDraft(data, 2);
+    expect(two).toMatchObject({ dimension: 2, step: "data" });
+    expect(two.ADraft).toEqual([
+      ["3", "1"],
+      ["2", "4"],
+    ]);
+    expect(two.bDraft).toEqual(["6", "9"]);
+
+    const six = resizeLinearSystemsDraft(data, 6);
+    expect(six.dimension).toBe(6);
+    expect(six.ADraft[0]?.slice(0, 3)).toEqual(["3", "1", "-1"]);
+    expect(six.ADraft[5]).toEqual(["", "", "", "", "", ""]);
+    expect(validateLinearSystemsDraft({
+      dimension: six.dimension,
+      A: six.ADraft,
+      b: six.bDraft,
+    })[0]).toMatchObject({ code: "incomplete", field: "A", row: 0, column: 3 });
+
+    const malformed = editableDraft(data);
+    malformed.A[0]![0] = "2 + 3";
+    malformed.b[0] = "1e309";
+    expect(validateLinearSystemsDraft(malformed).map((issue) => issue.code)).toEqual([
+      "malformed",
+      "non_finite",
+    ]);
+
+    const solved = successfulRun(data);
+    expect(solved.step).toBe("output");
+    const diagnostics = setLinearSystemsWorkflowStep(solved, "diagnostics");
+    const summary = createLinearSystemsResumeSummary(diagnostics, 123);
+    expect(summary).toEqual({
+      moduleId: "linear_algebra",
+      route: "/linear-algebra/linear-systems",
+      labTitle: "Linear Systems Lab",
+      stepLabel: "Diagnostics",
+      methodLabel: "Gaussian elimination with partial pivoting",
+      resultLabel: "Result current",
+      lastMeaningfulInteraction: 123,
+    });
+    expect(JSON.stringify(summary)).not.toMatch(/\[\[|xHat|residual|trace|inputFingerprint/);
   });
 
   it("marks an edited preset Custom and removes reference authority", () => {

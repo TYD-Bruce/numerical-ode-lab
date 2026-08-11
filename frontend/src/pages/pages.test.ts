@@ -39,7 +39,7 @@ describe("static platform pages", () => {
     expect(target.textContent).toContain("Understand → Compute → Visualize → Analyze");
     expect(target.textContent).not.toMatch(/Numerical Analysis Lab(?!oratory)/);
     expect(target.textContent).toContain("Available");
-    expect(target.textContent).toContain("In development");
+    expect(target.textContent).not.toContain("In development");
     expect(target.textContent).toContain("Planned");
     expect(target.textContent).toContain("Initial Value Problems");
     expect(target.textContent).toContain("Linear Systems");
@@ -52,6 +52,13 @@ describe("static platform pages", () => {
     )!;
     expect(openLab.textContent).toContain("Open Lab");
     expect(openLab.dataset.prefetchRouteId).toBe("ode-initial-value-problems");
+    const linearLab = target.querySelector<HTMLAnchorElement>(
+      'a[href="/linear-algebra/linear-systems"]'
+    )!;
+    expect(linearLab.textContent).toContain("Open Lab");
+    expect(linearLab.dataset.prefetchRouteId).toBe(
+      "linear-algebra-linear-systems"
+    );
     expect(target.querySelector("button")).toBeNull();
   });
 
@@ -83,10 +90,14 @@ describe("static platform pages", () => {
     expect(target.textContent).toContain("PDE");
   });
 
-  it("keeps Linear Algebra and PDE roadmaps non-runnable", () => {
+  it("presents the available Linear Systems Lab and keeps remaining roadmaps truthful", () => {
     const linear = mount(linearAlgebraOverviewPage, "/linear-algebra");
-    expect(linear.textContent).toContain("In development");
-    for (const item of ["Linear Systems", "Least Squares", "SVD", "Eigenvalues"]) {
+    expect(linear.textContent).toContain("Available");
+    expect(linear.textContent).toContain("Linear Systems Lab");
+    expect(
+      linear.querySelector('a[href="/linear-algebra/linear-systems"]')?.textContent
+    ).toBe("Open Linear Systems Lab");
+    for (const item of ["Least Squares", "SVD", "Eigenvalues"]) {
       expect(linear.textContent).toContain(item);
     }
     expect(linear.querySelector("button, input, textarea, canvas")).toBeNull();
@@ -123,6 +134,7 @@ describe("static platform pages", () => {
     expect(target.textContent).toContain("Numerical T Lab");
     expect(target.textContent).toContain("currently implemented");
     expect(target.textContent).toContain("Initial Value Problems");
+    expect(target.textContent).toContain("Linear Systems Lab");
     expect(target.textContent).toContain("AI-assisted");
     expect(target.querySelector("h2")?.textContent).toBe(
       "Theory · Tools · Teaching"
@@ -150,7 +162,7 @@ describe("static platform pages", () => {
       "limitations, stability, and error behavior"
     );
     expect(target.textContent).not.toContain("Tian");
-    expect(target.textContent).toContain("planned");
+    expect(target.textContent).toContain("Planned");
   });
 
   it("keeps the production About page unchanged and adds Developer Tools only by option", () => {

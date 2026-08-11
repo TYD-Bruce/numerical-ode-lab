@@ -39,6 +39,7 @@ export interface DevelopmentRouteDefinitionInput {
 
 interface CreateRouteDefinitionsOptions {
   initialValueProblemsLoader?: () => Promise<RouteModule>;
+  linearSystemsLoader?: () => Promise<RouteModule>;
   homeSessionSource?: HomeSessionSource;
   developmentRoutes?: readonly DevelopmentRouteDefinitionInput[];
 }
@@ -68,6 +69,9 @@ export function createRouteDefinitions(
   const initialValueProblemsLoader =
     options.initialValueProblemsLoader ??
     (() => Promise.reject(new Error("The Initial Value Problems Lab is not registered.")));
+  const linearSystemsLoader =
+    options.linearSystemsLoader ??
+    (() => Promise.reject(new Error("The Linear Systems Lab is not registered.")));
 
   const publicRoutes: RouteDefinition[] = [
     {
@@ -99,6 +103,13 @@ export function createRouteDefinitions(
       title: "Numerical Linear Algebra | Numerical T Lab",
       kind: "page",
       loader: createRouteLoader(() => Promise.resolve(linearAlgebraOverviewPage)),
+    },
+    {
+      id: "linear-algebra-linear-systems",
+      path: "/linear-algebra/linear-systems",
+      title: "Linear Systems Lab | Numerical T Lab",
+      kind: "lab",
+      loader: createRouteLoader(linearSystemsLoader),
     },
     {
       id: "pde-overview",

@@ -49,6 +49,9 @@ describe("public route bundle ownership", () => {
       "labs/ode/odeApp.ts",
       "labs/ode/initialValueProblemsRoute.ts",
       "labs/ode/problemPresets.ts",
+      "labs/linear-algebra/linearSystemsApp.ts",
+      "labs/linear-algebra/linearSystemsRoute.ts",
+      "labs/linear-algebra/computationWalkthrough.ts",
       "tutor/platformTutorPanel.ts",
       "tutor/tutorClient.ts",
       "tutor/aiTutor.ts",
@@ -74,6 +77,23 @@ describe("public route bundle ownership", () => {
     expect(source("main.ts")).not.toContain("initialValueProblemsRoute");
   });
 
+  it("registers Linear Systems through an independent dynamic route boundary", () => {
+    const registry = source("app/moduleRegistry.ts");
+    expect(registry).toMatch(
+      /import\(["']\.\.\/labs\/linear-algebra\/linearSystemsRoute["']\)/
+    );
+    expect(source("main.ts")).not.toContain("linearSystemsRoute");
+    expect(eagerGraph("main.ts").has("labs/linear-algebra/linearSystemsApp.ts")).toBe(
+      false
+    );
+    const walkthrough = source(
+      "labs/linear-algebra/computationWalkthrough.ts"
+    );
+    expect(walkthrough).not.toMatch(
+      /solveLinearSystem|runLinearSystemsSession|Gaussian elimination\s*\(/
+    );
+  });
+
   it("keeps static pages, shell, Host, and ODE route outside complete Tutor runtime", () => {
     const staticSources = [
       "app/appShell.ts",
@@ -91,6 +111,9 @@ describe("public route bundle ownership", () => {
     expect(odeRoute).not.toMatch(/platformTutorPanel|tutorClient|aiTutorPanel/);
     expect(source("pages/homePage.ts")).not.toMatch(
       /OdeSessionState|odeSession|initialValueProblemsRoute|AppSessionStore/
+    );
+    expect(staticSources).not.toMatch(
+      /linearSystemsApp|linearSystemsRoute|linearSystemsNumerics|computationWalkthrough/
     );
     expect(source("app/beforeUnload.ts")).not.toMatch(
       /getSession|odeApp|initialValueProblemsRoute|querySelector|MathLive/

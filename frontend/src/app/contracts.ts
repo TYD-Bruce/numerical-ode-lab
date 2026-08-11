@@ -5,6 +5,7 @@ export type RouteId =
   | "ode-overview"
   | "ode-initial-value-problems"
   | "linear-algebra-overview"
+  | "linear-algebra-linear-systems"
   | "pde-overview"
   | "about"
   | "glossary-playground"
@@ -16,9 +17,10 @@ export interface ResumeSummary {
   readonly moduleId: LabModuleId;
   readonly route: string;
   readonly labTitle: string;
-  readonly stepLabel: "Method" | "Data" | "Output";
+  readonly stepLabel: "Method" | "Data" | "Output" | "Diagnostics";
   readonly methodLabel?: string;
   readonly analysisLabel?: "Analysis available" | "Analysis stale";
+  readonly resultLabel?: "Result current" | "Result stale";
   readonly lastMeaningfulInteraction: number;
 }
 
@@ -98,7 +100,7 @@ export interface LabLifecycleCallbacks<TSession> {
 export interface MountedLabRoute<TSession> extends MountedRoute {
   getSession(): TSession;
   getResumeSummary(): ResumeSummary | undefined;
-  getTutorBinding(): LabTutorBinding<unknown>;
+  getTutorBinding?(): LabTutorBinding<unknown>;
   getGlossaryBinding?(): LabGlossaryBinding;
 }
 
