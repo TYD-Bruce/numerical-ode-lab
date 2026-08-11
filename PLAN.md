@@ -2,8 +2,8 @@
 
 ## Current status
 
-**Active milestone: Linear Systems v1 Day 2 — locally implemented and verified,
-pending maintainer acceptance.**
+**Active milestone: Linear Systems v1 independent-audit corrections — locally
+implemented and verified; independent correction re-audit pending.**
 
 The maintainer accepts public baseline
 `b58584a5f7a1d5b09874479d3b413a063b94e061` and tree
@@ -29,14 +29,27 @@ presentation-only Computation Walkthrough that consumes the immutable trace
 emitted by the existing numerical core. Home, About, and the Linear Algebra
 overview now describe this locally available Lab; PDE remains Planned.
 
-The Day 2 gate passed 12 focused files / 95 tests, 86 full-suite files / 1,189
+The original Day 2 gate passed 12 focused files / 95 tests, 86 full-suite files / 1,189
 tests, all workspace and API typechecks, import-boundary verification, the
 95-module production build, manifest/private-marker review, and bounded
 desktop/mobile browser verification. The Linear Systems chunk remains an
 independent dynamic asset. No Tutor, Linear Algebra Glossary, numerical-
 contract change, dependency change, push, Preview deployment, or Production
-deployment is included. The next task after maintainer acceptance is the
-separately gated Linear Algebra Tutor integration.
+deployment is included.
+
+An independent Product Audit then found LS1 and LS2 at P2 and LS3 at P3.
+Correction commit `d52946f626084fae7bdbed2d5bd018a211b15332` (tree
+`03bf0a8a84aacc81b3b626684c6b69ec43d00c99`) now removes invalidated failure
+UI immediately without clearing prior success, supplies mount-aware native
+walkthrough heading levels, and presents optional stored substitution
+aggregates only inside detailed arithmetic. The correction passed 4 Linear
+Algebra files / 30 tests, the four-owner import-boundary gate, full `verify`
+at 86 files / 1,193 tests, all typechecks, the 95-module build, and bounded
+desktop/mobile browser replay. Architecture, numerical contracts, routes,
+CSS, Tutor, Glossary, ODE, dependencies, push, and deployment remain
+unchanged. The next gate is an independent correction re-audit, followed by
+the separate mathematical rendering/readability review; Tutor integration is
+not the current task.
 
 The remainder of this document preserves the prior Glossary execution record
 as historical evidence. Its former pending-acceptance language is superseded

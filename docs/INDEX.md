@@ -19,7 +19,8 @@
 
 ## Current active milestone
 
-[PLAN.md](../PLAN.md) points to **Linear Systems v1 Day 2**. Architecture v1
+[PLAN.md](../PLAN.md) points to **Linear Systems v1 independent-audit
+corrections**. Architecture v1
 remains frozen. The accepted Day 1 core owns the numerical algorithm, presets,
 and immutable results; Day 1.5 owns the structured trace. Day 2 now implements
 the independently lazy learner-facing route, frontend session/workflow,
@@ -29,10 +30,15 @@ responsive integration. The
 and
 [repository-grounded plan](superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md)
 separate numerical authority from the frontend renderer and from the still-
-pending Linear Algebra Tutor. Day 2 is locally verified with 86 files / 1,189
-tests, typechecks, build/manifest evidence, and desktop/mobile browser checks.
-No push or deployment occurred. The next task is Linear Algebra Tutor
-integration after maintainer acceptance.
+pending Linear Algebra Tutor. The independent Day 2 product audit's LS1/LS2
+P2 findings and LS3 P3 finding are corrected in
+`d52946f626084fae7bdbed2d5bd018a211b15332`, with mount-aware native headings,
+attempt-scoped failure cleanup, and optional stored substitution-aggregate
+presentation. The correction is locally verified with 4 Linear Algebra files
+/ 30 tests, full `verify` at 86 files / 1,193 tests, typechecks, a 95-module
+build, import boundaries, and desktop/mobile browser replay. No push or
+deployment occurred. The next gate is the independent correction re-audit,
+then the separate mathematical rendering/readability review.
 
 Latest architecture prerequisite review:
 [Architecture v1 Migration Review](reviews/2026-08-11-architecture-v1-migration-review.md)
@@ -201,7 +207,7 @@ maintainer acceptance of the F2 review commit.
 
 | Document | Status |
 |---|---|
-| [Linear Systems Lab Version 1 Implementation Plan](superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md) | Repository-grounded; Day 1/1.5 and Day 2 route/UI/platform verification implemented locally; Tutor remains the next gate |
+| [Linear Systems Lab Version 1 Implementation Plan](superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md) | Repository-grounded; Day 1/1.5 and Day 2 implemented locally; independent product-audit corrections verified, correction re-audit next, Tutor deferred to a later gate |
 | [Theme-Ready Platform Shell Implementation Plan](superpowers/plans/2026-07-13-theme-ready-platform-shell-implementation-plan.md) | Implemented historical plan; check the final review and architecture map for current state |
 | [Numerical T-Lab Rename Migration Plan](superpowers/plans/2026-07-22-numerical-t-lab-rename-migration-plan.md) | Project Identity Migration completed and verified |
 | [Content-Agnostic Interactive Glossary Framework Implementation Plan](superpowers/plans/2026-07-23-content-agnostic-interactive-glossary-framework-implementation-plan.md) | Fully executed locally; historical blocked-review findings closed; final verdict APPROVED FOR LOCAL FRAMEWORK RELEASE; no production content or visible behavior |

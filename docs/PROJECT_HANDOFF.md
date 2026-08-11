@@ -2,6 +2,77 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
+## Linear Systems v1 independent-audit corrections — 2026-08-11
+
+Implementation commit `d52946f626084fae7bdbed2d5bd018a211b15332`
+(tree `03bf0a8a84aacc81b3b626684c6b69ec43d00c99`) closes all findings from
+the independent Linear Systems Product Audit. That audit blocked product
+integration with `P0 = 0`, `P1 = 0`, `P2 = 2`, and `P3 = 1`: LS1 retained a
+rendered failed-attempt surface after an input edit, LS2 hard-coded a global
+walkthrough heading hierarchy, and LS3 omitted optional stored substitution-
+aggregate evidence. The correction is limited to the Linear Systems frontend
+and tests:
+
+- `frontend/src/labs/linear-algebra/linearSystemsApp.ts` and its test now
+  invalidate the one failed-attempt owner on every matrix/vector input edit,
+  remove the mounted failure surface immediately, clear expanded failure
+  presentation, and preserve the existing immutable successful result and
+  fingerprint-derived current/stale state. A later failed Run publishes fresh
+  failure evidence from that later attempt.
+- `frontend/src/labs/linear-algebra/computationWalkthrough.ts` and its test now
+  require the mounting owner to supply the native root-heading level. Success
+  evidence nests `h3` → `h4` → `h5` below Output; failure evidence nests `h4`
+  → `h5` → `h6` below the Data-owned failed-attempt `h3`. Disclosure controls
+  retain their existing `aria-expanded`/`aria-controls` ownership and IDs
+  remain unique.
+- The detailed substitution renderer now shows
+  `accumulatedKnownTermSum` only when that optional value exists in the stored
+  trace. It remains inside Show arithmetic, is never recomputed, and has no
+  fabricated fallback when absent.
+
+Root causes and reusable resolutions:
+
+- LS1 arose because the input handler cleared JavaScript failure state but did
+  not reconcile the already-mounted alert. If attempt-scoped presentation is
+  invalidated again, clear the single state owner and remove/rerender its
+  owned surface in the same input transition; never leave authority and DOM
+  on different attempt fingerprints, and never clear an independent prior
+  success as collateral.
+- LS2 arose because a reusable renderer chose document-level heading tags
+  without mount context. Reusable nested presentation must receive semantic
+  heading context from its owner and derive subordinate native levels; do not
+  repair outlines with ARIA heading roles.
+- LS3 arose because presentation consumed the ordered substitution terms but
+  not the optional observational aggregate. Optional trace evidence must be
+  rendered only from the producer-owned field and omitted silently when the
+  producer omits it.
+
+Validation passed: the test-first gate initially failed in the four expected
+LS1/LS2/LS3 assertions; the corrected focused gate passed 3 files / 27 tests,
+the complete Linear Algebra directory passed 4 files / 30 tests, import
+boundaries passed for four owners plus the Vercel adapter, and full `verify`
+passed 86 files / 1,193 tests, all frontend/numerics/contracts/backend
+typechecks, and the 95-module production build. `git diff --check` passed.
+Bounded browser replay at desktop and `390 × 844` confirmed immediate LS1
+removal with preserved stale Output, both native heading outlines, keyboard
+Enter disclosure behavior, optional LS3 detail placement, no page-level
+mobile overflow, and no page errors.
+
+The only task problem was a root npm argument-forwarding attempt that started
+Vite on IPv6 localhost and produced a browser network-error page. The
+task-owned process was stopped, the frontend workspace was launched directly
+with explicit `--host 127.0.0.1 --port 5173`, and the complete browser replay
+then passed. Reuse the direct workspace command when exact Vite host/port
+arguments are required.
+
+The resulting local project state has `P0 = P1 = P2 = P3 = 0` for these audit
+findings. Architecture v1, numerical packages/contracts, Computation Trace
+semantics, routes, CSS, Tutor, Glossary, ODE, dependencies, backend, and
+deployment configuration are unchanged. Nothing was pushed or deployed.
+The next gate is an **independent correction re-audit**, followed by the
+separate **mathematical rendering/readability review**. Do not begin Tutor,
+animation, or broader visual-polish work at this checkpoint.
+
 ## Linear Systems v1 Day 2 product checkpoint — 2026-08-11
 
 Commit `e5e43f2d62ed9b36969679b0c91c318417574d36` implements the first complete
@@ -56,9 +127,12 @@ needed a focusable result heading plus a controlled live announcement. Each
 was corrected inside the Linear Systems frontend and covered by focused tests
 and browser recheck.
 
-The exact next task is separately gated **Linear Algebra Tutor integration**.
-Do not add Linear Algebra Glossary content, change numerical contracts, push,
-or deploy as part of that handoff.
+At this Day 2 checkpoint, the exact next task was separately gated **Linear
+Algebra Tutor integration**. The later independent audit and correction
+checkpoint above supersede that sequencing: correction re-audit and then the
+mathematical rendering/readability review now come first. Do not add Linear
+Algebra Glossary content, change numerical contracts, push, or deploy as part
+of either gate.
 
 ## Architecture v1 migration checkpoint — 2026-08-10
 
