@@ -1,9 +1,10 @@
 // @vitest-environment jsdom
 
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { mountLinearSystemsApp } from "./linearSystemsApp";
 import {
   createLinearSystemsSession,
+  loadLinearSystemsPreset,
   replaceLinearSystemsDraft,
   runLinearSystemsSession,
   setLinearSystemsWorkflowStep,
@@ -55,8 +56,26 @@ function successfulSession(
   return outcome.session;
 }
 
+function latePivotFailureSession(): LinearSystemsSessionState {
+  return setLinearSystemsWorkflowStep(
+    replaceLinearSystemsDraft(createLinearSystemsSession(), {
+      dimension: 2,
+      A: [
+        ["1", "1"],
+        ["2", "2"],
+      ],
+      b: ["2", "4"],
+    }),
+    "data"
+  );
+}
+
 describe("Linear Systems Lab application", () => {
   beforeEach(() => document.body.replaceChildren());
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.unstubAllGlobals();
+  });
 
   it("mounts Starter 3×3 with the approved Method → Data workflow and presets", () => {
     const { target, mounted } = mount();
@@ -479,5 +498,211 @@ describe("Linear Systems Lab application", () => {
     });
     expect(target.querySelector("h1")?.textContent).toBe("Linear Systems Lab");
     remounted.dispose();
+  });
+
+  it("cancels local replay across collapse, navigation, reset, and disposal without changing session metadata", async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) =>
+      window.setTimeout(() => callback(0), 0)
+    );
+    vi.stubGlobal("cancelAnimationFrame", (id: number) => window.clearTimeout(id));
+    vi.stubGlobal(
+      "matchMedia",
+      vi.fn((query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      }))
+    );
+    const recordMeaningfulInteraction = vi.fn();
+    const updateSession = vi.fn();
+    const rowSwapSession = successfulSession(
+      loadLinearSystemsPreset(createLinearSystemsSession(), "row_swap_required")
+    );
+    const { target, mounted } = mount(rowSwapSession, {
+      recordMeaningfulInteraction,
+      updateSession,
+      applyConfirmedReset: vi.fn(),
+    });
+    const sessionBefore = mounted.getSession();
+    const resultBefore = sessionBefore.latestSuccessfulResult;
+    const meaningfulCallsBefore = recordMeaningfulInteraction.mock.calls.length;
+    const updatesBefore = updateSession.mock.calls.length;
+    target.querySelector<HTMLButtonElement>("[data-show-computation]")!.click();
+    const replay = target.querySelector<HTMLButtonElement>(
+      "[data-replay-computation-step='row_swap']"
+    )!;
+    const oldStage = target.querySelector<HTMLElement>(
+      "[data-motion-stage='row_swap']"
+    )!;
+    replay.click();
+    expect(oldStage.dataset.motionState).toBe("preparing");
+
+    target.querySelector<HTMLButtonElement>("[data-show-computation]")!.click();
+    await vi.runAllTimersAsync();
+    expect(oldStage.dataset.motionState).toBe("disposed");
+    expect(oldStage.querySelectorAll(".is-motion-moving")).toHaveLength(0);
+    expect(mounted.getSession()).toBe(sessionBefore);
+    expect(mounted.getSession().latestSuccessfulResult).toBe(resultBefore);
+    expect(recordMeaningfulInteraction).toHaveBeenCalledTimes(
+      meaningfulCallsBefore
+    );
+    expect(updateSession).toHaveBeenCalledTimes(updatesBefore);
+
+    target.querySelector<HTMLButtonElement>("[data-show-computation]")!.click();
+    const navigationStage = target.querySelector<HTMLElement>(
+      "[data-motion-stage='elimination']"
+    )!;
+    target
+      .querySelector<HTMLButtonElement>(
+        "[data-replay-computation-step='elimination']"
+      )!
+      .click();
+    target.querySelector<HTMLButtonElement>("[data-workflow-step='data']")!.click();
+    await vi.runAllTimersAsync();
+    expect(navigationStage.dataset.motionState).toBe("disposed");
+    expect(mounted.getSession().latestSuccessfulResult).toBe(resultBefore);
+
+    target.querySelector<HTMLButtonElement>("[data-workflow-step='output']")!.click();
+    const computationToggle = target.querySelector<HTMLButtonElement>(
+      "[data-show-computation]"
+    )!;
+    if (computationToggle.getAttribute("aria-expanded") === "false") {
+      computationToggle.click();
+    }
+    const resetStage = target.querySelector<HTMLElement>(
+      "[data-motion-stage='row_swap']"
+    )!;
+    target
+      .querySelector<HTMLButtonElement>("[data-replay-computation-step='row_swap']")!
+      .click();
+    target.querySelector<HTMLButtonElement>("[data-new-experiment]")!.click();
+    expect(resetStage.dataset.motionState).toBe("cancelled");
+    document.querySelector<HTMLButtonElement>("[data-reset-cancel]")!.click();
+
+    const disposeStage = target.querySelector<HTMLElement>(
+      "[data-motion-stage='row_swap']"
+    )!;
+    target
+      .querySelector<HTMLButtonElement>("[data-replay-computation-step='row_swap']")!
+      .click();
+    mounted.dispose();
+    await vi.runAllTimersAsync();
+    expect(disposeStage.dataset.motionState).toBe("disposed");
+    expect(target.childElementCount).toBe(0);
+    vi.useRealTimers();
+    vi.unstubAllGlobals();
+  });
+
+  it("disposes failed-attempt replay immediately when a matrix input edit removes that attempt", async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) =>
+      window.setTimeout(() => callback(0), 0)
+    );
+    vi.stubGlobal("cancelAnimationFrame", (id: number) => window.clearTimeout(id));
+    vi.stubGlobal(
+      "matchMedia",
+      vi.fn((query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      }))
+    );
+    const { target, mounted } = mount(latePivotFailureSession());
+    runControl(target).click();
+    target.querySelector<HTMLButtonElement>("[data-show-failure-computation]")!.click();
+    const stage = target.querySelector<HTMLElement>("[data-motion-stage='row_swap']")!;
+    target
+      .querySelector<HTMLButtonElement>("[data-replay-computation-step='row_swap']")!
+      .click();
+    expect(stage.dataset.motionState).toBe("preparing");
+
+    input(target, "[data-matrix-a-row='0'][data-matrix-a-column='0']", "1.25");
+    await vi.runAllTimersAsync();
+
+    expect(stage.dataset.motionState).toBe("disposed");
+    expect(stage.querySelectorAll(".is-motion-moving")).toHaveLength(0);
+    expect(target.querySelector("[data-solve-failure]")).toBeNull();
+    expect(target.querySelector("[data-failure-walkthrough]")).toBeNull();
+    expect(mounted.getSession().latestSuccessfulResult).toBeUndefined();
+    mounted.dispose();
+  });
+
+  it("cancels stale replay completion for a new Run, preset switch, and dimension change", async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) =>
+      window.setTimeout(() => callback(0), 0)
+    );
+    vi.stubGlobal("cancelAnimationFrame", (id: number) => window.clearTimeout(id));
+    vi.stubGlobal(
+      "matchMedia",
+      vi.fn((query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      }))
+    );
+
+    const openFailedReplay = (target: HTMLElement): HTMLElement => {
+      runControl(target).click();
+      target.querySelector<HTMLButtonElement>("[data-show-failure-computation]")!.click();
+      const stage = target.querySelector<HTMLElement>("[data-motion-stage='row_swap']")!;
+      target
+        .querySelector<HTMLButtonElement>("[data-replay-computation-step='row_swap']")!
+        .click();
+      return stage;
+    };
+
+    const runCase = mount(latePivotFailureSession());
+    const runStage = openFailedReplay(runCase.target);
+    runControl(runCase.target).click();
+    await vi.runAllTimersAsync();
+    expect(runStage.dataset.motionState).toBe("disposed");
+    expect(runCase.target.querySelector("[data-solve-failure]")).not.toBeNull();
+    expect(runCase.target.querySelector("[data-failure-walkthrough]")).toBeNull();
+    runCase.mounted.dispose();
+
+    document.body.replaceChildren();
+    const presetCase = mount(latePivotFailureSession());
+    const presetStage = openFailedReplay(presetCase.target);
+    const preset = presetCase.target.querySelector<HTMLSelectElement>(
+      "[data-preset-select]"
+    )!;
+    preset.value = "starter_3x3";
+    preset.dispatchEvent(new Event("change", { bubbles: true }));
+    await vi.runAllTimersAsync();
+    expect(presetStage.dataset.motionState).toBe("disposed");
+    expect(presetCase.target.querySelector("[data-solve-failure]")).toBeNull();
+    expect(presetCase.mounted.getSession().selectedPresetId).toBe("starter_3x3");
+    presetCase.mounted.dispose();
+
+    document.body.replaceChildren();
+    const dimensionCase = mount(latePivotFailureSession());
+    const dimensionStage = openFailedReplay(dimensionCase.target);
+    const dimension = dimensionCase.target.querySelector<HTMLSelectElement>(
+      "[data-dimension-select]"
+    )!;
+    dimension.value = "3";
+    dimension.dispatchEvent(new Event("change", { bubbles: true }));
+    await vi.runAllTimersAsync();
+    expect(dimensionStage.dataset.motionState).toBe("disposed");
+    expect(dimensionCase.target.querySelector("[data-solve-failure]")).toBeNull();
+    expect(dimensionCase.mounted.getSession().dimension).toBe(3);
+    dimensionCase.mounted.dispose();
   });
 });

@@ -12,6 +12,10 @@ import {
   type StructuredMathContent,
   type StructuredMathPart,
 } from "../../math/structuredMath";
+import {
+  createEliminationReplayMotion,
+  createRowSwapReplayMotion,
+} from "./computationMotion";
 
 type TraceRetentionMetadata = Pick<
   ComputationTrace<object, object>,
@@ -239,6 +243,61 @@ function stepCard(
   return card;
 }
 
+type ComputationMarkerState =
+  | "selected"
+  | "source"
+  | "target"
+  | "changed"
+  | "solved"
+  | "maximum";
+
+function computationMarker(
+  label: string,
+  state: ComputationMarkerState
+): HTMLSpanElement {
+  const marker = element(
+    "span",
+    label,
+    `computation-marker is-${state}`
+  );
+  marker.dataset.computationMarker = state;
+  return marker;
+}
+
+function replayControl(kind: "row_swap" | "elimination", label: string): HTMLButtonElement {
+  const control = element("button", "Replay step", "ls-button ls-button-ghost ls-replay-step");
+  control.type = "button";
+  control.dataset.replayComputationStep = kind;
+  control.setAttribute("aria-label", label);
+  return control;
+}
+
+function motionRow(
+  label: string,
+  values: readonly number[],
+  state: "source" | "target" | "changed",
+  cellEvidence = false,
+  changedIndices: ReadonlySet<number> = new Set()
+): HTMLElement {
+  const row = element("div", undefined, `ls-motion-row computation-marker is-${state}`);
+  row.dataset.motionRow = state;
+  row.dataset.motionValues = values.join(",");
+  row.append(element("strong", label, "ls-motion-row-label"));
+  const cells = element("span", undefined, "ls-motion-cells");
+  values.forEach((value, index) => {
+    const cell = element(
+      "span",
+      formatLinearSystemsNumber(value, "detail"),
+      "ls-motion-cell"
+    );
+    if (cellEvidence) cell.dataset.motionCell = "true";
+    if (changedIndices.has(index)) cell.classList.add("is-changed");
+    cells.append(cell);
+  });
+  row.append(cells);
+  return row;
+}
+
 function renderMatrixScale(
   step: Extract<LinearSystemTraceStep, { kind: "matrix_scale" }>,
   headingLevel: HeadingLevel
@@ -267,20 +326,8 @@ function renderMatrixScale(
     paragraph(["The Lab scales its pivot safeguard to this matrix: ", tauPivot, "."])
   );
   const arithmetic = element("div");
-  arithmetic.append(
-    createDataTable(
-      "Matrix infinity norm row sums",
-      ["Row", "Absolute terms", "Absolute sum"],
-      step.rows.map((row) => [
-        String(row.row + 1),
-        joinedNumbers(
-          row.terms.map((term) => term.absoluteValue),
-          " + ",
-          "detail"
-        ),
-        number(row.absoluteSum, "detail"),
-      ])
-    ),
+  const thresholdFormulas = element("div", undefined, "ls-contained-math");
+  thresholdFormulas.append(
     math(
       [
         subscript("τ", "pivot"),
@@ -307,6 +354,22 @@ function renderMatrixScale(
       "tau-pivot-calculation",
       "ls-formula-line"
     )
+  );
+  arithmetic.append(
+    createDataTable(
+      "Matrix infinity norm row sums",
+      ["Row", "Absolute terms", "Absolute sum"],
+      step.rows.map((row) => [
+        String(row.row + 1),
+        joinedNumbers(
+          row.terms.map((term) => term.absoluteValue),
+          " + ",
+          "detail"
+        ),
+        number(row.absoluteSum, "detail"),
+      ])
+    ),
+    thresholdFormulas
   );
   card.append(createArithmeticDetails(arithmetic));
   return card;
@@ -405,6 +468,66 @@ function renderRowSwap(
       `The row swap is applied to U and P. Earlier multipliers in L move with their rows only in columns before column ${step.column + 1}.`
     )
   );
+  const roleLine = element("div", undefined, "ls-computation-markers");
+  roleLine.append(
+    computationMarker(`Swap row R${step.firstRow + 1}`, "source"),
+    computationMarker(`Swap row R${step.secondRow + 1}`, "target")
+  );
+  const replay = replayControl(
+    "row_swap",
+    `Replay row swap for rows ${step.firstRow + 1} and ${step.secondRow + 1}`
+  );
+  const stage = element("div", undefined, "ls-motion-stage ls-row-swap-motion");
+  stage.dataset.motionStage = "row_swap";
+  stage.hidden = true;
+  stage.setAttribute("aria-hidden", "true");
+  card.append(roleLine, replay, stage);
+  createRowSwapReplayMotion({
+    owner: card,
+    control: replay,
+    stage,
+    renderBefore: () => {
+      const rows = step.uRowsBefore.map((row) =>
+        motionRow(`Source R${row.row + 1}`, row.values, "source")
+      );
+      stage.replaceChildren(...rows);
+      return rows;
+    },
+    renderAfter: () => {
+      stage.replaceChildren();
+      if (
+        stage.dataset.motionMode === "reduced" ||
+        stage.dataset.motionMode === "compact"
+      ) {
+        const before = element("div", undefined, "ls-motion-static-state");
+        before.append(computationMarker("Before", "source"));
+        step.uRowsBefore.forEach((row) => {
+          const rendered = motionRow(
+            `Source R${row.row + 1}`,
+            row.values,
+            "source"
+          );
+          delete rendered.dataset.motionRow;
+          rendered.dataset.motionStaticRow = "before";
+          before.append(rendered);
+        });
+        stage.append(
+          before,
+          computationMarker(
+            `R${step.firstRow + 1} ↔ R${step.secondRow + 1}`,
+            "selected"
+          ),
+          computationMarker("After", "changed")
+        );
+      }
+      stage.append(
+        ...step.uRowsAfter.map((row) =>
+          motionRow(`R${row.row + 1} after`, row.values, "changed")
+        )
+      );
+      stage.append(computationMarker("Rows exchanged", "changed"));
+    },
+  });
   const arithmetic = element("div");
   const state = element("div", undefined, "ls-row-state-grid");
   state.append(
@@ -523,6 +646,52 @@ function renderElimination(
       `Updated row ${step.targetRow + 1}`
     )
   );
+  const roleLine = element("div", undefined, "ls-computation-markers");
+  roleLine.append(
+    computationMarker(`Pivot row R${step.pivotRow + 1}`, "source"),
+    computationMarker(`Target row R${step.targetRow + 1}`, "target")
+  );
+  const replay = replayControl(
+    "elimination",
+    `Replay elimination of row ${step.targetRow + 1} using pivot row ${step.pivotRow + 1}`
+  );
+  const stage = element("div", undefined, "ls-motion-stage ls-elimination-motion");
+  stage.dataset.motionStage = "elimination";
+  stage.hidden = true;
+  stage.setAttribute("aria-hidden", "true");
+  const renderMotionRows = (after: boolean): void => {
+    const changedIndices = new Set<number>();
+    if (after) {
+      step.targetRowBefore.forEach((value, index) => {
+        if (!Object.is(value, step.targetRowAfter[index])) changedIndices.add(index);
+      });
+    }
+    const target = motionRow(
+      after ? `Changed R${step.targetRow + 1}` : `Target R${step.targetRow + 1}`,
+      after ? step.targetRowAfter : step.targetRowBefore,
+      after ? "changed" : "target",
+      true,
+      changedIndices
+    );
+    target.dataset.motionRow = "target";
+    stage.replaceChildren(
+      motionRow(`Pivot R${step.pivotRow + 1}`, step.pivotRowUsed, "source"),
+      computationMarker(
+        `Apply R${step.targetRow + 1} ← R${step.targetRow + 1} − m R${step.pivotRow + 1}`,
+        "selected"
+      ),
+      target
+    );
+    if (after) stage.append(computationMarker("Changed values", "changed"));
+  };
+  card.append(roleLine, replay, stage);
+  createEliminationReplayMotion({
+    owner: card,
+    control: replay,
+    stage,
+    renderBefore: () => renderMotionRows(false),
+    renderAfter: () => renderMotionRows(true),
+  });
   const arithmetic = element("div");
   arithmetic.append(
     math(

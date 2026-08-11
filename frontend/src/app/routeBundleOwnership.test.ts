@@ -92,6 +92,11 @@ describe("public route bundle ownership", () => {
     expect(walkthrough).not.toMatch(
       /solveLinearSystem|runLinearSystemsSession|Gaussian elimination\s*\(/
     );
+    const motion = source("labs/linear-algebra/computationMotion.ts");
+    expect(motion).not.toMatch(
+      /@numerical-t-lab\/numerics|solveLinearSystem|runLinearSystemsSession|AppSessionStore/
+    );
+    expect(motion).not.toMatch(/localStorage|sessionStorage|history\./);
     const graph = eagerGraph("labs/linear-algebra/linearSystemsRoute.ts");
     expect(graph.has("math/structuredMath.ts")).toBe(true);
     expect([...graph].some((path) => path.startsWith("math/ui/"))).toBe(false);

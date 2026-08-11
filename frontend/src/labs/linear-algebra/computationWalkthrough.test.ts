@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { solveLinearSystem } from "@numerical-t-lab/numerics/linear-algebra/linear-systems-numerics";
 import { linearSystemsPresetById } from "@numerical-t-lab/numerics/linear-algebra/linear-systems-presets";
 import {
@@ -19,6 +19,10 @@ function solvePreset(id: "starter_3x3" | "row_swap_required") {
 
 describe("Linear Systems computation walkthrough", () => {
   beforeEach(() => document.body.replaceChildren());
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.unstubAllGlobals();
+  });
 
   it("renders every successful semantic trace kind as presentation evidence", () => {
     const result = solvePreset("row_swap_required");
@@ -309,5 +313,239 @@ describe("Linear Systems computation walkthrough", () => {
     expect(unbounded?.textContent).toContain("not represented as having a final step");
     expect(unbounded?.dataset.traceContinuation).toBe("present");
     expect(unbounded?.textContent).not.toContain("retained structured metadata");
+  });
+
+  it("offers local Replay only for row swaps and eliminations with static semantic cues", () => {
+    const result = solvePreset("row_swap_required");
+    const view = createComputationWalkthrough(result.trace, { headingLevel: 3 });
+    document.body.append(view);
+
+    const replayableSteps = result.trace.steps.filter(
+      (step) => step.kind === "row_swap" || step.kind === "elimination"
+    );
+    const replayButtons = [
+      ...view.querySelectorAll<HTMLButtonElement>("[data-replay-computation-step]"),
+    ];
+    expect(replayButtons).toHaveLength(replayableSteps.length);
+    replayButtons.forEach((control) => {
+      expect(control.type).toBe("button");
+      expect(control.textContent).toBe("Replay step");
+      expect(control.getAttribute("aria-label")).toMatch(
+        /^Replay (?:row swap|elimination)/
+      );
+    });
+    for (const card of view.querySelectorAll<HTMLElement>("[data-trace-kind]")) {
+      const shouldReplay =
+        card.dataset.traceKind === "row_swap" ||
+        card.dataset.traceKind === "elimination";
+      expect(card.querySelector("[data-replay-computation-step]") !== null).toBe(
+        shouldReplay
+      );
+    }
+    expect(
+      view.querySelector("[data-trace-kind='row_swap'] .computation-marker.is-source")
+        ?.textContent
+    ).toMatch(/Swap row R\d/);
+    expect(
+      view.querySelector("[data-trace-kind='row_swap'] .computation-marker.is-target")
+        ?.textContent
+    ).toMatch(/Swap row R\d/);
+    expect(
+      view.querySelector("[data-trace-kind='elimination'] .computation-marker.is-source")
+        ?.textContent
+    ).toMatch(/Pivot row R\d/);
+    expect(
+      view.querySelector("[data-trace-kind='elimination'] .computation-marker.is-target")
+        ?.textContent
+    ).toMatch(/Target row R\d/);
+  });
+
+  it("replays trace-owned row-swap rows locally without mutating the trace or focus", async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) =>
+      window.setTimeout(() => callback(0), 0)
+    );
+    vi.stubGlobal("cancelAnimationFrame", (id: number) => window.clearTimeout(id));
+    vi.stubGlobal(
+      "matchMedia",
+      vi.fn((query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      }))
+    );
+    const result = solvePreset("row_swap_required");
+    const traceBefore = JSON.stringify(result.trace);
+    const rowSwap = result.trace.steps.find((step) => step.kind === "row_swap");
+    expect(rowSwap?.kind).toBe("row_swap");
+    if (rowSwap?.kind !== "row_swap") return;
+    const view = createComputationWalkthrough(result.trace, { headingLevel: 3 });
+    document.body.append(view);
+    const card = view.querySelector<HTMLElement>("[data-trace-kind='row_swap']")!;
+    const replay = card.querySelector<HTMLButtonElement>(
+      "[data-replay-computation-step='row_swap']"
+    )!;
+    const stage = card.querySelector<HTMLElement>("[data-motion-stage='row_swap']")!;
+    replay.focus();
+    replay.click();
+
+    expect(stage.hidden).toBe(false);
+    expect(stage.dataset.motionState).toBe("preparing");
+    expect(
+      [...stage.querySelectorAll<HTMLElement>("[data-motion-row]")].map(
+        (row) => row.dataset.motionValues
+      )
+    ).toEqual(rowSwap.uRowsBefore.map((row) => row.values.join(",")));
+    replay.click();
+    await vi.runAllTimersAsync();
+
+    expect(stage.dataset.motionState).toBe("settled");
+    expect(
+      [...stage.querySelectorAll<HTMLElement>("[data-motion-row]")].map(
+        (row) => row.dataset.motionValues
+      )
+    ).toEqual(rowSwap.uRowsAfter.map((row) => row.values.join(",")));
+    expect(stage.querySelectorAll("[data-motion-overlay]")).toHaveLength(0);
+    expect(document.activeElement).toBe(replay);
+    expect(JSON.stringify(result.trace)).toBe(traceBefore);
+  });
+
+  it("replaces elimination values discretely from trace evidence and supports reduced motion", async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) =>
+      window.setTimeout(() => callback(0), 0)
+    );
+    vi.stubGlobal("cancelAnimationFrame", (id: number) => window.clearTimeout(id));
+    vi.stubGlobal(
+      "matchMedia",
+      vi.fn((query: string) => ({
+        matches: query.includes("prefers-reduced-motion"),
+        media: query,
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      }))
+    );
+    const result = solvePreset("row_swap_required");
+    const elimination = result.trace.steps.find((step) => step.kind === "elimination");
+    expect(elimination?.kind).toBe("elimination");
+    if (elimination?.kind !== "elimination") return;
+    const view = createComputationWalkthrough(result.trace, { headingLevel: 3 });
+    document.body.append(view);
+    const card = view.querySelector<HTMLElement>("[data-trace-kind='elimination']")!;
+    const replay = card.querySelector<HTMLButtonElement>(
+      "[data-replay-computation-step='elimination']"
+    )!;
+    const stage = card.querySelector<HTMLElement>("[data-motion-stage='elimination']")!;
+    replay.focus();
+    replay.click();
+
+    expect(stage.hidden).toBe(false);
+    expect(stage.dataset.motionMode).toBe("reduced");
+    expect(stage.dataset.motionState).toBe("settled");
+    expect(stage.style.transform).toBe("");
+    expect(
+      stage.querySelector<HTMLElement>("[data-motion-row='target']")?.dataset
+        .motionValues
+    ).toBe(elimination.targetRowAfter.join(","));
+    expect(
+      [...stage.querySelectorAll<HTMLElement>("[data-motion-cell]")].map(
+        (cell) => cell.textContent
+      )
+    ).toEqual(
+      elimination.targetRowAfter.map((value) =>
+        formatLinearSystemsNumber(value, "detail")
+      )
+    );
+    expect(stage.querySelector(".is-changed")?.textContent).toContain("Changed");
+    expect(
+      [...stage.querySelectorAll<HTMLElement>("[data-motion-cell]")].map(
+        (cell) => cell.classList.contains("is-changed")
+      )
+    ).toEqual(
+      elimination.targetRowAfter.map(
+        (value, index) => !Object.is(value, elimination.targetRowBefore[index])
+      )
+    );
+    expect(card.querySelector("[data-math='row-operation']")).not.toBeNull();
+    expect(document.activeElement).toBe(replay);
+    await vi.runAllTimersAsync();
+    expect(stage.dataset.motionState).toBe("settled");
+  });
+
+  it("uses only stored before and after values during normal elimination replay", async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) =>
+      window.setTimeout(() => callback(0), 0)
+    );
+    vi.stubGlobal("cancelAnimationFrame", (id: number) => window.clearTimeout(id));
+    vi.stubGlobal(
+      "matchMedia",
+      vi.fn((query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      }))
+    );
+    const result = solvePreset("row_swap_required");
+    const resultBefore = JSON.stringify(result);
+    const elimination = result.trace.steps.find((step) => step.kind === "elimination");
+    expect(elimination?.kind).toBe("elimination");
+    if (elimination?.kind !== "elimination") return;
+    const view = createComputationWalkthrough(result.trace, { headingLevel: 3 });
+    document.body.append(view);
+    const card = view.querySelector<HTMLElement>("[data-trace-kind='elimination']")!;
+    const stage = card.querySelector<HTMLElement>("[data-motion-stage='elimination']")!;
+    const replay = card.querySelector<HTMLButtonElement>(
+      "[data-replay-computation-step='elimination']"
+    )!;
+    replay.click();
+
+    const targetValues = (): string[] =>
+      [...stage.querySelectorAll<HTMLElement>("[data-motion-cell]")].map(
+        (cell) => cell.textContent ?? ""
+      );
+    const before = elimination.targetRowBefore.map((value) =>
+      formatLinearSystemsNumber(value, "detail")
+    );
+    const after = elimination.targetRowAfter.map((value) =>
+      formatLinearSystemsNumber(value, "detail")
+    );
+    expect(targetValues()).toEqual(before);
+    await vi.advanceTimersByTimeAsync(140);
+    expect(targetValues()).toEqual(after);
+    await vi.runAllTimersAsync();
+    expect(stage.dataset.motionState).toBe("settled");
+    expect(targetValues()).toEqual(after);
+    expect(stage.querySelector("[aria-label^='Permutation matrix']")).toBeNull();
+    expect(view.querySelector("[aria-live]")).toBeNull();
+    expect(JSON.stringify(result)).toBe(resultBefore);
+  });
+
+  it("marks long threshold mathematics for contained 320px presentation", () => {
+    const result = solvePreset("starter_3x3");
+    const view = createComputationWalkthrough(result.trace, { headingLevel: 3 });
+    const threshold = view.querySelector<HTMLElement>(
+      "[data-trace-kind='matrix_scale'] [data-math='tau-pivot-calculation']"
+    );
+    expect(threshold?.closest(".ls-contained-math")).not.toBeNull();
+    expect(
+      view
+        .querySelector("[data-math='tau-pivot-definition']")
+        ?.closest(".ls-contained-math")
+    ).toBe(threshold?.closest(".ls-contained-math"));
   });
 });

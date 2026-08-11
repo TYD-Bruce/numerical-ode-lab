@@ -32,6 +32,10 @@ import {
   createNumericMatrixTable,
 } from "./computationWalkthrough";
 import {
+  cancelComputationMotions,
+  disposeComputationMotions,
+} from "./computationMotion";
+import {
   createMathNumber,
   createStructuredMath,
   formatMathNumber,
@@ -247,7 +251,11 @@ export function mountLinearSystemsApp(
   function invalidateFailedAttempt(form?: HTMLFormElement): void {
     lastFailure = undefined;
     failureComputationExpanded = false;
-    form?.querySelector("[data-solve-failure]")?.remove();
+    const failure = form?.querySelector<HTMLElement>("[data-solve-failure]");
+    if (failure) {
+      disposeComputationMotions(failure);
+      failure.remove();
+    }
   }
 
   function goToStep(step: LinearSystemsWorkflowStep): void {
@@ -588,6 +596,7 @@ export function mountLinearSystemsApp(
   }
 
   function run(form: HTMLFormElement): void {
+    cancelComputationMotions(app);
     const draft = currentDraftFromForm(form);
     session = replaceLinearSystemsDraft(session, draft);
     const issues = validateLinearSystemsDraft(draft);
@@ -696,6 +705,7 @@ export function mountLinearSystemsApp(
     });
     form.addEventListener("input", (event) => {
       if (!(event.target instanceof HTMLInputElement)) return;
+      cancelComputationMotions(app);
       clearFieldErrors(form);
       invalidateFailedAttempt(form);
       const previousStatus = session.resultStatus;
@@ -713,6 +723,7 @@ export function mountLinearSystemsApp(
       }
     });
     dimension.addEventListener("change", () => {
+      cancelComputationMotions(app);
       const next = resizeLinearSystemsDraft(session, Number(dimension.value));
       if (next === session) return;
       session = next;
@@ -723,6 +734,7 @@ export function mountLinearSystemsApp(
     });
     preset.addEventListener("change", () => {
       if (preset.value === "custom") return;
+      cancelComputationMotions(app);
       session = loadLinearSystemsPreset(
         session,
         preset.value as LinearSystemsPresetId
@@ -1001,6 +1013,7 @@ export function mountLinearSystemsApp(
   }
 
   function resetExperiment(): void {
+    cancelComputationMotions(app);
     const fresh = createLinearSystemsSession();
     const at = (options.now ?? Date.now)();
     closeResetDialog(false);
@@ -1032,6 +1045,7 @@ export function mountLinearSystemsApp(
 
   function openResetDialog(trigger: HTMLElement): void {
     if (activeResetDialog || disposed) return;
+    cancelComputationMotions(app);
     resetTrigger = trigger;
     const backdrop = el("div", undefined, "ls-reset-backdrop");
     backdrop.dataset.newExperimentDialog = "true";
@@ -1070,6 +1084,7 @@ export function mountLinearSystemsApp(
 
   function render(): void {
     if (!isCurrent()) return;
+    disposeComputationMotions(app);
     const root = el("div", undefined, "linear-systems-shell");
     const breadcrumb = el("nav", undefined, "ls-breadcrumb");
     breadcrumb.setAttribute("aria-label", "Breadcrumb");
@@ -1138,6 +1153,7 @@ export function mountLinearSystemsApp(
     },
     dispose(): void {
       if (disposed) return;
+      disposeComputationMotions(app);
       disposed = true;
       closeResetDialog(false);
       if (activeMounts.get(app) === token) {

@@ -415,6 +415,10 @@
   display: grid;
   justify-items: start;
   gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--color-output-accent);
+  border-radius: var(--radius-md);
+  background: var(--color-output-surface);
 }
 
 .ls-eyebrow {
@@ -427,8 +431,8 @@
 }
 
 .ls-solution-vector {
-  border: 1px solid var(--color-output-accent);
-  background: var(--color-output-surface);
+  border: 2px solid var(--color-output-accent);
+  background: var(--color-surface-raised);
 }
 
 .ls-numeric-matrix {
@@ -452,7 +456,7 @@
 }
 
 .ls-factorization-rail {
-  margin-block: var(--space-8);
+  margin-block: var(--space-6);
   padding: clamp(1rem, 3vw, 1.5rem);
   border: 1px solid var(--color-output-accent);
   border-radius: var(--radius-md);
@@ -472,6 +476,15 @@
   display: block;
   width: fit-content;
   max-width: 100%;
+}
+
+.linear-systems-shell .ls-contained-math {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  padding-block: 0.15rem;
 }
 
 .ls-factorization-equation {
@@ -542,9 +555,20 @@
 }
 
 .ls-walkthrough-phase {
+  position: relative;
   display: grid;
   min-width: 0;
   gap: var(--space-4);
+  padding-inline-start: var(--space-4);
+}
+
+.ls-walkthrough-phase::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--color-border);
+  content: "";
 }
 
 .ls-computation-step {
@@ -553,6 +577,97 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-surface-raised);
+}
+
+.ls-computation-markers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-block: var(--space-3);
+}
+
+.ls-replay-step {
+  min-height: 2.35rem;
+  padding: 0.45rem 0.75rem;
+}
+
+.ls-motion-stage {
+  display: grid;
+  min-width: 0;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  overflow: clip;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-inset);
+}
+
+.ls-motion-stage[hidden] {
+  display: none;
+}
+
+.ls-motion-static-state {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.ls-motion-row {
+  display: grid;
+  grid-template-columns: minmax(5.5rem, auto) minmax(0, 1fr);
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-2);
+}
+
+.ls-motion-row-label {
+  align-self: center;
+  white-space: nowrap;
+}
+
+.ls-motion-cells {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(auto-fit, minmax(3.3rem, 1fr));
+  gap: var(--space-1);
+}
+
+.ls-motion-cell {
+  min-width: 0;
+  padding: 0.3rem 0.4rem;
+  border: 1px solid var(--color-border);
+  border-radius: calc(var(--radius-sm) / 2);
+  background: var(--color-surface-raised);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+
+.ls-motion-cell.is-changed {
+  border-color: var(--color-accent-theory);
+  background: var(--color-output-surface);
+  box-shadow: inset 0 -2px var(--color-accent-theory);
+}
+
+.ls-elimination-motion.is-motion-moving > .is-selected {
+  border-color: var(--color-accent-primary);
+  background: var(--color-surface-accent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ls-motion-row.is-motion-moving {
+    transition: transform var(--motion-transform) var(--ease-transform);
+  }
+
+  .ls-elimination-motion > .computation-marker,
+  .ls-elimination-motion .ls-motion-cell {
+    transition:
+      border-color var(--motion-state) var(--ease-standard),
+      background-color var(--motion-state) var(--ease-standard),
+      opacity var(--motion-fast) var(--ease-standard);
+  }
 }
 
 .ls-substitution-chain {
@@ -749,6 +864,11 @@
     padding: var(--space-3);
   }
 
+  .ls-motion-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+
   .ls-evidence-table-stacked {
     display: block;
     width: 100%;
@@ -811,5 +931,9 @@
   .linear-systems-shell *::after {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .ls-motion-row {
+    transform: none !important;
   }
 }
