@@ -24,7 +24,7 @@ describe("Linear Systems computation walkthrough", () => {
     vi.unstubAllGlobals();
   });
 
-  it("renders every successful semantic trace kind as presentation evidence", () => {
+  it("renders the current walkthrough kinds while Phase 1-only evidence stays producer-owned", () => {
     const result = solvePreset("row_swap_required");
     const view = createComputationWalkthrough(result.trace, { headingLevel: 3 });
     document.body.append(view);
@@ -32,10 +32,7 @@ describe("Linear Systems computation walkthrough", () => {
     const renderedKinds = [...view.querySelectorAll<HTMLElement>("[data-trace-kind]")].map(
       (item) => item.dataset.traceKind
     );
-    expect(new Set(renderedKinds)).toEqual(
-      new Set(result.trace.steps.map((step) => step.kind))
-    );
-    for (const kind of [
+    const currentPresentationKinds = [
       "matrix_scale",
       "pivot_selection",
       "row_swap",
@@ -46,9 +43,17 @@ describe("Linear Systems computation walkthrough", () => {
       "residual_component",
       "residual_inf_norm",
       "preset_reference_difference",
-    ]) {
+    ];
+    expect(new Set(renderedKinds)).toEqual(new Set(currentPresentationKinds));
+    for (const kind of currentPresentationKinds) {
       expect(renderedKinds).toContain(kind);
     }
+    expect(result.trace.steps.map((step) => step.kind)).toContain("factorization_start");
+    expect(result.trace.steps.map((step) => step.kind)).toContain(
+      "right_hand_side_permutation"
+    );
+    expect(renderedKinds).not.toContain("factorization_start");
+    expect(renderedKinds).not.toContain("right_hand_side_permutation");
     expect(view.textContent).toContain("P A = L U");
     expect(view.textContent).toContain("Each step comes from the computation that produced this result");
     expect(view.textContent).not.toContain('"kind"');

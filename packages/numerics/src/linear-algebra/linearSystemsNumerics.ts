@@ -66,6 +66,11 @@ export interface LinearSystemPivotSelectionTraceStep {
   readonly accepted: boolean;
 }
 
+export interface LinearSystemFactorizationStartTraceStep {
+  readonly kind: "factorization_start";
+  readonly initialU: LinearSystemsMatrix;
+}
+
 export interface LinearSystemIndexedRow {
   readonly row: number;
   readonly values: readonly number[];
@@ -84,6 +89,8 @@ export interface LinearSystemRowSwapTraceStep {
   readonly column: number;
   readonly firstRow: number;
   readonly secondRow: number;
+  readonly uBefore: LinearSystemsMatrix;
+  readonly uAfter: LinearSystemsMatrix;
   readonly uRowsBefore: readonly LinearSystemIndexedRow[];
   readonly uRowsAfter: readonly LinearSystemIndexedRow[];
   readonly pRowsBefore: readonly LinearSystemIndexedRow[];
@@ -102,6 +109,8 @@ export interface LinearSystemEliminationTraceStep {
   readonly pivotValue: number;
   readonly targetColumnValueBefore: number;
   readonly multiplier: number;
+  readonly uBefore: LinearSystemsMatrix;
+  readonly uAfter: LinearSystemsMatrix;
   readonly targetRowBefore: readonly number[];
   readonly pivotRowUsed: readonly number[];
   readonly targetRowAfter: readonly number[];
@@ -118,6 +127,13 @@ export interface LinearSystemFactorizationCompleteTraceStep {
   readonly L: LinearSystemsMatrix;
   readonly U: LinearSystemsMatrix;
   readonly permutation: readonly number[];
+}
+
+export interface LinearSystemRightHandSidePermutationTraceStep {
+  readonly kind: "right_hand_side_permutation";
+  readonly originalB: LinearSystemsVector;
+  readonly permutation: readonly number[];
+  readonly permutedB: LinearSystemsVector;
 }
 
 export interface LinearSystemSubstitutionContribution {
@@ -197,10 +213,12 @@ export interface LinearSystemPresetReferenceTraceStep {
 
 export type LinearSystemTraceStep =
   | LinearSystemMatrixScaleTraceStep
+  | LinearSystemFactorizationStartTraceStep
   | LinearSystemPivotSelectionTraceStep
   | LinearSystemRowSwapTraceStep
   | LinearSystemEliminationTraceStep
   | LinearSystemFactorizationCompleteTraceStep
+  | LinearSystemRightHandSidePermutationTraceStep
   | LinearSystemForwardSubstitutionTraceStep
   | LinearSystemBackwardSubstitutionTraceStep
   | LinearSystemResidualComponentTraceStep
@@ -398,6 +416,11 @@ export function solveLinearSystem(input: LinearSystemInput): LinearSystemSolveOu
   const pivots: LinearSystemPivotStep[] = [];
   let rowSwapCount = 0;
 
+  traceSteps.push({
+    kind: "factorization_start",
+    initialU: cloneMatrix(U),
+  });
+
   for (let column = 0; column < dimension; column += 1) {
     const candidates: LinearSystemPivotCandidate[] = [
       {
@@ -452,6 +475,7 @@ export function solveLinearSystem(input: LinearSystemInput): LinearSystemSolveOu
 
     pivots.push({ column, selectedRow, pivotValue: selectedPivot });
     if (selectedRow !== column) {
+      const uBefore = cloneMatrix(U);
       const uRowsBefore = [
         { row: column, values: [...U[column]!] },
         { row: selectedRow, values: [...U[selectedRow]!] },
@@ -472,6 +496,7 @@ export function solveLinearSystem(input: LinearSystemInput): LinearSystemSolveOu
       const uRow = U[column]!;
       U[column] = U[selectedRow]!;
       U[selectedRow] = uRow;
+      const uAfter = cloneMatrix(U);
 
       const pRow = P[column]!;
       P[column] = P[selectedRow]!;
@@ -493,6 +518,8 @@ export function solveLinearSystem(input: LinearSystemInput): LinearSystemSolveOu
         column,
         firstRow: column,
         secondRow: selectedRow,
+        uBefore,
+        uAfter,
         uRowsBefore,
         uRowsAfter: [
           { row: column, values: [...U[column]!] },
@@ -518,6 +545,7 @@ export function solveLinearSystem(input: LinearSystemInput): LinearSystemSolveOu
 
     const pivot = U[column]![column]!;
     for (let row = column + 1; row < dimension; row += 1) {
+      const uBefore = cloneMatrix(U);
       const targetRowBefore = [...U[row]!];
       const pivotRowUsed = [...U[column]!];
       const targetColumnValueBefore = U[row]![column]!;
@@ -551,6 +579,8 @@ export function solveLinearSystem(input: LinearSystemInput): LinearSystemSolveOu
         pivotValue: pivot,
         targetColumnValueBefore,
         multiplier,
+        uBefore,
+        uAfter: cloneMatrix(U),
         targetRowBefore,
         pivotRowUsed,
         targetRowAfter: [...U[row]!],
@@ -568,6 +598,12 @@ export function solveLinearSystem(input: LinearSystemInput): LinearSystemSolveOu
   });
 
   const permutedB = permutation.map((originalRow) => originalB[originalRow]!);
+  traceSteps.push({
+    kind: "right_hand_side_permutation",
+    originalB: [...originalB],
+    permutation: [...permutation],
+    permutedB: [...permutedB],
+  });
   const y = Array<number>(dimension).fill(0);
   for (let row = 0; row < dimension; row += 1) {
     const contributions: LinearSystemSubstitutionContribution[] = [];

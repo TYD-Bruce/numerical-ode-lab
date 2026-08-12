@@ -469,6 +469,31 @@ describe("pivot threshold and finite-arithmetic safeguards", () => {
 });
 
 describe("structured computation evidence", () => {
+  it("records the immutable authoritative matrix at factorization start", () => {
+    const A = [
+      [3, 1, -1],
+      [2, 4, 1],
+      [-1, 2, 5],
+    ];
+    const result = successful(solveLinearSystem({ A, b: [6, 9, -2] }));
+    const [start] = traceStepsOfKind(result, "factorization_start");
+
+    expect(start?.initialU).toEqual(result.originalA);
+    expect(start?.initialU).not.toBe(result.originalA);
+    expect(start?.initialU[0]).not.toBe(result.originalA[0]);
+    expect(Object.isFrozen(start?.initialU)).toBe(true);
+    expect(Object.isFrozen(start?.initialU[0])).toBe(true);
+
+    A[0]![0] = 99;
+    expect(start?.initialU[0]![0]).toBe(3);
+    expect(() => (start.initialU[0] as number[])[0] = 99).toThrow();
+    expect(start.initialU).toEqual([
+      [3, 1, -1],
+      [2, 4, 1],
+      [-1, 2, 5],
+    ]);
+  });
+
   it("retains complete setup evidence for the Starter 3×3 matrix scale", () => {
     const result = successful(
       solveLinearSystem({
@@ -549,6 +574,26 @@ describe("structured computation evidence", () => {
       permutationBefore: [0, 1, 2],
       permutationAfter: [2, 1, 0],
     });
+
+    expect(swap?.uBefore).toEqual([
+      [0, 2, 1],
+      [1, -2, -3],
+      [2, 3, 1],
+    ]);
+    expect(swap?.uAfter).toEqual([
+      [2, 3, 1],
+      [1, -2, -3],
+      [0, 2, 1],
+    ]);
+    for (const row of swap!.uRowsBefore) {
+      expect(swap!.uBefore[row.row]).toEqual(row.values);
+    }
+    for (const row of swap!.uRowsAfter) {
+      expect(swap!.uAfter[row.row]).toEqual(row.values);
+    }
+    expect(Object.isFrozen(swap?.uBefore)).toBe(true);
+    expect(Object.isFrozen(swap?.uAfter)).toBe(true);
+    expect(swap?.uBefore).not.toBe(swap?.uAfter);
   });
 
   it("records actual elimination multipliers and row updates", () => {
@@ -580,6 +625,57 @@ describe("structured computation evidence", () => {
     expect(elimination?.multiplier).toBe(
       elimination!.targetColumnValueBefore / elimination!.pivotValue
     );
+
+    expect(elimination!.uBefore[elimination!.targetRow]).toEqual(
+      elimination!.targetRowBefore
+    );
+    expect(elimination!.uBefore[elimination!.pivotRow]).toEqual(
+      elimination!.pivotRowUsed
+    );
+    expect(elimination!.uAfter[elimination!.targetRow]).toEqual(
+      elimination!.targetRowAfter
+    );
+    for (let row = 0; row < elimination!.uBefore.length; row += 1) {
+      if (row !== elimination!.targetRow) {
+        expect(elimination!.uAfter[row]).toEqual(elimination!.uBefore[row]);
+      }
+    }
+  });
+
+  it("chains every full matrix operation snapshot in actual sequential order", () => {
+    const result = successful(
+      solveLinearSystem({
+        A: [
+          [0, 2, 1],
+          [1, -2, -3],
+          [2, 3, 1],
+        ],
+        b: [0, -3, 1],
+      })
+    );
+    const operations = result.trace.steps.filter(
+      (
+        step
+      ): step is Extract<
+        LinearSystemTraceStep,
+        { readonly kind: "row_swap" | "elimination" }
+      > => step.kind === "row_swap" || step.kind === "elimination"
+    );
+
+    expect(operations.length).toBeGreaterThan(1);
+    const history = operations.map((step) => structuredClone(step.uAfter));
+    for (let index = 1; index < operations.length; index += 1) {
+      expect(operations[index]!.uBefore).toEqual(operations[index - 1]!.uAfter);
+      expect(operations[index]!.uBefore).not.toBe(operations[index - 1]!.uAfter);
+    }
+    expect(operations.at(-1)?.uAfter).toEqual(result.U);
+    expect(operations.map((step) => step.uAfter)).toEqual(history);
+    for (const operation of operations) {
+      expect(Object.isFrozen(operation.uBefore)).toBe(true);
+      expect(Object.isFrozen(operation.uAfter)).toBe(true);
+      expect(Object.isFrozen(operation.uBefore[0])).toBe(true);
+      expect(Object.isFrozen(operation.uAfter[0])).toBe(true);
+    }
   });
 
   it("shows the prior-column L exchange at a later pivot", () => {
@@ -668,6 +764,43 @@ describe("structured computation evidence", () => {
       expect(step.accumulatedKnownTermSum).toBe(expectedSum);
       expect(step.numeratorBeforeDivision).toBe(expectedAccumulator);
     }
+  });
+
+  it("publishes the authoritative complete P b before forward substitution", () => {
+    const result = successful(
+      solveLinearSystem({
+        A: [
+          [0, 2, 1],
+          [1, -2, -3],
+          [2, 3, 1],
+        ],
+        b: [0, -3, 1],
+      })
+    );
+    const rhsIndex = result.trace.steps.findIndex(
+      (step) => step.kind === "right_hand_side_permutation"
+    );
+    const [rhs] = traceStepsOfKind(result, "right_hand_side_permutation");
+    const factorizationIndex = result.trace.steps.findIndex(
+      (step) => step.kind === "factorization_complete"
+    );
+    const firstForwardIndex = result.trace.steps.findIndex(
+      (step) => step.kind === "forward_substitution"
+    );
+    const forward = traceStepsOfKind(result, "forward_substitution");
+
+    expect(rhsIndex).toBeGreaterThan(factorizationIndex);
+    expect(rhsIndex).toBeLessThan(firstForwardIndex);
+    expect(rhs?.originalB).toEqual(result.originalB);
+    expect(rhs?.permutation).toEqual(result.permutation);
+    expect(rhs?.permutedB).toEqual(result.permutation.map((row) => result.originalB[row]));
+    expect(forward.map((step) => step.rightHandSideValue)).toEqual(rhs?.permutedB);
+    expect(Object.isFrozen(rhs)).toBe(true);
+    expect(Object.isFrozen(rhs?.originalB)).toBe(true);
+    expect(Object.isFrozen(rhs?.permutation)).toBe(true);
+    expect(Object.isFrozen(rhs?.permutedB)).toBe(true);
+    expect(rhs?.originalB).not.toBe(result.originalB);
+    expect(rhs?.permutation).not.toBe(result.permutation);
   });
 
   it("does not let a trace-only aggregate change an otherwise finite solve", () => {
@@ -871,6 +1004,18 @@ describe("structured computation evidence", () => {
     expect(Object.isFrozen(outcome.error.trace)).toBe(true);
     expect(Object.isFrozen(outcome.error.trace?.steps)).toBe(true);
     expect(Object.isFrozen(rejected)).toBe(true);
+
+    const kinds = outcome.error.trace?.steps.map((step) => step.kind);
+    expect(kinds).toEqual([
+      "matrix_scale",
+      "factorization_start",
+      "pivot_selection",
+      "elimination",
+      "pivot_selection",
+    ]);
+    expect(kinds).not.toContain("right_hand_side_permutation");
+    expect(kinds).not.toContain("forward_substitution");
+    expect(kinds).not.toContain("residual_component");
   });
 });
 
