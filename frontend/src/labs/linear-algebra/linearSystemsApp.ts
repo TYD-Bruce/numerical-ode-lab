@@ -52,6 +52,7 @@ import {
   createNamedMatrix,
   createNamedVector,
   createPluRelation,
+  createSolvedSystemEquation,
   createSystemEquation,
   multiplyNodes,
   spokenNumber,
@@ -701,17 +702,49 @@ export function mountLinearSystemsApp(
     return panel;
   }
 
-  function resultHeader(result: LinearSystemSolveSuccess): HTMLElement {
+  function resultHeader(
+    result: LinearSystemSolveSuccess,
+    stale: boolean
+  ): HTMLElement {
     const header = el("header", undefined, "ls-result-header");
-    const heading = el("h2", "Computed solution");
+    const heading = el("h2", "Problem and computed solution");
     heading.tabIndex = -1;
     header.append(
       el("p", "Main answer", "ls-eyebrow"),
       heading
     );
+
+    const primary = el("div", undefined, "ls-primary-result");
+    primary.dataset.primaryResult = "true";
+    const problem = el("section", undefined, "ls-result-part is-problem");
+    problem.dataset.resultPart = "problem";
+    problem.dataset.outputProblemContext = "true";
+    problem.dataset.resultAuthority = "successful-result";
+    problem.append(
+      el("h3", "Problem"),
+      createSolvedSystemEquation(result.originalA, result.originalB, {
+        className: "ls-output-system-equation",
+        dataMath: "solved-system",
+      })
+    );
+    if (stale) {
+      problem.append(
+        el(
+          "p",
+          "This result was produced from the previous successful inputs.",
+          "ls-result-context-note"
+        )
+      );
+    }
+
+    const solutionPart = el("section", undefined, "ls-result-part is-solution");
+    solutionPart.dataset.resultPart = "solution";
+    solutionPart.append(el("h3", "Computed solution"));
     const solution = createComputedSolution(result.xHat);
     solution.classList.add("ls-solution-vector");
-    header.append(solution);
+    solutionPart.append(solution);
+    primary.append(problem, solutionPart);
+    header.append(primary);
     return header;
   }
 
@@ -730,7 +763,7 @@ export function mountLinearSystemsApp(
       return panel;
     }
     if (session.resultStatus === "stale") panel.append(staleNotice());
-    panel.append(resultHeader(result));
+    panel.append(resultHeader(result, session.resultStatus === "stale"));
     const relation = el("section", undefined, "ls-factorization-rail");
     relation.setAttribute("aria-labelledby", `ls-factorization-title-${instanceId}`);
     const title = el("h3", "Factorization evidence");
@@ -836,13 +869,50 @@ export function mountLinearSystemsApp(
       (step) => step.matrixVectorValue
     );
 
+    const context = el("section", undefined, "ls-diagnostics-context");
+    context.dataset.diagnosticsContext = "true";
+    context.dataset.resultAuthority = "successful-result";
+    const contextHeading = el("div", undefined, "ls-diagnostics-context-heading");
+    contextHeading.append(
+      el("p", "Successful result context", "ls-eyebrow"),
+      el("h3", "What problem did we solve?"),
+      el(
+        "p",
+        "What solution are we checking? This read-only summary comes from the successful result that produced these diagnostics."
+      )
+    );
+    const contextMath = el("div", undefined, "ls-diagnostics-context-math");
+    contextMath.append(
+      createNamedMatrix("A", result.originalA, "coefficient matrix A", {
+        dataMath: "diagnostic-context-a",
+      }),
+      createNamedVector("b", result.originalB, "right-hand side vector b", {
+        dataMath: "diagnostic-context-b",
+      }),
+      createNamedVector(xHatNode(), result.xHat, "computed solution x hat", {
+        dataMath: "diagnostic-context-x-hat",
+        context: "matrix",
+      })
+    );
+    context.append(contextHeading, contextMath);
+    if (session.resultStatus === "stale") {
+      context.append(
+        el(
+          "p",
+          "This context belongs to the previous successful inputs, not the current edited data.",
+          "ls-result-context-note"
+        )
+      );
+    }
+
     const meaning = el("section", undefined, "ls-diagnostic-intro");
     meaning.dataset.diagnosticMeaning = "true";
     meaning.append(
-      el("p", "What the residual tells us", "ls-eyebrow"),
+      el("p", "Why we check", "ls-eyebrow"),
+      el("h3", "What is the residual?"),
       el(
         "p",
-        "The residual measures how closely the computed solution satisfies the original equations.",
+        "The residual measures how far the computed solution misses the original equations.",
         "ls-diagnostic-lede"
       ),
       createNativeMath(
@@ -859,7 +929,25 @@ export function mountLinearSystemsApp(
           display: "block",
           dataMath: "residual-relation",
         }
-      )
+      ),
+      createNativeMath(
+        [
+          multiplyNodes(mathIdentifier("A"), xHatNode()),
+          mathOperator("="),
+          mathIdentifier("b"),
+          mathOperator("⇒"),
+          mathIdentifier("r"),
+          mathOperator("="),
+          nativeMathNumber(0, "ordinary"),
+        ],
+        "If A times x hat equals b, then r equals zero",
+        {
+          className: "ls-diagnostic-ideal",
+          display: "block",
+          dataMath: "residual-ideal",
+        }
+      ),
+      el("p", "If A x hat equals b, then r equals zero.", "ls-diagnostic-ideal-copy")
     );
 
     const story = el("div", undefined, "ls-diagnostic-story");
@@ -867,7 +955,11 @@ export function mountLinearSystemsApp(
     product.dataset.diagnosticBlock = "matrix-vector";
     product.append(
       el("p", "Step 1", "ls-diagnostic-step-label"),
-      el("h3", "Compute A times x hat"),
+      el("h3", "Substitute the computed solution"),
+      el(
+        "p",
+        "Substitute x-hat into the original left-hand side to see what equations the computed solution actually satisfies."
+      ),
       createNamedVector(
         multiplyNodes(mathIdentifier("A"), xHatNode()),
         matrixVectorValues,
@@ -910,7 +1002,8 @@ export function mountLinearSystemsApp(
     residual.dataset.diagnosticBlock = "residual";
     residual.append(
       el("p", "Step 2", "ls-diagnostic-step-label"),
-      el("h3", "Build the residual vector"),
+      el("h3", "Find the equation mismatch"),
+      el("p", "Compare the original right-hand side b with A x-hat."),
       createNativeMath(
         [
           mathIdentifier("r"),
@@ -940,14 +1033,23 @@ export function mountLinearSystemsApp(
     );
     norm.append(
       el("p", "Step 3", "ls-diagnostic-step-label"),
-      el("h3", "Take the residual infinity norm"),
+      el("h3", "Measure the largest mismatch"),
+      el(
+        "p",
+        "The infinity norm reports the largest absolute residual component."
+      ),
       createNativeMath(
         [
           normNode,
           mathOperator("="),
+          mathSubscript(mathIdentifier("max"), mathIdentifier("i")),
+          mathOperator("|", { fence: true, stretchy: true }),
+          mathSubscript(mathIdentifier("r"), mathIdentifier("i")),
+          mathOperator("|", { fence: true, stretchy: true }),
+          mathOperator("="),
           nativeMathNumber(result.residualInfNorm, "diagnostic"),
         ],
-        `the infinity norm of r equals ${spokenNumber(result.residualInfNorm, "diagnostic")}`,
+        `the infinity norm of r equals the maximum absolute residual component, ${spokenNumber(result.residualInfNorm, "diagnostic")}`,
         { className: "ls-residual-norm", display: "block", dataMath: "residual-inf-norm" }
       ),
       el(
@@ -963,11 +1065,11 @@ export function mountLinearSystemsApp(
       el("strong", "Residual is not solution error"),
       el(
         "p",
-        "A small residual does not necessarily mean a small solution error. Conditioning describes how sensitive the solution is to small changes in the problem data; this Lab does not compute a condition number or an error bound."
+        "A small residual means a small equation mismatch. It does not, by itself, guarantee a small solution error. Conditioning describes how sensitive the solution is to small changes in the problem data; this Lab does not compute a condition number or an error bound."
       )
     );
 
-    panel.append(meaning, story, limitation);
+    panel.append(context, meaning, limitation, story);
 
     if (result.referenceDifferenceInf !== undefined) {
       const reference = el("section", undefined, "ls-reference-comparison");

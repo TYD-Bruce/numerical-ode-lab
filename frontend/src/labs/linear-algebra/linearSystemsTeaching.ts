@@ -2,15 +2,129 @@ import {
   createNativeMath,
   mathFraction,
   mathIdentifier,
+  mathNumberLiteral,
   mathOperator,
+  mathRow,
+  mathTable,
 } from "../../math/nativeMath";
 import {
   createPluRelation,
+  createSolvedSystemEquation,
   createSystemEquation,
   indexedNode,
   multiplyNodes,
   xHatNode,
 } from "./linearSystemsMath";
+
+export interface LinearSystemsTeachingConcept {
+  readonly id: string;
+  readonly term: string;
+  readonly definition: string;
+}
+
+export interface LinearSystemsMethodTeachingGroup {
+  readonly id: string;
+  readonly title: string;
+  readonly concepts: readonly LinearSystemsTeachingConcept[];
+  readonly formula: "multiplier" | "plu" | "triangular-solves";
+}
+
+export interface LinearSystemsMethodTeachingProfile {
+  readonly id: string;
+  readonly learnerLabel: string;
+  readonly family: "direct" | "iterative";
+  readonly overview: string;
+  readonly algorithmSteps: readonly string[];
+  readonly conceptGroups: readonly LinearSystemsMethodTeachingGroup[];
+}
+
+export const GEPP_METHOD_TEACHING_PROFILE: LinearSystemsMethodTeachingProfile =
+  Object.freeze({
+    id: "gepp",
+    learnerLabel: "Gaussian elimination with partial pivoting",
+    family: "direct",
+    overview:
+      "Gaussian elimination reduces the original system to triangular systems whose components can be solved in a known order.",
+    algorithmSteps: Object.freeze([
+      "Choose a pivot in the active column.",
+      "Swap rows when another available row has the selected pivot.",
+      "Use row operations to eliminate entries below the pivot.",
+      "Continue column by column until U is upper triangular.",
+      "Record the permutations and multipliers in P A = L U.",
+      "Solve L y = P b by forward substitution.",
+      "Solve U x hat = y by backward substitution, then check the residual.",
+    ]),
+    conceptGroups: Object.freeze([
+      Object.freeze({
+        id: "pivot-elimination",
+        title: "1. Pivot and eliminate",
+        formula: "multiplier" as const,
+        concepts: Object.freeze([
+          Object.freeze({
+            id: "pivot",
+            term: "Pivot",
+            definition:
+              "The active entry used to eliminate entries below it in the current column.",
+          }),
+          Object.freeze({
+            id: "partial-pivoting",
+            term: "Partial pivoting",
+            definition:
+              "Compare the available magnitudes, choose the first largest entry, and swap rows when needed.",
+          }),
+          Object.freeze({
+            id: "row-operation",
+            term: "Row operation",
+            definition:
+              "A permitted transformation of rows used to produce an equivalent linear system.",
+          }),
+          Object.freeze({
+            id: "elimination-multiplier",
+            term: "Elimination multiplier",
+            definition:
+              "The scale factor used when subtracting the pivot row from a target row.",
+          }),
+        ]),
+      }),
+      Object.freeze({
+        id: "factorization",
+        title: "2. Read the factorization",
+        formula: "plu" as const,
+        concepts: Object.freeze([
+          Object.freeze({
+            id: "permutation-matrix",
+            term: "Permutation matrix",
+            definition: "P records how the rows were reordered during pivoting.",
+          }),
+          Object.freeze({
+            id: "plu-factorization",
+            term: "PLU factorization",
+            definition:
+              "P A = L U records row order in P, elimination multipliers in L, and the final upper-triangular matrix in U.",
+          }),
+        ]),
+      }),
+      Object.freeze({
+        id: "triangular-solves",
+        title: "3. Solve the triangular systems",
+        formula: "triangular-solves" as const,
+        concepts: Object.freeze([
+          Object.freeze({
+            id: "forward-substitution",
+            term: "Lower triangular and forward substitution",
+            definition:
+              "With zeros above the diagonal, solve L y = P b from top to bottom.",
+          }),
+          Object.freeze({
+            id: "backward-substitution",
+            term: "Upper triangular and backward substitution",
+            definition:
+              "With zeros below the diagonal, solve U x hat = y from bottom to top.",
+          }),
+        ]),
+      }),
+    ]),
+  });
 
 function el<K extends keyof HTMLElementTagNameMap>(
   tag: K,
@@ -47,15 +161,11 @@ function status(label: string, state: "available" | "planned"): HTMLElement {
   return badge;
 }
 
-function concept(
-  term: string,
-  definition: string,
-  dataConcept: string
-): HTMLElement {
-  const item = el("div", undefined, "ls-concept-item");
-  item.dataset.teachingConcept = dataConcept;
-  item.append(el("dt", term), el("dd", definition));
-  return item;
+function concept(item: LinearSystemsTeachingConcept): HTMLElement {
+  const definition = el("div", undefined, "ls-concept-item");
+  definition.dataset.teachingConcept = item.id;
+  definition.append(el("dt", item.term), el("dd", item.definition));
+  return definition;
 }
 
 function multiplierFormula(): HTMLElement {
@@ -94,8 +204,60 @@ function backwardRelation(): HTMLElement {
   );
 }
 
-export function createLinearSystemsMethodTeaching(): HTMLElement {
-  const content = el("div", undefined, "ls-method-v2");
+function createTwoEquationExample(): HTMLElement {
+  const example = el("article", undefined, "ls-linear-system-example");
+  example.dataset.linearSystemExample = "true";
+  const equations = createNativeMath(
+    mathTable([
+      [
+        mathRow([
+          multiplyNodes(mathNumberLiteral("2"), indexedNode("x", 0)),
+          mathOperator("+"),
+          indexedNode("x", 1),
+          mathOperator("="),
+          mathNumberLiteral("5"),
+        ]),
+      ],
+      [
+        mathRow([
+          indexedNode("x", 0),
+          mathOperator("−"),
+          multiplyNodes(mathNumberLiteral("3"), indexedNode("x", 1)),
+          mathOperator("="),
+          mathNumberLiteral("−1"),
+        ]),
+      ],
+    ]),
+    "two x 1 plus x 2 equals 5; x 1 minus three x 2 equals minus 1",
+    {
+      className: "ls-two-equation-reading",
+      display: "block",
+      dataMath: "two-equation-example",
+    }
+  );
+  const matrixForm = createSolvedSystemEquation(
+    [
+      [2, 1],
+      [1, -3],
+    ],
+    [5, -1],
+    {
+      className: "ls-two-equation-matrix-form",
+      dataMath: "two-equation-matrix-form",
+    }
+  );
+  example.append(
+    el("p", "Read two equations as one system", "ls-example-label"),
+    equations,
+    el("p", "The same two equations in matrix form", "ls-example-bridge"),
+    matrixForm
+  );
+  return example;
+}
+
+function createUniversalTeaching(): HTMLElement {
+  const universal = el("div", undefined, "ls-universal-teaching");
+  universal.dataset.universalLinearSystemsTeaching = "true";
 
   const problem = el("section", undefined, "ls-method-problem");
   problem.dataset.methodProblem = "true";
@@ -109,16 +271,25 @@ export function createLinearSystemsMethodTeaching(): HTMLElement {
   definition.dataset.linearSystemDefinition = "true";
   const roles = el("div", undefined, "ls-system-roles");
   roles.append(
-    role("A", "Coefficient matrix", "Contains the coefficients that multiply the unknown components."),
+    role(
+      "A",
+      "Coefficient matrix",
+      "Contains the coefficients that multiply the unknown components."
+    ),
     role("x", "Unknown vector", "Contains the values we want to determine."),
-    role("b", "Right-hand side", "Contains the known values the equations must match.")
+    role(
+      "b",
+      "Right-hand side vector",
+      "The known vector of constants on the right-hand side. It is the target vector that A x must equal."
+    )
   );
   problem.append(
     el("p", "The problem", "ls-eyebrow"),
     problemHeading,
     createSystemEquation("ls-problem-equation"),
     definition,
-    roles
+    roles,
+    createTwoEquationExample()
   );
 
   const families = el("section", undefined, "ls-method-section");
@@ -154,72 +325,91 @@ export function createLinearSystemsMethodTeaching(): HTMLElement {
   );
   familyLayout.append(direct, iterative);
   families.append(familyLayout);
+  universal.append(problem, families);
+  return universal;
+}
 
+function renderProfileFormula(
+  formula: LinearSystemsMethodTeachingGroup["formula"]
+): readonly HTMLElement[] {
+  if (formula === "multiplier") return [multiplierFormula()];
+  if (formula === "plu") return [createPluRelation(false, "ls-concept-formula")];
+  return [forwardRelation(), backwardRelation()];
+}
+
+function createSelectedMethodTeaching(
+  profile: LinearSystemsMethodTeachingProfile
+): HTMLElement {
   const selected = el("section", undefined, "ls-selected-method");
-  selected.dataset.selectedMethod = "gepp";
+  selected.dataset.selectedMethod = profile.id;
+  selected.dataset.selectedMethodTeaching = profile.id;
   const selectedHeading = el("div", undefined, "ls-selected-method-heading");
   selectedHeading.append(
-    el("h3", "Gaussian elimination with partial pivoting"),
+    el("h3", `How ${profile.learnerLabel} works`),
     status("Available · Used in this Lab", "available")
   );
   const outline = el("ol", undefined, "ls-algorithm-outline");
-  [
-    "Choose a pivot in the active column.",
-    "Swap rows when another available row has the selected pivot.",
-    "Use row operations to eliminate entries below the pivot.",
-    "Continue column by column until U is upper triangular.",
-    "Record the permutations and multipliers in P A = L U.",
-    "Solve L y = P b by forward substitution.",
-    "Solve U x hat = y by backward substitution, then check the residual.",
-  ].forEach((item) => outline.append(el("li", item)));
+  profile.algorithmSteps.forEach((item) => outline.append(el("li", item)));
   selected.append(
     el("p", "Selected runnable method", "ls-eyebrow"),
     selectedHeading,
-    el(
-      "p",
-      "Gaussian elimination reduces the original system to triangular systems whose components can be solved in a known order."
-    ),
+    el("p", profile.overview),
     outline
   );
 
-  const concepts = el("section", undefined, "ls-method-section ls-concept-path");
-  concepts.append(
-    el("p", "Concepts in computation order", "ls-eyebrow"),
-    el("h3", "What the algorithm records")
-  );
+  const concepts = el("div", undefined, "ls-concept-path");
+  concepts.append(el("p", "Selected-method concepts", "ls-eyebrow"));
+  profile.conceptGroups.forEach((group) => {
+    const band = el("article", undefined, "ls-concept-band");
+    band.dataset.methodConceptGroup = group.id;
+    const terms = el("dl", undefined, "ls-concept-list");
+    group.concepts.forEach((item) => terms.append(concept(item)));
+    const formulas = el("div", undefined, "ls-concept-formulas");
+    formulas.append(...renderProfileFormula(group.formula));
+    band.append(el("h4", group.title), terms, formulas);
+    concepts.append(band);
+  });
+  selected.append(concepts);
+  return selected;
+}
 
-  const elimination = el("article", undefined, "ls-concept-band");
-  elimination.append(el("h4", "1. Pivot and eliminate"));
-  const eliminationTerms = el("dl", undefined, "ls-concept-list");
-  eliminationTerms.append(
-    concept("Pivot", "The active entry used to eliminate entries below it in the current column.", "pivot"),
-    concept("Partial pivoting", "Compare the available magnitudes, choose the first largest entry, and swap rows when needed.", "partial-pivoting"),
-    concept("Row operation", "A permitted transformation of rows used to produce an equivalent linear system.", "row-operation"),
-    concept("Elimination multiplier", "The scale factor used when subtracting the pivot row from a target row.", "elimination-multiplier")
-  );
-  elimination.append(eliminationTerms, multiplierFormula());
-
-  const factorization = el("article", undefined, "ls-concept-band");
-  factorization.append(
-    el("h4", "2. Read the factorization"),
-    createPluRelation(false, "ls-concept-formula"),
+function createResultCheckingTeaching(): HTMLElement {
+  const checking = el("section", undefined, "ls-method-section ls-result-checking");
+  checking.dataset.methodResultCheck = "true";
+  checking.append(
+    el("p", "After the solve", "ls-eyebrow"),
+    el("h3", "Checking the result"),
+    createNativeMath(
+      [
+        mathIdentifier("r"),
+        mathOperator("="),
+        mathIdentifier("b"),
+        mathOperator("−"),
+        multiplyNodes(mathIdentifier("A"), xHatNode()),
+      ],
+      "r equals b minus A times x hat",
+      { className: "ls-concept-formula", dataMath: "residual-relation" }
+    ),
     el(
       "p",
-      "Permutation matrix P records row order, unit lower triangular L records elimination multipliers, and upper triangular U is the final eliminated matrix."
+      "The residual measures equation mismatch: it checks how closely the computed solution satisfies the original equations."
+    ),
+    el(
+      "p",
+      "Conditioning describes how sensitive the solution can be to small changes in the problem data. This Lab does not compute a condition number, so a small residual does not by itself guarantee a small solution error."
     )
   );
+  return checking;
+}
 
-  const solve = el("article", undefined, "ls-concept-band");
-  const solveFormulas = el("div", undefined, "ls-concept-formulas");
-  solveFormulas.append(forwardRelation(), backwardRelation());
-  const solveTerms = el("dl", undefined, "ls-concept-list");
-  solveTerms.append(
-    concept("Lower triangular", "All entries above the diagonal are zero, so forward substitution solves from top to bottom.", "lower-triangular"),
-    concept("Upper triangular", "All entries below the diagonal are zero, so backward substitution solves from bottom to top.", "upper-triangular")
+export function createLinearSystemsMethodTeaching(
+  methodProfile: LinearSystemsMethodTeachingProfile = GEPP_METHOD_TEACHING_PROFILE
+): HTMLElement {
+  const content = el("div", undefined, "ls-method-v2");
+  content.append(
+    createUniversalTeaching(),
+    createSelectedMethodTeaching(methodProfile),
+    createResultCheckingTeaching()
   );
-  solve.append(el("h4", "3. Solve the triangular systems"), solveFormulas, solveTerms);
-  concepts.append(elimination, factorization, solve);
-
-  content.append(problem, families, selected, concepts);
   return content;
 }

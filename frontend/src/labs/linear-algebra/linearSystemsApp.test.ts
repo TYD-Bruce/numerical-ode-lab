@@ -1,7 +1,10 @@
 // @vitest-environment jsdom
 
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mountLinearSystemsApp } from "./linearSystemsApp";
+import { formatMathNumber } from "../../math/structuredMath";
 import {
   createLinearSystemsSession,
   replaceLinearSystemsDraft,
@@ -100,7 +103,14 @@ describe("Linear Systems Lab Teaching v2 application", () => {
       "Unknown vector"
     );
     expect(target.querySelector("[data-system-role='b'] h3")?.textContent).toBe(
-      "Right-hand side"
+      "Right-hand side vector"
+    );
+    expect(target.querySelector("[data-linear-system-example] mtable")).not.toBeNull();
+    expect(target.querySelector("[data-selected-method-teaching='gepp'] h3")?.textContent).toBe(
+      "How Gaussian elimination with partial pivoting works"
+    );
+    expect(target.querySelector("[data-method-result-check]")?.textContent).toContain(
+      "does not compute a condition number"
     );
     expect(target.querySelector("[data-method-family='direct']")).not.toBeNull();
     expect(target.querySelector("[data-method-family='iterative']")).not.toBeNull();
@@ -230,6 +240,22 @@ describe("Linear Systems Lab Teaching v2 application", () => {
     expect(computed.querySelector("mtable")).not.toBeNull();
     expect(computed.querySelectorAll("mtr")).toHaveLength(3);
     expect(computed.getAttribute("aria-label")).toContain("x hat equals");
+    const context = target.querySelector<HTMLElement>("[data-output-problem-context]")!;
+    expect(context.dataset.resultAuthority).toBe("successful-result");
+    expect(context.querySelector("[data-native-math='solved-system']")).not.toBeNull();
+    expect(context.querySelectorAll("[data-native-math='solved-system'] mtable")).toHaveLength(3);
+    expect(
+      [...context.querySelectorAll<HTMLElement>("[data-math-number-context='matrix']")].map(
+        (item) => item.getAttribute("data-display-value")
+      )
+    ).toEqual([
+      ...result.originalA.flat().map((value) => formatMathNumber(value, "matrix").text),
+      ...result.originalB.map((value) => formatMathNumber(value, "matrix").text),
+    ]);
+    const primary = target.querySelector<HTMLElement>("[data-primary-result]")!;
+    expect(primary.querySelectorAll(":scope > [data-result-part]")).toHaveLength(2);
+    expect(primary.querySelector("[data-result-part='problem'] + [data-result-part='solution']"))
+      .not.toBeNull();
     for (const factor of ["factor-p", "factor-l", "factor-u"]) {
       expect(target.querySelector(`[data-native-math='${factor}'] mtable`)).not.toBeNull();
     }
@@ -263,9 +289,29 @@ describe("Linear Systems Lab Teaching v2 application", () => {
     const { target, mounted } = mount(successfulSession());
     target.querySelector<HTMLButtonElement>("[data-workflow-step='diagnostics']")!.click();
 
+    const result = mounted.getSession().latestSuccessfulResult!;
+    const context = target.querySelector<HTMLElement>("[data-diagnostics-context]")!;
+    expect(context.dataset.resultAuthority).toBe("successful-result");
+    expect(context.querySelector("[data-native-math='diagnostic-context-a']")).not.toBeNull();
+    expect(context.querySelector("[data-native-math='diagnostic-context-b']")).not.toBeNull();
+    expect(context.querySelector("[data-native-math='diagnostic-context-x-hat']")).not.toBeNull();
+    expect(context.textContent).toContain("What problem did we solve?");
+    expect(context.textContent).toContain("What solution are we checking?");
+
     expect(
       target.querySelector("[data-diagnostic-meaning] [data-native-math='residual-relation']")
     ).not.toBeNull();
+    expect(target.querySelector("[data-diagnostic-meaning]")?.textContent).toContain(
+      "how far the computed solution misses the original equations"
+    );
+    expect(target.querySelector("[data-diagnostic-meaning]")?.textContent).toContain(
+      "If A x hat equals b, then r equals zero"
+    );
+    const meaning = target.querySelector<HTMLElement>("[data-diagnostic-meaning]")!;
+    const firstStep = target.querySelector<HTMLElement>("[data-diagnostic-block='matrix-vector']")!;
+    expect(
+      Boolean(meaning.compareDocumentPosition(firstStep) & Node.DOCUMENT_POSITION_FOLLOWING)
+    ).toBe(true);
     expect(
       target.querySelector(
         "[data-diagnostic-block='matrix-vector'] [data-native-math='matrix-vector-result'] mtable"
@@ -281,8 +327,37 @@ describe("Linear Systems Lab Teaching v2 application", () => {
         "[data-diagnostic-block='residual-norm'] [data-native-math='residual-inf-norm'] msub"
       )
     ).not.toBeNull();
+    expect(
+      target.querySelector("[data-diagnostic-block='matrix-vector'] h3")?.textContent
+    ).toBe("Substitute the computed solution");
+    expect(target.querySelector("[data-diagnostic-block='residual'] h3")?.textContent).toBe(
+      "Find the equation mismatch"
+    );
+    expect(
+      target.querySelector("[data-diagnostic-block='residual-norm'] h3")?.textContent
+    ).toBe("Measure the largest mismatch");
+    expect(target.textContent).not.toContain("Compute A times x hat");
+    expect(
+      target.querySelector("[data-diagnostic-block='residual-norm'] [data-native-math='residual-inf-norm']")
+        ?.getAttribute("aria-label")
+    ).toContain("maximum absolute residual component");
+    expect(
+      [...target.querySelectorAll<HTMLElement>("[data-native-math='matrix-vector-result'] [data-math-number]")].map(
+        (item) => item.getAttribute("data-display-value")
+      )
+    ).toEqual(
+      result.trace.steps
+        .flatMap((step) =>
+          step.kind === "residual_component"
+            ? [formatMathNumber(step.matrixVectorValue, "diagnostic").text]
+            : []
+        )
+    );
     expect(target.querySelector("[data-diagnostic-limitation]")?.textContent).toContain(
-      "A small residual does not necessarily mean a small solution error"
+      "A small residual means a small equation mismatch"
+    );
+    expect(target.querySelector("[data-diagnostic-limitation]")?.textContent).toContain(
+      "does not, by itself, guarantee a small solution error"
     );
     expect(target.querySelector("[data-diagnostic-limitation]")?.textContent).toContain(
       "does not compute a condition number"
@@ -328,6 +403,32 @@ describe("Linear Systems Lab Teaching v2 application", () => {
     expect(mounted.getSession().latestSuccessfulResult).toBe(result);
     target.querySelector<HTMLButtonElement>("[data-workflow-step='output']")!.click();
     expect(target.querySelector("[data-result-stale]")).not.toBeNull();
+    const staleContext = target.querySelector<HTMLElement>("[data-output-problem-context]")!;
+    expect(staleContext.textContent).toContain(
+      "This result was produced from the previous successful inputs"
+    );
+    expect(
+      [...staleContext.querySelectorAll<HTMLElement>("[data-math-number-context='matrix']")].map(
+        (item) => item.getAttribute("data-display-value")
+      )
+    ).toEqual([
+      ...result!.originalA.flat().map((value) => formatMathNumber(value, "matrix").text),
+      ...result!.originalB.map((value) => formatMathNumber(value, "matrix").text),
+    ]);
+    expect(staleContext.textContent).not.toContain("7");
+
+    target.querySelector<HTMLButtonElement>("[data-workflow-step='diagnostics']")!.click();
+    const staleDiagnostics = target.querySelector<HTMLElement>("[data-diagnostics-context]")!;
+    expect(
+      [...staleDiagnostics.querySelectorAll<HTMLElement>("[data-math-number-context='matrix']")].map(
+        (item) => item.getAttribute("data-display-value")
+      )
+    ).toEqual([
+      ...result!.originalA.flat().map((value) => formatMathNumber(value, "matrix").text),
+      ...result!.originalB.map((value) => formatMathNumber(value, "matrix").text),
+      ...result!.xHat.map((value) => formatMathNumber(value, "matrix").text),
+    ]);
+    expect(staleDiagnostics.textContent).not.toContain("7");
 
     target.querySelector<HTMLButtonElement>("[data-workflow-step='data']")!.click();
     input(target, "[data-vector-b-row='0']", "6.0");
@@ -449,5 +550,15 @@ describe("Linear Systems Lab Teaching v2 application", () => {
     mounted.dispose();
     mounted.dispose();
     expect(target.childElementCount).toBe(0);
+  });
+
+  it("keeps primary result and Diagnostics height content-driven", () => {
+    const css = readFileSync(
+      resolve(process.cwd(), "frontend", "src", "labs", "linear-algebra", "linearSystems.css"),
+      "utf8"
+    );
+
+    expect(css).not.toMatch(/\.ls-primary-result[^}]*min-height\s*:/s);
+    expect(css).not.toMatch(/\.ls-diagnostic-block[^}]*min-height\s*:/s);
   });
 });

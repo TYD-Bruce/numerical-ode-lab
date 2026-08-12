@@ -53,6 +53,17 @@ export function numericVectorNode(
   return numericMatrixNode(vector.map((value) => [value]), context);
 }
 
+export function symbolicVectorNode(
+  symbol: string | NativeMathNode,
+  dimension: number
+): NativeMathNode {
+  return mathMatrix(
+    Array.from({ length: dimension }, (_, index) => [
+      indexedNode(typeof symbol === "string" ? symbol : symbol.cloneNode(true) as NativeMathNode, index),
+    ])
+  );
+}
+
 export function spokenNumber(
   value: number,
   context: MathNumberContext
@@ -87,6 +98,33 @@ export function createSystemEquation(
     ],
     "A times x equals b",
     { className, display: "block", dataMath: "system-equation" }
+  );
+}
+
+export function createSolvedSystemEquation(
+  A: readonly (readonly number[])[],
+  b: readonly number[],
+  options: {
+    readonly className?: string;
+    readonly dataMath?: string;
+  } = {}
+): HTMLElement {
+  const dimension = b.length;
+  return createNativeMath(
+    [
+      multiplyNodes(
+        numericMatrixNode(A, "matrix"),
+        symbolicVectorNode("x", dimension)
+      ),
+      mathOperator("="),
+      numericVectorNode(b, "matrix"),
+    ],
+    `the coefficient matrix with rows ${spokenMatrix(A, "matrix")} times the unknown column vector ${Array.from({ length: dimension }, (_, index) => `x ${index + 1}`).join(", ")} equals the right-hand side ${spokenVector(b, "matrix")}`,
+    {
+      className: options.className ?? "ls-solved-system-equation",
+      display: "block",
+      dataMath: options.dataMath ?? "solved-system",
+    }
   );
 }
 

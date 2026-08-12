@@ -983,6 +983,11 @@
   gap: var(--space-8);
 }
 
+.ls-universal-teaching {
+  display: grid;
+  gap: var(--space-8);
+}
+
 .ls-method-problem,
 .ls-method-section,
 .ls-selected-method {
@@ -1007,6 +1012,40 @@
   max-width: 66ch;
   margin: 0;
   color: var(--color-text-secondary);
+}
+
+.ls-linear-system-example {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2) var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-inset);
+}
+
+.ls-example-label,
+.ls-example-bridge {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.ls-two-equation-reading,
+.ls-two-equation-matrix-form {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: clip;
+  padding-block: var(--space-2);
+}
+
+.ls-two-equation-reading .native-math-visual,
+.ls-two-equation-matrix-form .native-math-visual {
+  font-size: 1.08rem;
 }
 
 .ls-system-roles {
@@ -1114,6 +1153,11 @@
   background: var(--color-method-surface);
 }
 
+.ls-selected-method > p:not(.ls-eyebrow) {
+  margin-block: 0;
+  color: var(--color-text-secondary);
+}
+
 .ls-algorithm-outline {
   display: grid;
   gap: var(--space-2);
@@ -1163,6 +1207,69 @@
   padding: 0.35rem 0.6rem;
   border-radius: var(--radius-sm);
   background: var(--color-surface-inset);
+}
+
+.ls-result-checking {
+  padding: var(--space-4);
+  border-inline-start: var(--space-1) solid var(--color-convergence-accent);
+  background: var(--color-surface-inset);
+}
+
+.ls-result-checking > h3,
+.ls-result-checking > p {
+  margin: 0;
+}
+
+.ls-result-checking .ls-concept-formula {
+  width: fit-content;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.ls-primary-result {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1.35fr) minmax(12rem, 0.65fr);
+  gap: var(--space-3);
+}
+
+.ls-result-part {
+  display: grid;
+  min-width: 0;
+  align-content: center;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-raised);
+}
+
+.ls-result-part.is-solution {
+  border-color: var(--color-output-accent);
+}
+
+.ls-result-part h3,
+.ls-result-part p {
+  margin: 0;
+}
+
+.ls-output-system-equation {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: clip;
+  padding-block: var(--space-2);
+}
+
+.ls-output-system-equation .native-math-visual {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+}
+
+.ls-result-context-note {
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
 }
 
 .ls-computed-solution-math,
@@ -1360,7 +1467,12 @@
   display: grid;
   gap: var(--space-2);
   max-width: 68ch;
-  margin-block: var(--space-4);
+  margin-block: var(--space-3);
+}
+
+.ls-diagnostic-intro h3,
+.ls-diagnostic-intro p {
+  margin: 0;
 }
 
 .ls-diagnostic-lede {
@@ -1374,19 +1486,71 @@
 
 .ls-diagnostic-story {
   display: grid;
-  gap: var(--space-4);
-  margin-block: var(--space-6);
+  gap: var(--space-3);
+  margin-block: var(--space-4);
 }
 
 .ls-diagnostic-block {
   display: grid;
   min-width: 0;
-  gap: var(--space-3);
-  padding: clamp(1rem, 3vw, 1.5rem);
+  gap: var(--space-2);
+  padding: var(--space-4);
   border: 1px solid var(--color-border);
   border-inline-start: var(--space-1) solid var(--color-convergence-accent);
   border-radius: var(--radius-md);
   background: var(--color-surface-raised);
+}
+
+.ls-diagnostics-context {
+  display: grid;
+  gap: var(--space-3);
+  margin-block: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--color-convergence-accent);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-inset);
+}
+
+.ls-diagnostics-context-heading {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.ls-diagnostics-context-heading h3,
+.ls-diagnostics-context-heading p {
+  margin: 0;
+}
+
+.ls-diagnostics-context-heading > p:last-child {
+  color: var(--color-text-secondary);
+}
+
+.ls-diagnostics-context-math {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.ls-diagnostics-context-math > .native-math {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: clip;
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-raised);
+}
+
+.ls-diagnostics-context-math .native-math-visual {
+  font-size: 1rem;
+}
+
+.ls-diagnostic-ideal,
+.ls-diagnostic-ideal-copy {
+  margin-top: var(--space-1);
 }
 
 .ls-diagnostic-block h3,
@@ -1483,6 +1647,9 @@
 }
 
 @media (max-width: 44rem) {
+  .ls-linear-system-example,
+  .ls-primary-result,
+  .ls-diagnostics-context-math,
   .ls-system-roles,
   .ls-method-families,
   .ls-concept-list {

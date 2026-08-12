@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import {
   createComputedSolution,
   createNamedMatrix,
+  createSolvedSystemEquation,
   createSystemEquation,
 } from "./linearSystemsMath";
 
@@ -37,5 +38,23 @@ describe("Linear Systems native mathematical objects", () => {
     expect(matrix.querySelectorAll("mtable > mtr")).toHaveLength(2);
     expect(matrix.querySelector("table")).toBeNull();
     expect(matrix.getAttribute("aria-label")).toContain("matrix with rows");
+  });
+
+  it("renders the authoritative solved system with an indexed symbolic unknown vector", () => {
+    const equation = createSolvedSystemEquation(
+      [
+        [3, 1, -1],
+        [2, 4, 1],
+        [-1, 2, 5],
+      ],
+      [6, 9, -2]
+    );
+    document.body.append(equation);
+
+    expect(equation.dataset.nativeMath).toBe("solved-system");
+    expect(equation.querySelectorAll("mtable")).toHaveLength(3);
+    expect(equation.querySelectorAll("mtable")[1]?.querySelectorAll("msub")).toHaveLength(3);
+    expect(equation.getAttribute("aria-label")).toContain("right-hand side 6, 9, minus 2");
+    expect(equation.querySelectorAll("[role='math']")).toHaveLength(0);
   });
 });
