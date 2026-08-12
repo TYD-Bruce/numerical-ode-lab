@@ -29,6 +29,12 @@ function expectedMatrixNumbers(matrix: readonly (readonly number[])[]): string[]
   );
 }
 
+function visibleProseText(root: ParentNode): string {
+  const copy = root.cloneNode(true) as HTMLElement;
+  copy.querySelectorAll("[role='math']").forEach((formula) => formula.remove());
+  return copy.textContent ?? "";
+}
+
 describe("Linear Systems Teaching v2 computation walkthrough", () => {
   beforeEach(() => document.body.replaceChildren());
 
@@ -236,6 +242,63 @@ describe("Linear Systems Teaching v2 computation walkthrough", () => {
     expect(renderedNumbers(finalSolution)).toEqual(
       result.xHat.map((value) => formatLinearSystemsNumber(value, "solution"))
     );
+  });
+
+  it("uses meaning-centered backward-substitution and residual labels", () => {
+    const result = solvePreset("starter_3x3");
+    const view = createComputationWalkthrough(result.trace, {
+      headingLevel: 3,
+      result,
+    });
+    const backward = view.querySelector<HTMLElement>(
+      "[data-walkthrough-phase='backward-substitution']"
+    )!;
+    const rhs = view.querySelector<HTMLElement>(
+      "[data-walkthrough-phase='right-hand-side']"
+    )!;
+    const residual = view.querySelector<HTMLElement>(
+      "[data-trace-kind='residual_check']"
+    )!;
+
+    expect(backward.querySelector(":scope > h4")?.textContent).toBe(
+      "5. Backward substitution"
+    );
+    expect(visibleProseText(backward)).toContain(
+      "Because U is upper triangular, recover the computed solution from bottom to top."
+    );
+    expect(
+      [...backward.querySelectorAll<HTMLElement>("[data-trace-kind='backward_substitution'] h5")]
+        .map((heading) => heading.textContent)
+    ).toEqual(["Solve component 3", "Solve component 2", "Solve component 1"]);
+    expect(
+      [...backward.querySelectorAll<HTMLElement>("[data-computation-marker='solved']")]
+        .map((marker) => marker.textContent)
+    ).toEqual(["Component 3 solved", "Component 2 solved", "Component 1 solved"]);
+    expect(visibleProseText(backward)).not.toMatch(/x(?:-|\s)hat/i);
+    expect(visibleProseText(rhs)).toContain(
+      "Introduce the intermediate vector y so the system can be solved in two triangular stages."
+    );
+    expect(visibleProseText(rhs)).not.toMatch(/Defining U\s+x(?:-|\s)hat/i);
+    expect(
+      backward
+        .querySelector("[data-native-math='backward-substitution-relation']")
+        ?.getAttribute("aria-label")
+    ).toBe("U times x hat equals y");
+    expect(
+      [...backward.querySelectorAll<HTMLElement>("[role='math']")].some((formula) =>
+        formula.getAttribute("aria-label")?.includes("x hat")
+      )
+    ).toBe(true);
+
+    const residualTable = residual.querySelector<HTMLElement>("[role='region']")!;
+    expect(residualTable.getAttribute("aria-label")).toBe(
+      "Products contributing to row 1 of the original left-hand side"
+    );
+    expect(
+      [...residualTable.querySelectorAll("thead th")].map((header) => header.textContent)
+    ).toContain("Computed-solution component");
+    expect(visibleProseText(residual)).not.toContain("A times x hat products");
+    expect(visibleProseText(residual)).not.toContain("x hat component");
   });
 
   it("shows optional stored substitution aggregates only inside arithmetic detail", () => {

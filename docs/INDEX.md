@@ -82,9 +82,17 @@ with two P3 carry-forwards. The maintainer correction pass closes those P3s
 and implements MTC-01 through MTC-06: profile-owned GEPP teaching, approved
 right-hand-side wording, an equations-to-matrix example, result-snapshot
 context in Output and Diagnostics, and learner-centered residual teaching.
-The next gate is Maintainer Teaching Review of the corrected Linear Systems
-Lab. If accepted, Cross-Lab Presentation Sync is the next major frontend
-design/audit task; motion remount and Tutor remain later gates.
+The final teaching-copy audit subsequently returned **BLOCKED — FINAL TEACHING
+COPY NEEDS CORRECTION** with `TC-01` and `TC-02` at P2 and `TC-03` at P3.
+That bounded copy correction is now complete locally: visible prose explains
+meaning, native MathML displays mathematics, and accessible formula labels
+retain spoken mathematical wording. Diagnostics, selected-method teaching,
+backward-substitution walkthrough copy, component markers, and residual-detail
+labels are corrected without numerical, trace, architecture, MathML, motion,
+Tutor, or Glossary changes. The next gate is a narrow independent teaching-copy
+re-audit, followed by final Maintainer Teaching Acceptance. Cross-Lab
+Presentation Sync remains deferred until those gates pass; motion remount and
+Tutor remain later gates.
 
 Latest architecture prerequisite review:
 [Architecture v1 Migration Review](reviews/2026-08-11-architecture-v1-migration-review.md)

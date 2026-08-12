@@ -2,9 +2,9 @@
 
 ## Current status
 
-**Active milestone: Linear Systems Teaching v2 — maintainer teaching
-corrections implemented and locally verified; corrected-Lab Maintainer
-Teaching Review is the next gate.**
+**Active milestone: Linear Systems Teaching v2 — final teaching-copy
+correction implemented and locally verified; narrow independent teaching-copy
+re-audit is the next gate.**
 
 Direct maintainer browser review found that the current Linear Systems Lab is
 engineering-correct but not teaching-complete. The authoritative
@@ -37,12 +37,22 @@ re-establishes authoritative successful-result context in Output and
 Diagnostics, and teaches residual purpose and the conditioning boundary before
 the diagnostic arithmetic. Numerical behavior remains unchanged.
 
+The subsequent final teaching-copy audit returned **BLOCKED — FINAL TEACHING
+COPY NEEDS CORRECTION** with `TC-01` and `TC-02` at P2 and `TC-03` at P3.
+The bounded correction now keeps learner prose meaning-centered while native
+MathML owns notation and accessible formula labels retain spoken mathematics.
+Diagnostics uses “computed solution” in its explanatory prose; Method and the
+walkthrough explain backward substitution without phonetic formulas; and
+walkthrough component, status, table, and residual-arithmetic labels are
+natural learner-facing language.
+
 Visual + Motion Language v1 remains implemented locally, but it is deliberately
 unmounted from the static walkthrough. Its final freeze and remount remain
 paused until the corrected teaching surface passes review. Linear Algebra
-Tutor work remains deferred. The exact next gate is **Maintainer Teaching
-Review of the corrected Linear Systems Lab**. If accepted, the next major
-frontend design/audit task is **Cross-Lab Presentation Sync** so ODE, Linear
+Tutor work remains deferred. The exact next gate is a **narrow independent
+teaching-copy re-audit**, followed by **final Maintainer Teaching Acceptance**.
+After those gates, the next major frontend design/audit task is **Cross-Lab
+Presentation Sync** so ODE, Linear
 Algebra, and future PDE Labs can share presentation primitives without
 changing their numerical ownership. Do not begin Cross-Lab Sync, motion
 remount, or Tutor work before those gates.

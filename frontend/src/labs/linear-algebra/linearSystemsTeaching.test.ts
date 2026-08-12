@@ -6,6 +6,12 @@ import {
   createLinearSystemsMethodTeaching,
 } from "./linearSystemsTeaching";
 
+function visibleProseText(root: ParentNode): string {
+  const copy = root.cloneNode(true) as HTMLElement;
+  copy.querySelectorAll("[role='math']").forEach((formula) => formula.remove());
+  return copy.textContent ?? "";
+}
+
 describe("Linear Systems Teaching v2 method foundation", () => {
   it("makes core roles, method families, statuses, and concepts directly visible", () => {
     const view = createLinearSystemsMethodTeaching();
@@ -93,6 +99,29 @@ describe("Linear Systems Teaching v2 method foundation", () => {
     expect(check.textContent).toContain(
       "small residual does not by itself guarantee a small solution error"
     );
+  });
+
+  it("explains backward substitution in prose while MathML owns its notation", () => {
+    const view = createLinearSystemsMethodTeaching();
+    const selected = view.querySelector<HTMLElement>(
+      "[data-selected-method-teaching='gepp']"
+    )!;
+    const backward = selected.querySelector<HTMLElement>(
+      "[data-teaching-concept='backward-substitution']"
+    )!;
+    const relation = selected.querySelector<HTMLElement>(
+      "[data-native-math='backward-substitution-relation']"
+    )!;
+
+    expect(visibleProseText(selected)).not.toMatch(/U\s+x(?:-|\s)hat/i);
+    expect(visibleProseText(selected)).toContain(
+      "Solve the upper-triangular system by backward substitution to recover the computed solution."
+    );
+    expect(visibleProseText(backward)).toContain(
+      "Because U is upper triangular, backward substitution recovers the computed solution from bottom to top."
+    );
+    expect(relation.getAttribute("aria-label")).toBe("U times x hat equals y");
+    expect(relation.querySelector("mover")).not.toBeNull();
   });
 
   it("can replace selected-method presentation without rewriting universal teaching", () => {

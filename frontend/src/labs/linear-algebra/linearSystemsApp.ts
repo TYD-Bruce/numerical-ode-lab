@@ -947,7 +947,11 @@ export function mountLinearSystemsApp(
           dataMath: "residual-ideal",
         }
       ),
-      el("p", "If A x hat equals b, then r equals zero.", "ls-diagnostic-ideal-copy")
+      el(
+        "p",
+        "If the computed solution satisfies the equations exactly, the residual is zero.",
+        "ls-diagnostic-ideal-copy"
+      )
     );
 
     const story = el("div", undefined, "ls-diagnostic-story");
@@ -958,7 +962,7 @@ export function mountLinearSystemsApp(
       el("h3", "Substitute the computed solution"),
       el(
         "p",
-        "Substitute x-hat into the original left-hand side to see what equations the computed solution actually satisfies."
+        "Substitute the computed solution into the original left-hand side to see what equations it satisfies."
       ),
       createNamedVector(
         multiplyNodes(mathIdentifier("A"), xHatNode()),
@@ -1003,7 +1007,10 @@ export function mountLinearSystemsApp(
     residual.append(
       el("p", "Step 2", "ls-diagnostic-step-label"),
       el("h3", "Find the equation mismatch"),
-      el("p", "Compare the original right-hand side b with A x-hat."),
+      el(
+        "p",
+        "Compare the original right-hand side with the value produced by the computed solution."
+      ),
       createNativeMath(
         [
           mathIdentifier("r"),

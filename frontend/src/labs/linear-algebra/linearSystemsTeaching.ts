@@ -52,7 +52,7 @@ export const GEPP_METHOD_TEACHING_PROFILE: LinearSystemsMethodTeachingProfile =
       "Continue column by column until U is upper triangular.",
       "Record the permutations and multipliers in P A = L U.",
       "Solve L y = P b by forward substitution.",
-      "Solve U x hat = y by backward substitution, then check the residual.",
+      "Solve the upper-triangular system by backward substitution to recover the computed solution.",
     ]),
     conceptGroups: Object.freeze([
       Object.freeze({
@@ -119,7 +119,7 @@ export const GEPP_METHOD_TEACHING_PROFILE: LinearSystemsMethodTeachingProfile =
             id: "backward-substitution",
             term: "Upper triangular and backward substitution",
             definition:
-              "With zeros below the diagonal, solve U x hat = y from bottom to top.",
+              "Because U is upper triangular, backward substitution recovers the computed solution from bottom to top.",
           }),
         ]),
       }),

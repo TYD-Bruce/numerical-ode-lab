@@ -33,6 +33,14 @@ layer. Use structural subscript, superscript, over-accent, fraction, and matrix
 elements, not baseline pseudo-notation, Unicode subscript glyphs, raw LaTeX,
 braces, underscores, or carets.
 
+Visible prose explains mathematical meaning. Mathematical notation is rendered
+through the approved mathematical visual layer. Accessible formula labels use
+spoken mathematical wording. For example, ordinary learner prose says
+**computed solution**, visual mathematics displays `\hat{x}`, and its accessible
+speech says **x hat**. Before changing mathematical wording, classify its
+channel as visible prose, visual mathematics, or accessible speech; do not
+apply one wording policy across all three.
+
 The product uses one-based indices in learner-facing notation even when the
 underlying data uses zero-based array indices.
 

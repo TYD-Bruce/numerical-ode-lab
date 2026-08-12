@@ -2,6 +2,94 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
+## Linear Systems final teaching-copy correction — 2026-08-12
+
+The independent final teaching-copy audit returned **BLOCKED — FINAL TEACHING
+COPY NEEDS CORRECTION** with `TC-01` and `TC-02` at P2 and `TC-03` at P3.
+Work started from clean `main` at
+`d51236deeb2e7e6ff4d64af8889b097582464b8b` (tree
+`4eb50dec256c80876a98d260f166d46df0fa1ece`). The correction commit is the
+commit containing this section; its exact SHA/tree are reported in the task
+result because a Git commit cannot contain its own identifier.
+
+### Root cause and corrections
+
+The visual mathematical layer was already correct, but several ordinary
+learner-facing strings phonetically verbalized notation that the adjacent
+MathML already displayed. That wording blurred three distinct channels:
+visible teaching prose, visual mathematics, and accessible speech.
+
+- **TC-01:** Diagnostics now says that an exactly satisfied system has zero
+  residual, asks learners to substitute the **computed solution** into the
+  original left-hand side, and compares the original right-hand side with the
+  value produced by that solution. The existing `A\hat{x}=b => r=0`,
+  `A\hat{x}`, and `r=b-A\hat{x}` MathML and their spoken labels remain.
+- **TC-02:** the selected-method outline now says to solve the
+  upper-triangular system by backward substitution to recover the computed
+  solution. Its concept copy explains that the computed solution is recovered
+  bottom-to-top. The walkthrough introduces `y` as the intermediate vector,
+  uses **5. Backward substitution**, and keeps `U\hat{x}=y` in MathML.
+- **TC-03:** backward-substitution steps are **Solve component N** with
+  **Component N solved** status. Residual detail tables use
+  **Computed-solution component** and the region label **Products contributing
+  to row N of the original left-hand side**.
+
+The durable correction rule is: **visible prose explains meaning; MathML
+displays mathematics; accessible labels verbalize mathematics.** Before
+changing mathematical wording, classify the string as visual prose, visual
+mathematics, or accessible speech. Do not apply one wording policy across all
+three channels.
+
+### Exact relevant paths
+
+- `frontend/src/labs/linear-algebra/linearSystemsTeaching.ts` and its test;
+- `frontend/src/labs/linear-algebra/linearSystemsApp.ts` and its test;
+- `frontend/src/labs/linear-algebra/computationWalkthrough.ts` and its test;
+- `docs/contracts/MATHEMATICAL_PRESENTATION.md`;
+- `PLAN.md`, `docs/INDEX.md`, and this canonical handoff.
+
+No CSS change was needed. Numerical packages, Computation Trace, Architecture
+v1, the MathML renderer architecture, ODE, PDE, Motion, Tutor, Glossary,
+Cross-Lab Presentation Sync, dependencies, routes, and deployment files are
+unchanged.
+
+### Tests, browser evidence, and problems
+
+The test-first red gate ran 3 files / 35 tests: 32 passed and the three new
+channel-aware regressions failed at the expected Method, Walkthrough, and
+Diagnostics copy. After correction, that gate passed 3 files / 35 tests. The
+expanded focused gate passed 6 files / 53 tests, including native MathML and
+session current/stale ownership. Import boundaries passed for four owners plus
+the Vercel adapter. Complete `verify` passed 91 files / 1,229 tests, all
+frontend/numerics/contracts and backend/API typechecks, and the 99-module
+Production build. `git diff --check` passed before commit.
+
+Fresh in-app browser verification used the real local Linear Systems route.
+Desktop 1440 x 900 Dark and mobile 390 x 844 Light/Dark covered Method,
+computed Output, the expanded walkthrough, and Diagnostics. The visible-prose
+inventory found zero inappropriate `x-hat`, `x hat`, or `A x-hat` occurrences.
+MathML still contained real `mover` accents, accessible formula labels retained
+spoken `x hat`, no raw LaTeX appeared, document scroll width equaled client
+width, and the console had no warnings or errors. `Number.EPSILON` remains only
+inside the closed nested implementation detail under the closed solver-
+safeguard disclosure.
+
+The browser interface did not support the requested `networkidle` wait state.
+Resolution: use the supported `domcontentloaded` state, then verify the actual
+route through semantic DOM state after Vite reported ready. This was a
+verification-harness limitation, not a product defect. Reuse the channel-aware
+DOM audit: exclude `role="math"` visual owners when checking ordinary prose,
+then inspect their `aria-label` values separately so accessibility speech is
+not accidentally treated as visible copy.
+
+### Current state and next gate
+
+The audit finding set is now self-assessed at `P0 = P1 = P2 = P3 = 0`. No
+push, Preview deployment, or Production deployment was performed. The exact
+next gate is a **narrow independent teaching-copy re-audit**, followed by
+**final Maintainer Teaching Acceptance**. Do not begin Cross-Lab Presentation
+Sync, Motion Phase 3, or Tutor before those gates.
+
 ## Linear Systems maintainer teaching corrections — 2026-08-12
 
 The independent Teaching v2 Phase 2 audit returned **PASS WITH P3

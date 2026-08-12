@@ -542,7 +542,7 @@ function rhsPermutation(
   card.append(
     element(
       "p",
-      "Because the factorization is P A = L U, the transformed right-hand side is P b. Defining U x hat = y leaves the lower-triangular system L y = P b."
+      "Because the factorization is P A = L U, the transformed right-hand side is P b. Introduce the intermediate vector y so the system can be solved in two triangular stages."
     ),
     equations,
     details(
@@ -616,7 +616,7 @@ function substitution(
   const diagonal = indexedNode(forward ? "L" : "U", step.row, step.row);
   const card = stepCard(
     step,
-    `${forward ? "Solve" : "Solve"} ${forward ? `y${step.row + 1}` : `x hat ${step.row + 1}`}`,
+    forward ? `Solve y${step.row + 1}` : `Solve component ${step.row + 1}`,
     headingLevel,
     "ls-substitution-step"
   );
@@ -651,7 +651,7 @@ function substitution(
     "ls-substitution-numerator"
   );
   const solved = computationMarker(
-    forward ? `Solved y${step.row + 1} top to bottom` : `Solved x hat ${step.row + 1} bottom to top`,
+    forward ? `Solved y${step.row + 1} top to bottom` : `Component ${step.row + 1} solved`,
     "solved"
   );
   card.append(equation, numerator, solved);
@@ -744,8 +744,8 @@ function residualPhase(
   components.forEach((step) => {
     arithmetic.append(
       dataTable(
-        `A times x hat products for row ${step.row + 1}`,
-        ["Column", "A entry", "x hat component", "Product", "Accumulated value"],
+        `Products contributing to row ${step.row + 1} of the original left-hand side`,
+        ["Column", "A entry", "Computed-solution component", "Product", "Accumulated value"],
         step.terms.map((term) => [
           String(term.column + 1),
           formatLinearSystemsNumber(term.coefficient, "detail"),
@@ -912,8 +912,8 @@ export function createComputationWalkthrough(
   );
   if (backwardSteps.length > 0) {
     const backward = phase(
-      "5. Solve U x hat = y",
-      "U is upper triangular, so x hat is solved from bottom to top using already known later components.",
+      "5. Backward substitution",
+      "Because U is upper triangular, recover the computed solution from bottom to top.",
       phaseHeadingLevel,
       "backward-substitution"
     );

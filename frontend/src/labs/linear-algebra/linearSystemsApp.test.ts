@@ -49,6 +49,12 @@ function input(
   return control;
 }
 
+function visibleProseText(root: ParentNode): string {
+  const copy = root.cloneNode(true) as HTMLElement;
+  copy.querySelectorAll("[role='math']").forEach((formula) => formula.remove());
+  return copy.textContent ?? "";
+}
+
 function successfulSession(
   session = createLinearSystemsSession()
 ): LinearSystemsSessionState {
@@ -304,9 +310,16 @@ describe("Linear Systems Lab Teaching v2 application", () => {
     expect(target.querySelector("[data-diagnostic-meaning]")?.textContent).toContain(
       "how far the computed solution misses the original equations"
     );
-    expect(target.querySelector("[data-diagnostic-meaning]")?.textContent).toContain(
-      "If A x hat equals b, then r equals zero"
+    expect(visibleProseText(target.querySelector("[data-diagnostic-meaning]")!)).toContain(
+      "If the computed solution satisfies the equations exactly, the residual is zero."
     );
+    expect(visibleProseText(target.querySelector("[data-diagnostic-meaning]")!)).not.toMatch(
+      /A\s+x(?:-|\s)hat/i
+    );
+    expect(
+      target.querySelector("[data-native-math='residual-ideal']")?.getAttribute("aria-label")
+    ).toBe("If A times x hat equals b, then r equals zero");
+    expect(target.querySelector("[data-native-math='residual-ideal'] mover")).not.toBeNull();
     const meaning = target.querySelector<HTMLElement>("[data-diagnostic-meaning]")!;
     const firstStep = target.querySelector<HTMLElement>("[data-diagnostic-block='matrix-vector']")!;
     expect(
@@ -330,13 +343,27 @@ describe("Linear Systems Lab Teaching v2 application", () => {
     expect(
       target.querySelector("[data-diagnostic-block='matrix-vector'] h3")?.textContent
     ).toBe("Substitute the computed solution");
+    expect(visibleProseText(firstStep)).toContain(
+      "Substitute the computed solution into the original left-hand side to see what equations it satisfies."
+    );
+    expect(visibleProseText(firstStep)).not.toMatch(/x-hat|A\s+x(?:-|\s)hat/i);
     expect(target.querySelector("[data-diagnostic-block='residual'] h3")?.textContent).toBe(
       "Find the equation mismatch"
     );
+    const residualStep = target.querySelector<HTMLElement>(
+      "[data-diagnostic-block='residual']"
+    )!;
+    expect(visibleProseText(residualStep)).toContain(
+      "Compare the original right-hand side with the value produced by the computed solution."
+    );
+    expect(visibleProseText(residualStep)).not.toMatch(/x-hat|A\s+x(?:-|\s)hat/i);
     expect(
       target.querySelector("[data-diagnostic-block='residual-norm'] h3")?.textContent
     ).toBe("Measure the largest mismatch");
     expect(target.textContent).not.toContain("Compute A times x hat");
+    expect(
+      target.querySelector("[data-native-math='residual-relation']")?.getAttribute("aria-label")
+    ).toBe("r equals b minus A times x hat");
     expect(
       target.querySelector("[data-diagnostic-block='residual-norm'] [data-native-math='residual-inf-norm']")
         ?.getAttribute("aria-label")
