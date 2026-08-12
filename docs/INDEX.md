@@ -25,35 +25,34 @@
 
 ## Current active milestone
 
-[PLAN.md](../PLAN.md) points to **Visual + Motion Language v1**. Architecture v1
-remains frozen. The accepted Day 1 core owns the numerical algorithm, presets,
-and immutable results; Day 1.5 owns the structured trace. Day 2 now implements
-the independently lazy learner-facing route, frontend session/workflow,
-presentation-only trace renderer, lifecycle, Resume, accessibility, and
-responsive integration. The
-[approved design](superpowers/specs/2026-08-10-linear-systems-lab-v1-design.md)
+[PLAN.md](../PLAN.md) points to **Linear Systems Teaching v2**. Direct
+maintainer browser review accepts the current numerical, lifecycle,
+accessibility, mathematical-presentation, and motion checkpoints as useful
+engineering evidence but does not accept the learner-facing Lab as teaching-
+complete. The new
+[Teaching v2 design](superpowers/specs/2026-08-11-linear-systems-teaching-v2-design.md)
 and
-[repository-grounded plan](superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md)
-separate numerical authority from the frontend renderer and from the still-
-pending Linear Algebra Tutor. The independent Day 2 product audit's LS1/LS2
-P2 findings and LS3 P3 finding remain closed. Mathematical-readability commit
-`d84573c193f369d620982b9def3927d51197344a` closes MR-01 through MR-09 and
-establishes the
-[mathematical presentation contract](contracts/MATHEMATICAL_PRESENTATION.md).
-Focused tests pass at 5 files / 43 tests, the full suite at 87 files / 1,201
-tests, all typechecks and boundaries pass, the 96-module production build
-retains an independent Linear Systems chunk, and desktop/mobile/theme/reflow
-browser replay is clean. No numerical, Architecture v1, Tutor, Glossary,
-dependency, push, or deployment change occurred. The subsequent Visual +
-Motion implementation establishes the
-[canonical contract](contracts/VISUAL_MOTION_LANGUAGE.md), shared tokens and
-markers, local row-swap/elimination Replay, cancellation/disposal, reduced-
-motion equivalence, and the 320-pixel containment correction. Focused tests
-pass at 4 files / 40 tests and the full suite at 87 files / 1,209 tests; all
-typechecks, boundaries, build, complete verification, and bounded browser
-replay are green. No numerical, Computation Trace, Architecture v1,
-Mathematical Presentation v1, Tutor, Glossary, dependency, push, or deployment
-change is included. The next gate is an independent Visual + Motion audit.
+[implementation plan](superpowers/plans/2026-08-11-linear-systems-teaching-v2-implementation-plan.md)
+require visible method/term teaching, proper authored mathematical typesetting,
+full trace-owned matrix transformations, explicit `P b`, complete triangular-
+solve calculations, and a residual-led Diagnostics hierarchy. The design also
+records the smallest required trace extension and keeps Gaussian elimination
+with partial pivoting as the only runnable method.
+
+Architecture v1 remains frozen. The accepted Day 1 core still owns the
+numerical algorithm, presets, immutable results, and trace production; Day 2
+still owns the independently lazy route, frontend session/workflow, lifecycle,
+Resume, accessibility, and responsive integration. The existing
+[Linear Systems v1 design](superpowers/specs/2026-08-10-linear-systems-lab-v1-design.md),
+[v1 plan](superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md),
+[mathematical presentation contract](contracts/MATHEMATICAL_PRESENTATION.md),
+and [Visual + Motion contract](contracts/VISUAL_MOTION_LANGUAGE.md) remain
+valid for their existing responsibilities. Motion implementation exists, but
+its final freeze/audit is paused because Teaching v2 changes its mounting
+surface. No product code, numerical contract, Computation Trace, Tutor,
+Glossary, dependency, push, or deployment changed in this design checkpoint.
+The next gate is maintainer approval of Teaching v2 design and plan, followed
+by the plan's native MathML capability spike only.
 
 Latest architecture prerequisite review:
 [Architecture v1 Migration Review](reviews/2026-08-11-architecture-v1-migration-review.md)
@@ -210,6 +209,7 @@ maintainer acceptance of the F2 review commit.
 
 | Document | Status |
 |---|---|
+| [Linear Systems Teaching v2 Design](superpowers/specs/2026-08-11-linear-systems-teaching-v2-design.md) | Design complete; maintainer approval required before implementation; current Motion v1 final acceptance paused |
 | [Linear Systems Lab Version 1 Design](superpowers/specs/2026-08-10-linear-systems-lab-v1-design.md) | Maintainer-approved design; Day 1/1.5 numerical evidence and Day 2 route/UI implemented locally; Tutor pending |
 | [Theme-Ready Platform Shell Design](superpowers/specs/2026-07-13-theme-ready-platform-shell-design.md) | Implemented, Vercel Preview-verified, safe to release |
 | [Human-Friendly Math Expressions Design](superpowers/specs/2026-07-10-human-friendly-math-expressions-design.md) | Implemented and verified |
@@ -222,6 +222,7 @@ maintainer acceptance of the F2 review commit.
 
 | Document | Status |
 |---|---|
+| [Linear Systems Teaching v2 Implementation Plan](superpowers/plans/2026-08-11-linear-systems-teaching-v2-implementation-plan.md) | Repository-grounded; implementation requires maintainer approval; Phase 0 is a native MathML capability spike |
 | [Linear Systems Lab Version 1 Implementation Plan](superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md) | Repository-grounded; Day 1/1.5 and Day 2 implemented locally; independent product-audit corrections verified, correction re-audit next, Tutor deferred to a later gate |
 | [Theme-Ready Platform Shell Implementation Plan](superpowers/plans/2026-07-13-theme-ready-platform-shell-implementation-plan.md) | Implemented historical plan; check the final review and architecture map for current state |
 | [Numerical T-Lab Rename Migration Plan](superpowers/plans/2026-07-22-numerical-t-lab-rename-migration-plan.md) | Project Identity Migration completed and verified |

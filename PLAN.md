@@ -2,8 +2,26 @@
 
 ## Current status
 
-**Active milestone: Visual + Motion Language v1 — locally implemented and
-verified; independent Visual + Motion audit pending.**
+**Active milestone: Linear Systems Teaching v2 — design complete;
+maintainer approval required before Phase 0 implementation.**
+
+Direct maintainer browser review found that the current Linear Systems Lab is
+engineering-correct but not teaching-complete. The authoritative
+[Teaching v2 design](docs/superpowers/specs/2026-08-11-linear-systems-teaching-v2-design.md)
+and
+[repository-grounded implementation plan](docs/superpowers/plans/2026-08-11-linear-systems-teaching-v2-implementation-plan.md)
+now govern the next work. They require proper authored mathematical
+typesetting, visible method/concept teaching, full trace-owned matrix
+transformations, explicit `P b`, complete triangular-solve calculations, and
+a residual-led Diagnostics hierarchy. No product code or numerical behavior
+changed in this design checkpoint.
+
+Visual + Motion Language v1 remains implemented locally, but its final freeze
+and independent audit are paused because Teaching v2 changes the computation
+presentation on which row-swap and elimination replay are mounted. Linear
+Algebra Tutor work remains deferred. The exact next gate is **maintainer
+approval of Teaching v2 design and plan**, followed by the plan's native
+MathML capability spike only.
 
 The maintainer accepts public baseline
 `b58584a5f7a1d5b09874479d3b413a063b94e061` and tree
@@ -87,8 +105,9 @@ browser surface exposes no reduced-motion media emulator, so that path is
 verified by deterministic DOM tests plus the shipped CSS contract rather than
 claimed as emulated browser evidence. No numerical, Computation Trace,
 Architecture v1, Mathematical Presentation v1, Tutor, Glossary, dependency,
-push, or deployment change is included. The next gate is an **independent
-Visual + Motion audit**; Tutor integration is not the current task.
+push, or deployment change is included. This remains valid point-in-time
+implementation evidence, but the direct maintainer Teaching v2 decision above
+pauses its final acceptance. Tutor integration is not the current task.
 
 The remainder of this document preserves the prior Glossary execution record
 as historical evidence. Its former pending-acceptance language is superseded

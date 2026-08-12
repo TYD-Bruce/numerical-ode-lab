@@ -2,6 +2,157 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
+## Linear Systems Teaching v2 design — 2026-08-11
+
+The accepted implementation checkpoint entering this documentation task is
+`4f6c5810c41dbc0342c5e44ce1946478cbb2795f` (tree
+`4f2fb65e4b270728e09e97bd578543b1f61772bb`) on `main` with a clean worktree.
+Direct maintainer browser review now establishes that the Linear Systems Lab
+is engineering-correct but not teaching-complete. The current numerical core,
+Computation Trace, route, lifecycle, accessibility corrections, Mathematical
+Presentation v1, and Visual + Motion implementation remain useful checkpoints;
+the motion implementation exists, but its final freeze and independent audit
+are paused because the computation presentation will change.
+
+The new sole Teaching v2 design authority is
+`docs/superpowers/specs/2026-08-11-linear-systems-teaching-v2-design.md`.
+The paired repository-grounded execution authority is
+`docs/superpowers/plans/2026-08-11-linear-systems-teaching-v2-implementation-plan.md`.
+Both are design/planning artifacts; implementation remains unauthorized until
+maintainer approval.
+
+### Maintainer findings received
+
+- `LS-TEACH-01`: the current computed solution uses a semantic table plus a
+  weak/misplaced text hat rather than a properly typeset `x-hat` column-vector
+  equation.
+- `LS-TEACH-02`: matrix-scale and pivot-threshold implementation evidence,
+  including learner-visible `Number.EPSILON`, wrongly leads the walkthrough
+  and obscures the main Gaussian-elimination sequence.
+- `LS-TEACH-03`: the current walkthrough narrates operations and shows changed
+  rows but does not show the full matrix-before/operation/matrix-after
+  computation required by the teaching goal.
+- `LS-TEACH-04`: Diagnostics concatenates relationships and gives scale and
+  threshold evidence too much visual authority instead of separately teaching
+  `A x-hat`, residual, residual vector, norm, and limitation.
+- `LS-TEACH-05`: Method names one runnable method but does not visibly teach
+  the linear-system roles, direct/iterative framework, row operations, PLU,
+  triangular solves, residual, conditioning boundary, and singular/near-
+  singular distinction.
+
+Previous correctness reviews did not miss a numerical regression. Their scope
+was numerical output, trace ownership, lifecycle, semantic accessibility,
+number/notation policy, and bounded motion. They did not claim curriculum
+completeness, full equation typesetting, or that changed-row evidence was a
+complete visual derivation.
+
+### Design decisions
+
+- Retain Method -> Data -> Output -> Diagnostics; do not add a fifth top-level
+  step.
+- Keep Gaussian elimination with partial pivoting as the only runnable method.
+  Show Jacobi and Gauss-Seidel as planned iterative contrasts only. Their
+  initial guess, convergence assumptions, stopping metric/tolerance, iteration
+  cap, failure classification, and repetitive-finite trace require a separate
+  future numerical/product design.
+- Show direct-versus-iterative method families visibly in Method. Core teaching
+  copy must not depend on hidden Glossary cards.
+- Recommend a tiny project-owned native MathML visual layer for over-accents,
+  matrices, fractions, aligned calculations, and labelled arrows while keeping
+  the existing one-accessible-owner policy and number formatter. No parser,
+  raw HTML, raw user LaTeX, MathJax, KaTeX, or new dependency is approved.
+- Require a focused native MathML spike in the actual route before broad
+  adoption. The current browser audit proved the span/table limitation, but an
+  isolated MathML data-page test was blocked by browser URL policy, so no
+  unsupported visual-compatibility claim is recorded.
+- Lead the walkthrough with `A`, `b`, `U^(0)=A`, then full trace-owned matrix
+  transformations, final `P/L/U`, explicit `P b`, forward substitution,
+  backward substitution, final `x-hat`, and residual check.
+- Move matrix scale, pivot threshold, accepted-pivot summary, and binary64
+  implementation detail into a closed **Solver safeguard details** disclosure.
+  The threshold remains unchanged and remains an engineering safeguard rather
+  than proof of singularity.
+- Redesign Diagnostics as separate `A x-hat`, `r=b-A x-hat`, residual vector,
+  infinity norm, interpretation, qualified preset comparison, and advanced
+  safeguard blocks.
+
+### Trace finding and smallest extension
+
+Current evidence is sufficient for pivot candidates/selection, multipliers,
+final factors, ordered forward/backward substitution, solution result,
+residual arithmetic/norm, preset comparison, and controlled pivot failure. It
+is insufficient for authoritative full matrix transformation displays: swap
+records retain only the affected rows, elimination records retain pivot/target
+rows, and `P b` exists only indirectly across the permutation and component
+records.
+
+The Teaching v2 design therefore proposes exactly:
+
+1. `factorization_start.initialU`;
+2. full immutable `uBefore` and `uAfter` in each `row_swap`;
+3. full immutable `uBefore` and `uAfter` in each `elimination`; and
+4. one `right_hand_side_permutation` record with original `b`, permutation,
+   and complete `permutedB`.
+
+All records must be copied at the existing authoritative loop boundary. No
+second Gaussian-elimination pass, frontend reconstruction, arithmetic-order
+change, output change, or new numerical claim is permitted. Dimension remains
+at most six, so the complete snapshots stay naturally bounded under the
+existing Computation Trace policy.
+
+### KnowledgeBase references
+
+Only the high-level canonical retrieval path was used:
+
+- `Knowledge/mathematics/numerical-analysis/INDEX.md`;
+- `Knowledge/mathematics/numerical-analysis/NUMERICAL_T_LAB_CROSSWALK.md`;
+- `Knowledge/mathematics/numerical-analysis/linear-systems-and-direct-methods/INDEX.md`;
+- `Knowledge/mathematics/numerical-analysis/linear-systems-and-direct-methods/CONCEPT.md`;
+- `Knowledge/mathematics/numerical-analysis/linear-systems-and-direct-methods/NOTATION_CROSSWALK.md`;
+- `Knowledge/mathematics/numerical-analysis/eigenvalues-svd-and-iterative-methods/INDEX.md`;
+- `Knowledge/mathematics/numerical-analysis/eigenvalues-svd-and-iterative-methods/CONCEPT.md`;
+- `Knowledge/mathematics/numerical-analysis/eigenvalues-svd-and-iterative-methods/NOTATION_CROSSWALK.md`;
+- `Knowledge/mathematics/numerical-analysis/floating-point-and-numerical-reliability/INDEX.md`;
+- `Knowledge/mathematics/numerical-analysis/floating-point-and-numerical-reliability/CONCEPT.md`; and
+- `Knowledge/mathematics/numerical-analysis/floating-point-and-numerical-reliability/NOTATION_CROSSWALK.md`.
+
+No source guide, private PDF, lower-level evidence file, source locator,
+extraction artifact, or KnowledgeBase file was opened or changed. The design
+also cross-checked the repository's approved terminology standard and Glossary
+catalog. Linear Algebra entries remain module drafts/review-required for
+future Glossary publication; missing IDs such as right-hand side, elimination
+multiplier, triangular matrices, and substitutions are treated as local
+teaching role phrases rather than newly invented canonical terms.
+
+### Browser evidence and problems
+
+Bounded in-app browser inspection at desktop and 390 x 844 confirmed the five
+underlying design problems: the small table-attached `x-hat` label, threshold-
+first walkthrough, learner-visible `Number.EPSILON` calculation, changed-row
+rather than full-matrix operations, compressed Diagnostics chain, and one-
+method Method surface. Screenshots were retained outside the product
+repository for the task report only.
+
+The task-owned frontend initially took slightly longer than the first bounded
+listener probe, but the explicit loopback Vite process then became available
+and was used successfully. The isolated native-MathML data-page navigation was
+rejected by the in-app browser's URL safety policy. The safe resolution is not
+to fabricate evidence or switch browser mechanisms: Phase 0 performs a real-
+route capability spike and stops if that proof fails.
+
+### Current state and next gate
+
+This checkpoint changes documentation/design only. It modifies no file under
+`frontend/src`, `packages/numerics`, `packages/contracts`, `backend`, or `api`;
+changes no numerical algorithm, Computation Trace record, motion code, CSS,
+route, Store, Tutor, Glossary, ODE, PDE, dependency, or deployment
+configuration; and performs no push or deployment.
+
+The exact next gate is **maintainer approval of the Linear Systems Teaching v2
+design and implementation plan**. After approval, begin Phase 0, the native
+MathML capability spike, and stop at that phase's browser/accessibility gate.
+Do not begin iterative methods, Tutor, Glossary, push, or deployment.
+
 ## Visual + Motion Language v1 — 2026-08-11
 
 Visual + Motion Language v1 starts from accepted commit
@@ -10,9 +161,11 @@ Visual + Motion Language v1 starts from accepted commit
 commit `528ea005de0df9dfa75c5cb542c8419d8975f719` (tree
 `20e9f0458988cef045bb91d245e9a9858e7ffd59`), and the Linear Systems replay
 implementation is commit `c7d8c18bcdf4f3cf9cdec7e8ac9a18f291f23b46` (tree
-`939f60a837bf880dce090ab7201c75324cc429c8`). The resulting finding severity
-is `P0 = P1 = P2 = P3 = 0`; the next gate is an **independent Visual + Motion
-audit**, followed by Linear Algebra Tutor work only after that gate.
+`939f60a837bf880dce090ab7201c75324cc429c8`). At that checkpoint, the resulting
+finding severity was `P0 = P1 = P2 = P3 = 0` and the next gate was an
+**independent Visual + Motion audit**, followed by Linear Algebra Tutor work
+only after that gate. The Teaching v2 checkpoint above supersedes that next
+gate without rewriting its point-in-time evidence.
 
 The new authoritative
 `docs/contracts/VISUAL_MOTION_LANGUAGE.md` separates static visual hierarchy,
