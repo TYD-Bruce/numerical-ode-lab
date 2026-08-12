@@ -180,7 +180,7 @@ design specifications, implementation plans, reviews, and feature handoffs.
 
 ## Changelog
 
-### 2026-08-12 — Linear Systems Teaching v2 integrated locally
+### 2026-08-12 — Linear Systems Teaching v2 corrected locally
 
 - Reworked the existing four-step Linear Systems Lab into a computation-led
   teaching experience with visible method concepts, properly typeset native
@@ -189,7 +189,11 @@ design specifications, implementation plans, reviews, and feature handoffs.
 - Reorganized Diagnostics around the residual computation and moved numerical
   safeguard evidence into a closed advanced disclosure. The existing motion
   implementation remains unmounted pending the next teaching audit.
-- Passed 91 files / 1,220 tests, workspace/API typechecks, boundary and build
+- Added the maintainer correction pass: standard right-hand-side teaching,
+  separate universal and selected-GEPP profiles, a compact equations-to-matrix
+  example, and authoritative successful-result context in Output and
+  Diagnostics, including stale state.
+- Passed 91 files / 1,227 tests, workspace/API typechecks, boundary and build
   gates, plus desktop/mobile Light/Dark in-app browser review. No numerical,
   route, Tutor, Glossary, dependency, push, or deployment change is included.
 

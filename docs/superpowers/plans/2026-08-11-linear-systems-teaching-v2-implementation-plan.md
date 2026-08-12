@@ -1,8 +1,9 @@
 # Linear Systems Teaching v2 Implementation Plan
 
 **Status:** Maintainer-approved; Phase 0 Outcome B (Hybrid) and Phase 1 trace
-accepted; Phase 2 static integration implemented and locally verified;
-independent Phase 2 product/teaching audit next
+accepted; Phase 2 static integration independently audited; maintainer
+teaching corrections implemented and locally verified; corrected-Lab
+Maintainer Teaching Review next
 
 **Date:** 2026-08-11
 
@@ -408,6 +409,7 @@ Stop and return to the maintainer if:
 
 ## 10. Exact next gate
 
-Independent Teaching v2 Phase 2 product/teaching audit, followed by Maintainer
-Teaching Review. Do not remount motion or implement iterative methods, Tutor,
-Glossary, push, or deployment before those gates.
+Maintainer Teaching Review of the corrected Linear Systems Lab. If accepted,
+Cross-Lab Presentation Sync design/audit is the next major frontend gate.
+Motion remount and Tutor remain later gates. Do not implement iterative
+methods, Glossary, push, or deployment before separate authorization.

@@ -1,8 +1,9 @@
 # Linear Systems Teaching v2 Design
 
 **Status:** Maintainer-approved; Phase 0 Outcome B (Hybrid) and Phase 1 trace
-snapshot extension accepted; Phase 2 static integration implemented and
-locally verified; independent Phase 2 product/teaching audit next
+snapshot extension accepted; Phase 2 static integration independently audited;
+maintainer teaching corrections implemented and locally verified; corrected-
+Lab Maintainer Teaching Review next
 
 **Date:** 2026-08-11
 
@@ -52,8 +53,32 @@ solver-scale/threshold evidence is subordinate and closed by default.
 
 The current motion implementation is retained but deliberately unmounted from
 the Phase 2 walkthrough. Static evidence is the only current presentation
-authority pending the separate product/teaching audit and later motion-remount
-decision.
+authority pending corrected-Lab Maintainer Teaching Review and a later
+motion-remount decision.
+
+### Maintainer teaching-correction decision
+
+The independent Phase 2 audit returned **PASS WITH P3 CARRY-FORWARD — READY
+FOR MAINTAINER TEACHING REVIEW**. Direct review then established six bounded
+corrections without changing numerical or trace authority:
+
+- `b` is taught as the **right-hand side vector**: known constants and the
+  target that `A x` must equal;
+- shared `A x = b` and direct/iterative teaching is structurally separate from
+  the selected GEPP method profile and its pivot, elimination, PLU, and
+  triangular-solve content;
+- Method includes one compact authored two-equation-to-matrix reading and a
+  concise residual/conditioning boundary;
+- primary Output pairs the successful result's actual `originalA` and
+  `originalB` with its computed `xHat`, keeping factorization unchanged;
+- Diagnostics first re-establishes `A`, `b`, and `xHat`, explains why the
+  residual is computed, and then uses three learner-centered steps; and
+- stale Output and Diagnostics always use the immutable successful-result
+  snapshot, never current edited drafts.
+
+Future runnable methods must add and select their own frontend teaching
+profile together with the numerical method. Planned Jacobi and Gauss-Seidel
+cards remain non-runnable status only; they are not teaching profiles.
 
 The current Linear Systems Lab is an engineering-correct checkpoint, not a
 teaching-complete product. It solves the approved problem, preserves numerical
@@ -685,6 +710,7 @@ import boundaries, production build/manifest review, full verification,
 
 ## 25. Approval gate
 
-The exact next gate is an **independent Teaching v2 Phase 2 product/teaching
-audit**, followed by **Maintainer Teaching Review**. Motion remount, new
-iterative methods, Tutor, Glossary, push, and deployment remain unauthorized.
+The exact next gate is **Maintainer Teaching Review of the corrected Linear
+Systems Lab**. If accepted, **Cross-Lab Presentation Sync** is the next major
+frontend design/audit task. Motion remount, new iterative methods, Tutor,
+Glossary, push, and deployment remain unauthorized.

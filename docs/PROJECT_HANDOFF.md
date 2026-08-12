@@ -2,6 +2,161 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
+## Linear Systems maintainer teaching corrections — 2026-08-12
+
+The independent Teaching v2 Phase 2 audit returned **PASS WITH P3
+CARRY-FORWARD — READY FOR MAINTAINER TEACHING REVIEW** with
+`P0 = P1 = P2 = 0`, `P3 = 2`. Direct Maintainer Teaching Review then supplied
+the binding MTC-01 through MTC-06 corrections. Work started from clean `main`
+at `af4041dc9530a833baa3bfda4fe829380ff95fcf` (tree
+`3af5c8e535692e944133f8cd031282b298ab84f2`). The implementation commit is
+`a28abd59cff6bcf203d1b08607e4409dc490ff59` (tree
+`754c3e69e3da914480698b1d43666f0ee37c9223`).
+
+### What the correction completed
+
+- **MTC-01:** Method now labels `b` **Right-hand side vector** and teaches
+  both required ideas: it is the known vector of constants, and it is the
+  target vector that `A x` must equal. This is local Linear Systems teaching
+  copy; no Glossary ID was created.
+- **MTC-02:** `linearSystemsTeaching.ts` now separates universal domain
+  teaching from a small `LinearSystemsMethodTeachingProfile`. The current
+  frozen `GEPP_METHOD_TEACHING_PROFILE` owns its method label, overview,
+  algorithm steps, concepts, and formula groups. Pivoting, row operations,
+  elimination multipliers, `P A = L U`, and triangular solves are therefore
+  explicitly selected-method teaching. Jacobi and Gauss-Seidel remain Planned
+  cards only: no profile, control, session state, solver, or fake method switch
+  was added.
+- **MTC-03:** primary Output now pairs the actual successful result's
+  `originalA` and `originalB` with an indexed symbolic unknown vector, then
+  presents the adjacent native-MathML `xHat` solution. Desktop uses a compact
+  two-part layout and narrow screens stack the same mathematical objects.
+  Factorization evidence and its mathematical ownership are unchanged.
+- **MTC-04:** Diagnostics now begins with a read-only native-MathML summary of
+  the successful result's `A`, `b`, and `xHat`. It teaches the purpose of
+  `r = b - A xHat` and the ideal `A xHat = b => r = 0` before the arithmetic.
+  The steps are **Substitute the computed solution**, **Find the equation
+  mismatch**, and **Measure the largest mismatch**. Cards use content-driven
+  height and smaller existing-token spacing. Displayed matrix-vector values,
+  residual components, and the infinity norm still come only from stored
+  trace/result evidence; no frontend numerical reconstruction was added.
+- **MTC-05 / TV2-P3-01:** Method now closes with a compact **Checking the
+  result** block. It defines residual as equation mismatch, introduces
+  conditioning as sensitivity to small data changes, states that the Lab does
+  not compute a condition number, and preserves that small residual does not
+  by itself guarantee small solution error.
+- **MTC-06 / TV2-P3-02:** Method now includes one non-editable authored example
+  mapping two equations to an equivalent structural MathML matrix system. It
+  is teaching copy only, not a preset or solver input.
+
+For both current and stale results, Output and Diagnostics read only
+`latestSuccessfulResult.originalA`, `.originalB`, and `.xHat`. If Data changes,
+the stale result keeps its original problem context and receives concise stale
+wording; current drafts are never shown beside an older solution. The existing
+session/fingerprint owner remains unchanged.
+
+### Exact relevant paths
+
+- `frontend/src/labs/linear-algebra/linearSystemsTeaching.ts` and
+  `linearSystemsTeaching.test.ts` — universal/selected-method seam, GEPP
+  profile, right-hand-side copy, compact example, and Method result checking;
+- `frontend/src/labs/linear-algebra/linearSystemsMath.ts` and
+  `linearSystemsMath.test.ts` — structural indexed symbolic vector and
+  successful-result `A x = b` MathML composition;
+- `frontend/src/labs/linear-algebra/linearSystemsApp.ts` and
+  `linearSystemsApp.test.ts` — Output/Diagnostics snapshot presentation,
+  residual-purpose sequence, density regression, and stale authority;
+- `frontend/src/labs/linear-algebra/linearSystems.css` — scoped compact,
+  responsive composition using existing product tokens; and
+- `PLAN.md`, `docs/INDEX.md`, the Teaching v2 design/plan,
+  `docs/PROJECT_HANDOFF.md`, and the concise README Changelog — current-state
+  synchronization.
+
+`computationWalkthrough.ts`, `computationMotion.ts`, `packages/numerics`, ODE,
+PDE, Tutor, Glossary, routes, dependencies, and Architecture v1 did not change.
+
+### Validation and browser evidence
+
+The test-first red gate had 3 focused files / 25 tests with 16 passing and 9
+expected failures covering the missing wording, authored example, profile
+boundary, successful-result context, and Diagnostics teaching. After the
+correction, the focused gate passes 7 files / 59 tests. The complete suite and
+complete `verify` each pass 91 files / 1,227 tests; all workspace and API
+typechecks pass; import boundaries pass for four owners plus the Vercel
+adapter; `git diff --check` passes; and the Production build remains at 99
+transformed modules.
+
+The entry asset remains 56.64 kB raw / 17.45 kB gzip. The independently lazy
+Linear Systems assets change from 65.77 kB raw / 19.72 kB gzip JavaScript and
+27.47 kB raw / 5.06 kB gzip CSS to 70.95 kB raw / 21.04 kB gzip JavaScript and
+30.33 kB raw / 5.42 kB gzip CSS. Manifest evidence keeps the Linear Systems
+route as a separate dynamic entry with no static or dynamic imports of its own;
+the platform entry still dynamically owns ODE, Linear Systems, Tutor, and
+Glossary routes. The Linear Systems asset contains no MathLive, Compute Engine,
+Replay/motion-controller, Tutor, or Glossary markers. The DEV MathML fixture is
+absent from Production assets.
+
+Fresh in-app browser review covered Starter 3x3 and Row swap required at
+1440 x 900 Light, a stale successful result after editing `b`, a custom decimal
+2x2 system at 390 x 844 Dark, and 320-pixel stress reflow. Method, Output, and
+Diagnostics remained readable with no page-level horizontal overflow; all
+native-MathML displays retained one accessible owner; stale Output and
+Diagnostics showed the previous successful snapshot; factorization remained
+present; safeguard detail stayed closed; no Replay control appeared; and the
+console contained no warnings or errors.
+
+### Problems, resolutions, and reusable rules
+
+- The critical stale-state risk was mixing current drafts with the previous
+  `xHat`. Resolution: make the successful result object the single context
+  source for Output and Diagnostics, and test edited values out of the rendered
+  DOM.
+- A symbolic MathML node cannot be attached to multiple matrix cells. Resolution:
+  clone the authored symbol for each indexed cell while keeping the wrapper as
+  the sole accessible owner. Reuse this factory pattern for future authored
+  matrix/vector mathematics.
+- The in-app browser's evaluated DOM proxies do not expose host constructors
+  such as `HTMLInputElement` for `instanceof` checks. Resolution: use semantic
+  locators, attributes, text, and measured geometry; this was a browser-harness
+  limitation, not a product defect.
+- Production continues to report the accepted large deferred MathLive/Compute
+  Engine chunk warning. The entry and Linear Systems lazy boundary remain
+  intact, so no speculative chunk rewrite was introduced.
+
+Durable teaching rules:
+
+1. Universal Lab-domain teaching and selected-method teaching are separate.
+   Algorithm-specific concepts, formulas, and step sequence follow the active
+   method profile. When a runnable method is added, its teaching profile must
+   be added and selected together with that method.
+2. Every Output and Diagnostics surface re-establishes enough authoritative
+   problem context that the learner does not need to remember values from an
+   earlier workflow step.
+3. For stale results, Output/Diagnostics context comes from the successful
+   result snapshot that produced the result, never current edited drafts.
+4. Result-checking teaching explains why a diagnostic is computed before
+   presenting the mechanical arithmetic.
+5. A Lab is not teaching-complete until direct Maintainer Teaching Review
+   confirms that a first-time learner can understand the problem, method
+   framework, computation, and diagnostics.
+
+### Current state and next gate
+
+The two Cursor P3 carry-forwards are closed. The self-audit is
+`P0 = P1 = P2 = P3 = 0`. No Cross-Lab Presentation Sync has been implemented;
+the recognized future task is to align ODE, Linear Algebra, and future PDE Lab
+headers, workflow geometry, context/result hierarchy, teaching/evidence blocks,
+diagnostics, and walkthrough primitives after this gate. Motion remains paused
+and unmounted. No Tutor, Glossary, runnable method, dependency, push, Preview,
+Production deployment, numerical, trace, ODE, PDE, or architecture change is
+included.
+
+The exact next gate is **Maintainer Teaching Review of the corrected Linear
+Systems Lab**. If accepted, proceed to **Cross-Lab Presentation Sync
+design/audit**. Motion remount and Tutor remain later gates. The documentation
+commit containing this section is reported externally because a commit cannot
+self-reference its own final SHA/tree.
+
 ## Linear Systems Teaching v2 Phase 2 — static integration — 2026-08-12
 
 The independent Phase 1 trace audit passed with `P0 = P1 = P2 = P3 = 0`,

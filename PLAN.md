@@ -2,9 +2,9 @@
 
 ## Current status
 
-**Active milestone: Linear Systems Teaching v2 — Phase 2 static integration
-implemented and locally verified; independent Phase 2 product/teaching audit
-is the next gate.**
+**Active milestone: Linear Systems Teaching v2 — maintainer teaching
+corrections implemented and locally verified; corrected-Lab Maintainer
+Teaching Review is the next gate.**
 
 Direct maintainer browser review found that the current Linear Systems Lab is
 engineering-correct but not teaching-complete. The authoritative
@@ -28,15 +28,24 @@ used by forward substitution. The independent Phase 1 trace audit passed with
 product now consumes that evidence in a static, computation-led Teaching v2
 surface: visible method concepts, native-MathML mathematical objects, complete
 before/operation/after matrix transformations, explicit `P b`, ordered
-triangular-solve equations, and residual-led Diagnostics. Numerical behavior
-remains unchanged.
+triangular-solve equations, and residual-led Diagnostics. The independent
+Phase 2 audit returned **PASS WITH P3 CARRY-FORWARD — READY FOR MAINTAINER
+TEACHING REVIEW**. The bounded maintainer correction pass now separates
+universal Linear Systems teaching from the active GEPP teaching profile,
+clarifies the right-hand-side role, adds a compact equations-to-matrix reading,
+re-establishes authoritative successful-result context in Output and
+Diagnostics, and teaches residual purpose and the conditioning boundary before
+the diagnostic arithmetic. Numerical behavior remains unchanged.
 
 Visual + Motion Language v1 remains implemented locally, but it is deliberately
-unmounted from the new static walkthrough. Its final freeze and remount remain
-paused until the static teaching surface passes review. Linear Algebra Tutor
-work remains deferred. The exact next gate is **independent Teaching v2 Phase
-2 product/teaching audit, followed by Maintainer Teaching Review**. Do not
-begin motion remount or Tutor work before those gates.
+unmounted from the static walkthrough. Its final freeze and remount remain
+paused until the corrected teaching surface passes review. Linear Algebra
+Tutor work remains deferred. The exact next gate is **Maintainer Teaching
+Review of the corrected Linear Systems Lab**. If accepted, the next major
+frontend design/audit task is **Cross-Lab Presentation Sync** so ODE, Linear
+Algebra, and future PDE Labs can share presentation primitives without
+changing their numerical ownership. Do not begin Cross-Lab Sync, motion
+remount, or Tutor work before those gates.
 
 The maintainer accepts public baseline
 `b58584a5f7a1d5b09874479d3b413a063b94e061` and tree

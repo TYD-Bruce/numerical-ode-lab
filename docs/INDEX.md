@@ -77,8 +77,14 @@ changed only bounded immutable trace evidence and its tracked contracts.
 Phase 2 changes presentation only: the existing motion source remains, but is
 unmounted so the static teaching contract can be audited independently. There
 is no numerical, trace-producer, session, route, architecture, Tutor, Glossary,
-dependency, push, or deployment change. The next gate is an independent Phase
-2 product/teaching audit, followed by Maintainer Teaching Review.
+dependency, push, or deployment change. The independent Phase 2 audit passed
+with two P3 carry-forwards. The maintainer correction pass closes those P3s
+and implements MTC-01 through MTC-06: profile-owned GEPP teaching, approved
+right-hand-side wording, an equations-to-matrix example, result-snapshot
+context in Output and Diagnostics, and learner-centered residual teaching.
+The next gate is Maintainer Teaching Review of the corrected Linear Systems
+Lab. If accepted, Cross-Lab Presentation Sync is the next major frontend
+design/audit task; motion remount and Tutor remain later gates.
 
 Latest architecture prerequisite review:
 [Architecture v1 Migration Review](reviews/2026-08-11-architecture-v1-migration-review.md)
