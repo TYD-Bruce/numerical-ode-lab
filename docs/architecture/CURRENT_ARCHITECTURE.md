@@ -31,13 +31,14 @@ Browser ownership is organized as:
 - `frontend/src/labs/ode/`: the mountable Initial Value Problems Lab, ODE
   workflow/session state, Convergence presentation, presets, and bindings;
 - `frontend/src/labs/linear-algebra/`: the pure editable session, complete
-  Linear Systems route, Method/Data/Output/Diagnostics application, and
+  Linear Systems route, Method/Data/Output/Diagnostics application, visible
+  teaching model, domain-specific MathML composition helpers, and
   presentation-only Computation Walkthrough renderer;
 - `frontend/src/tutor/`: browser Tutor session, panel, and `/api/chat` client;
 - `frontend/src/glossary/`: production Glossary model, registry, controller,
   and lazy surface;
-- `frontend/src/math/`: MathLive/Compute Engine browser adapters and safe math
-  presentation; and
+- `frontend/src/math/`: MathLive/Compute Engine browser adapters, lightweight
+  native-MathML authored-math primitives, and safe math presentation; and
 - `frontend/src/dev/`: development-only Glossary tooling.
 
 `frontend/vite.config.ts` uses the frontend directory as Vite root and emits
@@ -109,7 +110,8 @@ frontend entry
 
 frontend entry
   -> dynamic Linear Systems route
-  -> frontend session and matrix/workflow presentation
+  -> frontend session and static Teaching v2 matrix/workflow presentation
+  -> lightweight native MathML atoms plus controlled DOM/CSS composition
   -> Linear Systems numerical package and immutable computation trace
 
 first valid Glossary request
@@ -128,6 +130,14 @@ Tutor binding nor a Glossary binding at this gate.
 The route module registry, Tutor Host, Glossary Host, and editable-math loader
 retain distinct dynamic imports. Package extraction does not create an eager
 numerics root import.
+
+The Linear Systems walkthrough consumes producer-owned `initialU`, complete
+`uBefore`/`uAfter`, `permutedB`, substitution, residual, and reference evidence
+without rerunning elimination or reconstructing numerical states. Its current
+Phase 2 presentation is intentionally static. The existing motion controller
+remains source-owned by the mounted frontend presentation but is not imported
+or mounted by the Linear Systems route pending the separate motion-remount
+gate.
 
 ## State and lifecycle
 

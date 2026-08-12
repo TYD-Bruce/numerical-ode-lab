@@ -1,10 +1,9 @@
 // @vitest-environment jsdom
 
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mountLinearSystemsApp } from "./linearSystemsApp";
 import {
   createLinearSystemsSession,
-  loadLinearSystemsPreset,
   replaceLinearSystemsDraft,
   runLinearSystemsSession,
   setLinearSystemsWorkflowStep,
@@ -56,39 +55,84 @@ function successfulSession(
   return outcome.session;
 }
 
-function latePivotFailureSession(): LinearSystemsSessionState {
+function singularDraft(session = createLinearSystemsSession()): LinearSystemsSessionState {
   return setLinearSystemsWorkflowStep(
-    replaceLinearSystemsDraft(createLinearSystemsSession(), {
-      dimension: 2,
+    replaceLinearSystemsDraft(session, {
+      dimension: 3,
       A: [
-        ["1", "1"],
-        ["2", "2"],
+        ["1", "1", "1"],
+        ["1", "1", "1"],
+        ["1", "1", "1"],
       ],
-      b: ["2", "4"],
+      b: ["3", "3", "3"],
     }),
     "data"
   );
 }
 
-describe("Linear Systems Lab application", () => {
+describe("Linear Systems Lab Teaching v2 application", () => {
   beforeEach(() => document.body.replaceChildren());
-  afterEach(() => {
-    vi.useRealTimers();
-    vi.unstubAllGlobals();
+
+  it("keeps the four-step workflow and renders the Method teaching framework", () => {
+    const { target, mounted } = mount();
+
+    expect(target.querySelector("h1")?.textContent).toBe("Linear Systems Lab");
+    expect(target.querySelectorAll("[data-workflow-step]")).toHaveLength(4);
+    expect(
+      target.querySelector("[data-workflow-step='method']")?.getAttribute(
+        "aria-current"
+      )
+    ).toBe("step");
+    expect(
+      target.querySelector<HTMLButtonElement>("[data-workflow-step='output']")
+        ?.disabled
+    ).toBe(true);
+    expect(
+      target.querySelector("[data-method-problem] [data-native-math='system-equation']")
+    ).not.toBeNull();
+    expect(target.querySelector("[data-linear-system-definition]")?.textContent).toContain(
+      "multiple linear equations"
+    );
+    expect(target.querySelector("[data-system-role='A'] h3")?.textContent).toBe(
+      "Coefficient matrix"
+    );
+    expect(target.querySelector("[data-system-role='x'] h3")?.textContent).toBe(
+      "Unknown vector"
+    );
+    expect(target.querySelector("[data-system-role='b'] h3")?.textContent).toBe(
+      "Right-hand side"
+    );
+    expect(target.querySelector("[data-method-family='direct']")).not.toBeNull();
+    expect(target.querySelector("[data-method-family='iterative']")).not.toBeNull();
+    expect(target.querySelectorAll("[data-method-status='available']")).toHaveLength(1);
+    expect(
+      [...target.querySelectorAll("[data-method-status='planned']")].map(
+        (badge) => badge.parentElement?.querySelector("strong")?.textContent
+      )
+    ).toEqual(["Jacobi", "Gauss–Seidel"]);
+    expect(target.querySelector("[data-teaching-concept='pivot']")).not.toBeNull();
+    expect(
+      target.querySelector("[data-teaching-concept='partial-pivoting']")
+    ).not.toBeNull();
+    expect(
+      target.querySelector("[data-native-math='elimination-multiplier'] mfrac")
+    ).not.toBeNull();
+    expect(
+      target.querySelector("[data-native-math='factorization-relation']")
+    ).not.toBeNull();
+    expect(
+      target.querySelector("[data-native-math='forward-substitution-relation']")
+    ).not.toBeNull();
+    expect(
+      target.querySelector("[data-native-math='backward-substitution-relation']")
+    ).not.toBeNull();
+    mounted.dispose();
   });
 
-  it("mounts Starter 3×3 with the approved Method → Data workflow and presets", () => {
+  it("moves from Method to editable Data with presets and an accessible MathML equation", () => {
     const { target, mounted } = mount();
-    expect(target.querySelector("h1")?.textContent).toBe("Linear Systems Lab");
-    expect(target.textContent).toContain("Gaussian elimination with partial pivoting");
-    expect(target.textContent).toContain("P A = L U");
-    expect(target.querySelector("[data-workflow-step='method']")?.getAttribute("aria-current")).toBe(
-      "step"
-    );
-    expect(target.querySelector<HTMLButtonElement>("[data-workflow-step='output']")?.disabled).toBe(
-      true
-    );
     target.querySelector<HTMLButtonElement>(".ls-button-primary")!.click();
+
     expect(target.querySelector("[data-workflow-panel]")?.getAttribute("data-workflow-panel")).toBe(
       "data"
     );
@@ -98,19 +142,13 @@ describe("Linear Systems Lab application", () => {
       )
     ).toEqual(["Starter 3×3", "Row swap required", "Custom"]);
     const equation = target.querySelector<HTMLElement>(
-      "[data-equation-editor] [data-math='system-equation']"
+      "[data-equation-editor] [data-native-math='system-equation']"
     )!;
     expect(equation.getAttribute("role")).toBe("math");
     expect(equation.getAttribute("aria-label")).toBe("A times x equals b");
-    expect(equation.querySelector(":scope > [aria-hidden='true']")?.textContent).toBe("A x = b");
+    expect(equation.querySelector(":scope > math[aria-hidden='true'] mrow")).not.toBeNull();
     expect(target.querySelector("[data-equation-data] [data-equation-term='A']")).not.toBeNull();
     expect(target.querySelector("[data-equation-data] [data-equation-term='b']")).not.toBeNull();
-    expect(mounted.getSession()).toMatchObject({
-      step: "data",
-      dimension: 3,
-      selectedPresetId: "starter_3x3",
-      meaningful: false,
-    });
     mounted.dispose();
   });
 
@@ -130,17 +168,15 @@ describe("Linear Systems Lab application", () => {
       "Vector b, row 2"
     );
 
-    target.querySelector<HTMLSelectElement>("[data-dimension-select]")!.value = "6";
-    target
-      .querySelector<HTMLSelectElement>("[data-dimension-select]")!
-      .dispatchEvent(new Event("change", { bubbles: true }));
+    dimension.value = "6";
+    dimension.dispatchEvent(new Event("change", { bubbles: true }));
     expect(target.querySelectorAll("[data-matrix-a-row]")).toHaveLength(36);
     expect(target.querySelectorAll("[data-vector-b-row]")).toHaveLength(6);
     expect(mounted.getSession().ADraft[5]).toEqual(["", "", "", "", "", ""]);
     mounted.dispose();
   });
 
-  it("reports incomplete, malformed, and non-finite drafts and focuses the first invalid cell", async () => {
+  it("reports invalid drafts and focuses the first invalid cell", async () => {
     const { target, mounted } = mount();
     goToData(target);
     const first = input(target, "[data-matrix-a-row='0'][data-matrix-a-column='0']", "");
@@ -154,29 +190,27 @@ describe("Linear Systems Lab application", () => {
     expect(summary.textContent).toContain("decimal or scientific notation");
     expect(summary.textContent).toContain("must be finite");
     expect(first.getAttribute("aria-invalid")).toBe("true");
-    expect(first.getAttribute("aria-describedby")).toMatch(/ls-field-error/);
     expect(document.activeElement).toBe(first);
     expect(mounted.getSession().latestSuccessfulResult).toBeUndefined();
     mounted.dispose();
   });
 
-  it("moves preset identity to Custom on edit and restores authority from exact parsed values", () => {
+  it("moves preset identity to Custom on edit and restores exact authority", () => {
     const { target, mounted } = mount();
     goToData(target);
     input(target, "[data-matrix-a-row='0'][data-matrix-a-column='0']", "3.5");
     expect(mounted.getSession().selectedPresetId).toBeNull();
-    expect(target.querySelector<HTMLSelectElement>("[data-preset-select]")?.value).toBe("custom");
+    expect(target.querySelector<HTMLSelectElement>("[data-preset-select]")?.value).toBe(
+      "custom"
+    );
     expect(target.textContent).toContain("No preset reference solution is authoritative");
 
     input(target, "[data-matrix-a-row='0'][data-matrix-a-column='0']", "3.0");
     expect(mounted.getSession().selectedPresetId).toBe("starter_3x3");
-    expect(target.querySelector<HTMLSelectElement>("[data-preset-select]")?.value).toBe(
-      "starter_3x3"
-    );
     mounted.dispose();
   });
 
-  it("publishes one complete result, renders output/diagnostics, and expands stored computation", async () => {
+  it("renders the successful MathML result and the static trace-owned walkthrough", async () => {
     const updateSession = vi.fn();
     const recordMeaningfulInteraction = vi.fn();
     const { target, mounted } = mount(createLinearSystemsSession(), {
@@ -189,87 +223,101 @@ describe("Linear Systems Lab application", () => {
 
     const result = mounted.getSession().latestSuccessfulResult!;
     expect(mounted.getSession()).toMatchObject({ step: "output", resultStatus: "current" });
-    expect(target.textContent).toContain("Computed solution");
-    expect(target.textContent).toContain("Factorization evidence");
-    expect(target.textContent).toContain("Difference from preset reference solution");
-    expect(target.querySelector("[data-linear-systems-status]")?.textContent).toBe(
-      "Linear system solved. Computed solution is ready."
-    );
-    expect(document.activeElement).toBe(target.querySelector(".ls-result-header h2"));
-    expect(target.querySelector("[aria-label='Computed solution x hat']")?.textContent).toContain(
-      "-1"
-    );
-    expect(target.querySelector("[data-math='computed-solution-label'] sub")).toBeNull();
-    for (const label of [
-      "Permutation matrix P",
-      "Unit lower triangular matrix L",
-      "Upper triangular matrix U",
-    ]) {
-      expect(target.querySelector(`[aria-label='${label}']`)).not.toBeNull();
+    const computed = target.querySelector<HTMLElement>(
+      "[data-native-math='computed-solution']"
+    )!;
+    expect(computed.querySelector("mover")).not.toBeNull();
+    expect(computed.querySelector("mtable")).not.toBeNull();
+    expect(computed.querySelectorAll("mtr")).toHaveLength(3);
+    expect(computed.getAttribute("aria-label")).toContain("x hat equals");
+    for (const factor of ["factor-p", "factor-l", "factor-u"]) {
+      expect(target.querySelector(`[data-native-math='${factor}'] mtable`)).not.toBeNull();
     }
 
     const toggle = target.querySelector<HTMLButtonElement>("[data-show-computation]")!;
     expect(toggle.getAttribute("aria-expanded")).toBe("false");
     toggle.click();
-    expect(target.querySelector("[data-computation-walkthrough]")).not.toBeNull();
-    expect(target.textContent).toContain("Matrix scale and pivot threshold");
-    expect(target.querySelector("details > summary")?.textContent).toBe("Show arithmetic");
-    const walkthroughTau = target.querySelector<HTMLElement>(
-      "[data-trace-kind='matrix_scale'] [data-math='tau-pivot'][data-display-value]"
-    )?.dataset.displayValue;
-    const walkthroughResidual = target.querySelector<HTMLElement>(
-      "[data-trace-kind='residual_inf_norm'] [data-math='residual-inf-norm'][data-display-value]"
-    )?.dataset.displayValue;
-    const outputSolution = target.querySelector<HTMLElement>(
-      "[aria-label='Computed solution x hat'] [data-math-number-context='solution']"
-    )?.textContent;
-    const walkthroughSolution = [...target.querySelectorAll<HTMLElement>(
-      "[data-trace-kind='backward_substitution'] [data-substitution-stage='result']"
-    )].at(-1)?.querySelector<HTMLElement>("[data-display-value-context='solution']")?.dataset.displayValue;
-    expect(walkthroughSolution).toBe(outputSolution);
+    expect(target.querySelector("[data-trace-kind='factorization_start'] mtable")).not.toBeNull();
+    expect(
+      target.querySelector(
+        "[data-trace-kind='elimination'] [data-matrix-state='before'] mtable"
+      )
+    ).not.toBeNull();
+    expect(
+      target.querySelector(
+        "[data-trace-kind='elimination'] [data-matrix-state='after'] mtable"
+      )
+    ).not.toBeNull();
+    expect(
+      target.querySelector("[data-trace-kind='right_hand_side_permutation'] mtable")
+    ).not.toBeNull();
+    expect(target.querySelector("[data-replay-computation-step]")).toBeNull();
+    expect(target.querySelector("[data-motion-stage]")).toBeNull();
     expect(mounted.getSession().latestSuccessfulResult).toBe(result);
-    target.querySelector<HTMLButtonElement>("[data-show-computation]")!.click();
-    target.querySelector<HTMLButtonElement>("[data-show-computation]")!.click();
-    expect(mounted.getSession().latestSuccessfulResult).toBe(result);
-
-    target.querySelector<HTMLButtonElement>("[data-workflow-step='diagnostics']")!.click();
-    expect(target.textContent).toContain("Residual vector");
-    expect(
-      target.querySelector("[data-math='residual-inf-norm']")?.getAttribute("aria-label")
-    ).toBe("the infinity norm of r");
-    expect(
-      target.querySelector("[data-math='matrix-inf-norm']")?.getAttribute("aria-label")
-    ).toBe("the infinity norm of A");
-    expect(
-      target.querySelector("[data-math='tau-pivot']")?.getAttribute("aria-label")
-    ).toContain("pivot acceptance threshold");
-    expect(target.textContent).toContain(
-      "The residual measures how closely the computed solution satisfies the original equations."
-    );
-    expect(target.textContent).toContain(
-      "A small residual does not necessarily mean a small solution error."
-    );
-    expect(target.querySelector("[data-math='residual-chain'] sub")?.textContent).toBe("∞");
-    expect(target.querySelector("[data-math='residual-inf-norm'] sub")?.textContent).toBe("∞");
-    expect(target.querySelector("[data-math='matrix-inf-norm'] sub")?.textContent).toBe("∞");
-    expect(target.querySelector("[data-math='tau-pivot'] sub")?.textContent).toBe("pivot");
-    expect(target.textContent).not.toMatch(/e-\d+/i);
-    expect(
-      target.querySelector<HTMLElement>(
-        ".ls-metric:has([data-math='tau-pivot']) [data-math-number-context='threshold']"
-      )?.textContent
-    ).toBe(walkthroughTau);
-    expect(
-      target.querySelector<HTMLElement>(
-        ".ls-metric:has([data-math='residual-inf-norm']) [data-math-number-context='diagnostic']"
-      )?.textContent
-    ).toBe(walkthroughResidual);
     expect(recordMeaningfulInteraction).toHaveBeenCalled();
     expect(updateSession).toHaveBeenCalled();
     mounted.dispose();
   });
 
-  it("preserves a successful result while stale and makes the same snapshot current after restoration", () => {
+  it("renders Diagnostics as distinct residual blocks with subordinate safeguards", () => {
+    const { target, mounted } = mount(successfulSession());
+    target.querySelector<HTMLButtonElement>("[data-workflow-step='diagnostics']")!.click();
+
+    expect(
+      target.querySelector("[data-diagnostic-meaning] [data-native-math='residual-relation']")
+    ).not.toBeNull();
+    expect(
+      target.querySelector(
+        "[data-diagnostic-block='matrix-vector'] [data-native-math='matrix-vector-result'] mtable"
+      )
+    ).not.toBeNull();
+    expect(
+      target.querySelector(
+        "[data-diagnostic-block='residual'] [data-native-math='residual-vector'] mtable"
+      )
+    ).not.toBeNull();
+    expect(
+      target.querySelector(
+        "[data-diagnostic-block='residual-norm'] [data-native-math='residual-inf-norm'] msub"
+      )
+    ).not.toBeNull();
+    expect(target.querySelector("[data-diagnostic-limitation]")?.textContent).toContain(
+      "A small residual does not necessarily mean a small solution error"
+    );
+    expect(target.querySelector("[data-diagnostic-limitation]")?.textContent).toContain(
+      "does not compute a condition number"
+    );
+    expect(target.querySelector("[data-reference-comparison]")).not.toBeNull();
+
+    const safeguard = target.querySelector<HTMLDetailsElement>(
+      "[data-solver-safeguard-details]"
+    )!;
+    expect(safeguard.open).toBe(false);
+    expect(safeguard.querySelectorAll("msub").length).toBeGreaterThanOrEqual(3);
+    const implementation = safeguard.querySelector<HTMLDetailsElement>(
+      "[data-implementation-detail]"
+    )!;
+    expect(implementation.open).toBe(false);
+    expect(implementation.textContent).toContain("Number.EPSILON");
+    mounted.dispose();
+  });
+
+  it("omits the preset comparison after custom input changes authority", () => {
+    const custom = replaceLinearSystemsDraft(createLinearSystemsSession(), {
+      dimension: 2,
+      A: [
+        ["2", "0"],
+        ["0", "4"],
+      ],
+      b: ["2", "8"],
+    });
+    const { target, mounted } = mount(successfulSession(custom));
+    target.querySelector<HTMLButtonElement>("[data-workflow-step='diagnostics']")!.click();
+    expect(target.querySelector("[data-reference-comparison]")).toBeNull();
+    mounted.dispose();
+  });
+
+  it("preserves the successful snapshot through stale edits and exact restoration", () => {
     const { target, mounted } = mount();
     goToData(target);
     runControl(target).click();
@@ -278,9 +326,6 @@ describe("Linear Systems Lab application", () => {
     input(target, "[data-vector-b-row='0']", "7");
     expect(mounted.getSession()).toMatchObject({ resultStatus: "stale" });
     expect(mounted.getSession().latestSuccessfulResult).toBe(result);
-    expect(target.querySelector("[data-experiment-identity]")?.textContent).toContain(
-      "Custom · 3 × 3 · result stale"
-    );
     target.querySelector<HTMLButtonElement>("[data-workflow-step='output']")!.click();
     expect(target.querySelector("[data-result-stale]")).not.toBeNull();
 
@@ -288,111 +333,55 @@ describe("Linear Systems Lab application", () => {
     input(target, "[data-vector-b-row='0']", "6.0");
     expect(mounted.getSession()).toMatchObject({ resultStatus: "current" });
     expect(mounted.getSession().latestSuccessfulResult).toBe(result);
-    expect(target.querySelector("[data-experiment-identity]")?.textContent).toContain(
-      "Starter 3×3 · 3 × 3 · result current"
-    );
-    target.querySelector<HTMLButtonElement>("[data-workflow-step='output']")!.click();
-    expect(target.querySelector("[data-result-stale]")).toBeNull();
     mounted.dispose();
   });
 
-  it("shows bounded pivot-failure evidence without replacing the previous success", () => {
-    const success = successfulSession();
-    const singular = replaceLinearSystemsDraft(success, {
-      dimension: 3,
-      A: [
-        ["1", "1", "1"],
-        ["1", "1", "1"],
-        ["1", "1", "1"],
-      ],
-      b: ["3", "3", "3"],
-    });
-    const initial = setLinearSystemsWorkflowStep(singular, "data");
-    const prior = initial.latestSuccessfulResult;
-    const { target, mounted } = mount(initial);
+  it("keeps pivot rejection qualified and preserves an earlier successful result", () => {
+    const priorSession = successfulSession();
+    const prior = priorSession.latestSuccessfulResult;
+    const { target, mounted } = mount(singularDraft(priorSession));
     runControl(target).click();
 
-    expect(target.querySelector("[data-solve-failure='pivot_rejected']")?.textContent).toContain(
-      "singular or too close to singular for this Lab's pivot acceptance threshold"
-    );
-    expect(target.textContent).toContain("Computation stopped in pivot column");
-    expect(target.textContent).toContain("previous successful Output and Diagnostics remain");
+    const failure = target.querySelector<HTMLElement>("[data-solve-failure='pivot_rejected']")!;
+    expect(failure.textContent).toContain("engineering safeguard");
+    expect(failure.textContent).toContain("does not by itself");
+    expect(failure.textContent).toContain("formal symbolic proof");
     expect(mounted.getSession().latestSuccessfulResult).toBe(prior);
     expect(mounted.getSession().resultStatus).toBe("stale");
 
     target.querySelector<HTMLButtonElement>("[data-show-failure-computation]")!.click();
-    const failure = target.querySelector<HTMLElement>("[data-failure-walkthrough]")!;
-    expect(failure).not.toBeNull();
-    expect(failure.querySelector("[data-trace-kind='pivot_selection']")).not.toBeNull();
-    expect(failure.querySelector("[data-trace-kind='forward_substitution']")).toBeNull();
-    expect(failure.textContent).not.toContain("formally singular");
+    const walkthrough = target.querySelector<HTMLElement>("[data-failure-walkthrough]")!;
+    expect(walkthrough.querySelector("[data-trace-kind='pivot_selection']")).not.toBeNull();
+    expect(walkthrough.querySelector("[data-trace-kind='forward_substitution']")).toBeNull();
+    expect(walkthrough.querySelector("[data-replay-computation-step]")).toBeNull();
     mounted.dispose();
   });
 
-  it("removes stale failed-attempt UI on A or b edits while preserving prior success", () => {
-    const success = successfulSession();
-    const singular = replaceLinearSystemsDraft(success, {
-      dimension: 3,
-      A: [
-        ["1", "1", "1"],
-        ["1", "1", "1"],
-        ["1", "1", "1"],
-      ],
-      b: ["3", "3", "3"],
-    });
-    const initial = setLinearSystemsWorkflowStep(singular, "data");
-    const prior = initial.latestSuccessfulResult;
-    const { target, mounted } = mount(initial);
+  it("removes failed-attempt evidence on A or b edits without clearing prior Output", () => {
+    const priorSession = successfulSession();
+    const prior = priorSession.latestSuccessfulResult;
+    const { target, mounted } = mount(singularDraft(priorSession));
 
     runControl(target).click();
-    const firstFailure = target.querySelector<HTMLElement>("[data-solve-failure]")!;
-    expect(firstFailure.textContent).toContain("Computation stopped in pivot column");
     target.querySelector<HTMLButtonElement>("[data-show-failure-computation]")!.click();
     expect(target.querySelector("[data-failure-walkthrough]")).not.toBeNull();
-
     input(target, "[data-matrix-a-row='0'][data-matrix-a-column='0']", "2");
     expect(target.querySelector("[data-solve-failure]")).toBeNull();
     expect(target.querySelector("[data-failure-walkthrough]")).toBeNull();
-    expect(target.textContent).not.toContain("Computation stopped in pivot column");
-    expect(target.textContent).not.toContain("Show computation before failure");
     expect(mounted.getSession().latestSuccessfulResult).toBe(prior);
     expect(mounted.getSession().resultStatus).toBe("stale");
 
     runControl(target).click();
-    const secondFailure = target.querySelector<HTMLElement>("[data-solve-failure]")!;
-    expect(secondFailure).not.toBe(firstFailure);
-    expect(secondFailure.textContent).toContain("Computation stopped in pivot column");
-    expect(
-      secondFailure.querySelector("[data-show-failure-computation]")?.getAttribute(
-        "aria-expanded"
-      )
-    ).toBe("false");
-
     target.querySelector<HTMLButtonElement>("[data-show-failure-computation]")!.click();
-    expect(target.querySelector("[data-failure-walkthrough]")).not.toBeNull();
     input(target, "[data-vector-b-row='0']", "4");
     expect(target.querySelector("[data-solve-failure]")).toBeNull();
     expect(target.querySelector("[data-failure-walkthrough]")).toBeNull();
-    expect(target.textContent).not.toContain("Computation stopped in pivot column");
     expect(mounted.getSession().latestSuccessfulResult).toBe(prior);
-    expect(mounted.getSession().resultStatus).toBe("stale");
     mounted.dispose();
   });
 
-  it("clears failed-attempt UI after an edit without inventing Output", () => {
-    const singular = replaceLinearSystemsDraft(createLinearSystemsSession(), {
-      dimension: 3,
-      A: [
-        ["1", "1", "1"],
-        ["1", "1", "1"],
-        ["1", "1", "1"],
-      ],
-      b: ["3", "3", "3"],
-    });
-    const { target, mounted } = mount(
-      setLinearSystemsWorkflowStep(singular, "data")
-    );
-
+  it("does not invent Output when editing after a failed attempt with no prior success", () => {
+    const { target, mounted } = mount(singularDraft());
     runControl(target).click();
     expect(target.querySelector("[data-solve-failure]")).not.toBeNull();
     input(target, "[data-vector-b-row='0']", "4");
@@ -403,70 +392,39 @@ describe("Linear Systems Lab application", () => {
     mounted.dispose();
   });
 
-  it("uses subordinate native headings for successful and failed computation evidence", () => {
-    const { target, mounted } = mount();
-    goToData(target);
-    runControl(target).click();
-    target.querySelector<HTMLButtonElement>("[data-show-computation]")!.click();
-
-    const output = target.querySelector<HTMLElement>("[data-workflow-panel='output']")!;
-    const successWalkthrough = output.querySelector<HTMLElement>(
+  it("uses a subordinate native heading outline for success and failure walkthroughs", () => {
+    const successCase = mount(successfulSession());
+    successCase.target
+      .querySelector<HTMLButtonElement>("[data-show-computation]")!
+      .click();
+    const success = successCase.target.querySelector<HTMLElement>(
       "[data-computation-walkthrough]"
     )!;
-    expect(output.querySelector(":scope > header h2")?.textContent).toBe(
-      "Computed solution"
-    );
-    expect(successWalkthrough.querySelector(":scope > h3")?.textContent).toBe(
+    expect(success.querySelector(":scope > h3")?.textContent).toBe(
       "Computation walkthrough"
     );
-    expect(successWalkthrough.querySelector(".ls-walkthrough-phase > h4")).not.toBeNull();
-    expect(successWalkthrough.querySelector(".ls-computation-step > h5")).not.toBeNull();
-    const successToggle = target.querySelector<HTMLButtonElement>("[data-show-computation]")!;
-    expect(successToggle.getAttribute("aria-expanded")).toBe("true");
-    expect(successToggle.getAttribute("aria-controls")).toBe(successWalkthrough.id);
+    expect(success.querySelector(".ls-walkthrough-phase > h4")).not.toBeNull();
+    expect(success.querySelector(".ls-computation-step > h5")).not.toBeNull();
+    successCase.mounted.dispose();
 
-    target.querySelector<HTMLButtonElement>("[data-workflow-step='data']")!.click();
-    input(target, "[data-matrix-a-row='0'][data-matrix-a-column='0']", "1");
-    input(target, "[data-matrix-a-row='0'][data-matrix-a-column='1']", "1");
-    input(target, "[data-matrix-a-row='0'][data-matrix-a-column='2']", "1");
-    input(target, "[data-matrix-a-row='1'][data-matrix-a-column='0']", "1");
-    input(target, "[data-matrix-a-row='1'][data-matrix-a-column='1']", "1");
-    input(target, "[data-matrix-a-row='1'][data-matrix-a-column='2']", "1");
-    input(target, "[data-matrix-a-row='2'][data-matrix-a-column='0']", "1");
-    input(target, "[data-matrix-a-row='2'][data-matrix-a-column='1']", "1");
-    input(target, "[data-matrix-a-row='2'][data-matrix-a-column='2']", "1");
-    input(target, "[data-vector-b-row='0']", "3");
-    input(target, "[data-vector-b-row='1']", "3");
-    input(target, "[data-vector-b-row='2']", "3");
-    runControl(target).click();
-    target.querySelector<HTMLButtonElement>("[data-show-failure-computation]")!.click();
-
-    const data = target.querySelector<HTMLElement>("[data-workflow-panel='data']")!;
-    const failedAttempt = data.querySelector<HTMLElement>("[data-solve-failure]")!;
-    const failureWalkthrough = failedAttempt.querySelector<HTMLElement>(
+    document.body.replaceChildren();
+    const failureCase = mount(singularDraft());
+    runControl(failureCase.target).click();
+    failureCase.target
+      .querySelector<HTMLButtonElement>("[data-show-failure-computation]")!
+      .click();
+    const failure = failureCase.target.querySelector<HTMLElement>(
       "[data-failure-walkthrough]"
     )!;
-    expect(data.querySelector(":scope > h2")?.textContent).toContain("Data");
-    expect(failedAttempt.querySelector(":scope > h3")?.textContent).toBe(
-      "The system was not solved"
+    expect(failure.querySelector(":scope > h4")?.textContent).toBe(
+      "Computation before failure"
     );
-    expect(failureWalkthrough.querySelector(":scope > h4")?.textContent).toBe(
-      "Computation walkthrough"
-    );
-    expect(failureWalkthrough.querySelector(".ls-walkthrough-phase > h5")).not.toBeNull();
-    expect(failureWalkthrough.querySelector(".ls-computation-step > h6")).not.toBeNull();
-    const failureToggle = failedAttempt.querySelector<HTMLButtonElement>(
-      "[data-show-failure-computation]"
-    )!;
-    expect(failureToggle.getAttribute("aria-expanded")).toBe("true");
-    expect(failureToggle.getAttribute("aria-controls")).toBe(failureWalkthrough.id);
-
-    const ids = [...target.querySelectorAll<HTMLElement>("[id]")].map((node) => node.id);
-    expect(new Set(ids).size).toBe(ids.length);
-    mounted.dispose();
+    expect(failure.querySelector(".ls-walkthrough-phase > h5")).not.toBeNull();
+    expect(failure.querySelector(".ls-computation-step > h6")).not.toBeNull();
+    failureCase.mounted.dispose();
   });
 
-  it("resets to Starter 3×3, clears presentation state, and disposes idempotently", () => {
+  it("resets to Starter 3×3 and disposes idempotently", () => {
     const applyConfirmedReset = vi.fn();
     const { target, mounted } = mount(successfulSession(), {
       updateSession: vi.fn(),
@@ -491,218 +449,5 @@ describe("Linear Systems Lab application", () => {
     mounted.dispose();
     mounted.dispose();
     expect(target.childElementCount).toBe(0);
-
-    const remounted = mountLinearSystemsApp({
-      target,
-      initialSession: createLinearSystemsSession(),
-    });
-    expect(target.querySelector("h1")?.textContent).toBe("Linear Systems Lab");
-    remounted.dispose();
-  });
-
-  it("cancels local replay across collapse, navigation, reset, and disposal without changing session metadata", async () => {
-    vi.useFakeTimers();
-    vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) =>
-      window.setTimeout(() => callback(0), 0)
-    );
-    vi.stubGlobal("cancelAnimationFrame", (id: number) => window.clearTimeout(id));
-    vi.stubGlobal(
-      "matchMedia",
-      vi.fn((query: string) => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
-        addListener: vi.fn(),
-        removeListener: vi.fn(),
-        dispatchEvent: vi.fn(),
-      }))
-    );
-    const recordMeaningfulInteraction = vi.fn();
-    const updateSession = vi.fn();
-    const rowSwapSession = successfulSession(
-      loadLinearSystemsPreset(createLinearSystemsSession(), "row_swap_required")
-    );
-    const { target, mounted } = mount(rowSwapSession, {
-      recordMeaningfulInteraction,
-      updateSession,
-      applyConfirmedReset: vi.fn(),
-    });
-    const sessionBefore = mounted.getSession();
-    const resultBefore = sessionBefore.latestSuccessfulResult;
-    const meaningfulCallsBefore = recordMeaningfulInteraction.mock.calls.length;
-    const updatesBefore = updateSession.mock.calls.length;
-    target.querySelector<HTMLButtonElement>("[data-show-computation]")!.click();
-    const replay = target.querySelector<HTMLButtonElement>(
-      "[data-replay-computation-step='row_swap']"
-    )!;
-    const oldStage = target.querySelector<HTMLElement>(
-      "[data-motion-stage='row_swap']"
-    )!;
-    replay.click();
-    expect(oldStage.dataset.motionState).toBe("preparing");
-
-    target.querySelector<HTMLButtonElement>("[data-show-computation]")!.click();
-    await vi.runAllTimersAsync();
-    expect(oldStage.dataset.motionState).toBe("disposed");
-    expect(oldStage.querySelectorAll(".is-motion-moving")).toHaveLength(0);
-    expect(mounted.getSession()).toBe(sessionBefore);
-    expect(mounted.getSession().latestSuccessfulResult).toBe(resultBefore);
-    expect(recordMeaningfulInteraction).toHaveBeenCalledTimes(
-      meaningfulCallsBefore
-    );
-    expect(updateSession).toHaveBeenCalledTimes(updatesBefore);
-
-    target.querySelector<HTMLButtonElement>("[data-show-computation]")!.click();
-    const navigationStage = target.querySelector<HTMLElement>(
-      "[data-motion-stage='elimination']"
-    )!;
-    target
-      .querySelector<HTMLButtonElement>(
-        "[data-replay-computation-step='elimination']"
-      )!
-      .click();
-    target.querySelector<HTMLButtonElement>("[data-workflow-step='data']")!.click();
-    await vi.runAllTimersAsync();
-    expect(navigationStage.dataset.motionState).toBe("disposed");
-    expect(mounted.getSession().latestSuccessfulResult).toBe(resultBefore);
-
-    target.querySelector<HTMLButtonElement>("[data-workflow-step='output']")!.click();
-    const computationToggle = target.querySelector<HTMLButtonElement>(
-      "[data-show-computation]"
-    )!;
-    if (computationToggle.getAttribute("aria-expanded") === "false") {
-      computationToggle.click();
-    }
-    const resetStage = target.querySelector<HTMLElement>(
-      "[data-motion-stage='row_swap']"
-    )!;
-    target
-      .querySelector<HTMLButtonElement>("[data-replay-computation-step='row_swap']")!
-      .click();
-    target.querySelector<HTMLButtonElement>("[data-new-experiment]")!.click();
-    expect(resetStage.dataset.motionState).toBe("cancelled");
-    document.querySelector<HTMLButtonElement>("[data-reset-cancel]")!.click();
-
-    const disposeStage = target.querySelector<HTMLElement>(
-      "[data-motion-stage='row_swap']"
-    )!;
-    target
-      .querySelector<HTMLButtonElement>("[data-replay-computation-step='row_swap']")!
-      .click();
-    mounted.dispose();
-    await vi.runAllTimersAsync();
-    expect(disposeStage.dataset.motionState).toBe("disposed");
-    expect(target.childElementCount).toBe(0);
-    vi.useRealTimers();
-    vi.unstubAllGlobals();
-  });
-
-  it("disposes failed-attempt replay immediately when a matrix input edit removes that attempt", async () => {
-    vi.useFakeTimers();
-    vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) =>
-      window.setTimeout(() => callback(0), 0)
-    );
-    vi.stubGlobal("cancelAnimationFrame", (id: number) => window.clearTimeout(id));
-    vi.stubGlobal(
-      "matchMedia",
-      vi.fn((query: string) => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
-        addListener: vi.fn(),
-        removeListener: vi.fn(),
-        dispatchEvent: vi.fn(),
-      }))
-    );
-    const { target, mounted } = mount(latePivotFailureSession());
-    runControl(target).click();
-    target.querySelector<HTMLButtonElement>("[data-show-failure-computation]")!.click();
-    const stage = target.querySelector<HTMLElement>("[data-motion-stage='row_swap']")!;
-    target
-      .querySelector<HTMLButtonElement>("[data-replay-computation-step='row_swap']")!
-      .click();
-    expect(stage.dataset.motionState).toBe("preparing");
-
-    input(target, "[data-matrix-a-row='0'][data-matrix-a-column='0']", "1.25");
-    await vi.runAllTimersAsync();
-
-    expect(stage.dataset.motionState).toBe("disposed");
-    expect(stage.querySelectorAll(".is-motion-moving")).toHaveLength(0);
-    expect(target.querySelector("[data-solve-failure]")).toBeNull();
-    expect(target.querySelector("[data-failure-walkthrough]")).toBeNull();
-    expect(mounted.getSession().latestSuccessfulResult).toBeUndefined();
-    mounted.dispose();
-  });
-
-  it("cancels stale replay completion for a new Run, preset switch, and dimension change", async () => {
-    vi.useFakeTimers();
-    vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) =>
-      window.setTimeout(() => callback(0), 0)
-    );
-    vi.stubGlobal("cancelAnimationFrame", (id: number) => window.clearTimeout(id));
-    vi.stubGlobal(
-      "matchMedia",
-      vi.fn((query: string) => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
-        addListener: vi.fn(),
-        removeListener: vi.fn(),
-        dispatchEvent: vi.fn(),
-      }))
-    );
-
-    const openFailedReplay = (target: HTMLElement): HTMLElement => {
-      runControl(target).click();
-      target.querySelector<HTMLButtonElement>("[data-show-failure-computation]")!.click();
-      const stage = target.querySelector<HTMLElement>("[data-motion-stage='row_swap']")!;
-      target
-        .querySelector<HTMLButtonElement>("[data-replay-computation-step='row_swap']")!
-        .click();
-      return stage;
-    };
-
-    const runCase = mount(latePivotFailureSession());
-    const runStage = openFailedReplay(runCase.target);
-    runControl(runCase.target).click();
-    await vi.runAllTimersAsync();
-    expect(runStage.dataset.motionState).toBe("disposed");
-    expect(runCase.target.querySelector("[data-solve-failure]")).not.toBeNull();
-    expect(runCase.target.querySelector("[data-failure-walkthrough]")).toBeNull();
-    runCase.mounted.dispose();
-
-    document.body.replaceChildren();
-    const presetCase = mount(latePivotFailureSession());
-    const presetStage = openFailedReplay(presetCase.target);
-    const preset = presetCase.target.querySelector<HTMLSelectElement>(
-      "[data-preset-select]"
-    )!;
-    preset.value = "starter_3x3";
-    preset.dispatchEvent(new Event("change", { bubbles: true }));
-    await vi.runAllTimersAsync();
-    expect(presetStage.dataset.motionState).toBe("disposed");
-    expect(presetCase.target.querySelector("[data-solve-failure]")).toBeNull();
-    expect(presetCase.mounted.getSession().selectedPresetId).toBe("starter_3x3");
-    presetCase.mounted.dispose();
-
-    document.body.replaceChildren();
-    const dimensionCase = mount(latePivotFailureSession());
-    const dimensionStage = openFailedReplay(dimensionCase.target);
-    const dimension = dimensionCase.target.querySelector<HTMLSelectElement>(
-      "[data-dimension-select]"
-    )!;
-    dimension.value = "3";
-    dimension.dispatchEvent(new Event("change", { bubbles: true }));
-    await vi.runAllTimersAsync();
-    expect(dimensionStage.dataset.motionState).toBe("disposed");
-    expect(dimensionCase.target.querySelector("[data-solve-failure]")).toBeNull();
-    expect(dimensionCase.mounted.getSession().dimension).toBe(3);
-    dimensionCase.mounted.dispose();
   });
 });

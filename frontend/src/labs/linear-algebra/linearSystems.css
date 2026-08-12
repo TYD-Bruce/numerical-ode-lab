@@ -937,3 +937,640 @@
     transform: none !important;
   }
 }
+
+/* Teaching v2: project-owned native MathML atoms inside Linear Systems only. */
+.linear-systems-shell .native-math {
+  display: inline-block;
+  max-width: 100%;
+  color: var(--color-text-primary);
+}
+
+.linear-systems-shell .native-math-visual {
+  max-width: 100%;
+  color: inherit;
+  font-family: "Cambria Math", "STIX Two Math", "Latin Modern Math", serif;
+  font-size: 1.15rem;
+}
+
+.linear-systems-shell .native-math-visual mtable {
+  column-gap: 0.55em;
+  row-gap: 0.2em;
+}
+
+.linear-systems-shell .native-math-visual mtd {
+  padding-inline: 0.15em;
+}
+
+.linear-systems-shell .ls-native-equation,
+.linear-systems-shell .ls-native-matrix,
+.linear-systems-shell .ls-native-vector,
+.linear-systems-shell .ls-initial-matrix,
+.linear-systems-shell .ls-substitution-equation,
+.linear-systems-shell .ls-residual-equation,
+.linear-systems-shell .ls-residual-norm-equation,
+.linear-systems-shell .ls-safeguard-formula {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: clip;
+  overscroll-behavior-inline: contain;
+  padding-block: 0.65rem;
+}
+
+.ls-method-v2 {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.ls-method-problem,
+.ls-method-section,
+.ls-selected-method {
+  display: grid;
+  min-width: 0;
+  gap: var(--space-4);
+}
+
+.ls-method-problem > h2,
+.ls-method-section > h3,
+.ls-selected-method h3,
+.ls-method-family h4,
+.ls-concept-band h4 {
+  margin: 0;
+}
+
+.ls-problem-equation .native-math-visual {
+  font-size: clamp(1.65rem, 4vw, 2.4rem);
+}
+
+.ls-method-definition {
+  max-width: 66ch;
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.ls-system-roles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.ls-system-role {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.15rem var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+}
+
+.ls-system-role .ls-role-symbol {
+  grid-row: 1 / span 2;
+  align-self: start;
+  color: var(--color-accent-theory);
+}
+
+.ls-system-role .ls-role-symbol .native-math-visual {
+  font-size: 1.55rem;
+}
+
+.ls-system-role h3,
+.ls-system-role p {
+  margin: 0;
+}
+
+.ls-system-role p {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+.ls-method-families {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.ls-method-family,
+.ls-concept-band {
+  min-width: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+}
+
+.ls-method-family.is-direct {
+  border-inline-start: var(--space-1) solid var(--color-method-accent);
+}
+
+.ls-method-family.is-iterative {
+  border-inline-start: var(--space-1) solid var(--color-convergence-accent);
+}
+
+.ls-method-family p,
+.ls-concept-band > p {
+  margin-bottom: 0;
+  color: var(--color-text-secondary);
+}
+
+.ls-planned-methods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ls-planned-methods li,
+.ls-selected-method-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.ls-method-status {
+  width: fit-content;
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  color: var(--color-text-secondary);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.ls-method-status.is-available {
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+
+.ls-selected-method {
+  padding: clamp(1rem, 3vw, 1.5rem);
+  border: 1px solid var(--color-method-accent);
+  border-radius: var(--radius-md);
+  background: var(--color-method-surface);
+}
+
+.ls-algorithm-outline {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.ls-concept-path {
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
+}
+
+.ls-concept-band + .ls-concept-band {
+  margin-top: var(--space-1);
+}
+
+.ls-concept-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: var(--space-4) 0;
+}
+
+.ls-concept-item {
+  padding-inline-start: var(--space-3);
+  border-inline-start: 2px solid var(--color-border-strong);
+}
+
+.ls-concept-item dt {
+  font-weight: 700;
+}
+
+.ls-concept-item dd {
+  margin: 0.2rem 0 0;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+.ls-concept-formulas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-block: var(--space-3);
+}
+
+.ls-concept-formula {
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-inset);
+}
+
+.ls-computed-solution-math,
+.ls-walkthrough-solution-math {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  overflow-x: auto;
+  padding: var(--space-3) var(--space-4);
+}
+
+.ls-computed-solution-math .native-math-visual,
+.ls-walkthrough-solution-math .native-math-visual {
+  font-size: clamp(1.55rem, 4vw, 2.2rem);
+}
+
+.ls-factor-grid > .native-math {
+  display: block;
+  min-width: 0;
+  overflow-x: auto;
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+}
+
+.ls-inline-native-math {
+  vertical-align: middle;
+}
+
+.ls-original-system,
+.ls-rhs-equations,
+.ls-native-factor-grid {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.ls-original-system > .native-math,
+.ls-rhs-equations > .native-math {
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-inset);
+}
+
+.ls-selected-method-line {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-weight: 700;
+}
+
+.ls-v2-phase::before {
+  background: linear-gradient(
+    to bottom,
+    var(--ls-stage-accent),
+    var(--color-border)
+  );
+}
+
+.ls-v2-computation-step {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.ls-v2-computation-step > p {
+  margin-block: 0;
+}
+
+.ls-transformation-corridor {
+  display: grid;
+  min-width: 0;
+  grid-template-columns:
+    minmax(max-content, 1fr)
+    minmax(11rem, auto)
+    minmax(max-content, 1fr);
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3);
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-inset);
+}
+
+.ls-transformation-state,
+.ls-transformation-operation {
+  display: grid;
+  min-width: 0;
+  justify-items: center;
+  gap: var(--space-2);
+}
+
+.ls-transformation-state {
+  align-self: stretch;
+  align-content: center;
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-raised);
+}
+
+.ls-transformation-state.is-after {
+  border-color: var(--color-output-accent);
+  box-shadow: inset 0 -2px var(--color-output-accent);
+}
+
+.ls-transformation-operation {
+  min-width: 11rem;
+  color: var(--color-accent-theory);
+  text-align: center;
+}
+
+.ls-transformation-arrow {
+  width: 100%;
+  height: 1px;
+  background: var(--color-accent-primary);
+}
+
+.ls-transformation-arrow::after {
+  display: block;
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-top: -0.25rem;
+  margin-left: auto;
+  border-top: 1px solid var(--color-accent-primary);
+  border-right: 1px solid var(--color-accent-primary);
+  content: "";
+  transform: rotate(45deg);
+}
+
+.ls-transformation-matrix,
+.ls-row-operation-math,
+.ls-multiplier-equation {
+  display: block;
+  max-width: 100%;
+}
+
+.ls-transformation-matrix {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: clip;
+  overscroll-behavior-inline: contain;
+  padding-block: 0.35rem;
+  text-align: center;
+}
+
+.ls-transformation-matrix .native-math-visual {
+  font-size: 1.05rem;
+}
+
+.ls-pivot-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.ls-pivot-summary p {
+  margin: 0;
+}
+
+.ls-substitution-equation {
+  margin-block: var(--space-2);
+}
+
+.ls-substitution-equation .native-math-visual {
+  font-size: 1.2rem;
+}
+
+.ls-substitution-numerator {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+.ls-walkthrough-final-solution {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--color-output-accent);
+  border-radius: var(--radius-md);
+  background: var(--color-output-surface);
+}
+
+.ls-walkthrough-final-solution h5,
+.ls-walkthrough-final-solution h6 {
+  margin: 0;
+}
+
+.ls-diagnostic-intro {
+  display: grid;
+  gap: var(--space-2);
+  max-width: 68ch;
+  margin-block: var(--space-4);
+}
+
+.ls-diagnostic-lede {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.ls-diagnostic-definition .native-math-visual {
+  font-size: 1.35rem;
+}
+
+.ls-diagnostic-story {
+  display: grid;
+  gap: var(--space-4);
+  margin-block: var(--space-6);
+}
+
+.ls-diagnostic-block {
+  display: grid;
+  min-width: 0;
+  gap: var(--space-3);
+  padding: clamp(1rem, 3vw, 1.5rem);
+  border: 1px solid var(--color-border);
+  border-inline-start: var(--space-1) solid var(--color-convergence-accent);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+}
+
+.ls-diagnostic-block h3,
+.ls-diagnostic-block p {
+  margin: 0;
+}
+
+.ls-diagnostic-step-label {
+  color: var(--color-text-secondary);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ls-diagnostic-block > .native-math {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.ls-diagnostic-block > .native-math .native-math-visual {
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
+}
+
+.ls-residual-component-math {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: clip;
+  padding-block: 0.65rem;
+}
+
+.ls-reference-comparison {
+  display: grid;
+  gap: var(--space-2);
+  margin-block: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-data-surface);
+}
+
+.ls-reference-comparison h3,
+.ls-reference-comparison p {
+  margin: 0;
+}
+
+.ls-reference-value .native-math-visual {
+  font-size: 1.3rem;
+}
+
+.ls-safeguard-details {
+  margin-block: var(--space-6);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-inset);
+}
+
+.ls-safeguard-details > summary,
+.ls-implementation-detail > summary {
+  width: fit-content;
+  color: var(--color-accent-primary-strong);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.ls-safeguard-details > summary:focus-visible,
+.ls-implementation-detail > summary:focus-visible {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 3px;
+}
+
+.ls-safeguard-content {
+  display: grid;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+}
+
+.ls-safeguard-content p {
+  margin: 0;
+}
+
+.ls-implementation-detail {
+  padding: var(--space-3);
+  border-inline-start: 2px solid var(--color-border-strong);
+}
+
+.ls-failure-boundary {
+  margin-bottom: var(--space-3);
+}
+
+@media (max-width: 44rem) {
+  .ls-system-roles,
+  .ls-method-families,
+  .ls-concept-list {
+    grid-template-columns: 1fr;
+  }
+
+  .ls-transformation-corridor {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: stretch;
+    overflow-x: visible;
+  }
+
+  .ls-transformation-state,
+  .ls-transformation-operation {
+    justify-items: center;
+  }
+
+  .ls-transformation-operation {
+    width: min(100%, 18rem);
+    min-width: 0;
+    justify-self: center;
+  }
+
+  .ls-transformation-arrow {
+    width: 1px;
+    height: var(--space-8);
+  }
+
+  .ls-transformation-arrow::after {
+    margin-top: calc(var(--space-8) - 0.45rem);
+    margin-left: -0.2rem;
+    transform: rotate(135deg);
+  }
+
+  .ls-original-system,
+  .ls-rhs-equations,
+  .ls-native-factor-grid {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .ls-original-system > .native-math,
+  .ls-rhs-equations > .native-math,
+  .ls-native-factor-grid > .native-math {
+    width: 100%;
+  }
+}
+
+@media (max-width: 22rem) {
+  .ls-method-family,
+  .ls-concept-band,
+  .ls-system-role,
+  .ls-transformation-corridor,
+  .ls-transformation-state,
+  .ls-diagnostic-block {
+    padding: var(--space-3);
+  }
+
+  .linear-systems-shell .native-math-visual,
+  .ls-transformation-matrix .native-math-visual {
+    font-size: 1rem;
+  }
+
+  .ls-computed-solution-math .native-math-visual,
+  .ls-walkthrough-solution-math .native-math-visual {
+    font-size: 1.35rem;
+  }
+
+  .ls-computation-walkthrough {
+    gap: var(--space-6);
+  }
+
+  .ls-walkthrough-phase {
+    padding-inline-start: var(--space-3);
+  }
+}
+
+@media (forced-colors: active) {
+  .ls-system-role,
+  .ls-method-family,
+  .ls-selected-method,
+  .ls-concept-band,
+  .ls-transformation-corridor,
+  .ls-transformation-state,
+  .ls-walkthrough-final-solution,
+  .ls-diagnostic-block,
+  .ls-reference-comparison,
+  .ls-safeguard-details {
+    border-color: CanvasText;
+  }
+}

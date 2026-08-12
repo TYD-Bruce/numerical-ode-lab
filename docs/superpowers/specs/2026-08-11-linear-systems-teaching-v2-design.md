@@ -1,8 +1,8 @@
 # Linear Systems Teaching v2 Design
 
-**Status:** Maintainer-approved; Phase 0 complete with Outcome B (Hybrid
-accepted); Phase 1 trace snapshot extension implemented and locally verified;
-independent Phase 1 audit required before Phase 2
+**Status:** Maintainer-approved; Phase 0 Outcome B (Hybrid) and Phase 1 trace
+snapshot extension accepted; Phase 2 static integration implemented and
+locally verified; independent Phase 2 product/teaching audit next
 
 **Date:** 2026-08-11
 
@@ -22,10 +22,11 @@ as before/operation/after transformation flow and arrow geometry. This keeps
 the mathematical objects stable while allowing horizontal desktop and
 vertical narrow-screen arrangements.
 
-The decision is capability approval, not product adoption. The DEV-only spike
-does not replace the current Linear Systems presentation. Phase 1 now extends
-the authoritative trace with bounded matrix snapshots and explicit `P b`
-evidence; Phase 2 Teaching v2 integration remains separately gated.
+The capability decision is now adopted by the Phase 2 product presentation.
+The DEV-only spike remains isolated, while the small production-safe native
+MathML helper supplies authored mathematical atoms to the independently lazy
+Linear Systems route. Controlled DOM/CSS still owns the larger teaching
+composition.
 
 ### Phase 1 trace decision
 
@@ -33,8 +34,26 @@ The single numerical path now emits `factorization_start.initialU`, complete
 `uBefore`/`uAfter` snapshots on every row swap and elimination, and one
 `right_hand_side_permutation` record copied from the exact `permutedB` used by
 forward substitution. The snapshots are deeply immutable and chained in
-actual operation order. Current product UI intentionally does not render the
-two new standalone step kinds; that presentation belongs to Phase 2.
+actual operation order. The independently audited Phase 1 producer remains
+authoritative. Phase 2 now renders the new standalone records without
+recomputation or mutation.
+
+### Phase 2 static-integration decision
+
+The approved four-step workflow remains intact. Method now directly teaches
+the problem, roles, direct/iterative distinction, current method, planned
+contrast methods, and core elimination concepts. Output uses native MathML for
+the computed solution and factors, and the walkthrough shows complete
+trace-owned matrix-before, row-operation, and matrix-after evidence followed
+by `P b`, ordered forward/backward substitution, and the final solution.
+Diagnostics teaches `A xHat`, `r = b - A xHat`, the residual vector, and the
+infinity norm as distinct blocks; reference comparison is conditional and
+solver-scale/threshold evidence is subordinate and closed by default.
+
+The current motion implementation is retained but deliberately unmounted from
+the Phase 2 walkthrough. Static evidence is the only current presentation
+authority pending the separate product/teaching audit and later motion-remount
+decision.
 
 The current Linear Systems Lab is an engineering-correct checkpoint, not a
 teaching-complete product. It solves the approved problem, preserves numerical
@@ -666,7 +685,6 @@ import boundaries, production build/manifest review, full verification,
 
 ## 25. Approval gate
 
-The exact next gate is an independent Teaching v2 Phase 1 trace audit. Phase 2
-static Teaching v2 integration remains unauthorized until that audit and a
-separate maintainer decision. This design does not authorize new iterative
-methods, Tutor, Glossary, push, or deployment.
+The exact next gate is an **independent Teaching v2 Phase 2 product/teaching
+audit**, followed by **Maintainer Teaching Review**. Motion remount, new
+iterative methods, Tutor, Glossary, push, and deployment remain unauthorized.

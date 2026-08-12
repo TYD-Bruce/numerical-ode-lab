@@ -1,8 +1,8 @@
 # Linear Systems Teaching v2 Implementation Plan
 
-**Status:** Maintainer-approved; Phase 0 complete with Outcome B (Hybrid
-accepted); Phase 1 implemented and locally verified; independent Phase 1
-trace audit required before Phase 2
+**Status:** Maintainer-approved; Phase 0 Outcome B (Hybrid) and Phase 1 trace
+accepted; Phase 2 static integration implemented and locally verified;
+independent Phase 2 product/teaching audit next
 
 **Date:** 2026-08-11
 
@@ -181,6 +181,13 @@ restores the previous trace while leaving the numerical algorithm/results
 unchanged.
 
 ## 5. Phase 2 — static Teaching v2 integration
+
+**Result (2026-08-12): Complete locally.** The accepted Phase 1 evidence is
+now consumed by the production Linear Systems route. Method teaching, native
+MathML mathematical objects, full before/operation/after transformations,
+explicit `P b`, ordered substitution equations, the final computed solution,
+and residual-led Diagnostics are present. Solver safeguards are subordinate
+and closed by default. Motion remains deliberately unmounted.
 
 ### Goal
 
@@ -401,6 +408,6 @@ Stop and return to the maintainer if:
 
 ## 10. Exact next gate
 
-Independent Teaching v2 Phase 1 trace audit. Do not begin Phase 2 static
-Teaching v2 integration until that audit and a separate maintainer decision.
-Do not implement iterative methods, Tutor, Glossary, push, or deploy.
+Independent Teaching v2 Phase 2 product/teaching audit, followed by Maintainer
+Teaching Review. Do not remount motion or implement iterative methods, Tutor,
+Glossary, push, or deployment before those gates.

@@ -148,7 +148,11 @@ export function mathNumber(
 ): NativeMathNode {
   const formatted = formatMathNumber(value, context);
   if (formatted.notation === "decimal") {
-    return mathNumberLiteral(formatted.text);
+    const decimal = mathNumberLiteral(formatted.text);
+    decimal.setAttribute("data-math-number", "decimal");
+    decimal.setAttribute("data-math-number-context", context);
+    decimal.setAttribute("data-display-value", formatted.text);
+    return decimal;
   }
 
   const marker = " × 10";
@@ -164,6 +168,8 @@ export function mathNumber(
     mathSuperscript(mathNumberLiteral("10"), mathNumberLiteral(exponent)),
   ]);
   scientific.setAttribute("data-math-number", "scientific");
+  scientific.setAttribute("data-math-number-context", context);
+  scientific.setAttribute("data-display-value", formatted.text);
   return scientific;
 }
 
@@ -182,7 +188,10 @@ export function createNativeMath(
     .join(" ");
   owner.setAttribute("role", "math");
   owner.setAttribute("aria-label", accessibleText);
-  if (options.dataMath) owner.dataset.math = options.dataMath;
+  if (options.dataMath) {
+    owner.dataset.math = options.dataMath;
+    owner.dataset.nativeMath = options.dataMath;
+  }
 
   const visual = mathElement("math", normalizeChildren(content));
   visual.setAttribute("aria-hidden", "true");

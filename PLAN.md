@@ -2,9 +2,9 @@
 
 ## Current status
 
-**Active milestone: Linear Systems Teaching v2 — Phase 1 trace snapshot
-extension implemented and locally verified; independent Phase 1 audit is the
-next gate.**
+**Active milestone: Linear Systems Teaching v2 — Phase 2 static integration
+implemented and locally verified; independent Phase 2 product/teaching audit
+is the next gate.**
 
 Direct maintainer browser review found that the current Linear Systems Lab is
 engineering-correct but not teaching-complete. The authoritative
@@ -20,18 +20,23 @@ spike remains DEV-only and is absent from Production assets. The design and
 plan continue to require proper authored mathematical typesetting, visible
 method/concept teaching, full trace-owned matrix transformations, explicit
 `P b`, complete triangular-solve calculations, and a residual-led Diagnostics
-hierarchy. Phase 1 now adds the bounded producer evidence: authoritative
+hierarchy. Phase 1 added the bounded producer evidence: authoritative
 `factorization_start.initialU`, complete immutable `uBefore`/`uAfter` matrices
 for every swap and elimination, and the exact complete `permutedB` already
-used by forward substitution. The current Linear Systems product UI and
-numerical behavior remain unchanged.
+used by forward substitution. The independent Phase 1 trace audit passed with
+`P0 = P1 = P2 = P3 = 0`, and the maintainer authorized Phase 2. The current
+product now consumes that evidence in a static, computation-led Teaching v2
+surface: visible method concepts, native-MathML mathematical objects, complete
+before/operation/after matrix transformations, explicit `P b`, ordered
+triangular-solve equations, and residual-led Diagnostics. Numerical behavior
+remains unchanged.
 
-Visual + Motion Language v1 remains implemented locally, but its final freeze
-and independent audit are paused because Teaching v2 changes the computation
-presentation on which row-swap and elimination replay are mounted. Linear
-Algebra Tutor work remains deferred. The exact next gate is **independent
-Teaching v2 Phase 1 trace audit**. Do not begin Phase 2 static Teaching v2
-integration without that audit and separate maintainer authorization.
+Visual + Motion Language v1 remains implemented locally, but it is deliberately
+unmounted from the new static walkthrough. Its final freeze and remount remain
+paused until the static teaching surface passes review. Linear Algebra Tutor
+work remains deferred. The exact next gate is **independent Teaching v2 Phase
+2 product/teaching audit, followed by Maintainer Teaching Review**. Do not
+begin motion remount or Tutor work before those gates.
 
 The maintainer accepts public baseline
 `b58584a5f7a1d5b09874479d3b413a063b94e061` and tree

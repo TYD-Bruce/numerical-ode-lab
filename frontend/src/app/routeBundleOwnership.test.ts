@@ -102,7 +102,15 @@ describe("public route bundle ownership", () => {
     expect(motion).not.toMatch(/localStorage|sessionStorage|history\./);
     const graph = eagerGraph("labs/linear-algebra/linearSystemsRoute.ts");
     expect(graph.has("math/structuredMath.ts")).toBe(true);
+    expect(graph.has("math/nativeMath.ts")).toBe(true);
+    expect(graph.has("labs/linear-algebra/computationMotion.ts")).toBe(false);
+    expect(graph.has("dev/mathml/mathmlCapabilityRoute.ts")).toBe(false);
+    expect(graph.has("dev/mathml/mathmlCapability.css")).toBe(false);
     expect([...graph].some((path) => path.startsWith("math/ui/"))).toBe(false);
+    const linearSystemsSource = [...graph].map(source).join("\n");
+    expect(linearSystemsSource).not.toMatch(
+      /(?:from\s+|import\()\s*["'](?:mathlive|@cortex-js\/compute-engine|katex|mathjax)/i
+    );
     expect(source("math/structuredMath.ts")).not.toMatch(
       /mathlive|compute-engine|readonlyMath|innerHTML/i
     );

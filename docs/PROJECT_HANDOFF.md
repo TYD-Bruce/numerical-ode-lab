@@ -2,6 +2,158 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
+## Linear Systems Teaching v2 Phase 2 — static integration — 2026-08-12
+
+The independent Phase 1 trace audit passed with `P0 = P1 = P2 = P3 = 0`,
+and the maintainer accepted that evidence and authorized only Phase 2. Work
+started from clean `main` at
+`797cab621c2f3eb52a02bc6c508db16aad8403df` (tree
+`9ec99ad140b6c640abe867f3576a8bb87e53936f`). Phase 0 Outcome B remains the
+presentation authority: native MathML owns authored mathematical objects and
+controlled DOM/CSS owns teaching composition. Phase 1 remains the sole source
+of matrix snapshots and `P b` evidence.
+
+### What Phase 2 completed
+
+The four-step Method -> Data -> Output -> Diagnostics workflow is preserved.
+The learner-facing product is now computation-led:
+
+- Method directly teaches the `A x = b` problem, the roles of `A`, `x`, and
+  `b`, a compact linear-system definition, direct versus iterative families,
+  Gaussian elimination with partial pivoting as the only available method,
+  Jacobi and Gauss-Seidel as planned contrast methods only, the algorithm
+  outline, and visible definitions for pivots, row operations, multipliers,
+  `P A = L U`, triangular solves, residual, and the conditioning boundary.
+- Data presents `A x = b` with the same editable matrix/vector controls,
+  presets, validation, fingerprint, and current/stale behavior.
+- Output renders a correctly accented `xHat` column vector, subordinate
+  `P/L/U` factor evidence, and a static walkthrough driven exclusively by the
+  accepted trace. The walkthrough starts at `U^(0) = A`; keeps pivot candidates
+  subordinate; shows every row swap and elimination as complete matrix before,
+  stored row operation, and complete matrix after; then presents `P b`,
+  forward substitution, backward substitution, and the final solution.
+- Diagnostics separates the residual story into trace-owned `A xHat`,
+  `r = b - A xHat`, the residual vector, and the infinity norm. Interpretation
+  explicitly preserves that a small residual is equation mismatch rather than
+  proof of a small solution error. Preset-reference comparison remains
+  conditional. Matrix scale, pivot threshold, and implementation identifier
+  details are subordinate closed disclosures.
+- Controlled pivot failure retains qualified non-proof wording and only the
+  trace evidence available through the stopping point. Editing invalidated
+  input still removes stale failure UI while preserving any prior successful
+  result under the existing session fingerprint contract.
+
+Terms are distributed by learner need rather than hidden in a new content
+system: problem roles and method families live in Method; operation-specific
+terms appear beside the computation; residual/conditioning limitations live
+in Diagnostics; implementation-level epsilon naming remains in advanced
+safeguard detail. No Glossary record or terminology framework was added.
+
+### Ownership and exact relevant paths
+
+- `frontend/src/math/nativeMath.ts` remains the small project-owned primitive
+  builder and now carries semantic numeric-display metadata used by authored
+  product formulas.
+- `frontend/src/labs/linear-algebra/linearSystemsMath.ts` composes domain
+  matrices, vectors, factors, and the computed solution from those primitives.
+- `frontend/src/labs/linear-algebra/linearSystemsTeaching.ts` owns the visible
+  Method teaching content without creating a general content framework.
+- `frontend/src/labs/linear-algebra/computationWalkthrough.ts` is the sole
+  static trace renderer for the computation sequence.
+- `frontend/src/labs/linear-algebra/linearSystemsApp.ts` retains four-step,
+  lifecycle, Output, failure, and Diagnostics ownership.
+- `frontend/src/labs/linear-algebra/linearSystems.css` owns scoped responsive
+  composition and native-MathML styling.
+- Focused evidence is in the adjacent `linearSystemsMath.test.ts`,
+  `linearSystemsTeaching.test.ts`, `computationWalkthrough.test.ts`, and
+  `linearSystemsApp.test.ts`, with session and route-boundary regression
+  coverage retained.
+- Current-state authority is synchronized in `PLAN.md`, `docs/INDEX.md`,
+  `docs/architecture/CURRENT_ARCHITECTURE.md`,
+  `docs/contracts/MATHEMATICAL_PRESENTATION.md`, the Teaching v2 design/plan,
+  this handoff, and the concise README Changelog.
+
+There is no second Gaussian-elimination path. The renderer consumes stored
+`initialU`, `uBefore`, `uAfter`, multiplier, permutation, `permutedB`,
+substitution, residual, norm, and optional reference records. It does not call
+the solver, reconstruct matrix states, reorder arithmetic, or publish rounded
+display values as numerical input.
+
+### Static motion-paused state
+
+The existing `computationMotion.ts` implementation remains in the repository,
+but the Phase 2 walkthrough no longer imports or mounts it. There are no
+Replay controls on the new surface. Static before/operation/after evidence is
+complete and authoritative at all viewport sizes. Motion remount remains a
+separate decision after teaching acceptance; no motion state enters the trace,
+session, Store, history, or persistence.
+
+### Validation and browser evidence
+
+Focused verification passes seven files / 52 tests across MathML primitives,
+domain math composition, Method teaching, walkthrough, application/session,
+and route bundle ownership. The complete suite passes 91 files / 1,220 tests.
+The four-owner-plus-Vercel import-boundary gate, frontend/numerics/contracts
+typechecks, backend/API typecheck, production build, complete `verify`, and
+`git diff --check` pass.
+
+The production build transforms 99 modules. Before Phase 2, Linear Systems
+assets were 63.17 kB raw / 18.49 kB gzip JavaScript and 16.50 kB raw /
+3.49 kB gzip CSS. After Phase 2, they are 65.77 kB raw / 19.72 kB gzip
+JavaScript and 27.47 kB raw / 5.06 kB gzip CSS. The route remains an
+independent dynamic chunk; Home/static entry ownership is unchanged, and the
+Linear Systems graph contains neither MathLive, Compute Engine, Tutor,
+Glossary, ODE, the DEV MathML fixture, nor the paused motion controller. The
+existing large deferred MathLive/Compute Engine warning remains informational.
+
+Required in-app browser review passed in the real local route for Starter
+3x3, Row swap required, a custom decimal 2x2 system, and controlled pivot
+failure at approximately 1440 x 900, 390 x 844, and 320-pixel stress widths in
+Light and Dark. It confirmed proper `xHat` accent/vector rendering, full matrix
+transformations, explicit `P b`, substitution structure, distinct Diagnostics,
+conditional reference comparison, closed safeguards, qualified failure,
+failure-edit lifecycle, keyboard-native disclosures, singular formula
+ownership, local narrow-screen containment, no page-level overflow, and no
+console warning/error. On first-time-learner self-review, the main algorithm
+sequence is understandable without opening raw arithmetic; final acceptance
+remains with the independent audit and maintainer review.
+
+### Problems and reusable resolutions
+
+- A DOM or MathML node has exactly one parent. Reusing one `P b` or norm node
+  across multiple formula owners silently moves it out of the earlier formula.
+  Resolution: use small node factories and create a fresh visual tree for every
+  accessible owner. If a formula appears incomplete later, audit node identity
+  before changing arithmetic or CSS.
+- `overflow-x: auto` can cause Chromium to compute a visible vertical scroll
+  affordance when line-height and padding are tight. Resolution: give the
+  formula a definite available width, contain horizontal overflow locally,
+  clip incidental vertical overflow, and preserve sufficient block padding.
+  Do not reduce math size or allow page-level overflow to hide the symptom.
+- The previous walkthrough coupled Replay controls to the old row-fragment
+  layout. Remounting that controller during a structural teaching rewrite
+  would mix two review gates. Resolution: retain the controller source,
+  unmount it explicitly, and verify the static evidence independently before a
+  later motion task measures the new complete-matrix owners.
+
+Reusable rule: authored math is one accessible wrapper plus one hidden visual
+MathML tree; larger responsive relationships are controlled DOM/CSS. Numerical
+state always comes from the immutable result/trace, and presentation helpers
+must be factories rather than shared mutable node instances.
+
+### Current state and next gate
+
+The Phase 2 implementation/documentation commit is the commit containing this
+section; its exact SHA/tree is reported after creation because a commit cannot
+self-reference its own hash. The worktree is clean after that commit. No
+numerical algorithm, trace-producer behavior, session contract, route,
+Architecture v1 boundary, runnable method, Tutor, Glossary, ODE, dependency,
+push, or deployment changed.
+
+The exact next gate is **independent Teaching v2 Phase 2 product/teaching
+audit**, followed by **Maintainer Teaching Review**. Do not begin Phase 3
+motion remount or Linear Algebra Tutor work before those gates.
+
 ## Linear Systems Teaching v2 Phase 1 — trace snapshots — 2026-08-11
 
 The maintainer accepted Phase 0 Outcome B and authorized only Teaching v2

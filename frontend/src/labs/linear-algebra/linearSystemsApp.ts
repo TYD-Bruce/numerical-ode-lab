@@ -4,6 +4,7 @@ import type {
   ResumeSummary,
 } from "../../app/contracts";
 import type {
+  LinearSystemResidualComponentTraceStep,
   LinearSystemSolveError,
   LinearSystemSolveSuccess,
 } from "@numerical-t-lab/numerics/linear-algebra/linear-systems-numerics";
@@ -29,23 +30,36 @@ import {
 } from "./linearSystemsSession";
 import {
   createComputationWalkthrough,
-  createNumericMatrixTable,
 } from "./computationWalkthrough";
-import {
-  cancelComputationMotions,
-  disposeComputationMotions,
-} from "./computationMotion";
 import {
   createMathNumber,
   createStructuredMath,
   formatMathNumber,
-  subscript,
   type MathNumberContext,
   type StructuredMathContent,
 } from "../../math/structuredMath";
+import {
+  createNativeMath,
+  mathIdentifier,
+  mathNumber as nativeMathNumber,
+  mathNumberLiteral,
+  mathOperator,
+  mathRow,
+  mathSubscript,
+} from "../../math/nativeMath";
+import {
+  createComputedSolution,
+  createNamedMatrix,
+  createNamedVector,
+  createPluRelation,
+  createSystemEquation,
+  multiplyNodes,
+  spokenNumber,
+  xHatNode,
+} from "./linearSystemsMath";
+import { createLinearSystemsMethodTeaching } from "./linearSystemsTeaching";
 import "./linearSystems.css";
 
-const METHOD_LABEL = "Gaussian elimination with partial pivoting";
 const activeMounts = new WeakMap<HTMLElement, object>();
 let walkthroughId = 0;
 
@@ -119,20 +133,6 @@ function numberCell(value: number, context: MathNumberContext): HTMLTableCellEle
   const cell = el("td");
   cell.append(number(value, context));
   return cell;
-}
-
-function createMetric(
-  label: Content,
-  value: number,
-  context: MathNumberContext
-): HTMLElement {
-  const metric = el("div", undefined, "ls-metric");
-  const term = el("dt");
-  appendContent(term, label);
-  const description = el("dd");
-  description.append(number(value, context));
-  metric.append(term, description);
-  return metric;
 }
 
 function createPivotTable(result: LinearSystemSolveSuccess): HTMLElement {
@@ -253,7 +253,6 @@ export function mountLinearSystemsApp(
     failureComputationExpanded = false;
     const failure = form?.querySelector<HTMLElement>("[data-solve-failure]");
     if (failure) {
-      disposeComputationMotions(failure);
       failure.remove();
     }
   }
@@ -304,46 +303,8 @@ export function mountLinearSystemsApp(
   function createMethodPanel(): HTMLElement {
     const panel = el("section", undefined, "ls-panel ls-workflow-panel ls-stage-method");
     panel.dataset.workflowPanel = "method";
-    const heading = el("h2", METHOD_LABEL);
-    heading.tabIndex = -1;
-    const sequence = el("ol", undefined, "ls-method-sequence");
-    sequence.append(
-      el("li", "Choose the largest available absolute pivot magnitude in the active column."),
-      el("li", "Use a row swap when needed, then eliminate entries below the pivot."),
-      (() => {
-        const item = el("li");
-        item.append(
-          document.createTextNode("Record the factors in the public relation "),
-          math("P A = L U", "P times A equals L times U", "factorization-relation"),
-          document.createTextNode(".")
-        );
-        return item;
-      })(),
-      (() => {
-        const item = el("li");
-        item.append(
-          document.createTextNode("Solve "),
-          math("L y = P b", "L times y equals P times b", "forward-substitution-relation"),
-          document.createTextNode(" and "),
-          math("U x̂ = y", "U times x hat equals y", "backward-substitution-relation"),
-          document.createTextNode(" with triangular substitution.")
-        );
-        return item;
-      })()
-    );
-    const boundary = el("aside", undefined, "ls-teaching-note");
-    boundary.append(
-      el("strong", "Why pivoting matters"),
-      el(
-        "p",
-        "It avoids using a smaller available entry as the active divisor. It does not guarantee accuracy or prove that a matrix is nonsingular."
-      )
-    );
     panel.append(
-      el("p", "One direct method carries this v1 Lab from the original equations to a checked computed solution.", "ls-lede"),
-      heading,
-      sequence,
-      boundary,
+      createLinearSystemsMethodTeaching(),
       button("Continue to Data", "ls-button ls-button-primary", () => goToStep("data"))
     );
     return panel;
@@ -426,9 +387,7 @@ export function mountLinearSystemsApp(
   function createEditableMatrix(): HTMLElement {
     const layout = el("div", undefined, "ls-equation-editor");
     layout.dataset.equationEditor = "true";
-    layout.append(
-      math("A x = b", "A times x equals b", "system-equation", "ls-equation-formula")
-    );
+    layout.append(createSystemEquation("ls-equation-formula"));
     const equationData = el("div", undefined, "ls-equation-data");
     equationData.dataset.equationData = "true";
     const matrixRegion = el("div", undefined, "ls-matrix-region ls-editor-region");
@@ -546,18 +505,15 @@ export function mountLinearSystemsApp(
           paragraph([
             `Computation stopped in pivot column ${rejected.column + 1}: selected magnitude `,
             number(rejected.selectedAbsoluteMagnitude, "detail"),
-            ", ",
-            math(
-              [
-                subscript("τ", "pivot"),
-                " ≈ ",
-                ...formatMathNumber(rejected.tauPivot, "threshold").parts,
-              ],
-              `tau pivot, the pivot acceptance threshold, is approximately ${formatMathNumber(rejected.tauPivot, "threshold").accessibleText}`,
-              "tau-pivot"
-            ),
-            ".",
+            `; the acceptance threshold was ${formatMathNumber(rejected.tauPivot, "threshold").text}.`,
           ])
+        );
+        panel.append(
+          el(
+            "p",
+            "The selected pivot did not clear the Lab's engineering safeguard. This does not by itself constitute a formal symbolic proof that the matrix is singular.",
+            "ls-failure-boundary"
+          )
         );
       }
       const controlledId = `ls-failure-computation-${instanceId}`;
@@ -596,7 +552,6 @@ export function mountLinearSystemsApp(
   }
 
   function run(form: HTMLFormElement): void {
-    cancelComputationMotions(app);
     const draft = currentDraftFromForm(form);
     session = replaceLinearSystemsDraft(session, draft);
     const issues = validateLinearSystemsDraft(draft);
@@ -705,7 +660,6 @@ export function mountLinearSystemsApp(
     });
     form.addEventListener("input", (event) => {
       if (!(event.target instanceof HTMLInputElement)) return;
-      cancelComputationMotions(app);
       clearFieldErrors(form);
       invalidateFailedAttempt(form);
       const previousStatus = session.resultStatus;
@@ -723,7 +677,6 @@ export function mountLinearSystemsApp(
       }
     });
     dimension.addEventListener("change", () => {
-      cancelComputationMotions(app);
       const next = resizeLinearSystemsDraft(session, Number(dimension.value));
       if (next === session) return;
       session = next;
@@ -734,7 +687,6 @@ export function mountLinearSystemsApp(
     });
     preset.addEventListener("change", () => {
       if (preset.value === "custom") return;
-      cancelComputationMotions(app);
       session = loadLinearSystemsPreset(
         session,
         preset.value as LinearSystemsPresetId
@@ -757,13 +709,7 @@ export function mountLinearSystemsApp(
       el("p", "Main answer", "ls-eyebrow"),
       heading
     );
-    const solutionLabel = math("x̂ =", "x hat equals", "computed-solution-label");
-    const solution = createNumericMatrixTable(
-      "Computed solution x hat",
-      result.xHat.map((value) => [value]),
-      solutionLabel,
-      "solution"
-    );
+    const solution = createComputedSolution(result.xHat);
     solution.classList.add("ls-solution-vector");
     header.append(solution);
     return header;
@@ -791,27 +737,18 @@ export function mountLinearSystemsApp(
     title.id = `ls-factorization-title-${instanceId}`;
     relation.append(
       title,
-      math(
-        "P A = L U",
-        "P times A equals L times U",
-        "factorization-relation",
-        "ls-factorization-equation"
-      ),
+      createPluRelation(false, "ls-factorization-equation"),
       paragraph([
         "The matrices below display rounded entries, so their numerical comparison is ",
-        math(
-          "P A ≈ L U",
-          "P times A is approximately equal to L times U",
-          "rounded-factorization"
-        ),
+        createPluRelation(true, "ls-inline-native-math"),
         ".",
       ], "ls-muted")
     );
     const factors = el("div", undefined, "ls-factor-grid");
     factors.append(
-      createNumericMatrixTable("Permutation matrix P", result.P, "P"),
-      createNumericMatrixTable("Unit lower triangular matrix L", result.L, "L"),
-      createNumericMatrixTable("Upper triangular matrix U", result.U, "U")
+      createNamedMatrix("P", result.P, "permutation matrix P", { dataMath: "factor-p" }),
+      createNamedMatrix("L", result.L, "unit lower triangular matrix L", { dataMath: "factor-l" }),
+      createNamedMatrix("U", result.U, "upper triangular matrix U", { dataMath: "factor-u" })
     );
     relation.append(factors);
     const summary = el("div", undefined, "ls-output-summary");
@@ -822,14 +759,6 @@ export function mountLinearSystemsApp(
       ),
       createPivotTable(result)
     );
-    if (result.referenceDifferenceInf !== undefined) {
-      const reference = el("p", undefined, "ls-reference-difference");
-      reference.append(
-        el("strong", "Difference from preset reference solution: "),
-        number(result.referenceDifferenceInf, "diagnostic")
-      );
-      summary.append(reference);
-    }
     panel.append(relation, summary);
 
     const computation = el("section", undefined, "ls-computation-shell");
@@ -857,6 +786,7 @@ export function mountLinearSystemsApp(
     if (computationExpanded) {
       const walkthrough = createComputationWalkthrough(result.trace, {
         headingLevel: 3,
+        result,
       });
       walkthrough.id = computationControlId;
       computation.append(walkthrough);
@@ -892,78 +822,241 @@ export function mountLinearSystemsApp(
       return panel;
     }
     if (session.resultStatus === "stale") panel.append(staleNotice());
-    panel.append(
+    const residualComponents = result.trace.steps.filter(
+      (step): step is LinearSystemResidualComponentTraceStep =>
+        step.kind === "residual_component"
+    );
+    const residualNorm = result.trace.steps.find(
+      (step) => step.kind === "residual_inf_norm"
+    );
+    const matrixScale = result.trace.steps.find(
+      (step) => step.kind === "matrix_scale"
+    );
+    const matrixVectorValues = residualComponents.map(
+      (step) => step.matrixVectorValue
+    );
+
+    const meaning = el("section", undefined, "ls-diagnostic-intro");
+    meaning.dataset.diagnosticMeaning = "true";
+    meaning.append(
+      el("p", "What the residual tells us", "ls-eyebrow"),
       el(
         "p",
-        "The residual measures how closely the computed solution satisfies the original equations."
+        "The residual measures how closely the computed solution satisfies the original equations.",
+        "ls-diagnostic-lede"
       ),
-      math(
-        "r = b − A x̂",
+      createNativeMath(
+        [
+          mathIdentifier("r"),
+          mathOperator("="),
+          mathIdentifier("b"),
+          mathOperator("−"),
+          multiplyNodes(mathIdentifier("A"), xHatNode()),
+        ],
         "r equals b minus A times x hat",
-        "residual-relation",
-        "ls-factorization-equation"
-      ),
-      math(
-        ["A x̂ → b − A x̂ → r → ", subscript("‖r‖", "∞")],
-        "A times x hat, then b minus A times x hat, then residual r, then the infinity norm of r",
-        "residual-chain",
-        "ls-residual-chain"
+        {
+          className: "ls-diagnostic-definition",
+          display: "block",
+          dataMath: "residual-relation",
+        }
       )
     );
-    const diagnostics = el("div", undefined, "ls-diagnostics-layout");
-    const residual = el("section", undefined, "ls-diagnostic-card");
+
+    const story = el("div", undefined, "ls-diagnostic-story");
+    const product = el("section", undefined, "ls-diagnostic-block");
+    product.dataset.diagnosticBlock = "matrix-vector";
+    product.append(
+      el("p", "Step 1", "ls-diagnostic-step-label"),
+      el("h3", "Compute A times x hat"),
+      createNamedVector(
+        multiplyNodes(mathIdentifier("A"), xHatNode()),
+        matrixVectorValues,
+        "A times x hat",
+        { dataMath: "matrix-vector-result", context: "diagnostic" }
+      )
+    );
+    const productDetail = el("div");
+    residualComponents.forEach((component) => {
+      const products = component.terms.map((term) =>
+        nativeMathNumber(term.product, "detail")
+      );
+      const sumNodes: Array<Element | string> = [];
+      products.forEach((term, index) => {
+        if (index > 0) sumNodes.push(mathOperator("+"));
+        sumNodes.push(term);
+      });
+      productDetail.append(
+        createNativeMath(
+          [
+            mathSubscript(
+              mathRow([multiplyNodes(mathIdentifier("A"), xHatNode())]),
+              mathNumberLiteral(String(component.row + 1))
+            ),
+            mathOperator("≈"),
+            mathRow(sumNodes),
+            mathOperator("≈"),
+            nativeMathNumber(component.matrixVectorValue, "detail"),
+          ],
+          `A times x hat component ${component.row + 1} is approximately ${spokenNumber(component.matrixVectorValue, "detail")}`,
+          { className: "ls-residual-component-math", dataMath: "matrix-vector-component" }
+        )
+      );
+    });
+    const productDetails = el("details", undefined, "ls-arithmetic-details");
+    productDetails.append(el("summary", "Show matrix-vector arithmetic"), productDetail);
+    product.append(productDetails);
+
+    const residual = el("section", undefined, "ls-diagnostic-block");
+    residual.dataset.diagnosticBlock = "residual";
     residual.append(
-      el("h3", "Residual vector"),
-      createNumericMatrixTable(
-        "Residual vector r",
-        result.residual.map((value) => [value]),
-        math("r =", "residual vector r equals", "residual-vector-label"),
-        "diagnostic"
+      el("p", "Step 2", "ls-diagnostic-step-label"),
+      el("h3", "Build the residual vector"),
+      createNativeMath(
+        [
+          mathIdentifier("r"),
+          mathOperator("="),
+          mathIdentifier("b"),
+          mathOperator("−"),
+          multiplyNodes(mathIdentifier("A"), xHatNode()),
+        ],
+        "r equals b minus A times x hat",
+        { className: "ls-residual-equation", display: "block", dataMath: "residual-relation" }
+      ),
+      createNamedVector("r", result.residual, "residual vector r", {
+        dataMath: "residual-vector",
+        context: "diagnostic",
+      })
+    );
+
+    const norm = el("section", undefined, "ls-diagnostic-block");
+    norm.dataset.diagnosticBlock = "residual-norm";
+    const normNode = mathSubscript(
+      mathRow([
+        mathOperator("‖", { fence: true, stretchy: true }),
+        mathIdentifier("r"),
+        mathOperator("‖", { fence: true, stretchy: true }),
+      ]),
+      mathIdentifier("∞")
+    );
+    norm.append(
+      el("p", "Step 3", "ls-diagnostic-step-label"),
+      el("h3", "Take the residual infinity norm"),
+      createNativeMath(
+        [
+          normNode,
+          mathOperator("="),
+          nativeMathNumber(result.residualInfNorm, "diagnostic"),
+        ],
+        `the infinity norm of r equals ${spokenNumber(result.residualInfNorm, "diagnostic")}`,
+        { className: "ls-residual-norm", display: "block", dataMath: "residual-inf-norm" }
+      ),
+      el(
+        "p",
+        `The infinity norm is the largest absolute residual component${residualNorm?.kind === "residual_inf_norm" ? `, here component ${residualNorm.selectedMaximumRow + 1}` : ""}.`
       )
     );
-    const metrics = el("section", undefined, "ls-diagnostic-card");
-    metrics.append(el("h3", "Scale and threshold"));
-    const list = el("dl", undefined, "ls-metric-grid");
-    list.append(
-      createMetric(
-        math(subscript("‖r‖", "∞"), "the infinity norm of r", "residual-inf-norm"),
-        result.residualInfNorm,
-        "diagnostic"
-      ),
-      createMetric(
-        math(subscript("‖A‖", "∞"), "the infinity norm of A", "matrix-inf-norm"),
-        result.matrixInfNorm,
-        "ordinary"
-      ),
-      createMetric(
-        math(
-          subscript("τ", "pivot"),
-          "tau pivot, the pivot acceptance threshold",
-          "tau-pivot"
-        ),
-        result.tauPivot,
-        "threshold"
-      )
-    );
-    metrics.append(list);
-    diagnostics.append(residual, metrics);
+    story.append(product, residual, norm);
+
     const limitation = el("aside", undefined, "ls-teaching-note ls-diagnostic-boundary");
+    limitation.dataset.diagnosticLimitation = "true";
     limitation.append(
-      el("strong", "What this does not establish"),
+      el("strong", "Residual is not solution error"),
       el(
         "p",
-        "A small residual does not necessarily mean a small solution error. This v1 Lab does not compute conditioning or a forward-error bound."
+        "A small residual does not necessarily mean a small solution error. Conditioning describes how sensitive the solution is to small changes in the problem data; this Lab does not compute a condition number or an error bound."
       )
     );
-    panel.append(
-      diagnostics,
-      limitation,
-      el(
-        "p",
-        `Pivot summary: ${result.rowSwapCount} row ${result.rowSwapCount === 1 ? "swap" : "swaps"}; ${result.pivots.length} accepted pivots.`,
-        "ls-muted"
-      )
-    );
+
+    panel.append(meaning, story, limitation);
+
+    if (result.referenceDifferenceInf !== undefined) {
+      const reference = el("section", undefined, "ls-reference-comparison");
+      reference.dataset.referenceComparison = "true";
+      reference.append(
+        el("h3", "Difference from preset reference solution"),
+        createNativeMath(
+          nativeMathNumber(result.referenceDifferenceInf, "diagnostic"),
+          spokenNumber(result.referenceDifferenceInf, "diagnostic"),
+          { className: "ls-reference-value", dataMath: "reference-difference" }
+        ),
+        el(
+          "p",
+          "This comparison is available only because the current inputs exactly match an approved preset fingerprint. It is not labeled as unqualified exact error."
+        )
+      );
+      panel.append(reference);
+    }
+
+    if (matrixScale?.kind === "matrix_scale") {
+      const safeguard = el("details", undefined, "ls-safeguard-details");
+      safeguard.dataset.solverSafeguardDetails = "true";
+      const summary = el("summary", "Solver safeguard details");
+      const content = el("div", undefined, "ls-safeguard-content");
+      const matrixNormNode = () =>
+        mathSubscript(
+          mathRow([
+            mathOperator("‖", { fence: true, stretchy: true }),
+            mathIdentifier("A"),
+            mathOperator("‖", { fence: true, stretchy: true }),
+          ]),
+          mathIdentifier("∞")
+        );
+      const rowSums: Array<Element | string> = [];
+      matrixScale.rows.forEach((row, index) => {
+        if (index > 0) rowSums.push(mathOperator(","));
+        rowSums.push(nativeMathNumber(row.absoluteSum, "detail"));
+      });
+      content.append(
+        el(
+          "p",
+          "The matrix infinity norm is the largest absolute row sum. The Lab uses it only to scale an engineering pivot-acceptance safeguard."
+        ),
+        createNativeMath(
+          [
+            matrixNormNode(),
+            mathOperator("="),
+            mathIdentifier("max"),
+            mathOperator("{"),
+            mathRow(rowSums),
+            mathOperator("}"),
+            mathOperator("="),
+            nativeMathNumber(matrixScale.matrixInfNorm, "ordinary"),
+          ],
+          `the infinity norm of A is the maximum row sum, ${spokenNumber(matrixScale.matrixInfNorm, "ordinary")}`,
+          { className: "ls-safeguard-formula", display: "block", dataMath: "matrix-inf-norm" }
+        ),
+        createNativeMath(
+          [
+            mathSubscript(mathIdentifier("τ"), mathIdentifier("pivot")),
+            mathOperator("="),
+            nativeMathNumber(matrixScale.pivotUlpFactor, "ordinary"),
+            mathIdentifier("ε"),
+            matrixNormNode(),
+            mathOperator("≈"),
+            nativeMathNumber(matrixScale.tauPivot, "threshold"),
+          ],
+          `tau pivot equals 64 epsilon times the infinity norm of A, approximately ${spokenNumber(matrixScale.tauPivot, "threshold")}`,
+          { className: "ls-safeguard-formula", display: "block", dataMath: "tau-pivot" }
+        ),
+        el(
+          "p",
+          `Pivot summary: ${result.rowSwapCount} row ${result.rowSwapCount === 1 ? "swap" : "swaps"}; ${result.pivots.length} accepted pivots. The threshold is a product safeguard, not a theorem proving singularity.`,
+          "ls-muted"
+        )
+      );
+      const implementation = el("details", undefined, "ls-implementation-detail");
+      implementation.dataset.implementationDetail = "true";
+      implementation.append(
+        el("summary", "Implementation detail"),
+        el(
+          "p",
+          "In this JavaScript binary64 implementation, epsilon corresponds to Number.EPSILON. This identifier is implementation detail, not the default algorithm story."
+        )
+      );
+      content.append(implementation);
+      safeguard.append(summary, content);
+      panel.append(safeguard);
+    }
     const actions = el("div", undefined, "ls-panel-actions");
     actions.append(
       button("Back to Output", "ls-button ls-button-ghost", () => goToStep("output")),
@@ -1013,7 +1106,6 @@ export function mountLinearSystemsApp(
   }
 
   function resetExperiment(): void {
-    cancelComputationMotions(app);
     const fresh = createLinearSystemsSession();
     const at = (options.now ?? Date.now)();
     closeResetDialog(false);
@@ -1045,7 +1137,6 @@ export function mountLinearSystemsApp(
 
   function openResetDialog(trigger: HTMLElement): void {
     if (activeResetDialog || disposed) return;
-    cancelComputationMotions(app);
     resetTrigger = trigger;
     const backdrop = el("div", undefined, "ls-reset-backdrop");
     backdrop.dataset.newExperimentDialog = "true";
@@ -1084,7 +1175,6 @@ export function mountLinearSystemsApp(
 
   function render(): void {
     if (!isCurrent()) return;
-    disposeComputationMotions(app);
     const root = el("div", undefined, "linear-systems-shell");
     const breadcrumb = el("nav", undefined, "ls-breadcrumb");
     breadcrumb.setAttribute("aria-label", "Breadcrumb");
@@ -1153,7 +1243,6 @@ export function mountLinearSystemsApp(
     },
     dispose(): void {
       if (disposed) return;
-      disposeComputationMotions(app);
       disposed = true;
       closeResetDialog(false);
       if (activeMounts.get(app) === token) {

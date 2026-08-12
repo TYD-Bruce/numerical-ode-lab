@@ -1,21 +1,39 @@
 import type {
   LinearSystemComputationTrace,
+  LinearSystemSolveSuccess,
   LinearSystemTraceStep,
 } from "@numerical-t-lab/numerics/linear-algebra/linear-systems-numerics";
 import type { ComputationTrace } from "@numerical-t-lab/numerics/trace/computation-trace";
 import {
-  createMathNumber,
-  createStructuredMath,
+  createNativeMath,
+  mathFraction,
+  mathIdentifier,
+  mathNumber,
+  mathNumberLiteral,
+  mathOperator,
+  mathRow,
+  mathSubscript,
+  mathSuperscript,
+  type NativeMathNode,
+} from "../../math/nativeMath";
+import {
   formatMathNumber,
-  subscript,
   type MathNumberContext,
-  type StructuredMathContent,
-  type StructuredMathPart,
 } from "../../math/structuredMath";
 import {
-  createEliminationReplayMotion,
-  createRowSwapReplayMotion,
-} from "./computationMotion";
+  createComputedSolution,
+  createNamedMatrix,
+  createNamedVector,
+  createPluRelation,
+  indexedNode,
+  multiplyNodes,
+  numericMatrixNode,
+  numericVectorNode,
+  spokenMatrix,
+  spokenNumber,
+  spokenVector,
+  xHatNode,
+} from "./linearSystemsMath";
 
 type TraceRetentionMetadata = Pick<
   ComputationTrace<object, object>,
@@ -33,7 +51,10 @@ type HeadingLevel = 3 | 4 | 5 | 6;
 
 export interface ComputationWalkthroughOptions {
   readonly headingLevel: 3 | 4;
+  readonly result?: LinearSystemSolveSuccess;
 }
+
+type Content = string | Node;
 
 function element<K extends keyof HTMLElementTagNameMap>(
   tag: K,
@@ -53,53 +74,32 @@ function heading(level: HeadingLevel, text: string): HTMLHeadingElement {
   return element("h6", text);
 }
 
-type CellContent = string | Node;
-
-function appendContent(target: Node, content: CellContent): void {
+function append(target: Node, content: Content): void {
   target.appendChild(
     typeof content === "string" ? document.createTextNode(content) : content
   );
 }
 
-function math(
-  content: StructuredMathContent,
-  accessibleText: string,
-  dataMath: string,
-  className = "ls-inline-math"
-): HTMLElement {
-  return createStructuredMath(content, accessibleText, { className, dataMath });
-}
-
-function number(value: number, context: MathNumberContext): HTMLElement {
-  return createMathNumber(value, context);
-}
-
-function numberParts(
-  value: number,
-  context: MathNumberContext
-): readonly StructuredMathPart[] {
-  return formatMathNumber(value, context).parts;
-}
-
-function numberSpeech(value: number, context: MathNumberContext): string {
-  return formatMathNumber(value, context).accessibleText;
-}
-
-function markDisplayedValue(
-  node: HTMLElement,
-  value: number,
-  context: MathNumberContext
-): HTMLElement {
-  node.dataset.displayValue = formatLinearSystemsNumber(value, context);
-  node.dataset.displayValueContext = context;
+function paragraph(
+  contents: readonly Content[],
+  className?: string
+): HTMLParagraphElement {
+  const node = element("p", undefined, className);
+  contents.forEach((content) => append(node, content));
   return node;
 }
 
-function indexed(
-  symbol: string,
-  ...indices: number[]
-): readonly StructuredMathPart[] {
-  return [subscript(symbol, indices.map((index) => index + 1).join(""))];
+function mathDisplay(
+  nodes: NativeMathNode | readonly (NativeMathNode | string)[],
+  accessibleText: string,
+  dataMath: string,
+  className = "ls-native-equation"
+): HTMLElement {
+  return createNativeMath(nodes, accessibleText, {
+    className,
+    display: "block",
+    dataMath,
+  });
 }
 
 export function formatLinearSystemsNumber(
@@ -107,108 +107,6 @@ export function formatLinearSystemsNumber(
   context: MathNumberContext = "ordinary"
 ): string {
   return formatMathNumber(value, context).text;
-}
-
-export function createNumericMatrixTable(
-  label: string,
-  matrix: readonly (readonly number[])[],
-  visibleLabel?: CellContent,
-  numberContext: MathNumberContext = "matrix"
-): HTMLElement {
-  const region = element("div", undefined, "ls-matrix-region");
-  region.setAttribute("role", "region");
-  region.setAttribute("aria-label", label);
-  region.tabIndex = 0;
-  if (visibleLabel) {
-    const visible = element("p", undefined, "ls-matrix-visible-label");
-    appendContent(visible, visibleLabel);
-    region.append(visible);
-  }
-  const table = element("table", undefined, "ls-numeric-matrix");
-  const body = document.createElement("tbody");
-  matrix.forEach((row) => {
-    const tr = document.createElement("tr");
-    row.forEach((value) => {
-      const td = document.createElement("td");
-      td.append(number(value, numberContext));
-      tr.append(td);
-    });
-    body.append(tr);
-  });
-  table.append(body);
-  region.append(table);
-  return region;
-}
-
-function createArithmeticDetails(content: HTMLElement): HTMLDetailsElement {
-  const details = element("details", undefined, "ls-arithmetic-details");
-  const summary = element("summary", "Show arithmetic");
-  details.append(summary, content);
-  return details;
-}
-
-function paragraph(
-  contents: readonly CellContent[],
-  className?: string
-): HTMLParagraphElement {
-  const node = element("p", undefined, className);
-  contents.forEach((content) => appendContent(node, content));
-  return node;
-}
-
-function joinedNumbers(
-  values: readonly number[],
-  separator: string,
-  context: MathNumberContext
-): HTMLElement {
-  const group = element("span", undefined, "ls-number-expression");
-  values.forEach((value, index) => {
-    if (index > 0) group.append(document.createTextNode(separator));
-    group.append(number(value, context));
-  });
-  return group;
-}
-
-function createDataTable(
-  label: string,
-  headers: readonly string[],
-  rows: readonly (readonly CellContent[])[],
-  selectedRowIndex?: number
-): HTMLElement {
-  const region = element("div", undefined, "ls-table-region");
-  region.setAttribute("role", "region");
-  region.setAttribute("aria-label", label);
-  region.tabIndex = 0;
-  const table = element("table", undefined, "ls-evidence-table");
-  if (headers.length > 3) table.classList.add("ls-evidence-table-stacked");
-  const head = document.createElement("thead");
-  const headRow = document.createElement("tr");
-  headers.forEach((header) => {
-    const th = document.createElement("th");
-    th.scope = "col";
-    th.textContent = header;
-    headRow.append(th);
-  });
-  head.append(headRow);
-  const body = document.createElement("tbody");
-  rows.forEach((row, rowIndex) => {
-    const tr = document.createElement("tr");
-    if (rowIndex === selectedRowIndex) {
-      tr.dataset.pivotSelected = "true";
-      tr.setAttribute("aria-current", "true");
-    }
-    row.forEach((value, index) => {
-      const cell = index === 0 ? document.createElement("th") : document.createElement("td");
-      if (cell instanceof HTMLTableCellElement && index === 0) cell.scope = "row";
-      cell.dataset.label = headers[index] ?? "Value";
-      appendContent(cell, value);
-      tr.append(cell);
-    });
-    body.append(tr);
-  });
-  table.append(head, body);
-  region.append(table);
-  return region;
 }
 
 export function createTraceRetentionNotice(
@@ -232,321 +130,254 @@ export function createTraceRetentionNotice(
   return notice;
 }
 
+function phase(
+  title: string,
+  description: string,
+  level: HeadingLevel,
+  dataPhase: string
+): HTMLElement {
+  const section = element("section", undefined, "ls-walkthrough-phase ls-v2-phase");
+  section.dataset.walkthroughPhase = dataPhase;
+  section.append(heading(level, title), element("p", description, "ls-muted"));
+  return section;
+}
+
 function stepCard(
   step: LinearSystemTraceStep,
   title: string,
-  headingLevel: HeadingLevel
+  headingLevel: HeadingLevel,
+  className = ""
 ): HTMLElement {
-  const card = element("article", undefined, "ls-computation-step");
+  const card = element(
+    "article",
+    undefined,
+    `ls-computation-step ls-v2-computation-step ${className}`.trim()
+  );
   card.dataset.traceKind = step.kind;
   card.append(heading(headingLevel, title));
   return card;
 }
 
-type ComputationMarkerState =
-  | "selected"
-  | "source"
-  | "target"
-  | "changed"
-  | "solved"
-  | "maximum";
-
 function computationMarker(
   label: string,
-  state: ComputationMarkerState
+  state: "selected" | "source" | "target" | "changed" | "solved" | "maximum"
 ): HTMLSpanElement {
-  const marker = element(
-    "span",
-    label,
-    `computation-marker is-${state}`
-  );
+  const marker = element("span", label, `computation-marker is-${state}`);
   marker.dataset.computationMarker = state;
   return marker;
 }
 
-function replayControl(kind: "row_swap" | "elimination", label: string): HTMLButtonElement {
-  const control = element("button", "Replay step", "ls-button ls-button-ghost ls-replay-step");
-  control.type = "button";
-  control.dataset.replayComputationStep = kind;
-  control.setAttribute("aria-label", label);
-  return control;
+function details(summaryText: string, content: HTMLElement): HTMLDetailsElement {
+  const disclosure = element("details", undefined, "ls-arithmetic-details");
+  disclosure.append(element("summary", summaryText), content);
+  return disclosure;
 }
 
-function motionRow(
+function dataTable(
   label: string,
-  values: readonly number[],
-  state: "source" | "target" | "changed",
-  cellEvidence = false,
-  changedIndices: ReadonlySet<number> = new Set()
+  headers: readonly string[],
+  rows: readonly (readonly Content[])[],
+  selectedRowIndex?: number
 ): HTMLElement {
-  const row = element("div", undefined, `ls-motion-row computation-marker is-${state}`);
-  row.dataset.motionRow = state;
-  row.dataset.motionValues = values.join(",");
-  row.append(element("strong", label, "ls-motion-row-label"));
-  const cells = element("span", undefined, "ls-motion-cells");
-  values.forEach((value, index) => {
-    const cell = element(
-      "span",
-      formatLinearSystemsNumber(value, "detail"),
-      "ls-motion-cell"
-    );
-    if (cellEvidence) cell.dataset.motionCell = "true";
-    if (changedIndices.has(index)) cell.classList.add("is-changed");
-    cells.append(cell);
+  const region = element("div", undefined, "ls-table-region");
+  region.setAttribute("role", "region");
+  region.setAttribute("aria-label", label);
+  region.tabIndex = 0;
+  const table = element("table", undefined, "ls-evidence-table");
+  if (headers.length > 3) table.classList.add("ls-evidence-table-stacked");
+  const head = document.createElement("thead");
+  const headRow = document.createElement("tr");
+  headers.forEach((header) => {
+    const cell = document.createElement("th");
+    cell.scope = "col";
+    cell.textContent = header;
+    headRow.append(cell);
   });
-  row.append(cells);
-  return row;
+  head.append(headRow);
+  const body = document.createElement("tbody");
+  rows.forEach((values, rowIndex) => {
+    const row = document.createElement("tr");
+    if (rowIndex === selectedRowIndex) {
+      row.dataset.pivotSelected = "true";
+      row.setAttribute("aria-current", "true");
+    }
+    values.forEach((value, columnIndex) => {
+      const cell =
+        columnIndex === 0
+          ? document.createElement("th")
+          : document.createElement("td");
+      if (columnIndex === 0) cell.scope = "row";
+      cell.dataset.label = headers[columnIndex] ?? "Value";
+      append(cell, value);
+      row.append(cell);
+    });
+    body.append(row);
+  });
+  table.append(head, body);
+  region.append(table);
+  return region;
 }
 
-function renderMatrixScale(
-  step: Extract<LinearSystemTraceStep, { kind: "matrix_scale" }>,
-  headingLevel: HeadingLevel
+function matrixState(
+  matrix: readonly (readonly number[])[],
+  state: "before" | "after",
+  accessiblePrefix: string
 ): HTMLElement {
-  const card = stepCard(step, "Matrix scale and pivot threshold", headingLevel);
-  const matrixNorm = math(
-    [subscript("‖A‖", "∞"), " ≈ ", ...numberParts(step.matrixInfNorm, "ordinary")],
-    `the infinity norm of A is approximately ${numberSpeech(step.matrixInfNorm, "ordinary")}`,
-    "matrix-inf-norm"
-  );
-  const tauPivot = markDisplayedValue(
-    math(
-      [subscript("τ", "pivot"), " ≈ ", ...numberParts(step.tauPivot, "threshold")],
-      `tau pivot, the pivot acceptance threshold, is approximately ${numberSpeech(step.tauPivot, "threshold")}`,
-      "tau-pivot"
-    ),
-    step.tauPivot,
-    "threshold"
-  );
-  card.append(
-    paragraph([
-      `Row ${step.selectedMaximumRow + 1} has the largest absolute row sum, so `,
-      matrixNorm,
-      ".",
-    ]),
-    paragraph(["The Lab scales its pivot safeguard to this matrix: ", tauPivot, "."])
-  );
-  const arithmetic = element("div");
-  const thresholdFormulas = element("div", undefined, "ls-contained-math");
-  thresholdFormulas.append(
-    math(
-      [
-        subscript("τ", "pivot"),
-        " = 64 × Number.EPSILON × ",
-        subscript("‖A‖", "∞"),
-      ],
-      "tau pivot equals 64 times Number epsilon times the infinity norm of A",
-      "tau-pivot-definition",
-      "ls-formula-line"
-    ),
-    math(
-      [
-        subscript("τ", "pivot"),
-        " ≈ ",
-        ...numberParts(step.pivotUlpFactor, "detail"),
-        " × ",
-        ...numberParts(step.numberEpsilon, "detail"),
-        " × ",
-        ...numberParts(step.matrixInfNorm, "detail"),
-        " ≈ ",
-        ...numberParts(step.tauPivot, "threshold"),
-      ],
-      `tau pivot is approximately ${numberSpeech(step.pivotUlpFactor, "detail")} times Number epsilon, ${numberSpeech(step.numberEpsilon, "detail")}, times the matrix infinity norm, ${numberSpeech(step.matrixInfNorm, "detail")}, which is approximately ${numberSpeech(step.tauPivot, "threshold")}`,
-      "tau-pivot-calculation",
-      "ls-formula-line"
+  const owner = element("div", undefined, `ls-transformation-state is-${state}`);
+  owner.dataset.matrixState = state;
+  owner.append(
+    computationMarker(state === "before" ? "Before" : "After", state === "before" ? "source" : "changed"),
+    createNativeMath(
+      numericMatrixNode(matrix, "matrix"),
+      `${accessiblePrefix}: matrix with rows ${spokenMatrix(matrix, "matrix")}`,
+      {
+        className: "ls-transformation-matrix",
+        display: "block",
+        dataMath: `matrix-${state}`,
+      }
     )
   );
-  arithmetic.append(
-    createDataTable(
-      "Matrix infinity norm row sums",
-      ["Row", "Absolute terms", "Absolute sum"],
-      step.rows.map((row) => [
-        String(row.row + 1),
-        joinedNumbers(
-          row.terms.map((term) => term.absoluteValue),
-          " + ",
-          "detail"
-        ),
-        number(row.absoluteSum, "detail"),
-      ])
-    ),
-    thresholdFormulas
+  return owner;
+}
+
+function initialFactorization(
+  step: Extract<LinearSystemTraceStep, { kind: "factorization_start" }>,
+  headingLevel: HeadingLevel
+): HTMLElement {
+  const card = stepCard(step, "Initial working matrix", headingLevel, "ls-initial-state");
+  card.append(
+    mathDisplay(
+      [
+        mathSuperscript(mathIdentifier("U"), mathNumberLiteral("0")),
+        mathOperator("="),
+        mathIdentifier("A"),
+        mathOperator("="),
+        numericMatrixNode(step.initialU, "matrix"),
+      ],
+      `U superscript 0 equals A, the matrix with rows ${spokenMatrix(step.initialU, "matrix")}`,
+      "initial-u",
+      "ls-initial-matrix"
+    )
   );
-  card.append(createArithmeticDetails(arithmetic));
   return card;
 }
 
-function renderPivotSelection(
+function pivotSelection(
   step: Extract<LinearSystemTraceStep, { kind: "pivot_selection" }>,
   headingLevel: HeadingLevel
 ): HTMLElement {
   const card = stepCard(
     step,
-    `Choose the pivot in column ${step.column + 1}`,
-    headingLevel
+    `Pivot decision for column ${step.column + 1}`,
+    headingLevel,
+    "ls-pivot-decision"
   );
-  const selectedCandidateIndex = step.candidates.findIndex(
+  const selectedIndex = step.candidates.findIndex(
     (candidate) => candidate.row === step.selectedRow
   );
-  const selectedEntry = math(
-    [
-      ...indexed("U", step.selectedRow, step.column),
-      " ≈ ",
-      ...numberParts(step.selectedPivotValue, "detail"),
-    ],
-    `U sub ${step.selectedRow + 1} ${step.column + 1} is approximately ${numberSpeech(step.selectedPivotValue, "detail")}`,
-    "matrix-entry"
-  );
-  const thresholdComparison = math(
-    [
-      ...numberParts(step.selectedAbsoluteMagnitude, "detail"),
-      step.accepted ? " > " : " ≤ ",
-      subscript("τ", "pivot"),
-      " ≈ ",
-      ...numberParts(step.tauPivot, "threshold"),
-    ],
-    `${numberSpeech(step.selectedAbsoluteMagnitude, "detail")} is ${step.accepted ? "greater than" : "less than or equal to"} tau pivot, approximately ${numberSpeech(step.tauPivot, "threshold")}`,
-    "pivot-threshold-comparison"
-  );
-  card.append(
+  const summary = element("div", undefined, "ls-pivot-summary");
+  summary.append(
+    computationMarker(`Selected row ${step.selectedRow + 1}`, "selected"),
     paragraph([
-      `Row ${step.selectedRow + 1} is the first candidate with the largest magnitude. The selected entry is `,
-      selectedEntry,
+      `Column ${step.column + 1}: row ${step.selectedRow + 1} is the first candidate with the largest absolute magnitude, `,
+      createNativeMath(
+        mathNumber(step.selectedAbsoluteMagnitude, "detail"),
+        spokenNumber(step.selectedAbsoluteMagnitude, "detail"),
+        { dataMath: "selected-pivot-magnitude" }
+      ),
       ".",
-    ]),
-    paragraph(
-      [
-        thresholdComparison,
-        step.accepted ? ", so elimination continues." : ", so computation stops here.",
-      ],
-      step.accepted ? "ls-evidence-ok" : "ls-evidence-stop"
-    )
+    ])
   );
-  const arithmetic = element("div");
-  arithmetic.append(
-    createDataTable(
+  card.append(summary);
+  if (!step.accepted) {
+    card.append(
+      paragraph(
+        [
+          "The selected pivot did not clear the Lab's acceptance threshold, so computation stopped. This safeguard result does not by itself constitute a formal symbolic proof that the matrix is singular.",
+        ],
+        "ls-evidence-stop"
+      ),
+      mathDisplay(
+        [
+          mathNumber(step.selectedAbsoluteMagnitude, "detail"),
+          mathOperator("≤"),
+          mathSubscript(mathIdentifier("τ"), mathIdentifier("pivot")),
+          mathOperator("≈"),
+          mathNumber(step.tauPivot, "threshold"),
+        ],
+        `${spokenNumber(step.selectedAbsoluteMagnitude, "detail")} is less than or equal to tau pivot, approximately ${spokenNumber(step.tauPivot, "threshold")}`,
+        "pivot-threshold-comparison",
+        "ls-safeguard-comparison"
+      )
+    );
+  }
+  const candidateDetail = element("div");
+  candidateDetail.append(
+    dataTable(
       `Pivot candidates for column ${step.column + 1}`,
-      ["Candidate row", "Candidate entry", "Absolute magnitude", "Status"],
+      ["Candidate row", "Entry", "Absolute magnitude", "Status"],
       step.candidates.map((candidate) => [
         String(candidate.row + 1),
-        math(
-          [
-            ...indexed("U", candidate.row, step.column),
-            " ≈ ",
-            ...numberParts(candidate.value, "detail"),
-          ],
-          `U sub ${candidate.row + 1} ${step.column + 1} is approximately ${numberSpeech(candidate.value, "detail")}`,
-          "matrix-entry"
-        ),
-        number(candidate.absoluteValue, "detail"),
+        formatLinearSystemsNumber(candidate.value, "detail"),
+        formatLinearSystemsNumber(candidate.absoluteValue, "detail"),
         candidate.row === step.selectedRow ? "Selected" : "Candidate",
       ]),
-      selectedCandidateIndex
+      selectedIndex
     )
   );
-  card.append(createArithmeticDetails(arithmetic));
+  card.append(details("Show pivot candidates", candidateDetail));
   return card;
 }
 
-function renderRowSwap(
+function swapOperation(
+  step: Extract<LinearSystemTraceStep, { kind: "row_swap" }>
+): HTMLElement {
+  const operation = element("div", undefined, "ls-transformation-operation");
+  operation.dataset.rowOperation = "swap";
+  const arrow = element("span", undefined, "ls-transformation-arrow");
+  arrow.setAttribute("aria-hidden", "true");
+  operation.append(
+    createNativeMath(
+      [
+        indexedNode("R", step.firstRow),
+        mathOperator("↔"),
+        indexedNode("R", step.secondRow),
+      ],
+      `row ${step.firstRow + 1} swaps with row ${step.secondRow + 1}`,
+      { className: "ls-row-operation-math", dataMath: "row-swap-operation" }
+    ),
+    arrow
+  );
+  return operation;
+}
+
+function rowSwap(
   step: Extract<LinearSystemTraceStep, { kind: "row_swap" }>,
   headingLevel: HeadingLevel
 ): HTMLElement {
   const card = stepCard(
     step,
-    `Row swap: rows ${step.firstRow + 1} and ${step.secondRow + 1}`,
-    headingLevel
+    `Swap rows ${step.firstRow + 1} and ${step.secondRow + 1}`,
+    headingLevel,
+    "ls-matrix-transformation"
+  );
+  const corridor = element("div", undefined, "ls-transformation-corridor");
+  corridor.append(
+    matrixState(step.uBefore, "before", "U before the row swap"),
+    swapOperation(step),
+    matrixState(step.uAfter, "after", "U after the row swap")
   );
   card.append(
-    math(
-      [subscript("R", String(step.firstRow + 1)), " ↔ ", subscript("R", String(step.secondRow + 1))],
-      `row ${step.firstRow + 1} swaps with row ${step.secondRow + 1}`,
-      "row-operation",
-      "ls-formula-line"
-    ),
-    element(
-      "p",
-      `The row swap is applied to U and P. Earlier multipliers in L move with their rows only in columns before column ${step.column + 1}.`
-    )
+    paragraph([
+      "The selected pivot is moved into the active row. The complete matrices below are the states used by the computation.",
+    ]),
+    corridor
   );
-  const roleLine = element("div", undefined, "ls-computation-markers");
-  roleLine.append(
-    computationMarker(`Swap row R${step.firstRow + 1}`, "source"),
-    computationMarker(`Swap row R${step.secondRow + 1}`, "target")
-  );
-  const replay = replayControl(
-    "row_swap",
-    `Replay row swap for rows ${step.firstRow + 1} and ${step.secondRow + 1}`
-  );
-  const stage = element("div", undefined, "ls-motion-stage ls-row-swap-motion");
-  stage.dataset.motionStage = "row_swap";
-  stage.hidden = true;
-  stage.setAttribute("aria-hidden", "true");
-  card.append(roleLine, replay, stage);
-  createRowSwapReplayMotion({
-    owner: card,
-    control: replay,
-    stage,
-    renderBefore: () => {
-      const rows = step.uRowsBefore.map((row) =>
-        motionRow(`Source R${row.row + 1}`, row.values, "source")
-      );
-      stage.replaceChildren(...rows);
-      return rows;
-    },
-    renderAfter: () => {
-      stage.replaceChildren();
-      if (
-        stage.dataset.motionMode === "reduced" ||
-        stage.dataset.motionMode === "compact"
-      ) {
-        const before = element("div", undefined, "ls-motion-static-state");
-        before.append(computationMarker("Before", "source"));
-        step.uRowsBefore.forEach((row) => {
-          const rendered = motionRow(
-            `Source R${row.row + 1}`,
-            row.values,
-            "source"
-          );
-          delete rendered.dataset.motionRow;
-          rendered.dataset.motionStaticRow = "before";
-          before.append(rendered);
-        });
-        stage.append(
-          before,
-          computationMarker(
-            `R${step.firstRow + 1} ↔ R${step.secondRow + 1}`,
-            "selected"
-          ),
-          computationMarker("After", "changed")
-        );
-      }
-      stage.append(
-        ...step.uRowsAfter.map((row) =>
-          motionRow(`R${row.row + 1} after`, row.values, "changed")
-        )
-      );
-      stage.append(computationMarker("Rows exchanged", "changed"));
-    },
-  });
-  const arithmetic = element("div");
-  const state = element("div", undefined, "ls-row-state-grid");
-  state.append(
-    createNumericMatrixTable(
-      "U rows before the row swap",
-      step.uRowsBefore.map((row) => row.values),
-      "U rows before"
-    ),
-    createNumericMatrixTable(
-      "U rows after the row swap",
-      step.uRowsAfter.map((row) => row.values),
-      "U rows after"
-    )
-  );
-  arithmetic.append(
-    state,
-    createDataTable(
+  const bookkeeping = element("div");
+  bookkeeping.append(
+    dataTable(
       "Permutation before and after the row swap",
-      ["State", "Permutation, shown with learner row numbers"],
+      ["State", "Row order"],
       [
         ["Before", step.permutationBefore.map((value) => value + 1).join(", ")],
         ["After", step.permutationAfter.map((value) => value + 1).join(", ")],
@@ -554,543 +385,398 @@ function renderRowSwap(
     )
   );
   if (step.lPriorColumnsBefore.some((row) => row.entries.length > 0)) {
-    arithmetic.append(
-      createDataTable(
-        "Earlier L entries moved by the row swap",
-        ["State", "Row", "L entries"],
-        [
-          ...step.lPriorColumnsBefore.map((row) => [
-            "Before",
-            String(row.row + 1),
-            paragraph(
-              row.entries.flatMap<CellContent>((entry, index) => [
-                ...(index === 0 ? [] : [", "]),
-                math(
-                  [
-                    ...indexed("L", row.row, entry.column),
-                    " ≈ ",
-                    ...numberParts(entry.value, "detail"),
-                  ],
-                  `L sub ${row.row + 1} ${entry.column + 1} is approximately ${numberSpeech(entry.value, "detail")}`,
-                  "matrix-entry"
-                ),
-              ]),
-              "ls-table-formula-group"
-            ),
-          ]),
-          ...step.lPriorColumnsAfter.map((row) => [
-            "After",
-            String(row.row + 1),
-            paragraph(
-              row.entries.flatMap<CellContent>((entry, index) => [
-                ...(index === 0 ? [] : [", "]),
-                math(
-                  [
-                    ...indexed("L", row.row, entry.column),
-                    " ≈ ",
-                    ...numberParts(entry.value, "detail"),
-                  ],
-                  `L sub ${row.row + 1} ${entry.column + 1} is approximately ${numberSpeech(entry.value, "detail")}`,
-                  "matrix-entry"
-                ),
-              ]),
-              "ls-table-formula-group"
-            ),
-          ]),
-        ]
+    bookkeeping.append(
+      element(
+        "p",
+        "Previously recorded L entries move with the swapped rows only in columns already completed.",
+        "ls-muted"
       )
     );
   }
-  card.append(createArithmeticDetails(arithmetic));
+  card.append(details("Show row-swap bookkeeping", bookkeeping));
   return card;
 }
 
-function renderElimination(
+function eliminationOperation(
+  step: Extract<LinearSystemTraceStep, { kind: "elimination" }>
+): HTMLElement {
+  const operation = element("div", undefined, "ls-transformation-operation");
+  operation.dataset.rowOperation = "elimination";
+  const multiplier = mathDisplay(
+    [
+      indexedNode("m", step.targetRow, step.column),
+      mathOperator("="),
+      mathFraction(
+        indexedNode("U", step.targetRow, step.column),
+        indexedNode("U", step.pivotRow, step.column)
+      ),
+      mathOperator("≈"),
+      mathFraction(
+        mathNumber(step.targetColumnValueBefore, "detail"),
+        mathNumber(step.pivotValue, "detail")
+      ),
+      mathOperator("≈"),
+      mathNumber(step.multiplier, "multiplier"),
+    ],
+    `m sub ${step.targetRow + 1} ${step.column + 1} equals U sub ${step.targetRow + 1} ${step.column + 1} divided by U sub ${step.pivotRow + 1} ${step.column + 1}, approximately ${spokenNumber(step.multiplier, "multiplier")}`,
+    "elimination-multiplier",
+    "ls-multiplier-equation"
+  );
+  const rowExpression = mathDisplay(
+    [
+      indexedNode("R", step.targetRow),
+      mathOperator("−"),
+      multiplyNodes(
+        mathRow([
+          mathOperator("("),
+          mathNumber(step.multiplier, "multiplier"),
+          mathOperator(")"),
+        ]),
+        indexedNode("R", step.pivotRow)
+      ),
+      mathOperator("→"),
+      indexedNode("R", step.targetRow),
+    ],
+    `row ${step.targetRow + 1} minus ${spokenNumber(step.multiplier, "multiplier")} times row ${step.pivotRow + 1} produces updated row ${step.targetRow + 1}`,
+    "row-operation",
+    "ls-row-operation-math"
+  );
+  const arrow = element("span", undefined, "ls-transformation-arrow");
+  arrow.setAttribute("aria-hidden", "true");
+  operation.append(multiplier, rowExpression, arrow);
+  return operation;
+}
+
+function elimination(
   step: Extract<LinearSystemTraceStep, { kind: "elimination" }>,
   headingLevel: HeadingLevel
 ): HTMLElement {
-  const card = stepCard(step, `Eliminate row ${step.targetRow + 1}`, headingLevel);
-  const multiplier = math(
-    [
-      ...indexed("m", step.targetRow, step.column),
-      " = ",
-      ...indexed("U", step.targetRow, step.column),
-      " / ",
-      ...indexed("U", step.pivotRow, step.column),
-      " ≈ ",
-      ...numberParts(step.multiplier, "multiplier"),
-    ],
-    `m sub ${step.targetRow + 1} ${step.column + 1}, the elimination multiplier, equals U sub ${step.targetRow + 1} ${step.column + 1} divided by U sub ${step.pivotRow + 1} ${step.column + 1}, approximately ${numberSpeech(step.multiplier, "multiplier")}`,
-    "multiplier",
-    "ls-formula-line"
+  const card = stepCard(
+    step,
+    `Eliminate the entry in row ${step.targetRow + 1}, column ${step.column + 1}`,
+    headingLevel,
+    "ls-matrix-transformation"
   );
-  const rowOperation = math(
-    [
-      subscript("R", String(step.targetRow + 1)),
-      " ← ",
-      subscript("R", String(step.targetRow + 1)),
-      " − ",
-      ...indexed("m", step.targetRow, step.column),
-      subscript("R", String(step.pivotRow + 1)),
-    ],
-    `row ${step.targetRow + 1} becomes row ${step.targetRow + 1} minus m sub ${step.targetRow + 1} ${step.column + 1} times row ${step.pivotRow + 1}`,
-    "row-operation",
-    "ls-formula-line"
-  );
-  card.append(
-    multiplier,
-    rowOperation,
-    createNumericMatrixTable(
-      `Updated U row ${step.targetRow + 1}`,
-      [step.targetRowAfter],
-      `Updated row ${step.targetRow + 1}`
-    )
-  );
-  const roleLine = element("div", undefined, "ls-computation-markers");
-  roleLine.append(
+  const markers = element("div", undefined, "ls-computation-markers");
+  markers.append(
     computationMarker(`Pivot row R${step.pivotRow + 1}`, "source"),
     computationMarker(`Target row R${step.targetRow + 1}`, "target")
   );
-  const replay = replayControl(
-    "elimination",
-    `Replay elimination of row ${step.targetRow + 1} using pivot row ${step.pivotRow + 1}`
+  const corridor = element("div", undefined, "ls-transformation-corridor");
+  corridor.append(
+    matrixState(step.uBefore, "before", "U before elimination"),
+    eliminationOperation(step),
+    matrixState(step.uAfter, "after", "U after elimination")
   );
-  const stage = element("div", undefined, "ls-motion-stage ls-elimination-motion");
-  stage.dataset.motionStage = "elimination";
-  stage.hidden = true;
-  stage.setAttribute("aria-hidden", "true");
-  const renderMotionRows = (after: boolean): void => {
-    const changedIndices = new Set<number>();
-    if (after) {
-      step.targetRowBefore.forEach((value, index) => {
-        if (!Object.is(value, step.targetRowAfter[index])) changedIndices.add(index);
-      });
-    }
-    const target = motionRow(
-      after ? `Changed R${step.targetRow + 1}` : `Target R${step.targetRow + 1}`,
-      after ? step.targetRowAfter : step.targetRowBefore,
-      after ? "changed" : "target",
-      true,
-      changedIndices
-    );
-    target.dataset.motionRow = "target";
-    stage.replaceChildren(
-      motionRow(`Pivot R${step.pivotRow + 1}`, step.pivotRowUsed, "source"),
-      computationMarker(
-        `Apply R${step.targetRow + 1} ← R${step.targetRow + 1} − m R${step.pivotRow + 1}`,
-        "selected"
-      ),
-      target
-    );
-    if (after) stage.append(computationMarker("Changed values", "changed"));
-  };
-  card.append(roleLine, replay, stage);
-  createEliminationReplayMotion({
-    owner: card,
-    control: replay,
-    stage,
-    renderBefore: () => renderMotionRows(false),
-    renderAfter: () => renderMotionRows(true),
-  });
+  card.append(markers, corridor);
   const arithmetic = element("div");
   arithmetic.append(
-    math(
-      [
-        ...numberParts(step.targetColumnValueBefore, "detail"),
-        " ÷ ",
-        ...numberParts(step.pivotValue, "detail"),
-        " ≈ ",
-        ...numberParts(step.multiplier, "multiplier"),
-      ],
-      `${numberSpeech(step.targetColumnValueBefore, "detail")} divided by ${numberSpeech(step.pivotValue, "detail")} is approximately ${numberSpeech(step.multiplier, "multiplier")}`,
-      "elimination-arithmetic",
-      "ls-formula-line"
-    ),
-    createDataTable(
-      `Row values for eliminating row ${step.targetRow + 1}`,
+    dataTable(
+      `Trace values for eliminating row ${step.targetRow + 1}`,
       ["Evidence", ...step.targetRowBefore.map((_, index) => `Column ${index + 1}`)],
       [
-        ["Target before", ...step.targetRowBefore.map((value) => number(value, "detail"))],
-        ["Pivot row used", ...step.pivotRowUsed.map((value) => number(value, "detail"))],
-        ["Target after", ...step.targetRowAfter.map((value) => number(value, "detail"))],
+        ["Target before", ...step.targetRowBefore.map((value) => formatLinearSystemsNumber(value, "detail"))],
+        ["Pivot row used", ...step.pivotRowUsed.map((value) => formatLinearSystemsNumber(value, "detail"))],
+        ["Target after", ...step.targetRowAfter.map((value) => formatLinearSystemsNumber(value, "detail"))],
       ]
     )
   );
-  arithmetic.dataset.roundedArithmetic = "true";
-  card.append(createArithmeticDetails(arithmetic));
+  card.append(details("Show row arithmetic", arithmetic));
   return card;
 }
 
-function renderFactorizationComplete(
+function factorizationComplete(
   step: Extract<LinearSystemTraceStep, { kind: "factorization_complete" }>,
   headingLevel: HeadingLevel
 ): HTMLElement {
-  const card = stepCard(step, "Factorization complete", headingLevel);
+  const card = stepCard(step, "Factorization complete", headingLevel, "ls-factorization-complete");
+  const factors = element("div", undefined, "ls-factor-grid ls-native-factor-grid");
+  factors.append(
+    createNamedMatrix("P", step.P, "permutation matrix P", { dataMath: "factor-p" }),
+    createNamedMatrix("L", step.L, "unit lower triangular matrix L", { dataMath: "factor-l" }),
+    createNamedMatrix("U", step.U, "upper triangular matrix U", { dataMath: "factor-u" })
+  );
   card.append(
-    paragraph([
-      "The computed factors use the public relation ",
-      math("P A = L U", "P times A equals L times U", "factorization-relation"),
-      ".",
-    ]),
-    paragraph([
-      "For the displayed rounded entries, ",
-      math("P A ≈ L U", "P times A is approximately equal to L times U", "rounded-factorization"),
-      ".",
-    ]),
+    createPluRelation(false, "ls-factorization-equation"),
     element(
       "p",
-      `Permutation order: ${step.permutation.map((row) => row + 1).join(", ")}.`,
-      "ls-muted"
-    )
+      "The row operations produced upper triangular U; P records row order and L records the elimination multipliers."
+    ),
+    factors
   );
-  const arithmetic = element("div", undefined, "ls-factor-grid");
-  arithmetic.append(
-    createNumericMatrixTable("Permutation matrix P", step.P, "P"),
-    createNumericMatrixTable("Lower triangular matrix L", step.L, "L"),
-    createNumericMatrixTable("Upper triangular matrix U", step.U, "U")
-  );
-  card.append(createArithmeticDetails(arithmetic));
   return card;
 }
 
-function renderSubstitution(
-  step:
-    | Extract<LinearSystemTraceStep, { kind: "forward_substitution" }>
-    | Extract<LinearSystemTraceStep, { kind: "backward_substitution" }>,
+function rhsPermutation(
+  step: Extract<LinearSystemTraceStep, { kind: "right_hand_side_permutation" }>,
+  headingLevel: HeadingLevel
+): HTMLElement {
+  const card = stepCard(step, "Apply the same row order to b", headingLevel, "ls-rhs-permutation");
+  const pb = (): NativeMathNode =>
+    multiplyNodes(mathIdentifier("P"), mathIdentifier("b"));
+  const equations = element("div", undefined, "ls-rhs-equations");
+  equations.append(
+    createNamedVector(pb(), step.permutedB, "P times b", {
+      dataMath: "permuted-rhs",
+      context: "matrix",
+    }),
+    mathDisplay(
+      [
+        multiplyNodes(multiplyNodes(mathIdentifier("L"), mathIdentifier("U")), xHatNode()),
+        mathOperator("="),
+        pb(),
+      ],
+      "L U times x hat equals P times b",
+      "permuted-system"
+    ),
+    mathDisplay(
+      [
+        multiplyNodes(mathIdentifier("L"), mathIdentifier("y")),
+        mathOperator("="),
+        pb(),
+      ],
+      "L times y equals P times b",
+      "forward-substitution-relation"
+    )
+  );
+  card.append(
+    element(
+      "p",
+      "Because the factorization is P A = L U, the transformed right-hand side is P b. Defining U x hat = y leaves the lower-triangular system L y = P b."
+    ),
+    equations,
+    details(
+      "Show permutation order",
+      element(
+        "p",
+        `Original row order ${step.originalB.map((_, index) => index + 1).join(", ")} becomes ${step.permutation.map((value) => value + 1).join(", ")}.`
+      )
+    )
+  );
+  return card;
+}
+
+type SubstitutionStep =
+  | Extract<LinearSystemTraceStep, { kind: "forward_substitution" }>
+  | Extract<LinearSystemTraceStep, { kind: "backward_substitution" }>;
+
+function symbolicSubstitutionNumerator(
+  step: SubstitutionStep,
+  forward: boolean
+): NativeMathNode {
+  let expression: NativeMathNode = forward
+    ? mathSubscript(
+        mathRow([mathIdentifier("P"), mathOperator("⁢"), mathIdentifier("b")]),
+        mathNumberLiteral(String(step.row + 1))
+      )
+    : indexedNode("y", step.row);
+  for (const contribution of step.contributions) {
+    const known = forward
+      ? indexedNode("y", contribution.column)
+      : indexedNode(xHatNode(), contribution.column);
+    expression = mathRow([
+      mathOperator("("),
+      expression,
+      mathOperator("−"),
+      multiplyNodes(
+        indexedNode(forward ? "L" : "U", step.row, contribution.column),
+        known
+      ),
+      mathOperator(")"),
+    ]);
+  }
+  return expression;
+}
+
+function numericSubstitutionNumerator(step: SubstitutionStep): NativeMathNode {
+  let expression: NativeMathNode = mathNumber(step.rightHandSideValue, "detail");
+  for (const contribution of step.contributions) {
+    expression = mathRow([
+      mathOperator("("),
+      expression,
+      mathOperator("−"),
+      mathOperator("("),
+      mathNumber(contribution.coefficient, "detail"),
+      mathOperator("·"),
+      mathNumber(contribution.knownValue, "detail"),
+      mathOperator(")"),
+      mathOperator(")"),
+    ]);
+  }
+  return expression;
+}
+
+function substitution(
+  step: SubstitutionStep,
   headingLevel: HeadingLevel
 ): HTMLElement {
   const forward = step.kind === "forward_substitution";
   const result = forward ? step.resultingY : step.resultingXHat;
+  const symbol = forward ? indexedNode("y", step.row) : indexedNode(xHatNode(), step.row);
+  const diagonal = indexedNode(forward ? "L" : "U", step.row, step.row);
   const card = stepCard(
     step,
-    `${forward ? "Forward" : "Backward"} substitution, component ${step.row + 1}`,
-    headingLevel
+    `${forward ? "Solve" : "Solve"} ${forward ? `y${step.row + 1}` : `x hat ${step.row + 1}`}`,
+    headingLevel,
+    "ls-substitution-step"
   );
-  const rhsSymbol: readonly StructuredMathPart[] = forward
-    ? [subscript("(P b)", String(step.row + 1))]
-    : indexed("y", step.row);
-  const diagonalSymbol = indexed(forward ? "L" : "U", step.row, step.row);
-  const resultSymbol = indexed(forward ? "y" : "x̂", step.row);
-  const chain = element("ol", undefined, "ls-substitution-chain");
-  const rhs = element("li");
-  rhs.dataset.substitutionStage = "rhs";
-  rhs.append(
-    math(
-      [...rhsSymbol, " ≈ ", ...numberParts(step.rightHandSideValue, "detail")],
-      `${forward ? `P b component ${step.row + 1}` : `y sub ${step.row + 1}`} is approximately ${numberSpeech(step.rightHandSideValue, "detail")}`,
-      forward ? "permuted-rhs-component" : "y-component"
-    )
-  );
-  const contributions = element("li");
-  contributions.dataset.substitutionStage = "contributions";
-  if (step.accumulatedKnownTermSum !== undefined) {
-    contributions.append(
-      math(
-        [
-          "known contribution sum ≈ ",
-          ...numberParts(step.accumulatedKnownTermSum, "detail"),
-        ],
-        `the known contribution sum is approximately ${numberSpeech(step.accumulatedKnownTermSum, "detail")}`,
-        "known-contribution-sum"
-      )
-    );
-  } else {
-    contributions.textContent = `${step.contributions.length} known contributions are applied in computation order.`;
-  }
-  const numerator = element("li");
-  numerator.dataset.substitutionStage = "numerator";
-  numerator.append(
-    math(
-      ["numerator ≈ ", ...numberParts(step.numeratorBeforeDivision, "detail")],
-      `the numerator is approximately ${numberSpeech(step.numeratorBeforeDivision, "detail")}`,
-      "substitution-numerator"
-    )
-  );
-  const diagonal = element("li");
-  diagonal.dataset.substitutionStage = "diagonal";
-  diagonal.append(
-    math(
-      [...diagonalSymbol, " ≈ ", ...numberParts(step.diagonalValue, "detail")],
-      `${forward ? "L" : "U"} sub ${step.row + 1} ${step.row + 1} is approximately ${numberSpeech(step.diagonalValue, "detail")}`,
-      "matrix-entry"
-    )
-  );
-  const solved = element("li");
-  solved.dataset.substitutionStage = "result";
-  solved.append(
-    markDisplayedValue(
-      math(
-      [...resultSymbol, " ≈ ", ...numberParts(result, "solution")],
-      `${forward ? "y" : "x hat"} sub ${step.row + 1} is approximately ${numberSpeech(result, "solution")}`,
-      "solution-component"
+  card.dataset.substitutionRow = String(step.row);
+  const equation = mathDisplay(
+    [
+      symbol,
+      mathOperator("="),
+      mathFraction(symbolicSubstitutionNumerator(step, forward), diagonal),
+      mathOperator("≈"),
+      mathFraction(
+        numericSubstitutionNumerator(step),
+        mathNumber(step.diagonalValue, "detail")
       ),
-      result,
-      "solution"
-    )
+      mathOperator("≈"),
+      mathNumber(result, "solution"),
+    ],
+    `${forward ? "y" : "x hat"} component ${step.row + 1} is computed from the stored right-hand side and known contributions, giving ${spokenNumber(result, "solution")}`,
+    forward ? "forward-substitution-calculation" : "backward-substitution-calculation",
+    "ls-substitution-equation"
   );
-  chain.append(rhs, contributions, numerator, diagonal, solved);
-  card.append(chain);
+  const numerator = paragraph(
+    [
+      "Stored sequential numerator: ",
+      createNativeMath(
+        mathNumber(step.numeratorBeforeDivision, "detail"),
+        spokenNumber(step.numeratorBeforeDivision, "detail"),
+        { dataMath: "substitution-numerator" }
+      ),
+      ".",
+    ],
+    "ls-substitution-numerator"
+  );
+  const solved = computationMarker(
+    forward ? `Solved y${step.row + 1} top to bottom` : `Solved x hat ${step.row + 1} bottom to top`,
+    "solved"
+  );
+  card.append(equation, numerator, solved);
+
   const arithmetic = element("div");
+  const rows = step.contributions.map((contribution, order) => {
+    const orderCell = element("span", String(order + 1));
+    orderCell.dataset.contributionColumn = String(contribution.column);
+    return [
+      orderCell,
+      String(contribution.column + 1),
+      formatLinearSystemsNumber(contribution.coefficient, "detail"),
+      formatLinearSystemsNumber(contribution.knownValue, "detail"),
+      formatLinearSystemsNumber(contribution.product, "detail"),
+      formatLinearSystemsNumber(contribution.accumulatorAfterSubtraction, "detail"),
+    ];
+  });
   arithmetic.append(
-    createDataTable(
+    dataTable(
       `${forward ? "Forward" : "Backward"} substitution contributions for row ${step.row + 1}`,
-      ["Known component", "Coefficient", "Known value", "Product", "Accumulator after subtraction"],
-      step.contributions.map((contribution) => [
-        math(
-          indexed(forward ? "y" : "x̂", contribution.column),
-          `${forward ? "y" : "x hat"} sub ${contribution.column + 1}`,
-          "solution-component"
-        ),
-        math(
-          [
-            ...indexed(forward ? "L" : "U", step.row, contribution.column),
-            " ≈ ",
-            ...numberParts(contribution.coefficient, "detail"),
-          ],
-          `${forward ? "L" : "U"} sub ${step.row + 1} ${contribution.column + 1} is approximately ${numberSpeech(contribution.coefficient, "detail")}`,
-          "matrix-entry"
-        ),
-        number(contribution.knownValue, "detail"),
-        number(contribution.product, "detail"),
-        number(contribution.accumulatorAfterSubtraction, "detail"),
-      ])
+      ["Order", "Known component", "Coefficient", "Known value", "Product", "Accumulator"],
+      rows
     )
   );
   if (step.accumulatedKnownTermSum !== undefined) {
-    const accumulated = paragraph(
-      [
-        "Accumulated known-term sum: ",
-        number(step.accumulatedKnownTermSum, "detail"),
-        ".",
-      ],
-      "ls-formula-line"
-    );
-    accumulated.dataset.accumulatedKnownTermSum = "true";
-    arithmetic.append(accumulated);
+    const sum = element("p", undefined, "ls-muted");
+    sum.dataset.accumulatedKnownTermSum = "true";
+    sum.textContent = `Accumulated known-term sum: ${formatLinearSystemsNumber(step.accumulatedKnownTermSum, "detail")}.`;
+    arithmetic.append(sum);
   }
-  arithmetic.append(
-    math(
-      [
-        ...numberParts(step.numeratorBeforeDivision, "detail"),
-        " ÷ ",
-        ...numberParts(step.diagonalValue, "detail"),
-        " ≈ ",
-        ...numberParts(result, "solution"),
-      ],
-      `${numberSpeech(step.numeratorBeforeDivision, "detail")} divided by ${numberSpeech(step.diagonalValue, "detail")} is approximately ${numberSpeech(result, "solution")}`,
-      "substitution-arithmetic",
-      "ls-formula-line"
-    )
-  );
-  card.append(createArithmeticDetails(arithmetic));
+  card.append(details("Show arithmetic", arithmetic));
   return card;
 }
 
-function renderResidualComponent(
-  step: Extract<LinearSystemTraceStep, { kind: "residual_component" }>,
+function residualPhase(
+  components: readonly Extract<LinearSystemTraceStep, { kind: "residual_component" }>[],
+  norm: Extract<LinearSystemTraceStep, { kind: "residual_inf_norm" }> | undefined,
   headingLevel: HeadingLevel
-): HTMLElement {
-  const card = stepCard(
-    step,
-    `Residual check, component ${step.row + 1}`,
-    headingLevel
-  );
+): HTMLElement | undefined {
+  if (components.length === 0 || !norm) return undefined;
+  const card = stepCard(norm, "Check the original equations", headingLevel, "ls-residual-walkthrough");
+  card.dataset.traceKind = "residual_check";
+  const matrixVector = components.map((step) => step.matrixVectorValue);
+  const residual = components.map((step) => step.residualComponent);
   card.append(
-    math(
-      [
-        ...indexed("r", step.row),
-        " = ",
-        ...indexed("b", step.row),
-        " − ",
-        subscript("(A x̂)", String(step.row + 1)),
-      ],
-      `r sub ${step.row + 1} equals b sub ${step.row + 1} minus A times x hat component ${step.row + 1}`,
-      "residual-component-definition",
-      "ls-formula-line"
+    createNamedVector(
+      multiplyNodes(mathIdentifier("A"), xHatNode()),
+      matrixVector,
+      "A times x hat",
+      { dataMath: "matrix-vector-result", context: "diagnostic" }
     ),
-    math(
+    mathDisplay(
       [
-        ...indexed("r", step.row),
-        " ≈ ",
-        ...numberParts(step.residualComponent, "diagnostic"),
+        mathIdentifier("r"),
+        mathOperator("="),
+        mathIdentifier("b"),
+        mathOperator("−"),
+        multiplyNodes(mathIdentifier("A"), xHatNode()),
+        mathOperator("="),
+        numericVectorNode(residual, "diagnostic"),
       ],
-      `r sub ${step.row + 1} is approximately ${numberSpeech(step.residualComponent, "diagnostic")}`,
-      "residual-component",
-      "ls-formula-line"
+      `r equals b minus A times x hat, the column vector ${spokenVector(residual, "diagnostic")}`,
+      "residual-vector",
+      "ls-residual-equation"
+    ),
+    mathDisplay(
+      [
+        mathSubscript(
+          mathRow([
+            mathOperator("‖", { fence: true, stretchy: true }),
+            mathIdentifier("r"),
+            mathOperator("‖", { fence: true, stretchy: true }),
+          ]),
+          mathIdentifier("∞")
+        ),
+        mathOperator("="),
+        mathNumber(norm.residualInfNorm, "diagnostic"),
+      ],
+      `the infinity norm of r equals ${spokenNumber(norm.residualInfNorm, "diagnostic")}`,
+      "residual-inf-norm",
+      "ls-residual-norm-equation"
+    ),
+    element(
+      "p",
+      "The residual measures equation mismatch. A small residual does not necessarily mean a small solution error.",
+      "ls-diagnostic-limitation"
     )
   );
   const arithmetic = element("div");
-  arithmetic.append(
-    paragraph([
-      math(
-        [
-          subscript("(A x̂)", String(step.row + 1)),
-          " ≈ ",
-          ...numberParts(step.matrixVectorValue, "detail"),
-        ],
-        `A times x hat component ${step.row + 1} is approximately ${numberSpeech(step.matrixVectorValue, "detail")}`,
-        "matrix-vector-component"
-      ),
-      "; ",
-      math(
-        [
-          ...indexed("b", step.row),
-          " ≈ ",
-          ...numberParts(step.originalBValue, "detail"),
-        ],
-        `b sub ${step.row + 1} is approximately ${numberSpeech(step.originalBValue, "detail")}`,
-        "rhs-component"
-      ),
-      ".",
-    ]),
-    createDataTable(
-        `Residual products for row ${step.row + 1}`,
-        ["Column", "A entry", "Computed component", "Product", "Accumulated A x̂"],
+  components.forEach((step) => {
+    arithmetic.append(
+      dataTable(
+        `A times x hat products for row ${step.row + 1}`,
+        ["Column", "A entry", "x hat component", "Product", "Accumulated value"],
         step.terms.map((term) => [
           String(term.column + 1),
-          math(
-            [
-              ...indexed("A", step.row, term.column),
-              " ≈ ",
-              ...numberParts(term.coefficient, "detail"),
-            ],
-            `A sub ${step.row + 1} ${term.column + 1} is approximately ${numberSpeech(term.coefficient, "detail")}`,
-            "matrix-entry"
-          ),
-          math(
-            [
-              ...indexed("x̂", term.column),
-              " ≈ ",
-              ...numberParts(term.solutionValue, "reference_detail"),
-            ],
-            `x hat sub ${term.column + 1} is approximately ${numberSpeech(term.solutionValue, "reference_detail")}`,
-            "solution-component"
-          ),
-          number(term.product, "detail"),
-          number(term.accumulatedMatrixVectorValue, "detail"),
+          formatLinearSystemsNumber(term.coefficient, "detail"),
+          formatLinearSystemsNumber(term.solutionValue, "reference_detail"),
+          formatLinearSystemsNumber(term.product, "detail"),
+          formatLinearSystemsNumber(term.accumulatedMatrixVectorValue, "detail"),
         ])
       )
-  );
-  card.append(createArithmeticDetails(arithmetic));
+    );
+  });
+  card.append(details("Show residual arithmetic", arithmetic));
   return card;
 }
 
-function renderResidualNorm(
-  step: Extract<LinearSystemTraceStep, { kind: "residual_inf_norm" }>,
-  headingLevel: HeadingLevel
-): HTMLElement {
-  const card = stepCard(step, "Take the residual infinity norm", headingLevel);
-  const norm = markDisplayedValue(
-    math(
-      [subscript("‖r‖", "∞"), " ≈ ", ...numberParts(step.residualInfNorm, "diagnostic")],
-      `the infinity norm of r is approximately ${numberSpeech(step.residualInfNorm, "diagnostic")}`,
-      "residual-inf-norm"
-    ),
-    step.residualInfNorm,
-    "diagnostic"
-  );
-  card.append(
-    paragraph([
-      `Component ${step.selectedMaximumRow + 1} has the largest absolute residual, so `,
-      norm,
-      ".",
-    ]),
-    createDataTable(
-      "Residual infinity norm components",
-      ["Row", "Residual", "Absolute value"],
-      step.components.map((component) => [
-        String(component.row + 1),
-        number(component.value, "diagnostic"),
-        number(component.absoluteValue, "diagnostic"),
-      ])
-    )
-  );
-  return card;
-}
-
-function renderPresetReference(
+function presetReference(
   step: Extract<LinearSystemTraceStep, { kind: "preset_reference_difference" }>,
   headingLevel: HeadingLevel
 ): HTMLElement {
-  const card = stepCard(
-    step,
-    "Compare with the preset reference solution",
-    headingLevel
-  );
+  const card = stepCard(step, "Preset reference comparison", headingLevel, "ls-reference-step");
   card.append(
     paragraph([
       "Difference from preset reference solution: ",
-      number(step.referenceDifferenceInf, "diagnostic"),
-      `. The largest component difference occurs at component ${step.selectedMaximumIndex + 1}.`,
+      createNativeMath(
+        mathNumber(step.referenceDifferenceInf, "diagnostic"),
+        spokenNumber(step.referenceDifferenceInf, "diagnostic"),
+        { dataMath: "reference-difference" }
+      ),
+      ". This is a qualified preset comparison, not an unqualified exact error.",
     ])
   );
-  card.append(
-    createArithmeticDetails(
-      createDataTable(
-        "Preset reference component differences",
-        ["Component", "Computed x̂", "Preset reference", "Difference", "Absolute difference"],
-        step.components.map((component) => [
-          String(component.index + 1),
-          math(
-            [
-              ...indexed("x̂", component.index),
-              " ≈ ",
-              ...numberParts(component.computedValue, "reference_detail"),
-            ],
-            `x hat sub ${component.index + 1} is approximately ${numberSpeech(component.computedValue, "reference_detail")}`,
-            "solution-component"
-          ),
-          number(component.referenceValue, "reference_detail"),
-          number(component.difference, "diagnostic"),
-          number(component.absoluteDifference, "diagnostic"),
-        ])
-      )
-    )
-  );
   return card;
-}
-
-function phase(
-  title: string,
-  description: readonly CellContent[],
-  steps: readonly LinearSystemTraceStep[],
-  headingLevel: HeadingLevel,
-  stepHeadingLevel: HeadingLevel
-): HTMLElement | undefined {
-  if (steps.length === 0) return undefined;
-  const section = element("section", undefined, "ls-walkthrough-phase");
-  section.append(heading(headingLevel, title), paragraph(description, "ls-muted"));
-  for (const step of steps) {
-    if (step.kind === "matrix_scale") {
-      section.append(renderMatrixScale(step, stepHeadingLevel));
-    }
-    if (step.kind === "pivot_selection") {
-      section.append(renderPivotSelection(step, stepHeadingLevel));
-    }
-    if (step.kind === "row_swap") section.append(renderRowSwap(step, stepHeadingLevel));
-    if (step.kind === "elimination") {
-      section.append(renderElimination(step, stepHeadingLevel));
-    }
-    if (step.kind === "factorization_complete") {
-      section.append(renderFactorizationComplete(step, stepHeadingLevel));
-    }
-    if (step.kind === "forward_substitution") {
-      section.append(renderSubstitution(step, stepHeadingLevel));
-    }
-    if (step.kind === "backward_substitution") {
-      section.append(renderSubstitution(step, stepHeadingLevel));
-    }
-    if (step.kind === "residual_component") {
-      section.append(renderResidualComponent(step, stepHeadingLevel));
-    }
-    if (step.kind === "residual_inf_norm") {
-      section.append(renderResidualNorm(step, stepHeadingLevel));
-    }
-    if (step.kind === "preset_reference_difference") {
-      section.append(renderPresetReference(step, stepHeadingLevel));
-    }
-  }
-  return section;
 }
 
 export function createComputationWalkthrough(
@@ -1099,90 +785,185 @@ export function createComputationWalkthrough(
 ): HTMLElement {
   const phaseHeadingLevel = (options.headingLevel + 1) as HeadingLevel;
   const stepHeadingLevel = (options.headingLevel + 2) as HeadingLevel;
-  const walkthrough = element("div", undefined, "ls-computation-walkthrough");
+  const walkthrough = element("div", undefined, "ls-computation-walkthrough ls-computation-walkthrough-v2");
   walkthrough.dataset.computationWalkthrough = "true";
   walkthrough.append(
-    heading(options.headingLevel, "Computation walkthrough"),
+    heading(
+      options.headingLevel,
+      options.result ? "Computation walkthrough" : "Computation before failure"
+    ),
     element(
       "p",
-      "Each step comes from the computation that produced this result. Open Show arithmetic for the underlying values.",
+      "The matrices and arithmetic below come from the computation that produced this attempt. Static evidence remains authoritative.",
       "ls-walkthrough-intro"
     )
   );
   const retention = createTraceRetentionNotice(trace);
   if (retention) walkthrough.append(retention);
 
-  const factorizationKinds = new Set([
-    "pivot_selection",
-    "row_swap",
-    "elimination",
-    "factorization_complete",
-  ]);
-  const sections = [
-    phase(
-      "1. Matrix scale and pivot threshold",
-      ["The original matrix sets the scale used by the Lab's engineering safeguard."],
-      trace.steps.filter((step) => step.kind === "matrix_scale"),
+  const start = trace.steps.find(
+    (step): step is Extract<LinearSystemTraceStep, { kind: "factorization_start" }> =>
+      step.kind === "factorization_start"
+  );
+  if (start) {
+    const startSection = phase(
+      "1. Start with the original system",
+      "Gaussian elimination begins with the original matrix and works toward an upper-triangular U.",
       phaseHeadingLevel,
-      stepHeadingLevel
-    ),
-    phase(
-      "2. Factorization and elimination",
-      [
-        "Pivot decisions, row swaps, and eliminations build ",
-        math("P A = L U", "P times A equals L times U", "factorization-relation"),
-        " in computation order.",
-      ],
-      trace.steps.filter((step) => factorizationKinds.has(step.kind)),
+      "start"
+    );
+    const original = element("div", undefined, "ls-original-system");
+    original.append(
+      createNamedMatrix("A", start.initialU, "original coefficient matrix A", {
+        dataMath: "original-a",
+      })
+    );
+    const rhs = trace.steps.find(
+      (step): step is Extract<LinearSystemTraceStep, { kind: "right_hand_side_permutation" }> =>
+        step.kind === "right_hand_side_permutation"
+    );
+    const originalB = rhs?.originalB ?? options.result?.originalB;
+    if (originalB) {
+      original.append(
+        createNamedVector("b", originalB, "original right-hand-side vector b", {
+          dataMath: "original-b",
+        })
+      );
+    }
+    startSection.append(
+      element("p", "Selected method: Gaussian elimination with partial pivoting.", "ls-selected-method-line"),
+      original,
+      initialFactorization(start, stepHeadingLevel)
+    );
+    walkthrough.append(startSection);
+  }
+
+  const factorization = phase(
+    "2. Pivot and factorize",
+    "Each pivot decision supports the complete matrix transformations shown in computation order.",
+    phaseHeadingLevel,
+    "factorization"
+  );
+  const factorSteps = trace.steps.filter((step) =>
+    step.kind === "pivot_selection" ||
+    step.kind === "row_swap" ||
+    step.kind === "elimination"
+  );
+  factorSteps.forEach((step) => {
+    if (step.kind === "pivot_selection") {
+      factorization.append(pivotSelection(step, stepHeadingLevel));
+    } else if (step.kind === "row_swap") {
+      factorization.append(rowSwap(step, stepHeadingLevel));
+    } else if (step.kind === "elimination") {
+      factorization.append(elimination(step, stepHeadingLevel));
+    }
+  });
+  const completed = trace.steps.find(
+    (step): step is Extract<LinearSystemTraceStep, { kind: "factorization_complete" }> =>
+      step.kind === "factorization_complete"
+  );
+  if (completed) factorization.append(factorizationComplete(completed, stepHeadingLevel));
+  if (factorSteps.length > 0 || completed) walkthrough.append(factorization);
+
+  const rhs = trace.steps.find(
+    (step): step is Extract<LinearSystemTraceStep, { kind: "right_hand_side_permutation" }> =>
+      step.kind === "right_hand_side_permutation"
+  );
+  if (rhs) {
+    const rhsSection = phase(
+      "3. Permute the right-hand side",
+      "The same row ordering applied to A must also be applied to b.",
       phaseHeadingLevel,
-      stepHeadingLevel
-    ),
-    phase(
-      "3. Forward substitution",
-      [
-        "Solve ",
-        math("L y = P b", "L times y equals P times b", "forward-substitution-relation"),
-        " from the first row to the last.",
-      ],
-      trace.steps.filter((step) => step.kind === "forward_substitution"),
+      "right-hand-side"
+    );
+    rhsSection.append(rhsPermutation(rhs, stepHeadingLevel));
+    walkthrough.append(rhsSection);
+  }
+
+  const forwardSteps = trace.steps.filter(
+    (step): step is Extract<LinearSystemTraceStep, { kind: "forward_substitution" }> =>
+      step.kind === "forward_substitution"
+  );
+  if (forwardSteps.length > 0) {
+    const forward = phase(
+      "4. Solve L y = P b",
+      "L is lower triangular, so y is solved from top to bottom using already known earlier components.",
       phaseHeadingLevel,
-      stepHeadingLevel
-    ),
-    phase(
-      "4. Backward substitution",
-      [
-        "Solve ",
-        math("U x̂ = y", "U times x hat equals y", "backward-substitution-relation"),
-        " from the last row to the first.",
-      ],
-      trace.steps.filter((step) => step.kind === "backward_substitution"),
+      "forward-substitution"
+    );
+    forward.append(
+      mathDisplay(
+        [
+          multiplyNodes(mathIdentifier("L"), mathIdentifier("y")),
+          mathOperator("="),
+          multiplyNodes(mathIdentifier("P"), mathIdentifier("b")),
+        ],
+        "L times y equals P times b",
+        "forward-substitution-relation"
+      )
+    );
+    forwardSteps.forEach((step) => forward.append(substitution(step, stepHeadingLevel)));
+    walkthrough.append(forward);
+  }
+
+  const backwardSteps = trace.steps.filter(
+    (step): step is Extract<LinearSystemTraceStep, { kind: "backward_substitution" }> =>
+      step.kind === "backward_substitution"
+  );
+  if (backwardSteps.length > 0) {
+    const backward = phase(
+      "5. Solve U x hat = y",
+      "U is upper triangular, so x hat is solved from bottom to top using already known later components.",
       phaseHeadingLevel,
-      stepHeadingLevel
-    ),
-    phase(
-      "5. Residual check",
-      [
-        "Use the original A and b to form ",
-        math("r = b − A x̂", "r equals b minus A times x hat", "residual-relation"),
-        " and ",
-        math(subscript("‖r‖", "∞"), "the infinity norm of r", "residual-inf-norm"),
-        ".",
-      ],
-      trace.steps.filter(
-        (step) =>
-          step.kind === "residual_component" || step.kind === "residual_inf_norm"
-      ),
+      "backward-substitution"
+    );
+    backward.append(
+      mathDisplay(
+        [
+          multiplyNodes(mathIdentifier("U"), xHatNode()),
+          mathOperator("="),
+          mathIdentifier("y"),
+        ],
+        "U times x hat equals y",
+        "backward-substitution-relation"
+      )
+    );
+    backwardSteps.forEach((step) => backward.append(substitution(step, stepHeadingLevel)));
+    if (options.result) {
+      const result = element("section", undefined, "ls-walkthrough-final-solution");
+      result.append(
+        heading(stepHeadingLevel, "Computed solution"),
+        createComputedSolution(options.result.xHat, "ls-walkthrough-solution-math")
+      );
+      backward.append(result);
+    }
+    walkthrough.append(backward);
+  }
+
+  const residualComponents = trace.steps.filter(
+    (step): step is Extract<LinearSystemTraceStep, { kind: "residual_component" }> =>
+      step.kind === "residual_component"
+  );
+  const residualNorm = trace.steps.find(
+    (step): step is Extract<LinearSystemTraceStep, { kind: "residual_inf_norm" }> =>
+      step.kind === "residual_inf_norm"
+  );
+  const residual = residualPhase(residualComponents, residualNorm, stepHeadingLevel);
+  if (residual) {
+    const residualSection = phase(
+      "6. Check the residual",
+      "Use the original A and b to measure how closely the computed solution satisfies the equations.",
       phaseHeadingLevel,
-      stepHeadingLevel
-    ),
-    phase(
-      "6. Preset reference comparison",
-      ["This qualified comparison appears only for an authoritative preset fingerprint."],
-      trace.steps.filter((step) => step.kind === "preset_reference_difference"),
-      phaseHeadingLevel,
-      stepHeadingLevel
-    ),
-  ].filter((section): section is HTMLElement => section !== undefined);
-  walkthrough.append(...sections);
+      "residual"
+    );
+    residualSection.append(residual);
+    const reference = trace.steps.find(
+      (step): step is Extract<LinearSystemTraceStep, { kind: "preset_reference_difference" }> =>
+        step.kind === "preset_reference_difference"
+    );
+    if (reference) residualSection.append(presetReference(reference, stepHeadingLevel));
+    walkthrough.append(residualSection);
+  }
+
   return walkthrough;
 }

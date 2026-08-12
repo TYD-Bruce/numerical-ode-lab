@@ -28,9 +28,10 @@ numerical input or replace the binary64 value owned by a result or trace.
 
 Learner-facing component indices, matrix-entry indices, elimination-
 multiplier indices, vector indices, norm types, named mathematical qualifiers,
-and exponents use structured DOM. Use real `sub` and `sup` elements (or an
-equivalent approved lightweight structure), not baseline pseudo-notation,
-Unicode subscript glyphs, raw LaTeX, braces, underscores, or carets.
+and exponents use structured DOM or the approved native-MathML authored-math
+layer. Use structural subscript, superscript, over-accent, fraction, and matrix
+elements, not baseline pseudo-notation, Unicode subscript glyphs, raw LaTeX,
+braces, underscores, or carets.
 
 The product uses one-based indices in learner-facing notation even when the
 underlying data uses zero-based array indices.
@@ -74,7 +75,14 @@ display values are exact. Detailed presentation may expose more stored
 precision when needed to distinguish a nonzero value or explain trace-backed
 arithmetic.
 
-The current Linear Systems implementation of these policies is the lightweight
-frontend helper `frontend/src/math/structuredMath.ts`. It deliberately has no
-MathLive, Compute Engine, ODE, Tutor, Glossary, parser, arbitrary HTML, or
-`innerHTML` dependency.
+Linear Systems Teaching v2 uses the small project-owned
+`frontend/src/math/nativeMath.ts` primitive builder for authored mathematical
+objects and domain composition helpers in
+`frontend/src/labs/linear-algebra/linearSystemsMath.ts`. Native MathML owns
+accents, matrices/vectors, fractions, scripts, and compact algebra; controlled
+DOM/CSS owns responsive teaching layout such as matrix-before, row operation,
+and matrix-after. The earlier lightweight
+`frontend/src/math/structuredMath.ts` remains valid for existing structured
+presentations. Neither path introduces MathLive, Compute Engine, ODE, Tutor,
+Glossary, a parser, arbitrary HTML, or `innerHTML` into the Linear Systems
+route.
