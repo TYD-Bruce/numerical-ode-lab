@@ -25,7 +25,33 @@
 
 ## Current active milestone
 
-[PLAN.md](../PLAN.md) points to **Linear Systems Teaching v2**. Direct
+`PLAN.md` points to **Cross-Lab Presentation Sync**. Linear Systems Teaching v2
+is **MAINTAINER ACCEPTED** at commit
+`484fc9153de33be7949e82b29386c94fe63d19c8` (tree
+`509d245adb745d272e2a5c8185fb678b6e15009d`), and its final teaching-copy audit
+passed with `P0 = P1 = P2 = P3 = 0`. Motion remains paused and unmounted;
+Linear Algebra Tutor remains later; no Preview or Production deployment has
+occurred.
+
+The proposed
+[Cross-Lab Presentation System v1 design](superpowers/specs/2026-08-12-cross-lab-presentation-system-v1-design.md)
+and
+[repository-grounded implementation plan](superpowers/plans/2026-08-12-cross-lab-presentation-system-v1-implementation-plan.md)
+now govern the active design gate. Fresh source and browser comparison covers
+all public routes, both complete Labs, paired Method/Data/Output/Analysis
+surfaces, advanced/stale/failure states, desktop/mobile, and Light/Dark. The
+design selects ten vanilla TypeScript/CSS presentation primitives, preserves
+complete-Lab lazy boundaries and all domain behavior, and defines a staged
+best-of-both migration. No production code or CSS has changed. The exact next
+gate is **maintainer approval of Cross-Lab Presentation System v1 design**.
+
+## Superseded Teaching v2 milestone record
+
+The following section preserves the prior active milestone text as historical
+execution evidence. Its former next-gate statements are superseded by the
+Cross-Lab design gate above.
+
+[PLAN.md](../PLAN.md) previously pointed to **Linear Systems Teaching v2**. Direct
 maintainer browser review accepts the current numerical, lifecycle,
 accessibility, mathematical-presentation, and motion checkpoints as useful
 engineering evidence but does not accept the learner-facing Lab as teaching-
@@ -249,7 +275,8 @@ maintainer acceptance of the F2 review commit.
 
 | Document | Status |
 |---|---|
-| [Linear Systems Teaching v2 Design](superpowers/specs/2026-08-11-linear-systems-teaching-v2-design.md) | Maintainer-approved; Phase 0 Hybrid and Phase 1 trace accepted; Phase 2 static integration complete locally; independent product/teaching audit next; Motion v1 remount paused |
+| [Cross-Lab Presentation System v1 Design](superpowers/specs/2026-08-12-cross-lab-presentation-system-v1-design.md) | Proposed; design/audit complete; maintainer approval is the next gate; no implementation or production change |
+| [Linear Systems Teaching v2 Design](superpowers/specs/2026-08-11-linear-systems-teaching-v2-design.md) | Maintainer-accepted at `484fc9153de33be7949e82b29386c94fe63d19c8`; final teaching-copy audit passed P0/P1/P2/P3 = 0; Motion paused; Tutor later; not deployed |
 | [Linear Systems Lab Version 1 Design](superpowers/specs/2026-08-10-linear-systems-lab-v1-design.md) | Maintainer-approved design; Day 1/1.5 numerical evidence and Day 2 route/UI implemented locally; Tutor pending |
 | [Theme-Ready Platform Shell Design](superpowers/specs/2026-07-13-theme-ready-platform-shell-design.md) | Implemented, Vercel Preview-verified, safe to release |
 | [Human-Friendly Math Expressions Design](superpowers/specs/2026-07-10-human-friendly-math-expressions-design.md) | Implemented and verified |
@@ -262,7 +289,8 @@ maintainer acceptance of the F2 review commit.
 
 | Document | Status |
 |---|---|
-| [Linear Systems Teaching v2 Implementation Plan](superpowers/plans/2026-08-11-linear-systems-teaching-v2-implementation-plan.md) | Repository-grounded; Phase 0 Hybrid and Phase 1 trace accepted; Phase 2 static integration complete locally; independent product/teaching audit next |
+| [Cross-Lab Presentation System v1 Implementation Plan](superpowers/plans/2026-08-12-cross-lab-presentation-system-v1-implementation-plan.md) | Repository-grounded proposal; seven staged implementation phases plus independent final audit; blocked on design approval |
+| [Linear Systems Teaching v2 Implementation Plan](superpowers/plans/2026-08-11-linear-systems-teaching-v2-implementation-plan.md) | Executed and maintainer-accepted; final teaching-copy audit passed; Motion remount and Tutor remain separate later gates |
 | [Linear Systems Lab Version 1 Implementation Plan](superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md) | Repository-grounded; Day 1/1.5 and Day 2 implemented locally; independent product-audit corrections verified, correction re-audit next, Tutor deferred to a later gate |
 | [Theme-Ready Platform Shell Implementation Plan](superpowers/plans/2026-07-13-theme-ready-platform-shell-implementation-plan.md) | Implemented historical plan; check the final review and architecture map for current state |
 | [Numerical T-Lab Rename Migration Plan](superpowers/plans/2026-07-22-numerical-t-lab-rename-migration-plan.md) | Project Identity Migration completed and verified |

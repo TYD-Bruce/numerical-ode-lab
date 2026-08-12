@@ -2,6 +2,116 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
+## Cross-Lab Presentation Sync design/audit — 2026-08-12
+
+### Accepted prerequisite
+
+Linear Systems Teaching v2 is **MAINTAINER ACCEPTED** at commit
+`484fc9153de33be7949e82b29386c94fe63d19c8` (tree
+`509d245adb745d272e2a5c8185fb678b6e15009d`). The final teaching-copy audit
+passed with `P0 = P1 = P2 = P3 = 0`. Visual + Motion Language v1 remains
+paused and unmounted from the accepted static walkthrough. Linear Algebra Tutor
+remains a later task. No push, Preview deployment, or Production deployment of
+that accepted Teaching v2 state occurred.
+
+This acceptance supersedes the prior handoff's narrow re-audit and final
+Maintainer Teaching Acceptance gates. Historical sections below remain exact
+point-in-time execution records.
+
+### Problem and browser evidence
+
+The Initial Value Problems and Linear Systems Labs are both strong but express
+different presentation generations. ODE leads in exploration, method discovery,
+preset guidance, editable math, charts, Compare, Convergence, Tutor, and
+Glossary. Linear Systems Teaching v2 leads in universal versus selected-method
+teaching, native MathML, authoritative problem/result pairing, immutable stale
+context, trace-owned computation, and residual-led Diagnostics. Separate Lab
+shells, workflows, controls, surfaces, tables, statuses, disclosures, and CSS
+make those strengths feel like different products and duplicate presentation
+ownership.
+
+A fresh current-run in-app browser audit covered all seven public routes;
+paired ODE/Linear Systems Method, Data, Output, and Analysis surfaces; ODE
+Compare, Convergence, Glossary, and Tutor; Linear Systems row-swap, walkthrough,
+row arithmetic, Diagnostics, safeguards, stale output, pivot failure, and reset
+dialog; 1440 x 900, 390 x 844, and 320-pixel stress; and Light/Dark. Evidence
+screenshots remain in a local external audit directory and are not committed.
+The audited states showed no page-level horizontal overflow and no browser
+warning/error. This is browser/DOM evidence, not a screen-reader or universal
+browser claim.
+
+### Authoritative design and plan
+
+The proposed
+[Cross-Lab Presentation System v1 design](superpowers/specs/2026-08-12-cross-lab-presentation-system-v1-design.md)
+and
+[repository-grounded implementation plan](superpowers/plans/2026-08-12-cross-lab-presentation-system-v1-implementation-plan.md)
+are the active authorities after maintainer approval. The exact ten top-level
+primitives are:
+
+1. `LabShell`
+2. `WorkflowNavigation`
+3. `StageSection`
+4. `ProblemContext`
+5. `TeachingBlock`
+6. `PrimaryResult`
+7. `EvidenceBlock`
+8. `ComputationWalkthroughShell`
+9. `AnalysisSurface`
+10. `ModuleOverview`
+
+`LabHeader` is a required `LabShell` structure. MethodTeaching is a governed
+`TeachingBlock` composition. `AdvancedDetails`, `StatusMarker`,
+`NumericalTable`, and `ActionGroup` are supporting elements, not extra
+top-level abstractions.
+
+Best-of-both decisions:
+
+- keep ODE's method/preset exploration, editable math, chart/table evidence,
+  Compare, Convergence, and platform-owned Tutor/Glossary integration;
+- keep Linear Systems Teaching v2's explicit problem/method/result teaching,
+  MathML, successful-snapshot context, transformation corridor, trace evidence,
+  and residual-first Diagnostics;
+- replace both Labs' duplicated shell/header/workflow/stage/control/status/
+  disclosure/table/surface implementations with shared semantic presentation
+  roles while keeping domain content and behavior local.
+
+The stage roles are Method, Data, Output, and Analysis. They map naturally to
+future PDE statement/method, grid/boundary data, numerical solution, and
+error/stability/diagnostic evidence without implementing PDE. The target uses
+entry-safe tokens and `ModuleOverview`, plus Lab-shared lazy vanilla DOM/CSS
+primitives imported only by complete-Lab route graphs. ODE and Linear Systems
+retain their own editor, chart, MathML, teaching, trace, and analysis owners.
+
+### Migration, debt, and risks
+
+The proposed migration locks tokens; adds shared shell/workflow/stage
+primitives; proves context/teaching/result/evidence/walkthrough compositions;
+migrates ODE; migrates Linear Systems; aligns Convergence and Diagnostics as
+Analysis surfaces; aligns module overviews; and finishes with an independent
+visual/accessibility/browser/bundle audit. Every phase has a separate stop gate.
+
+The bounded debt ledger is `PRESENTATION-SYNC-01` through `-08`: separate Lab
+shells, divergent workflow semantics/containment, weaker ODE context/result
+hierarchy, inconsistent teaching/evidence nesting, duplicated CSS/control
+language, overview status drift, divergent status states, and unaligned
+Analysis framing. Primary risks are entry-bundle leakage, CSS cascade changes,
+false ODE workflow navigation, dilution of Teaching v2, stale-context mixing,
+and treating Convergence and Diagnostics as one lifecycle. The design assigns a
+specific mitigation and phase to each.
+
+### State, exclusions, and next gate
+
+This iteration changes only the two new design/plan documents plus `PLAN.md`,
+`docs/INDEX.md`, and this canonical handoff. No production frontend or CSS,
+ODE product, Linear Systems product, PDE, numerical algorithm/contract,
+Computation Trace, MathML, Motion, Tutor, Glossary, dependency, route, push, or
+deployment changed. `docs/architecture/CURRENT_ARCHITECTURE.md` remains
+unchanged because target architecture is not current implementation.
+
+The exact next gate is **maintainer approval of Cross-Lab Presentation System
+v1 design**. Do not begin implementation, Motion, or Tutor before that gate.
+
 ## Linear Systems final teaching-copy correction — 2026-08-12
 
 The independent final teaching-copy audit returned **BLOCKED — FINAL TEACHING

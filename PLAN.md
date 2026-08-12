@@ -2,6 +2,53 @@
 
 ## Current status
 
+**Active milestone: Cross-Lab Presentation Sync — design/audit complete;
+maintainer design approval is the next gate.**
+
+Linear Systems Teaching v2 is **MAINTAINER ACCEPTED** at commit
+`484fc9153de33be7949e82b29386c94fe63d19c8` (tree
+`509d245adb745d272e2a5c8185fb678b6e15009d`). Its final teaching-copy audit
+passed with `P0 = P1 = P2 = P3 = 0`. Visual + Motion Language v1 remains
+implemented but paused and unmounted from the accepted static walkthrough.
+Linear Algebra Tutor remains a later task. No Preview or Production deployment
+of the accepted Teaching v2 state has occurred.
+
+The new authoritative
+[Cross-Lab Presentation System v1 design](docs/superpowers/specs/2026-08-12-cross-lab-presentation-system-v1-design.md)
+and
+[repository-grounded implementation plan](docs/superpowers/plans/2026-08-12-cross-lab-presentation-system-v1-implementation-plan.md)
+define a best-of-both presentation architecture for the Initial Value Problems
+and Linear Systems Labs, with domain-neutral compatibility for a future PDE
+Lab. The design selects exactly ten top-level primitives: `LabShell`,
+`WorkflowNavigation`, `StageSection`, `ProblemContext`, `TeachingBlock`,
+`PrimaryResult`, `EvidenceBlock`, `ComputationWalkthroughShell`,
+`AnalysisSurface`, and `ModuleOverview`. `LabHeader` is part of `LabShell`;
+MethodTeaching and the shared status/table/action/disclosure language are
+governed compositions or supporting elements rather than extra top-level
+primitives.
+
+The design keeps ODE's exploration, presets, Compare, charts, Convergence,
+Tutor, and Glossary strengths; keeps Linear Systems Teaching v2's explicit
+problem/result context, method-profile teaching, native MathML, trace-owned
+walkthrough, stale-snapshot authority, and residual-led Diagnostics; and
+replaces duplicated shells, workflows, stage wrappers, control language,
+surfaces, tables, status markers, and overview status placement in both Labs.
+Shared complete-Lab primitives remain Lab-shared lazy; only `ModuleOverview`
+is entry-safe. The platform entry must remain free of complete-Lab, Chart.js,
+Tutor, Glossary, MathLive, and Compute Engine runtime.
+
+This iteration is documentation/design only. No frontend source or CSS,
+numerical behavior, Computation Trace, MathML, Motion, Tutor, Glossary, PDE,
+dependency, route, deployment, or Production state changed. The exact next
+gate is **maintainer approval of Cross-Lab Presentation System v1 design**.
+Do not begin implementation, Motion, or Tutor before that gate.
+
+## Superseded Teaching v2 execution record
+
+The following section preserves the immediately preceding milestone record for
+traceability. Its former “active milestone” and “next gate” statements are
+historical and are superseded by the current status above.
+
 **Active milestone: Linear Systems Teaching v2 — final teaching-copy
 correction implemented and locally verified; narrow independent teaching-copy
 re-audit is the next gate.**
