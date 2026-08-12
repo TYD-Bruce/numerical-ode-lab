@@ -20,6 +20,18 @@ function developmentRoute(
   };
 }
 
+function mathmlDevelopmentRoute(
+  loader: () => Promise<RouteModule>
+): DevelopmentRouteDefinitionInput {
+  return {
+    id: "mathml-capability",
+    path: "/__dev/mathml-capability",
+    title: "MathML Teaching Capability | Numerical T Lab",
+    kind: "page",
+    loader,
+  };
+}
+
 describe("development route injection", () => {
   it("matches the exact route only when explicitly injected", () => {
     const module: RouteModule = {
@@ -36,6 +48,36 @@ describe("development route injection", () => {
     expect(
       matchRoute(production, "/__dev/glossary-playground").definition.id
     ).toBe("not-found");
+  });
+
+  it("keeps the MathML capability route outside public route definitions", () => {
+    const module: RouteModule = {
+      mount: () => ({ dispose: vi.fn() }),
+    };
+    const injected = createRouteDefinitions({
+      developmentRoutes: [mathmlDevelopmentRoute(async () => module)],
+    });
+    const production = createRouteDefinitions();
+
+    expect(
+      matchRoute(injected, "/__dev/mathml-capability").definition.id
+    ).toBe("mathml-capability");
+    expect(
+      matchRoute(production, "/__dev/mathml-capability").definition.id
+    ).toBe("not-found");
+    expect(
+      production
+        .filter((definition) => definition.path !== null)
+        .map((definition) => definition.path)
+    ).toEqual([
+      "/",
+      "/ode",
+      "/ode/initial-value-problems",
+      "/linear-algebra",
+      "/linear-algebra/linear-systems",
+      "/pde",
+      "/about",
+    ]);
   });
 
   it("shares a development loader attempt and evicts only rejection for Retry", async () => {

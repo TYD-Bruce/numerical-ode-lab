@@ -39,6 +39,16 @@ solve calculations, and a residual-led Diagnostics hierarchy. The design also
 records the smallest required trace extension and keeps Gaussian elimination
 with partial pivoting as the only runnable method.
 
+The maintainer approved the design and plan at
+`e6ecfac7ba11d2825d099070345c1d8c35c15596`. Teaching v2 Phase 0 is now
+implemented as one removable DEV-only capability route plus a small authored
+MathML helper. Browser evidence at 1440 × 900, 390 × 844, and 320-pixel reflow
+in Light and Dark selects **Outcome B — Hybrid accepted**: MathML owns accents,
+matrices, fractions, scripts, norms, and authored algebra; ordinary controlled
+DOM/CSS owns responsive transformation flow and arrow geometry. The fixture,
+helper, and spike CSS are excluded from Production assets, and the current
+Linear Systems route remains unchanged.
+
 Architecture v1 remains frozen. The accepted Day 1 core still owns the
 numerical algorithm, presets, immutable results, and trace production; Day 2
 still owns the independently lazy route, frontend session/workflow, lifecycle,
@@ -49,10 +59,10 @@ Resume, accessibility, and responsive integration. The existing
 and [Visual + Motion contract](contracts/VISUAL_MOTION_LANGUAGE.md) remain
 valid for their existing responsibilities. Motion implementation exists, but
 its final freeze/audit is paused because Teaching v2 changes its mounting
-surface. No product code, numerical contract, Computation Trace, Tutor,
-Glossary, dependency, push, or deployment changed in this design checkpoint.
-The next gate is maintainer approval of Teaching v2 design and plan, followed
-by the plan's native MathML capability spike only.
+surface. No numerical contract, Computation Trace, Teaching v2 product
+integration, motion remount, Tutor, Glossary, dependency, push, or deployment
+changed in Phase 0. The next gate is maintainer acceptance of Outcome B
+followed by separate authorization of Phase 1, the trace snapshot extension.
 
 Latest architecture prerequisite review:
 [Architecture v1 Migration Review](reviews/2026-08-11-architecture-v1-migration-review.md)

@@ -1,7 +1,7 @@
 # Linear Systems Teaching v2 Implementation Plan
 
-**Status:** Repository-grounded plan complete; implementation requires
-maintainer approval
+**Status:** Maintainer-approved; Phase 0 complete with Outcome B (Hybrid
+accepted); Phase 1 requires separate authorization
 
 **Date:** 2026-08-11
 
@@ -51,6 +51,15 @@ Do not combine Jacobi, Gauss-Seidel, Tutor, Glossary, or unrelated visual work
 with any phase.
 
 ## 3. Phase 0 — MathML capability spike and primitive foundation
+
+**Result (2026-08-11): Complete.** The implemented DEV-only real-route spike
+selects **Outcome B — Hybrid accepted**. Native MathML owns authored
+mathematical atoms; controlled DOM/CSS owns responsive transformation
+composition and arrow geometry. The helper, fixture route, and fixture CSS are
+absent from Production assets, and no current public route or Linear Systems
+chunk imports the helper. Desktop, 390-pixel, and 320-pixel Light/Dark browser
+evidence passed with one accessible owner per formula and no MathLive or
+Compute Engine load.
 
 ### Goal
 

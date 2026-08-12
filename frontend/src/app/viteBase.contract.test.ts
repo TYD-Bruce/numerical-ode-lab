@@ -86,6 +86,9 @@ describe("Vite root-base deployment contract", () => {
     expect(entry?.dynamicImports).toContain(
       "src/glossary/surface/glossarySurfaceRuntime.ts"
     );
+    expect(entry?.dynamicImports).toContain(
+      "src/labs/linear-algebra/linearSystemsRoute.ts"
+    );
   });
 
   it("excludes the development Glossary route and fixtures from production output", () => {
@@ -104,6 +107,20 @@ describe("Vite root-base deployment contract", () => {
     );
     expect(emittedJavaScript).not.toContain("Developer Tools");
     expect(emittedCss).not.toContain(".glossary-playground-laboratory");
+  });
+
+  it("excludes the MathML capability spike and unused helper from production output", () => {
+    const keys = Object.keys(manifest).join("\n");
+    expect(keys).not.toContain("mathmlCapabilityRoute");
+    expect(keys).not.toContain("mathmlCapability.css");
+    expect(keys).not.toContain("nativeMath");
+    expect(emittedJavaScript).not.toContain(
+      "Development fixture · Teaching v2 Phase 0"
+    );
+    expect(emittedJavaScript).not.toContain(
+      "A removable browser fixture for authored Linear Systems mathematics."
+    );
+    expect(emittedCss).not.toContain(".mathml-capability");
   });
 
   it("uses root-origin URLs for emitted CSS font assets", () => {

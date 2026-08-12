@@ -1,6 +1,7 @@
 # Linear Systems Teaching v2 Design
 
-**Status:** Design complete; implementation requires maintainer approval
+**Status:** Maintainer-approved; Phase 0 complete with Outcome B (Hybrid
+accepted); later phases require separate authorization
 
 **Date:** 2026-08-11
 
@@ -8,6 +9,21 @@
 (tree `4f2fb65e4b270728e09e97bd578543b1f61772bb`)
 
 ## 1. Decision and scope
+
+### Phase 0 capability decision
+
+The real-route capability spike completed after design approval and selects
+**Outcome B — Hybrid accepted**. Native MathML is approved for authored
+mathematical atoms: over-accents, matrices and column vectors, fractions,
+subscripts/superscripts, norms, scientific notation, and compact algebra.
+Controlled semantic DOM/CSS remains responsible for larger composition such
+as before/operation/after transformation flow and arrow geometry. This keeps
+the mathematical objects stable while allowing horizontal desktop and
+vertical narrow-screen arrangements.
+
+The decision is capability approval, not product adoption. The DEV-only spike
+does not replace the current Linear Systems presentation. Phase 1 trace work
+and Phase 2 Teaching v2 integration remain separately gated.
 
 The current Linear Systems Lab is an engineering-correct checkpoint, not a
 teaching-complete product. It solves the approved problem, preserves numerical

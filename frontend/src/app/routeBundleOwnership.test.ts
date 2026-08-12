@@ -60,6 +60,9 @@ describe("public route bundle ownership", () => {
       "dev/glossary/glossaryFixtures.ts",
       "dev/glossary/glossaryDevelopmentControls.ts",
       "dev/glossary/glossaryPlayground.css",
+      "dev/mathml/mathmlCapabilityRoute.ts",
+      "dev/mathml/mathmlCapability.css",
+      "math/nativeMath.ts",
     ]) {
       expect(graph.has(forbidden), `${forbidden} leaked into ${[...graph].join(", ")}`).toBe(false);
     }

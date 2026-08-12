@@ -9,6 +9,7 @@ export type RouteId =
   | "pde-overview"
   | "about"
   | "glossary-playground"
+  | "mathml-capability"
   | "not-found";
 
 export type LabModuleId = "ode" | "linear_algebra" | "pde";

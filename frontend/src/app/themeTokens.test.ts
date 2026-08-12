@@ -149,6 +149,14 @@ describe("platform theme tokens", () => {
     expect(glossaryPlayground).toContain("forced-colors");
     expect(glossaryPlayground).toMatch(/overflow-wrap:\s*anywhere/);
     expect(glossaryPlayground).not.toMatch(literalColor);
+
+    const mathmlCapability = readFileSync(
+      join(SRC_DIR, "dev", "mathml", "mathmlCapability.css"),
+      "utf8"
+    );
+    expect(mathmlCapability).toContain("forced-colors");
+    expect(mathmlCapability).toMatch(/overflow-x:\s*auto/);
+    expect(mathmlCapability).not.toMatch(literalColor);
   });
 
   it("keeps new platform runtime modules outside heavy ODE, Tutor, and math imports", () => {

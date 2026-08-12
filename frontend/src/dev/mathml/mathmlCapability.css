@@ -1,0 +1,210 @@
+.mathml-capability {
+  gap: var(--space-8);
+}
+
+.mathml-capability-heading {
+  padding: var(--space-8);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-primary);
+  box-shadow: var(--shadow-card);
+}
+
+.mathml-capability-heading h1 {
+  margin-bottom: var(--space-3);
+}
+
+.mathml-capability-heading p {
+  margin-block: 0;
+}
+
+.mathml-capability-eyebrow {
+  color: var(--color-accent-secondary) !important;
+  font-size: 0.85rem;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.mathml-capability-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6);
+}
+
+.mathml-capability-case {
+  min-width: 0;
+  padding: var(--space-6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-card);
+}
+
+.mathml-capability-case h2 {
+  margin-bottom: var(--space-2);
+  font-size: 1.15rem;
+}
+
+.mathml-capability-case > p {
+  margin-block: 0 var(--space-4);
+}
+
+.mathml-capability-stage {
+  min-width: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-soft);
+  overflow-x: auto;
+}
+
+.native-math {
+  display: inline-block;
+  max-width: 100%;
+  color: var(--color-text-primary);
+}
+
+.native-math-visual {
+  max-width: 100%;
+  color: inherit;
+  font-family: "Cambria Math", "STIX Two Math", "Latin Modern Math", serif;
+  font-size: 1.2rem;
+}
+
+.native-math-visual mtable {
+  column-gap: 0.55em;
+  row-gap: 0.2em;
+}
+
+.native-math-visual mtd {
+  padding-inline: 0.15em;
+}
+
+.mathml-capability-hero-formula .native-math-visual {
+  font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+}
+
+.mathml-capability-case[data-mathml-case="transformation"] {
+  grid-column: 1 / -1;
+}
+
+.mathml-transformation {
+  display: grid;
+  grid-template-columns: minmax(max-content, 1fr) minmax(11rem, auto) minmax(max-content, 1fr);
+  align-items: center;
+  gap: var(--space-4);
+  min-width: max-content;
+}
+
+.mathml-transformation-matrix {
+  justify-self: center;
+}
+
+.mathml-transformation-operation {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-1);
+  min-width: 10rem;
+}
+
+.mathml-transformation-arrow {
+  width: 100%;
+  height: 1px;
+  background: var(--color-accent-primary);
+}
+
+.mathml-transformation-arrow::after {
+  display: block;
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-top: -0.25rem;
+  margin-left: auto;
+  border-top: 1px solid var(--color-accent-primary);
+  border-right: 1px solid var(--color-accent-primary);
+  content: "";
+  transform: rotate(45deg);
+}
+
+.mathml-plu-variants {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.mathml-teaching-block {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3);
+  border-inline-start: var(--space-1) solid var(--color-output-accent);
+  background: var(--color-output-surface);
+}
+
+@media (max-width: 48rem) {
+  .mathml-capability-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mathml-capability-case[data-mathml-case="transformation"] {
+    grid-column: auto;
+  }
+
+  .mathml-transformation {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    min-width: 0;
+  }
+
+  .mathml-transformation-operation {
+    width: min(100%, 17rem);
+  }
+
+  .mathml-transformation-arrow {
+    width: 1px;
+    height: var(--space-8);
+  }
+
+  .mathml-transformation-arrow::after {
+    margin-top: calc(var(--space-8) - 0.45rem);
+    margin-left: -0.2rem;
+    transform: rotate(135deg);
+  }
+}
+
+@media (max-width: 22rem) {
+  .mathml-capability-heading,
+  .mathml-capability-case {
+    padding: var(--space-4);
+  }
+
+  .mathml-capability-stage {
+    padding: var(--space-3);
+  }
+
+  .native-math-visual {
+    font-size: 1.05rem;
+  }
+
+  .mathml-teaching-block {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (forced-colors: active) {
+  .mathml-capability-heading,
+  .mathml-capability-case,
+  .mathml-capability-stage,
+  .mathml-teaching-block {
+    border-color: CanvasText;
+    background: Canvas;
+    box-shadow: none;
+  }
+
+  .mathml-transformation-arrow,
+  .mathml-transformation-arrow::after {
+    border-color: CanvasText;
+    background: CanvasText;
+  }
+}

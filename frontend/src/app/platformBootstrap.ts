@@ -28,6 +28,7 @@ import type {
 } from "../dev/glossary/glossaryDevelopmentControls";
 
 const GLOSSARY_PLAYGROUND_PATH = "/__dev/glossary-playground";
+const MATHML_CAPABILITY_PATH = "/__dev/mathml-capability";
 
 export interface PlatformBootstrap {
   readonly store: AppSessionStore;
@@ -140,6 +141,24 @@ export function createPlatformBootstrap(options: {
                 (module) =>
                   module.createGlossaryPlaygroundRoute({ glossaryHost })
               );
+            },
+          },
+          {
+            id: "mathml-capability",
+            path: MATHML_CAPABILITY_PATH,
+            title: "MathML Teaching Capability | Numerical T Lab",
+            kind: "page",
+            loader: () => {
+              const modulePath =
+                "../dev/mathml/mathmlCapabilityRoute.ts";
+              return (
+                import(
+                  /* @vite-ignore */
+                  modulePath
+                ) as Promise<
+                  typeof import("../dev/mathml/mathmlCapabilityRoute")
+                >
+              ).then((module) => module.createMathmlCapabilityRoute());
             },
           },
         ]

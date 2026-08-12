@@ -2,7 +2,126 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
+## Linear Systems Teaching v2 Phase 0 — MathML capability — 2026-08-11
+
+The maintainer approved the Teaching v2 design and plan at
+`e6ecfac7ba11d2825d099070345c1d8c35c15596` (tree
+`66ad585fb780ff77f663c97d00a7cafebd309db5`) and authorized Phase 0 only.
+This checkpoint implements and verifies that capability spike. The commit
+containing this section is the Phase 0 commit; its exact SHA and tree are the
+task report's ending commit/tree because a commit cannot self-reference its
+own hash.
+
+### Outcome and ownership
+
+The exact decision is **Outcome B — Hybrid accepted**.
+
+- Native MathML owns authored mathematical objects: `x-hat`, matrices and
+  column vectors, fractions, subscripts/superscripts, the infinity norm,
+  scientific notation, PLU, and substitution equations.
+- Controlled DOM/CSS owns the larger before/operation/after composition,
+  responsive horizontal-to-vertical flow, and arrow geometry.
+- Every displayed formula has one `role="math"` owner with one complete
+  learner-meaningful `aria-label`; its direct visual MathML child has
+  `aria-hidden="true"`. The browser exposed exactly 11 formula owners for 11
+  formulas, with no nested label owner.
+- `frontend/src/math/nativeMath.ts` is an explicit authored-element helper,
+  not a parser or second mathematical AST. It uses the MathML namespace,
+  project number formatting, and a closed 14-element primitive union. It uses
+  no raw HTML, `innerHTML`, MathLive, Compute Engine, numerical package, Tutor,
+  or Glossary dependency.
+- `frontend/src/dev/mathml/mathmlCapabilityRoute.ts` and its scoped CSS own the
+  removable browser fixture at `/__dev/mathml-capability`. The route is
+  injected only when Vite reports DEV and is not a public route.
+
+### Expressions and browser evidence
+
+The real frontend rendered all eight required product-level cases:
+
+1. proper `x-hat` plus a three-component column vector;
+2. dense `3 x 3` matrix `A`;
+3. indexed elimination multiplier with structural fractions;
+4. full matrix before, labelled row operation, and full matrix after;
+5. residual infinity norm with structural scientific exponent;
+6. `P A = L U` alone and inside a teaching block;
+7. grouped forward-substitution fraction; and
+8. indexed `x-hat` inside the backward-substitution fraction.
+
+In-app Chromium checks covered 1440 x 900, 390 x 844, and 320-pixel reflow in
+Light and Dark. The horizontal transformation became the same three
+mathematical objects in one vertical sequence at narrow widths. Document
+scroll width equaled client width at each inspected viewport; every fixture
+stage also fit without local overflow in these cases. Cambria Math was
+available and used as the first scoped math-font choice. Hats, delimiters,
+fractions, scripts, negative signs, baselines, and line heights remained
+readable, and the console had no warning or error.
+
+Browser asset inventory showed no MathLive or Compute Engine request. The
+fixture preserves measurable `mtr`/`mtd` elements plus stable development row
+and cell markers, so a later trace-owned full-matrix renderer can support row
+measurement and FLIP presentation without mutating MathML numerical content.
+Motion was not implemented or remounted.
+
+Screenshots are retained outside the repository under the task's Codex
+visualization area. Structural accessible ownership was inspected through the
+live DOM and role queries; no assistive-technology speech session was run, so
+this checkpoint does not claim full screen-reader certification.
+
+### Production boundary and validation
+
+Focused tests cover the primitive namespace/structure, one-owner rule, all
+eight cases, public-route exclusion, unchanged lazy ownership, theme-token
+discipline, and Production exclusion. The Production manifest contains no
+MathML capability route, fixture CSS, or `nativeMath` entry, and emitted
+assets contain neither fixture copy nor fixture CSS. The existing Linear
+Systems dynamic route remains independently listed in the entry manifest.
+
+Validation for the checkpoint includes focused tests, import boundaries,
+workspace typechecks, Production build/exclusion evidence, complete verify,
+and `git diff --check`. Exact totals and command outcomes are recorded in the
+task report.
+
+### Problems and reusable resolutions
+
+- The first Vite invocation forwarded the host value as a positional argument
+  and selected a busy IPv6 port. Resolution: start the frontend workspace
+  command directly with explicit `--host 127.0.0.1 --port 5180`, then use that
+  exact loopback endpoint for the in-app browser.
+- A failed browser navigation left an internal error document that could not
+  safely retarget. Resolution: open one fresh in-app tab after the reachable
+  server is confirmed; do not bypass browser URL policy or switch tools.
+- The first Production-exclusion assertion looked for the DEV route title,
+  but the title literal belongs to guarded route registration even though the
+  module, helper, fixture copy, and CSS were absent from assets. Resolution:
+  prove the meaningful boundary through manifest keys, fixture body markers,
+  CSS selectors, public route matching, and the current lazy graph rather than
+  a brittle registration-string assertion.
+- Full-page screenshot clipping did not reliably isolate an offscreen card.
+  Resolution: scroll the real page to the evidence surface, capture the
+  viewport, and inspect the saved file before accepting it.
+
+If this capability is reused, keep mathematical objects in MathML, keep page
+composition in controlled DOM/CSS, preserve one accessible owner, and verify
+the actual route rather than an isolated data document. Do not add a parser or
+load a deferred math runtime for authored Linear Systems copy without a new
+gate.
+
+### Exact exclusions and next gate
+
+Phase 0 changes no numerical algorithm or contract, Computation Trace record,
+current Linear Systems product presentation, method list, motion behavior,
+Tutor, Glossary, dependency, push, deployment, or public route. It does not
+begin Phase 1.
+
+The exact next gate is **maintainer acceptance of Outcome B, followed by
+separate authorization of Teaching v2 Phase 1: the authoritative Computation
+Trace snapshot extension**. Do not begin Phase 1, Teaching v2 integration,
+motion remount, Tutor, push, or deployment without that authorization.
+
 ## Linear Systems Teaching v2 design — 2026-08-11
+
+*Historical design checkpoint. The Phase 0 section above supersedes its
+authorization and next-gate language without rewriting the evidence below.*
 
 The accepted implementation checkpoint entering this documentation task is
 `4f6c5810c41dbc0342c5e44ce1946478cbb2795f` (tree
@@ -18,8 +137,8 @@ The new sole Teaching v2 design authority is
 `docs/superpowers/specs/2026-08-11-linear-systems-teaching-v2-design.md`.
 The paired repository-grounded execution authority is
 `docs/superpowers/plans/2026-08-11-linear-systems-teaching-v2-implementation-plan.md`.
-Both are design/planning artifacts; implementation remains unauthorized until
-maintainer approval.
+At this checkpoint both were design/planning artifacts and implementation
+remained unauthorized until maintainer approval.
 
 ### Maintainer findings received
 
@@ -142,16 +261,15 @@ route capability spike and stops if that proof fails.
 
 ### Current state and next gate
 
-This checkpoint changes documentation/design only. It modifies no file under
+At this historical checkpoint, the task changed documentation/design only. It modified no file under
 `frontend/src`, `packages/numerics`, `packages/contracts`, `backend`, or `api`;
 changes no numerical algorithm, Computation Trace record, motion code, CSS,
 route, Store, Tutor, Glossary, ODE, PDE, dependency, or deployment
 configuration; and performs no push or deployment.
 
-The exact next gate is **maintainer approval of the Linear Systems Teaching v2
-design and implementation plan**. After approval, begin Phase 0, the native
-MathML capability spike, and stop at that phase's browser/accessibility gate.
-Do not begin iterative methods, Tutor, Glossary, push, or deployment.
+The next gate at this historical checkpoint was **maintainer approval of the
+Linear Systems Teaching v2 design and implementation plan**. That approval and
+Phase 0 are now recorded in the current section above.
 
 ## Visual + Motion Language v1 — 2026-08-11
 

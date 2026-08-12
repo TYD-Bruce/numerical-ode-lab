@@ -2,26 +2,34 @@
 
 ## Current status
 
-**Active milestone: Linear Systems Teaching v2 — design complete;
-maintainer approval required before Phase 0 implementation.**
+**Active milestone: Linear Systems Teaching v2 — Phase 0 complete with
+Outcome B (Hybrid accepted); Phase 1 requires separate maintainer
+authorization.**
 
 Direct maintainer browser review found that the current Linear Systems Lab is
 engineering-correct but not teaching-complete. The authoritative
 [Teaching v2 design](docs/superpowers/specs/2026-08-11-linear-systems-teaching-v2-design.md)
 and
 [repository-grounded implementation plan](docs/superpowers/plans/2026-08-11-linear-systems-teaching-v2-implementation-plan.md)
-now govern the next work. They require proper authored mathematical
-typesetting, visible method/concept teaching, full trace-owned matrix
+now govern the next work. The maintainer approved them at
+`e6ecfac7ba11d2825d099070345c1d8c35c15596`, and the bounded native MathML
+capability spike is implemented and browser-verified. Outcome B establishes
+native MathML as the authored mathematical-atom layer and controlled DOM/CSS
+as the composition layer for before/operation/after transformations. The
+spike remains DEV-only and is absent from Production assets. The design and
+plan continue to require proper authored mathematical typesetting, visible
+method/concept teaching, full trace-owned matrix
 transformations, explicit `P b`, complete triangular-solve calculations, and
-a residual-led Diagnostics hierarchy. No product code or numerical behavior
-changed in this design checkpoint.
+a residual-led Diagnostics hierarchy. The current Linear Systems product UI,
+numerical behavior, and Computation Trace remain unchanged.
 
 Visual + Motion Language v1 remains implemented locally, but its final freeze
 and independent audit are paused because Teaching v2 changes the computation
 presentation on which row-swap and elimination replay are mounted. Linear
 Algebra Tutor work remains deferred. The exact next gate is **maintainer
-approval of Teaching v2 design and plan**, followed by the plan's native
-MathML capability spike only.
+acceptance of the Phase 0 Outcome B evidence, followed by separate
+authorization of Phase 1, the authoritative Computation Trace snapshot
+extension**. Do not begin Phase 1 without that authorization.
 
 The maintainer accepts public baseline
 `b58584a5f7a1d5b09874479d3b413a063b94e061` and tree
