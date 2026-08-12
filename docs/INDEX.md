@@ -49,6 +49,16 @@ DOM/CSS owns responsive transformation flow and arrow geometry. The fixture,
 helper, and spike CSS are excluded from Production assets, and the current
 Linear Systems route remains unchanged.
 
+Teaching v2 Phase 1 is also implemented and locally verified. The pure
+Linear Systems producer now emits `factorization_start.initialU`, complete
+immutable `uBefore`/`uAfter` matrices for every row swap and elimination, and
+one `right_hand_side_permutation` record copied from the exact `permutedB`
+consumed by forward substitution. The current walkthrough intentionally does
+not render the two new standalone records; Phase 2 remains unauthorized.
+Representative numerical projections excluding trace are bit-identical to the
+accepted Phase 0 baseline, and controlled pivot failure retains only evidence
+through its stopping point.
+
 Architecture v1 remains frozen. The accepted Day 1 core still owns the
 numerical algorithm, presets, immutable results, and trace production; Day 2
 still owns the independently lazy route, frontend session/workflow, lifecycle,
@@ -59,10 +69,11 @@ Resume, accessibility, and responsive integration. The existing
 and [Visual + Motion contract](contracts/VISUAL_MOTION_LANGUAGE.md) remain
 valid for their existing responsibilities. Motion implementation exists, but
 its final freeze/audit is paused because Teaching v2 changes its mounting
-surface. No numerical contract, Computation Trace, Teaching v2 product
-integration, motion remount, Tutor, Glossary, dependency, push, or deployment
-changed in Phase 0. The next gate is maintainer acceptance of Outcome B
-followed by separate authorization of Phase 1, the trace snapshot extension.
+surface. Phase 0 changed no numerical contract or Computation Trace. Phase 1
+changes only bounded immutable trace evidence and its tracked contracts; it
+does not change product UI, numerical behavior, motion, Tutor, Glossary,
+dependencies, push, or deployment. The next gate is an independent Teaching
+v2 Phase 1 trace audit; Phase 2 requires a separate maintainer decision.
 
 Latest architecture prerequisite review:
 [Architecture v1 Migration Review](reviews/2026-08-11-architecture-v1-migration-review.md)
@@ -219,7 +230,7 @@ maintainer acceptance of the F2 review commit.
 
 | Document | Status |
 |---|---|
-| [Linear Systems Teaching v2 Design](superpowers/specs/2026-08-11-linear-systems-teaching-v2-design.md) | Design complete; maintainer approval required before implementation; current Motion v1 final acceptance paused |
+| [Linear Systems Teaching v2 Design](superpowers/specs/2026-08-11-linear-systems-teaching-v2-design.md) | Maintainer-approved; Phase 0 Hybrid decision and Phase 1 trace extension complete locally; independent Phase 1 audit next; current Motion v1 final acceptance paused |
 | [Linear Systems Lab Version 1 Design](superpowers/specs/2026-08-10-linear-systems-lab-v1-design.md) | Maintainer-approved design; Day 1/1.5 numerical evidence and Day 2 route/UI implemented locally; Tutor pending |
 | [Theme-Ready Platform Shell Design](superpowers/specs/2026-07-13-theme-ready-platform-shell-design.md) | Implemented, Vercel Preview-verified, safe to release |
 | [Human-Friendly Math Expressions Design](superpowers/specs/2026-07-10-human-friendly-math-expressions-design.md) | Implemented and verified |
@@ -232,7 +243,7 @@ maintainer acceptance of the F2 review commit.
 
 | Document | Status |
 |---|---|
-| [Linear Systems Teaching v2 Implementation Plan](superpowers/plans/2026-08-11-linear-systems-teaching-v2-implementation-plan.md) | Repository-grounded; implementation requires maintainer approval; Phase 0 is a native MathML capability spike |
+| [Linear Systems Teaching v2 Implementation Plan](superpowers/plans/2026-08-11-linear-systems-teaching-v2-implementation-plan.md) | Repository-grounded; Phase 0 and Phase 1 complete locally; independent trace audit required before separately authorized Phase 2 |
 | [Linear Systems Lab Version 1 Implementation Plan](superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md) | Repository-grounded; Day 1/1.5 and Day 2 implemented locally; independent product-audit corrections verified, correction re-audit next, Tutor deferred to a later gate |
 | [Theme-Ready Platform Shell Implementation Plan](superpowers/plans/2026-07-13-theme-ready-platform-shell-implementation-plan.md) | Implemented historical plan; check the final review and architecture map for current state |
 | [Numerical T-Lab Rename Migration Plan](superpowers/plans/2026-07-22-numerical-t-lab-rename-migration-plan.md) | Project Identity Migration completed and verified |

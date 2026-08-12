@@ -1,7 +1,8 @@
 # Linear Systems Teaching v2 Implementation Plan
 
 **Status:** Maintainer-approved; Phase 0 complete with Outcome B (Hybrid
-accepted); Phase 1 requires separate authorization
+accepted); Phase 1 implemented and locally verified; independent Phase 1
+trace audit required before Phase 2
 
 **Date:** 2026-08-11
 
@@ -113,6 +114,15 @@ accepted span/sub/sup renderer without touching numerical or Lab state.
 
 ## 4. Phase 1 — authoritative trace snapshot extension
 
+**Result (2026-08-11): Complete locally.** The existing numerical loops now
+emit the approved immutable initial/full-operation snapshots and the exact
+permuted right-hand side consumed by forward substitution. Representative
+pre/post projections excluding trace are bit-identical across both presets,
+later-`L` swap, pivot tie, dimension boundaries, tiny scaling, pivot rejection,
+and non-finite-intermediate cases. The current product renderer remains
+unchanged; its focused test explicitly treats the two new standalone records
+as producer-owned Phase 1 evidence pending Phase 2.
+
 ### Goal
 
 Make the existing single numerical path emit all full matrix states and the
@@ -126,7 +136,7 @@ complete permuted right-hand side required by the computation-led walkthrough.
   traced-result immutability/reference preservation
 - `docs/contracts/NUMERICAL_CONTRACTS.md`
 
-### Exact producer changes
+### Implemented producer changes
 
 1. Add `factorization_start` containing complete immutable `initialU`.
 2. Extend `row_swap` with complete immutable `uBefore` and `uAfter`.
@@ -213,6 +223,9 @@ Do not create disabled selectors or imply that planned methods run.
    Start, factorization operations, final factors, `P b`, forward
    substitution, backward substitution, final `xHat`, residual, reference.
 4. For every row operation, render complete before/operation/after matrices.
+   Elimination uses the maintainer-approved learner convention
+   `R_i - m_ik R_k -> R_i`: computed row expression first, updated row
+   identity second.
 5. Keep candidate values and trace inspection tables behind **Show details**
    or **Show arithmetic**.
 6. Do not call the solver, patch rows into matrices, or calculate `P b`.
@@ -388,7 +401,6 @@ Stop and return to the maintainer if:
 
 ## 10. Exact next gate
 
-Maintainer approval of the
-[Teaching v2 design](../specs/2026-08-11-linear-systems-teaching-v2-design.md)
-and this plan. After approval, begin Phase 0 only. Do not implement iterative
-methods, Tutor, Glossary, push, or deploy.
+Independent Teaching v2 Phase 1 trace audit. Do not begin Phase 2 static
+Teaching v2 integration until that audit and a separate maintainer decision.
+Do not implement iterative methods, Tutor, Glossary, push, or deploy.

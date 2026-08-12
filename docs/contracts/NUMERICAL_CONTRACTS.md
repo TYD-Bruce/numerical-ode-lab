@@ -232,11 +232,17 @@ Trace with all meaningful steps retained. Its discriminated semantic records
 are emitted inside the one authoritative numerical path and cover:
 
 - original-matrix row absolute sums, `||A||_inf`, and `tauPivot`;
+- the complete initial working matrix at `factorization_start`, where
+  `initialU` is copied immediately before the first factorization operation;
 - each pivot candidate/selection and the accepted threshold comparison;
-- actual row swaps, including affected `U`/`P` rows, permutation state, and
-  prior-column `L` evidence;
-- each elimination multiplier and actual before/used/after row data;
+- actual row swaps, including complete `uBefore`/`uAfter` snapshots, affected
+  `U`/`P` rows, permutation state, and prior-column `L` evidence;
+- each elimination multiplier, complete sequential `uBefore`/`uAfter`
+  snapshots, and actual before/used/after row data;
 - completed `P`, `L`, `U`, and permutation evidence;
+- one complete `right_hand_side_permutation` record containing original `b`,
+  the authoritative permutation, and the exact `permutedB = P b` vector used
+  by forward substitution;
 - ordered contribution data, the actual sequential right-hand-side
   accumulator, and the finite accumulated term sum when representable for
   every forward- and backward-substitution component;
@@ -252,6 +258,23 @@ they share no mutable working-array or caller-input aliases. A
 selection, including its active zero-based column, selected value/magnitude,
 and `tauPivot`. That evidence records a product safeguard failure and does not
 prove formal singularity.
+
+The full matrix snapshots are teaching evidence, not a second numerical path.
+They are copied immediately around the existing `U` mutations; no pivot,
+swap, elimination, or factor is replayed or reconstructed after the solve.
+The right-hand-side record copies the same `permutedB` vector consumed by the
+existing forward-substitution loop. Adding these records does not change
+arithmetic order, pivots, factors, solution, residual, reference comparison,
+failure classification, fingerprint, or session publication.
+
+Complete snapshots are intentionally bounded by `n <= 6`. In the worst case,
+six dimensions produce 15 elimination records, at most five row-swap records,
+and one start record: 41 retained full matrices, or 1,476 binary64 entries.
+The three six-entry right-hand-side/permutation vectors bring the new raw
+numeric payload to at most 1,494 values (11,952 bytes), excluding JavaScript
+container overhead and pre-existing trace fields. This decision does not
+generalize to arbitrary matrix dimensions and needs no compression or delta
+encoding at the approved scale.
 
 The triangular solvers retain their released evaluation order
 `value -= product`. Ordered products and every resulting `value` accumulator
@@ -285,15 +308,15 @@ an equivalently qualified phrase. It must not be called unqualified “exact
 error.” Editing any preset input removes preset/reference authority; restoring
 the exact parsed numerical fingerprint restores it.
 
-The frontend Computation Walkthrough is presentation-only. It renders the
-ordered `matrix_scale`, `pivot_selection`, `row_swap`, `elimination`,
-`factorization_complete`, `forward_substitution`, `backward_substitution`,
-`residual_component`, `residual_inf_norm`, and conditional
-`preset_reference_difference` records directly from the trace. It may format,
-group, expand, and contain that evidence, but it must not call the solver,
-recompute arithmetic, reorder stored terms, infer missing steps, or turn Tutor
-output into numerical authority. Trace expansion does not change experiment
-identity or the immutable successful result.
+The frontend Computation Walkthrough is presentation-only. Teaching v2
+producer evidence now includes `factorization_start`, complete matrices on
+`row_swap` and `elimination`, and `right_hand_side_permutation`; the current
+pre-Teaching-v2 renderer intentionally does not present the two new standalone
+step kinds. A later authorized renderer may format, group, expand, and contain
+the ordered evidence, but it must not call the solver, recompute arithmetic,
+reorder stored terms, infer missing steps, or turn Tutor output into numerical
+authority. Trace expansion does not change experiment identity or the
+immutable successful result.
 
 The two and only two v1 presets are:
 

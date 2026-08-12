@@ -2,7 +2,155 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
+## Linear Systems Teaching v2 Phase 1 — trace snapshots — 2026-08-11
+
+The maintainer accepted Phase 0 Outcome B and authorized only Teaching v2
+Phase 1 from clean `main` at
+`05fb3bd431dd9d1b31782dacf7a67cff3556f45b` (tree
+`3cf55e6c247b6deb11a08bbc47542a2c5aa45846`). Phase 0's Hybrid architecture
+remains fixed: native MathML owns authored mathematical objects and controlled
+DOM/CSS owns responsive transformation composition. This checkpoint extends
+only the authoritative pure Linear Systems trace; it does not integrate that
+evidence into the product UI.
+
+### Implemented evidence and ownership
+
+`packages/numerics/src/linear-algebra/linearSystemsNumerics.ts` remains the
+single Gaussian-elimination and solve path. It now emits:
+
+- `factorization_start.initialU`, copied from the defensive `U` work matrix
+  before the first pivot search;
+- complete `uBefore` and `uAfter` matrices for each `row_swap`, copied
+  immediately around the existing authoritative `U` row exchange;
+- complete sequential `uBefore` and `uAfter` matrices for every
+  `elimination`, copied around that target row's existing update; and
+- `right_hand_side_permutation` with original `b`, the authoritative
+  permutation, and the same complete `permutedB` vector consumed by forward
+  substitution.
+
+The generic trace foundation and its retention policies are unchanged.
+Linear Systems remains `bounded_finite` with `all_meaningful_steps`. The
+successful result still owns one deeply frozen trace, and the frontend session
+continues to preserve that result/trace by reference. No matrix history or
+presentation state was added to AppSessionStore.
+
+The maintainer-approved learner convention is now tracked in
+`docs/contracts/MATHEMATICAL_PRESENTATION.md`: elimination is presented as the
+computed row expression followed by the updated row identity,
+`R_i - m_ik R_k -> R_i`. This is a presentation choice, not a change to
+arithmetic or a claim that assignment-form textbook notation is incorrect.
+
+### Ordering, failure, and immutability
+
+Successful traces retain actual computation order:
+
+```text
+matrix_scale
+factorization_start
+pivot_selection / row_swap / elimination as executed
+factorization_complete
+right_hand_side_permutation
+forward_substitution
+backward_substitution
+residual_component / residual_inf_norm
+preset_reference_difference when authorized
+```
+
+Consecutive operation snapshots chain by value: an operation's `uAfter` is
+the next operation's `uBefore`, while each record owns a distinct frozen copy.
+Existing row-level swap/elimination evidence agrees with the corresponding
+full matrices. A controlled pivot rejection retains `factorization_start` and
+all completed operations through the rejected pivot, but no right-hand-side,
+substitution, or residual evidence. It remains a failure rather than partial
+success.
+
+All new matrices, vectors, rows, and records are defensively copied and deeply
+frozen by the existing trace factory. They share no mutable alias with caller
+input, returned factors, later snapshots, or producer work arrays. Snapshot
+attempted mutation cannot alter historical evidence or the numerical result,
+and caller arrays remain mutable after the solve.
+
+### Numerical equivalence and boundedness
+
+Pre-extension and post-extension projections excluding `trace` are
+bit-identical for Starter 3x3, Row swap required, a later prior-`L`-column
+swap, an equal-magnitude pivot tie, 2x2, 6x6, a very small scaled system,
+pivot rejection, and a finite-input non-finite-intermediate case. The existing
+exact Starter result regression also remains unchanged. Pivot order/ties,
+row-swap count, `P/L/U`, permutation, `xHat`, residual, threshold, reference
+comparison, fingerprint, and success/failure classification do not change.
+
+At `n=6`, there are at most 15 elimination records and five row swaps. One
+start matrix plus two matrices for each of those 20 operations retains at most
+41 complete 6x6 matrices: 1,476 binary64 entries. Adding the three six-entry
+right-hand-side/permutation vectors gives 1,494 new numeric values, or 11,952
+bytes of raw numeric payload before JavaScript container overhead. This bound
+is specific to the approved `n <= 6` Lab and is not a general large-matrix
+trace policy.
+
+### Exact relevant paths
+
+- `packages/numerics/src/linear-algebra/linearSystemsNumerics.ts`
+- `packages/numerics/src/linear-algebra/linearSystemsNumerics.test.ts`
+- `frontend/src/labs/linear-algebra/computationWalkthrough.test.ts`
+- `docs/contracts/NUMERICAL_CONTRACTS.md`
+- `docs/contracts/MATHEMATICAL_PRESENTATION.md`
+- `docs/superpowers/specs/2026-08-11-linear-systems-teaching-v2-design.md`
+- `docs/superpowers/plans/2026-08-11-linear-systems-teaching-v2-implementation-plan.md`
+- `PLAN.md`
+- `docs/INDEX.md`
+- `docs/PROJECT_HANDOFF.md`
+
+### Validation
+
+Focused verification passes four files / 73 tests: the generic trace factory,
+Linear Systems numerics, frontend session, and current walkthrough boundary.
+The complete suite passes 89 files / 1,218 tests. Import boundaries pass for
+all four workspace owners plus the Vercel adapter; frontend, numerics,
+contracts, and backend/API typechecks pass; `git diff --check` passes; and the
+97-module Production build passes. The Linear Systems asset remains an
+independently lazy 63.17 kB raw / 18.49 kB gzip JavaScript chunk. Complete
+`npm.cmd run verify` passes. The existing large deferred MathLive/Compute
+Engine chunk warning remains informational and unrelated to Phase 1.
+
+### Problems and reusable resolutions
+
+- The current walkthrough test assumed every semantic trace kind must already
+  be rendered. That would force Phase 2 UI into Phase 1. Resolution: keep the
+  product renderer unchanged and narrow the test to distinguish current
+  presentation kinds from the two producer-owned Phase 1 standalone records.
+- A full row-swap snapshot must describe `U` immediately after its row
+  exchange, not merely the later end of the combined `U/P/L` bookkeeping.
+  Resolution: capture `uAfter` directly after the existing `U` mutation, then
+  continue the unchanged permutation and prior-`L` swaps.
+- Repeatable baseline comparison must not modify the worktree or compare the
+  intentionally changed trace. Resolution: run the accepted and candidate
+  solvers through the same external inline harness and hash the complete
+  result/error projection with only `trace` removed.
+
+If another bounded algorithm needs presentation snapshots, emit them at the
+authoritative mutation boundary, prove sequential chaining and immutable
+ownership, and compare every non-trace field to the accepted baseline. Do not
+replay the algorithm or ask a renderer to reconstruct missing state.
+
+### Current state and next gate
+
+The implementation commit for the trace producer is
+`7d6668b4aec9af50136039d37e06b74a875f6e3e` (tree
+`62c8cd02991032da1e6c2cd94c16d1d08939ef79`). The documentation commit is
+the commit containing this section; its exact SHA/tree is reported after
+creation because a commit cannot self-reference its own hash.
+
+Motion v1 implementation still exists, but final motion acceptance remains
+paused. There is no Teaching v2 UI, MathML product integration, motion remount,
+method addition, Tutor, Glossary, dependency, push, or deployment in Phase 1.
+The exact next gate is **independent Teaching v2 Phase 1 trace audit**. Do not
+begin Phase 2 without that audit and separate maintainer authorization.
+
 ## Linear Systems Teaching v2 Phase 0 — MathML capability — 2026-08-11
+
+*Historical Phase 0 checkpoint. The Phase 1 section above supersedes its
+authorization and next-gate language without rewriting the evidence below.*
 
 The maintainer approved the Teaching v2 design and plan at
 `e6ecfac7ba11d2825d099070345c1d8c35c15596` (tree

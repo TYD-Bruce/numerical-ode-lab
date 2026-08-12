@@ -40,6 +40,20 @@ displayed substituted operand or result has been rounded. In particular, a
 rounded factor comparison is `P A ≈ L U`, while the factorization convention
 remains the exact symbolic statement `P A = L U`.
 
+### Linear Systems Teaching v2 row-operation convention
+
+The learner-facing elimination walkthrough presents the computed row
+expression first and points to the updated row identity:
+
+`R_i - m_ik R_k -> R_i`.
+
+For example, the mathematical display is equivalent to
+`R_2 - (2/3) R_1 -> R_2`. This is Numerical T Lab's walkthrough convention;
+it does not claim that the common assignment form
+`R_i <- R_i - m_ik R_k` or other textbook row-operation notation is
+incorrect. The convention changes presentation only and does not alter trace
+arithmetic, stored row identities, or the Gaussian-elimination algorithm.
+
 ## Accessible formula ownership
 
 Each displayed formula has exactly one accessible owner. The owning element

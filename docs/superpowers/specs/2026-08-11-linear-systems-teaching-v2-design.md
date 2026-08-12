@@ -1,7 +1,8 @@
 # Linear Systems Teaching v2 Design
 
 **Status:** Maintainer-approved; Phase 0 complete with Outcome B (Hybrid
-accepted); later phases require separate authorization
+accepted); Phase 1 trace snapshot extension implemented and locally verified;
+independent Phase 1 audit required before Phase 2
 
 **Date:** 2026-08-11
 
@@ -22,8 +23,18 @@ the mathematical objects stable while allowing horizontal desktop and
 vertical narrow-screen arrangements.
 
 The decision is capability approval, not product adoption. The DEV-only spike
-does not replace the current Linear Systems presentation. Phase 1 trace work
-and Phase 2 Teaching v2 integration remain separately gated.
+does not replace the current Linear Systems presentation. Phase 1 now extends
+the authoritative trace with bounded matrix snapshots and explicit `P b`
+evidence; Phase 2 Teaching v2 integration remains separately gated.
+
+### Phase 1 trace decision
+
+The single numerical path now emits `factorization_start.initialU`, complete
+`uBefore`/`uAfter` snapshots on every row swap and elimination, and one
+`right_hand_side_permutation` record copied from the exact `permutedB` used by
+forward substitution. The snapshots are deeply immutable and chained in
+actual operation order. Current product UI intentionally does not render the
+two new standalone step kinds; that presentation belongs to Phase 2.
 
 The current Linear Systems Lab is an engineering-correct checkpoint, not a
 teaching-complete product. It solves the approved problem, preserves numerical
@@ -368,7 +379,7 @@ U^(0) = A = [  3   1  −1 ]
 
 m_21 = U_21 / U_11 ≈ 0.6666667
 
-U^(0)  -- R_2 ← R_2 − m_21 R_1 -->
+U^(0)  -- R_2 − m_21 R_1 → R_2 --
 
 U^(1) ≈ [  3          1         −1       ]
          [  0          3.333333   1.666667 ]
@@ -376,7 +387,7 @@ U^(1) ≈ [  3          1         −1       ]
 
 m_31 = U_31 / U_11 ≈ −0.3333333
 
-U^(1)  -- R_3 ← R_3 − m_31 R_1 -->
+U^(1)  -- R_3 − m_31 R_1 → R_3 --
 
 U^(2) ≈ [ 3   1          −1       ]
          [ 0   3.333333    1.666667 ]
@@ -384,7 +395,7 @@ U^(2) ≈ [ 3   1          −1       ]
 
 m_32 = U_32 / U_22 ≈ 0.7
 
-U^(2)  -- R_3 ← R_3 − m_32 R_2 -->
+U^(2)  -- R_3 − m_32 R_2 → R_3 --
 
 U^(3) ≈ [ 3   1          −1       ]
          [ 0   3.333333    1.666667 ]
@@ -489,27 +500,27 @@ does not appear in the default walkthrough.
 
 ## 17. Trace sufficiency matrix
 
-| Teaching display | Current evidence | Sufficient? | Missing evidence | Required producer change | Frontend without recomputation? |
+| Teaching display | Phase 1 evidence | Sufficient? | Missing evidence | Producer status | Frontend without recomputation? |
 |---|---|---:|---|---|---:|
-| Initial full matrix | Successful result has `originalA`; matrix-scale terms also contain every entry but not as a matrix state. | Partial | Explicit `U^(0)` state, especially for failure walkthroughs | Add `factorization_start.initialU` | Yes after extension |
+| Initial full matrix | `factorization_start.initialU` is copied before the first factorization operation. | Yes | None | Implemented | Yes |
 | Pivot candidates | `pivot_selection.candidates` in computation order | Yes | None | None | Yes |
 | Selected pivot | Selected row/value/magnitude, threshold, acceptance | Yes | None | None | Yes |
-| Row swap full before/after | Only the two affected `U` rows, `P` rows, permutations, and prior-`L` entries | No for a full-matrix transformation | Complete `U` before and after | Add immutable `uBefore` and `uAfter` matrices to `row_swap` | Yes after extension |
-| Elimination full before/after | Pivot row, target row before/after, multiplier | No for a full-matrix transformation | Complete `U` before and after | Add immutable `uBefore` and `uAfter` matrices to `elimination` | Yes after extension |
+| Row swap full before/after | Each `row_swap` carries complete immutable `uBefore` and `uAfter` plus the accepted row/permutation/prior-`L` evidence. | Yes | None | Implemented around the existing swap | Yes |
+| Elimination full before/after | Each elimination carries its own complete sequential `uBefore` and `uAfter`, plus pivot/target rows and multiplier. | Yes | None | Implemented around the existing update | Yes |
 | Multiplier | Pivot value, target-column value, multiplier, `L` location | Yes | None | None | Yes |
 | Final `P/L/U` | `factorization_complete` has complete factors and permutation | Yes | None | None | Yes |
-| `P b` | Permutation is stored; each forward step stores one component of `P b` | Partial | One authoritative complete vector and explicit permutation operation | Add `right_hand_side_permutation` with original `b`, permutation, and `permutedB` | Yes after extension |
+| `P b` | `right_hand_side_permutation` carries original `b`, the authoritative permutation, and the exact complete `permutedB` consumed by forward substitution. | Yes | None | Implemented on the existing solve path | Yes |
 | Forward substitution | Ordered contributions, products, accumulators, numerator, diagonal, result | Yes | None | None | Yes |
 | Backward substitution | Ordered contributions, products, accumulators, numerator, diagonal, result | Yes | None | None | Yes |
 | Complete `x-hat` | Successful result has `xHat`; backward records carry each component | Yes through result | No trace change needed | Pass the immutable success result to the v2 renderer or use its existing owner | Yes |
 | Residual components/vector | Result has vector; trace has original `A` row, `xHat`, ordered products, matrix-vector value, `b_i`, and residual | Yes | None | None | Yes |
 | Residual norm | Components, absolute values, maximum row, norm | Yes | None | None | Yes |
 | Preset comparison | Complete conditional component differences and maximum | Yes | None | None | Yes |
-| Pivot failure | Error code/message plus trace through rejected pivot | Partial | Full current `U` state at the controlled stop | `factorization_start` plus full operation snapshots accumulated before failure; no partial success | Yes after extension |
+| Pivot failure | Error code/message plus `factorization_start`, completed operation snapshots, and the rejected pivot; no post-failure solve evidence. | Yes for the controlled pivot-rejection contract | None | Implemented without partial success | Yes |
 
-## 18. Required trace extension
+## 18. Implemented trace extension
 
-Extend only the Linear-Systems-specific step union:
+Phase 1 extends only the Linear-Systems-specific step union:
 
 1. add `factorization_start` with a deeply frozen complete `initialU`;
 2. add complete deeply frozen `uBefore` and `uAfter` matrices to each
@@ -520,11 +531,11 @@ Extend only the Linear-Systems-specific step union:
    `permutedB`.
 
 Because `n <= 6`, these snapshots remain naturally bounded and follow the
-existing “retain all meaningful steps” policy. They must be copied from the
-authoritative work arrays immediately before/after the existing operation.
-They may not be produced by a second Gaussian-elimination pass. Trace-enabled
-outputs, arithmetic order, pivots, factors, solution, residual, fingerprints,
-and success/failure classification must remain exactly compatible.
+existing “retain all meaningful steps” policy. They are copied from the
+authoritative work arrays immediately before/after the existing operation and
+are not produced by a second Gaussian-elimination pass. Trace-enabled outputs,
+arithmetic order, pivots, factors, solution, residual, fingerprints, and
+success/failure classification remain exactly compatible.
 
 Do not add prose, HTML, MathML, LaTeX, rendered strings, determinant,
 condition number, or new diagnostic claims to the trace.
@@ -655,7 +666,7 @@ import boundaries, production build/manifest review, full verification,
 
 ## 25. Approval gate
 
-The next gate is maintainer approval of this Teaching v2 design. Approval
-authorizes planning/execution only according to the separately tracked
-implementation plan; it does not authorize new iterative methods, Tutor,
-Glossary, push, or deployment.
+The exact next gate is an independent Teaching v2 Phase 1 trace audit. Phase 2
+static Teaching v2 integration remains unauthorized until that audit and a
+separate maintainer decision. This design does not authorize new iterative
+methods, Tutor, Glossary, push, or deployment.
