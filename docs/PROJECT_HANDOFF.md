@@ -2,7 +2,128 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
-## Cross-Lab Presentation Sync design/audit — 2026-08-12
+## Cross-Lab Presentation System v1 approval and Phase 0 foundation — 2026-08-12
+
+### Approval and authorization record
+
+Cross-Lab Presentation System v1 is **MAINTAINER APPROVED**. The approved
+design commit is `3b77f7133a95bef855c2eb3e3a69db37e16f1e46` (tree
+`95908ac5c0a773675bf237d3d49679106a4091f7`). The maintainer separately
+authorized Phase 0 after design approval. The Phase 0 implementation is commit
+`b81a8dfc8d1ab49be9f07cd3fff59cb5d7c3cf05` (tree
+`56b810a3d4e0f5fe9c4f235b9bde0cfdabff06d0`).
+
+Phase 0 is implemented and locally verified, but it is not yet maintainer-
+accepted as the visual foundation. The exact next gate is **maintainer visual
+approval of the Phase 0 semantic tokens and DEV fixture**. Phase 1 and all
+later migration phases remain unauthorized.
+
+### Semantic foundation
+
+`frontend/src/app/theme.css` now owns a mostly additive Cross-Lab vocabulary:
+
+- Method, Data, Output, and Analysis stage roles, each with accent,
+  foreground, soft surface, rail/border, and selected treatment;
+- page, stage, section, inset, and elevated surfaces, plus quiet, standard,
+  and strong borders;
+- Lab title, stage title, section title, body, metadata, technical eyebrow,
+  numeric, and supporting-copy type roles using the existing DM Sans,
+  JetBrains Mono, and mathematical-rendering boundaries;
+- inline, header, stage, section, block, and compact semantic spacing mapped
+  to the existing scale, with bounded mobile remapping;
+- stage, section, control, and compact radii mapped to the existing small
+  hierarchy;
+- one three-pixel focus language with the existing Light/Dark focus colors;
+- neutral, ready, current, stale, caution, failure, and planned text/border/
+  surface tones;
+- primary, secondary, quiet, and danger action roles plus default, hover,
+  active, focus, disabled, and invalid control states.
+
+Existing accepted `--color-*`, spacing, radius, motion, and product selectors
+were not changed. Stage identity is intentionally a restrained calibration
+rail over neutral structure. Output receives the strongest answer frame.
+Analysis reuses the calm amber family as an interpretive role, with wording
+and structure carrying meaning before color. The accepted maximum nesting
+remains page → stage → section → inset; more shadows or gradients are not a
+substitute for hierarchy.
+
+Light remains the existing low-glare Technical Daylight system and Dark
+remains its low-luminance technical counterpart. Both themes use the same
+semantic relationships rather than independently invented palettes.
+
+### DEV fixture, accessibility, and browser evidence
+
+`/__dev/presentation-system` is a removable internal visual fixture under
+`frontend/src/dev/presentation/`. It uses the same `import.meta.env.DEV`,
+variable-path, `@vite-ignore` exclusion seam as the accepted MathML capability
+fixture. Its stylesheet is fixture-only and it creates no production
+`LabShell`, workflow, stage, result, teaching, evidence, or analysis primitive.
+
+The fixture demonstrates the five identity words, all four labelled stage
+roles, the four-level surface stack, the complete typography hierarchy,
+three project-owned native-MathML objects, an illustrative problem/result
+relationship, teaching/evidence/analysis/advanced-detail voices, text-first
+statuses, native buttons/input/select/details, disabled/invalid states, and
+keyboard focus. It has one `h1`; each visual MathML tree is hidden under one
+labelled `role="math"` owner; status meaning is written in text; and no
+MathLive or Compute Engine is loaded.
+
+Fresh in-app browser review covered actual 1440 × 900 and 390 × 844 DOM
+viewports in Light/Dark, a 320-pixel Light stress state, and focused controls
+in both themes. All checked states had document `scrollWidth === clientWidth`,
+the focus outline resolved as a solid shared ring in each theme, and console
+warning/error output was empty. The visual review found the system technical,
+calm, tactile, mathematical, and premium through disciplined alignment,
+limited radii, tonal layering, technical metadata, native MathML, and the
+calibration rail. An initial fixture-only Output gradient was judged
+unnecessary and replaced by one low-glare semantic Output surface.
+
+Representative screenshots remain in an untracked external evidence
+directory. The browser viewport control initially exposed a small outer-frame
+width offset; the review calibrated against actual DOM `clientWidth` before
+capturing evidence. This was a harness detail, not a product issue.
+
+Bounded current-product smokes covered ODE Method and Linear Systems Method in
+Light at desktop width. Both retained their existing presentation, route
+ownership, and zero page overflow. No Lab design re-review or migration was
+performed.
+
+### Verification, bundle, and exclusions
+
+Contract-first development began with the expected two failing files: the new
+token vocabulary and fixture module did not exist. The focused final gate
+passes 7 files / 50 tests, including tokens, theme behavior, guarded route
+injection, bootstrap, route ownership, fixture DOM/accessibility, and a real
+temporary Production manifest build. Import boundaries pass for four owners
+plus the Vercel adapter. Complete verification passes 92 files / 1,235 tests,
+all frontend/numerics/contracts and backend/API typechecks, the Production
+build, and boundary checks. `git diff --check` passes.
+
+The Production build transforms 99 modules before and after Phase 0. Entry JS
+is unchanged at 56.64 kB raw / 17.45 kB gzip. Shared platform CSS changes from
+18.72 / 4.29 kB to 29.51 / 5.39 kB raw/gzip because the Light/Dark semantic
+vocabulary is entry-safe CSS. ODE remains an independent 293.60 / 94.05 kB
+raw/gzip JS route, and Linear Systems remains an independent 71.11 / 21.06 kB
+route. Tutor and Glossary remain deferred dynamic assets.
+
+The temporary Production manifest and generated-asset assertions prove that
+`presentationSystemRoute`, `presentationSystem.css`, the fixture selector,
+the fixture phase label, and fixture body marker are absent. The seven public
+paths are unchanged and `/__dev/presentation-system` matches Not Found unless
+explicitly injected. ODE, Linear Systems, Tutor, Glossary, MathLive, and
+Compute Engine lazy ownership is unchanged.
+
+No ODE product source, Linear Systems product source, PDE, numerical behavior,
+Computation Trace, native MathML architecture, Motion, Tutor, Glossary,
+dependency, deployment configuration, push, Preview, or Production deployment
+changed. Motion remains paused; Linear Algebra Tutor remains later. Phase 0
+self-review closes at `P0 = P1 = P2 = P3 = 0`.
+
+## Cross-Lab Presentation Sync design/audit — historical pre-approval checkpoint — 2026-08-12
+
+This section preserves the exact design/audit checkpoint before maintainer
+approval. Its proposed status and next gate are superseded by the Phase 0
+record above.
 
 ### Accepted prerequisite
 

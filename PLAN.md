@@ -2,8 +2,9 @@
 
 ## Current status
 
-**Active milestone: Cross-Lab Presentation Sync — design/audit complete;
-maintainer design approval is the next gate.**
+**Active milestone: Cross-Lab Presentation Sync — Phase 0 semantic tokens and
+DEV fixture implemented and locally verified; maintainer visual approval is
+the next gate.**
 
 Linear Systems Teaching v2 is **MAINTAINER ACCEPTED** at commit
 `484fc9153de33be7949e82b29386c94fe63d19c8` (tree
@@ -13,19 +14,31 @@ implemented but paused and unmounted from the accepted static walkthrough.
 Linear Algebra Tutor remains a later task. No Preview or Production deployment
 of the accepted Teaching v2 state has occurred.
 
-The new authoritative
+The maintainer approved the authoritative
 [Cross-Lab Presentation System v1 design](docs/superpowers/specs/2026-08-12-cross-lab-presentation-system-v1-design.md)
 and
 [repository-grounded implementation plan](docs/superpowers/plans/2026-08-12-cross-lab-presentation-system-v1-implementation-plan.md)
-define a best-of-both presentation architecture for the Initial Value Problems
-and Linear Systems Labs, with domain-neutral compatibility for a future PDE
-Lab. The design selects exactly ten top-level primitives: `LabShell`,
+at commit `3b77f7133a95bef855c2eb3e3a69db37e16f1e46` (tree
+`95908ac5c0a773675bf237d3d49679106a4091f7`) and separately authorized Phase
+0. They define a best-of-both presentation architecture for the Initial Value
+Problems and Linear Systems Labs, with domain-neutral compatibility for a
+future PDE Lab. The design selects exactly ten top-level primitives: `LabShell`,
 `WorkflowNavigation`, `StageSection`, `ProblemContext`, `TeachingBlock`,
 `PrimaryResult`, `EvidenceBlock`, `ComputationWalkthroughShell`,
 `AnalysisSurface`, and `ModuleOverview`. `LabHeader` is part of `LabShell`;
 MethodTeaching and the shared status/table/action/disclosure language are
 governed compositions or supporting elements rather than extra top-level
 primitives.
+
+Phase 0 implementation commit
+`b81a8dfc8d1ab49be9f07cd3fff59cb5d7c3cf05` (tree
+`56b810a3d4e0f5fe9c4f235b9bde0cfdabff06d0`) adds only the semantic Light/Dark
+token vocabulary and the removable `/__dev/presentation-system` visual
+fixture. The vocabulary covers stage roles, surface/border/type/spacing/radius
+hierarchy, focus, status tones, actions, and control states. The fixture is
+absent from Production route matching, manifest/assets, styles, and marker
+copy. Browser review passes 1440 × 900, 390 × 844, 320-pixel stress, Light/
+Dark, and focus checks without page overflow or console warning/error.
 
 The design keeps ODE's exploration, presets, Compare, charts, Convergence,
 Tutor, and Glossary strengths; keeps Linear Systems Teaching v2's explicit
@@ -37,11 +50,14 @@ Shared complete-Lab primitives remain Lab-shared lazy; only `ModuleOverview`
 is entry-safe. The platform entry must remain free of complete-Lab, Chart.js,
 Tutor, Glossary, MathLive, and Compute Engine runtime.
 
-This iteration is documentation/design only. No frontend source or CSS,
-numerical behavior, Computation Trace, MathML, Motion, Tutor, Glossary, PDE,
-dependency, route, deployment, or Production state changed. The exact next
-gate is **maintainer approval of Cross-Lab Presentation System v1 design**.
-Do not begin implementation, Motion, or Tutor before that gate.
+No production Lab markup or product style has migrated. ODE and Linear Systems
+retain their current source, domain behavior, and independently lazy route
+ownership. Numerical behavior, Computation Trace, MathML architecture, Motion,
+Tutor, Glossary, PDE, dependencies, deployment, and Production state are
+unchanged. The exact next gate is **maintainer visual approval of Phase 0
+semantic tokens and the DEV fixture**. Phase 1 and every later migration phase
+remain unauthorized; do not begin shared primitives, Lab migration, Motion,
+or Tutor before that gate.
 
 ## Superseded Teaching v2 execution record
 

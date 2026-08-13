@@ -1,13 +1,13 @@
 # Cross-Lab Presentation System v1 Implementation Plan
 
-**Status:** Repository-grounded proposal; not authorized for implementation
+**Status:** Phase 0 is the current authorized phase and is implemented locally; maintainer visual approval pending; Phase 1+ not authorized
 
 **Design authority:**
 [`2026-08-12-cross-lab-presentation-system-v1-design.md`](../specs/2026-08-12-cross-lab-presentation-system-v1-design.md)
 
-**Starting implementation prerequisite:** Maintainer approval of the design
+**Starting implementation prerequisite:** Satisfied at design commit `3b77f7133a95bef855c2eb3e3a69db37e16f1e46`
 
-**Current gate:** Stop before implementation
+**Current gate:** Stop after Phase 0 before shared primitives or Lab migration
 
 ## 1. Objective and boundary
 
@@ -75,6 +75,12 @@ helpers are inseparable, but do not create one large `components.ts` or move
 domain renderers into this folder.
 
 ## 4. Phase 0 — lock tokens and contracts
+
+**Execution status:** Implemented and locally verified at
+`b81a8dfc8d1ab49be9f07cd3fff59cb5d7c3cf05` (tree
+`56b810a3d4e0f5fe9c4f235b9bde0cfdabff06d0`). The exact stop gate remains
+maintainer visual approval of the tokens and DEV fixture. Phase 1 is not
+authorized.
 
 ### Changes
 
@@ -418,5 +424,5 @@ Implementation is complete only after Phase 7 acceptance and documentation
 updates accurately label it implemented and locally verified. Production
 remains unchanged until a separately authorized release/deployment task.
 
-Current exact next gate: **maintainer approval of Cross-Lab Presentation
-System v1 design**. Stop before Phase 0.
+Current exact next gate: **maintainer visual approval of Phase 0 semantic
+tokens and the DEV fixture**. Stop before Phase 1.
