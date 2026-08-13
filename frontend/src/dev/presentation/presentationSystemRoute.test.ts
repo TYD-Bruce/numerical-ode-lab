@@ -35,6 +35,18 @@ describe("development-only Presentation System fixture", () => {
     expect(target.textContent).toContain("Data");
     expect(target.textContent).toContain("Output");
     expect(target.textContent).toContain("Analysis");
+    expect(target.textContent).not.toContain("One family, four responsibilities");
+    expect(target.textContent).not.toContain("Neutral structure carries the page");
+    expect(target.textContent).toContain("Workflow roles");
+    expect(target.textContent).toContain(
+      "Method, Data, Output, and Analysis each serve a distinct role in the numerical workflow."
+    );
+    expect(target.textContent).toContain("Choose the numerical approach.");
+    expect(target.textContent).toContain("Define the mathematical problem.");
+    expect(target.textContent).toContain("Read the computed result.");
+    expect(target.textContent).toContain(
+      "Interpret accuracy, reliability, and numerical behavior."
+    );
     for (const status of ["Ready", "Current", "Stale", "Caution", "Failed", "Planned"]) {
       expect(target.querySelector(`[data-presentation-status='${status.toLowerCase()}']`)?.textContent)
         .toContain(status);
@@ -69,6 +81,45 @@ describe("development-only Presentation System fixture", () => {
       expect(owner.getAttribute("aria-label")).toBeTruthy();
       expect(owner.querySelectorAll(":scope > math[aria-hidden='true']")).toHaveLength(1);
     }
+  });
+
+  it("owns the complete scientific exponent as one accessible MathML formula", () => {
+    const target = document.createElement("main");
+    document.body.append(target);
+    createPresentationSystemRoute().mount({
+      target,
+      navigate: vi.fn(),
+      location: {
+        pathname: "/__dev/presentation-system",
+        search: "",
+        hash: "",
+      },
+    });
+
+    const row = [...target.querySelectorAll<HTMLElement>(".presentation-type-row")].find(
+      (candidate) => candidate.textContent?.includes("Numeric value")
+    );
+    const owner = row?.querySelector<HTMLElement>("[data-math='numeric-value']");
+    const script = owner?.querySelector("msup");
+    const [base, exponent] = script ? [...script.children] : [];
+
+    expect(row).toBeDefined();
+    expect(row?.querySelectorAll("[role='math']")).toHaveLength(1);
+    expect(owner?.getAttribute("role")).toBe("math");
+    expect(owner?.getAttribute("aria-label")).toBe(
+      "2.31 times ten to the minus 14"
+    );
+    expect(owner?.querySelectorAll(":scope > math[aria-hidden='true']")).toHaveLength(1);
+    expect(script?.children).toHaveLength(2);
+    expect(base?.textContent).toBe("10");
+    expect(exponent?.textContent).toBe("−14");
+    expect(exponent?.textContent).toContain("−");
+    expect(exponent?.textContent).toContain("14");
+    expect(
+      [...(script?.parentElement?.childNodes ?? [])]
+        .filter((node) => node !== script)
+        .some((node) => node.textContent?.includes("4"))
+    ).toBe(false);
   });
 
   it("stays authored, removable, and independent from eager math or external assets", () => {

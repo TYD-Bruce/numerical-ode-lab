@@ -589,6 +589,10 @@
   font-size: 1.35rem;
 }
 
+.presentation-system-fixture .presentation-type-numeric .native-math-visual {
+  font-size: inherit;
+}
+
 .presentation-system-fixture .native-math-visual mtable {
   column-gap: 0.55em;
   row-gap: 0.2em;

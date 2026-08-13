@@ -3,6 +3,7 @@ import {
   createNativeMath,
   mathIdentifier,
   mathMatrix,
+  mathNumber,
   mathNumberLiteral,
   mathOperator,
   mathOver,
@@ -76,8 +77,8 @@ function createStageRoles(): HTMLElement {
   section.append(
     specimenHeading(
       "01 · Workflow roles",
-      "One family, four responsibilities",
-      "Neutral structure carries the page; a calibrated rail identifies each stage."
+      "Workflow roles",
+      "Method, Data, Output, and Analysis each serve a distinct role in the numerical workflow."
     )
   );
   const stages = document.createElement("div");
@@ -85,8 +86,13 @@ function createStageRoles(): HTMLElement {
   const definitions: readonly [StageRole, string, string, string][] = [
     ["method", "01", "Method", "Choose the numerical approach."],
     ["data", "02", "Data", "Define the mathematical problem."],
-    ["output", "03", "Output", "Read the computed answer."],
-    ["analysis", "04", "Analysis", "Interpret reliability and error."],
+    ["output", "03", "Output", "Read the computed result."],
+    [
+      "analysis",
+      "04",
+      "Analysis",
+      "Interpret accuracy, reliability, and numerical behavior.",
+    ],
   ];
   for (const [role, index, title, copy] of definitions) {
     const stage = document.createElement("article");
@@ -148,14 +154,25 @@ function createSurfaceStack(): HTMLElement {
 function createTypographyLedger(): HTMLElement {
   const ledger = document.createElement("div");
   ledger.className = "presentation-type-ledger";
-  const rows: readonly [string, string, string][] = [
+  const rows: readonly [string, string, string | HTMLElement][] = [
     ["Lab title", "presentation-type-lab-title", "Initial Value Problems Lab"],
     ["Stage title", "presentation-type-stage-title", "Output"],
     ["Section title", "presentation-type-section-title", "Problem and computed solution"],
     ["Teaching body", "presentation-type-body", "A pivot is the active entry used to eliminate entries below it."],
     ["Metadata", "presentation-type-metadata", "Gaussian elimination · 3 × 3 system"],
     ["Technical eyebrow", "presentation-type-eyebrow", "RUN 04 · CURRENT SNAPSHOT"],
-    ["Numeric value", "presentation-type-numeric", "2.31 × 10⁻¹⁴"],
+    [
+      "Numeric value",
+      "presentation-type-numeric",
+      createNativeMath(
+        mathNumber(2.31e-14, "diagnostic"),
+        "2.31 times ten to the minus 14",
+        {
+          className: "presentation-type-numeric",
+          dataMath: "numeric-value",
+        }
+      ),
+    ],
     ["Supporting", "presentation-type-supporting", "Residual infinity norm"],
   ];
   for (const [label, className, sample] of rows) {
@@ -163,7 +180,7 @@ function createTypographyLedger(): HTMLElement {
     row.className = "presentation-type-row";
     row.append(
       textElement("span", "presentation-type-label", label),
-      textElement("span", className, sample)
+      typeof sample === "string" ? textElement("span", className, sample) : sample
     );
     ledger.append(row);
   }
