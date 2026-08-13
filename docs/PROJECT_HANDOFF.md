@@ -9,14 +9,70 @@ This is the durable handoff for future contributors. Use it with the current cod
 Cross-Lab Presentation System v1 is **MAINTAINER APPROVED**. The approved
 design commit is `3b77f7133a95bef855c2eb3e3a69db37e16f1e46` (tree
 `95908ac5c0a773675bf237d3d49679106a4091f7`). The maintainer separately
-authorized Phase 0 after design approval. The Phase 0 implementation is commit
-`b81a8dfc8d1ab49be9f07cd3fff59cb5d7c3cf05` (tree
-`56b810a3d4e0f5fe9c4f235b9bde0cfdabff06d0`).
+authorized Phase 0 after design approval. The Phase 0 foundation implementation
+is commit `b81a8dfc8d1ab49be9f07cd3fff59cb5d7c3cf05` (tree
+`56b810a3d4e0f5fe9c4f235b9bde0cfdabff06d0`). The final Maintainer visual-
+correction implementation is commit
+`a196041a49ac3a396e779f3905ff8152f94e603a` (tree
+`53a8490db24460c8a708269ba3ba2b9494e09690`).
 
-Phase 0 is implemented and locally verified, but it is not yet maintainer-
-accepted as the visual foundation. The exact next gate is **maintainer visual
-approval of the Phase 0 semantic tokens and DEV fixture**. Phase 1 and all
-later migration phases remain unauthorized.
+Phase 0 implementation ready for Maintainer acceptance. This is not a self-
+declaration of acceptance. The exact next gate is **final Maintainer visual
+acceptance of Phase 0**. Phase 1 and all later migration phases remain
+unauthorized.
+
+### Phase 0 Maintainer visual review corrections
+
+The Maintainer visual review identified exactly two fixture findings, both now
+closed locally:
+
+- the slogan-like workflow heading and implementation-oriented supporting copy
+  were replaced by the direct heading **Workflow roles** and the sentence
+  **Method, Data, Output, and Analysis each serve a distinct role in the
+  numerical workflow.** The four role samples retain the approved Method,
+  Data, Output, and Analysis descriptions;
+- the Typography roles **Numeric value** sample visually presented the final
+  digit of `2.31 × 10^-14` inconsistently with the rest of the exponent.
+
+The scientific-notation root cause was **A — DEV fixture authored markup
+only**. The sample was one plain text node containing Unicode superscript
+glyphs (`2.31 × 10⁻¹⁴`), so it had no mathematical superscript structure. No
+token CSS, shared formatter output, or accepted native MathML composition
+caused the defect. The fixture now reuses the existing project-owned
+`mathNumber(2.31e-14, "diagnostic")` path. One labelled `role="math"` owner
+contains one `aria-hidden="true"` native MathML tree; its scientific number is
+an `mrow` whose `msup` owns base `10` and one exponent child containing the
+complete `−14`. The fixture-only numeric specimen rule lets that MathML inherit
+the approved numeric type scale. Shared `nativeMath.ts`, `structuredMath.ts`,
+production Lab source, number formatting, mathematical semantics, and
+accessibility ownership did not change.
+
+Reusable mathematical-presentation rule: **a scientific exponent is one
+mathematical superscript subtree, not independently positioned characters.**
+Do not use Unicode superscript digits, character-specific offsets, margins,
+transforms, or absolute positioning as mathematical authority.
+
+Fresh in-app browser verification covered actual 1440 × 900 Light and Dark,
+390 × 844 Dark, and 320-pixel Dark stress layouts. The `−`, `1`, and `4` share
+one native `msup` exponent subtree and baseline; the exponent clears the base,
+does not clip or create a line-height artifact, and remains equivalent across
+themes and mobile widths. The approved workflow wording is present, the two
+rejected strings are absent, every checked fixture viewport has zero page-
+level overflow, and console warning/error output is empty. A bounded Linear
+Systems Diagnostics replay retained its accepted near-machine residual
+evidence: `8.881784 × 10^-16` remains one native MathML scientific-number
+`mrow` with one `msup`, base `10`, and complete exponent `−16` under one
+accessible formula owner. Production mathematical presentation was not
+affected.
+
+Focused fixture/token/math/Production-exclusion verification passes 6 files /
+28 tests. Import boundaries pass for four owners plus the Vercel adapter. Full
+verification passes 92 files / 1,236 tests, all workspace and backend/API
+typechecks, and the unchanged 99-module Production build. The generated-
+output contract continues to exclude `presentationSystemRoute`,
+`presentationSystem.css`, fixture copy, and fixture selectors from Production.
+The bounded correction review has no remaining findings:
+`P0 = P1 = P2 = P3 = 0`.
 
 ### Semantic foundation
 
@@ -61,7 +117,7 @@ fixture. Its stylesheet is fixture-only and it creates no production
 
 The fixture demonstrates the five identity words, all four labelled stage
 roles, the four-level surface stack, the complete typography hierarchy,
-three project-owned native-MathML objects, an illustrative problem/result
+four project-owned native-MathML objects, an illustrative problem/result
 relationship, teaching/evidence/analysis/advanced-detail voices, text-first
 statuses, native buttons/input/select/details, disabled/invalid states, and
 keyboard focus. It has one `h1`; each visual MathML tree is hidden under one
