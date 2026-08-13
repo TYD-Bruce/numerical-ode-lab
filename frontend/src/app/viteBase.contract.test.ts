@@ -123,6 +123,17 @@ describe("Vite root-base deployment contract", () => {
     expect(emittedCss).not.toContain(".mathml-capability");
   });
 
+  it("excludes the Phase 0 Presentation System fixture from production output", () => {
+    const keys = Object.keys(manifest).join("\n");
+    expect(keys).not.toContain("presentationSystemRoute");
+    expect(keys).not.toContain("presentationSystem.css");
+    expect(emittedJavaScript).not.toContain(
+      "Phase 0 token calibration — not a product Lab."
+    );
+    expect(emittedJavaScript).not.toContain("Presentation System v1 — Phase 0");
+    expect(emittedCss).not.toContain(".presentation-system-fixture");
+  });
+
   it("uses root-origin URLs for emitted CSS font assets", () => {
     expect(emittedCss).toMatch(/url\(\/assets\/[^)]+\.(?:woff2?|ttf|otf)\)/);
     expect(emittedCss).not.toMatch(/url\(\.\/[^)]+\.(?:woff2?|ttf|otf)\)/);

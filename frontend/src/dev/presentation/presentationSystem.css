@@ -1,0 +1,689 @@
+.presentation-system-fixture {
+  width: min(100%, 78rem);
+  margin-inline: auto;
+  gap: var(--lab-space-stage);
+  font-family: var(--lab-font-body);
+}
+
+.presentation-system-fixture :where(h1, h2, h3, p, ul, dl, dd) {
+  margin-block: 0;
+}
+
+.presentation-fixture-header {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--lab-space-header);
+  padding-block: 0 var(--lab-space-header);
+  border-bottom: 1px solid var(--lab-border-strong);
+}
+
+.presentation-fixture-header::before {
+  position: absolute;
+  inset: auto 0 calc(var(--space-1) * -1) 0;
+  width: min(18rem, 42%);
+  height: var(--space-1);
+  background: var(--lab-stage-output-accent);
+  content: "";
+}
+
+.presentation-lab-title {
+  max-width: var(--lab-readable-measure);
+  margin-block: var(--space-2) !important;
+  color: var(--color-text-primary);
+  font-size: var(--lab-type-lab-title-size);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: var(--lab-type-lab-title-line);
+}
+
+.presentation-fixture-descriptor {
+  color: var(--color-text-primary) !important;
+  font-size: var(--lab-type-section-title-size);
+  font-weight: 650;
+}
+
+.presentation-eyebrow,
+.presentation-type-eyebrow {
+  color: var(--color-text-tertiary) !important;
+  font-family: var(--lab-font-technical);
+  font-size: var(--lab-type-eyebrow-size);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  line-height: 1.45;
+  text-transform: uppercase;
+}
+
+.presentation-supporting,
+.presentation-type-supporting {
+  max-width: var(--lab-readable-measure);
+  color: var(--color-text-secondary) !important;
+  font-size: var(--lab-type-supporting-size);
+  line-height: 1.55;
+}
+
+.presentation-fixture-header .presentation-supporting {
+  margin-top: var(--space-3);
+}
+
+.presentation-identity-words {
+  display: grid;
+  margin: 0;
+  padding: 0 0 var(--space-1);
+  gap: var(--space-2);
+  list-style: none;
+}
+
+.presentation-identity-words li {
+  color: var(--color-text-secondary);
+  font-family: var(--lab-font-technical);
+  font-size: var(--lab-type-metadata-size);
+  letter-spacing: 0.035em;
+  line-height: 1.3;
+  text-align: right;
+}
+
+.presentation-fixture-section {
+  display: grid;
+  gap: var(--lab-space-block);
+}
+
+.presentation-specimen-heading {
+  display: grid;
+  max-width: var(--lab-readable-measure);
+  gap: var(--space-2);
+}
+
+.presentation-stage-title,
+.presentation-type-stage-title {
+  color: var(--color-text-primary);
+  font-size: var(--lab-type-stage-title-size);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: var(--lab-type-stage-title-line);
+}
+
+.presentation-section-title,
+.presentation-type-section-title {
+  color: var(--color-text-primary);
+  font-size: var(--lab-type-section-title-size);
+  font-weight: 700;
+  line-height: var(--lab-type-section-title-line);
+}
+
+.presentation-type-body {
+  max-width: var(--lab-readable-measure);
+  color: var(--color-text-secondary);
+  font-size: var(--lab-type-body-size);
+  line-height: var(--lab-type-body-line);
+}
+
+.presentation-type-metadata,
+.presentation-type-label,
+.presentation-surface-label,
+.presentation-stage-index,
+.presentation-stage-state {
+  color: var(--color-text-tertiary);
+  font-family: var(--lab-font-technical);
+  font-size: var(--lab-type-metadata-size);
+  line-height: 1.45;
+}
+
+.presentation-type-numeric {
+  color: var(--color-text-primary);
+  font-family: var(--lab-font-technical);
+  font-size: var(--lab-type-numeric-size);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  line-height: 1.15;
+}
+
+.presentation-stage-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.presentation-stage-specimen {
+  --fixture-stage-accent: var(--lab-stage-method-accent);
+  --fixture-stage-foreground: var(--lab-stage-method-foreground);
+  --fixture-stage-border: var(--lab-stage-method-border);
+  --fixture-stage-selected: var(--lab-stage-method-selected);
+  min-width: 0;
+  padding: var(--lab-space-block);
+  border: 1px solid var(--fixture-stage-border);
+  border-inline-start: var(--space-1) solid var(--fixture-stage-accent);
+  border-radius: var(--lab-radius-section);
+  background: var(--fixture-stage-selected);
+}
+
+.presentation-stage-specimen[data-presentation-stage="data"] {
+  --fixture-stage-accent: var(--lab-stage-data-accent);
+  --fixture-stage-foreground: var(--lab-stage-data-foreground);
+  --fixture-stage-border: var(--lab-stage-data-border);
+  --fixture-stage-selected: var(--lab-stage-data-selected);
+}
+
+.presentation-stage-specimen[data-presentation-stage="output"] {
+  --fixture-stage-accent: var(--lab-stage-output-accent);
+  --fixture-stage-foreground: var(--lab-stage-output-foreground);
+  --fixture-stage-border: var(--lab-stage-output-border);
+  --fixture-stage-selected: var(--lab-stage-output-selected);
+}
+
+.presentation-stage-specimen[data-presentation-stage="analysis"] {
+  --fixture-stage-accent: var(--lab-stage-analysis-accent);
+  --fixture-stage-foreground: var(--lab-stage-analysis-foreground);
+  --fixture-stage-border: var(--lab-stage-analysis-border);
+  --fixture-stage-selected: var(--lab-stage-analysis-selected);
+}
+
+.presentation-stage-label {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.presentation-stage-index,
+.presentation-stage-specimen h3 {
+  color: var(--fixture-stage-foreground);
+}
+
+.presentation-stage-state {
+  color: var(--fixture-stage-foreground);
+  text-align: right;
+}
+
+.presentation-stage-specimen h3 {
+  margin-bottom: var(--space-2);
+}
+
+.presentation-foundation-grid,
+.presentation-interaction-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--lab-space-section);
+}
+
+.presentation-foundation-grid > section,
+.presentation-interaction-grid > section {
+  display: grid;
+  align-content: start;
+  min-width: 0;
+  gap: var(--space-4);
+}
+
+.presentation-surface {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.presentation-surface-page {
+  padding: var(--space-3);
+  border: 1px dashed var(--lab-border-quiet);
+  border-radius: var(--lab-radius-stage);
+  background: var(--lab-surface-page);
+}
+
+.presentation-surface-stage {
+  padding: var(--space-4);
+  border: 1px solid var(--lab-border-standard);
+  border-radius: var(--lab-radius-stage);
+  background: var(--lab-surface-stage);
+}
+
+.presentation-surface-section {
+  padding: var(--space-4);
+  border: 1px solid var(--lab-border-quiet);
+  border-radius: var(--lab-radius-section);
+  background: var(--lab-surface-section);
+}
+
+.presentation-surface-inset {
+  padding: var(--space-4);
+  border-inline-start: var(--space-1) solid var(--lab-stage-data-accent);
+  border-radius: var(--lab-radius-compact);
+  background: var(--lab-surface-inset);
+  overflow-x: auto;
+}
+
+.presentation-surface-inset .native-math {
+  margin-inline: auto;
+}
+
+.presentation-type-ledger {
+  border-top: 1px solid var(--lab-border-standard);
+}
+
+.presentation-type-row {
+  display: grid;
+  grid-template-columns: minmax(8rem, 0.36fr) minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--space-4);
+  padding-block: var(--space-3);
+  border-bottom: 1px solid var(--lab-border-quiet);
+}
+
+.presentation-type-lab-title {
+  color: var(--color-text-primary);
+  font-size: calc(var(--lab-type-stage-title-size) * 1.05);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.presentation-result-specimen {
+  display: grid;
+  gap: var(--lab-space-block);
+  padding: var(--lab-space-section);
+  border: 1px solid var(--lab-stage-output-border);
+  border-inline-start: var(--space-2) solid var(--lab-stage-output-accent);
+  border-radius: var(--lab-radius-stage);
+  background: var(--lab-surface-elevated);
+  box-shadow: var(--shadow-card);
+}
+
+.presentation-result-heading {
+  position: relative;
+  display: grid;
+  gap: var(--space-2);
+  padding-inline-end: 10rem;
+}
+
+.presentation-current-marker {
+  position: absolute;
+  inset: 0 0 auto auto;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--lab-status-current-border);
+  border-radius: var(--lab-radius-compact);
+  background: var(--lab-status-current-surface);
+  color: var(--lab-status-current-foreground);
+  font-family: var(--lab-font-technical);
+  font-size: var(--lab-type-metadata-size);
+}
+
+.presentation-result-relationship {
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+  border-top: 1px solid var(--lab-border-quiet);
+}
+
+.presentation-result-problem,
+.presentation-result-answer {
+  display: grid;
+  align-content: center;
+  min-width: 0;
+  gap: var(--space-3);
+  padding-block: var(--lab-space-block);
+}
+
+.presentation-result-problem {
+  padding-inline-end: var(--lab-space-block);
+}
+
+.presentation-result-answer {
+  padding-inline: var(--lab-space-block) 0;
+  border-inline-start: 1px solid var(--lab-border-standard);
+  background: color-mix(
+    in srgb,
+    var(--lab-stage-output-surface) 76%,
+    var(--lab-surface-section)
+  );
+}
+
+.presentation-answer-math .native-math-visual {
+  font-size: var(--lab-type-numeric-size);
+}
+
+.presentation-meaning-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-6);
+}
+
+.presentation-meaning-surface {
+  display: grid;
+  align-content: start;
+  min-width: 0;
+  gap: var(--space-3);
+  padding-block: var(--space-4);
+  border-top: var(--space-1) solid var(--lab-border-strong);
+}
+
+.presentation-meaning-teaching {
+  border-top-color: var(--lab-stage-method-accent);
+}
+
+.presentation-meaning-evidence {
+  border-top-color: var(--lab-stage-data-accent);
+}
+
+.presentation-meaning-analysis {
+  border-top-color: var(--lab-stage-analysis-accent);
+}
+
+.presentation-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.presentation-metrics > div {
+  padding: var(--space-3);
+  border: 1px solid var(--lab-border-quiet);
+  border-radius: var(--lab-radius-compact);
+  background: var(--lab-surface-inset);
+}
+
+.presentation-metrics dd {
+  margin-top: var(--space-1);
+}
+
+.presentation-details {
+  border-top: 1px solid var(--lab-border-quiet);
+}
+
+.presentation-details summary {
+  padding-block: var(--space-3);
+  color: var(--color-text-primary);
+  font-size: var(--lab-type-supporting-size);
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.presentation-details p {
+  padding-bottom: var(--space-3);
+}
+
+.presentation-analysis-conclusion {
+  padding: var(--space-3);
+  border-inline-start: var(--space-1) solid var(--lab-stage-analysis-accent);
+  background: var(--lab-stage-analysis-surface);
+  color: var(--lab-stage-analysis-foreground) !important;
+  font-size: var(--lab-type-supporting-size);
+  font-weight: 700;
+}
+
+.presentation-status-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.presentation-status {
+  --fixture-status-foreground: var(--lab-status-neutral-foreground);
+  --fixture-status-border: var(--lab-status-neutral-border);
+  --fixture-status-surface: var(--lab-status-neutral-surface);
+  display: inline-flex;
+  align-items: center;
+  min-height: calc(var(--space-8) + var(--space-1));
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--fixture-status-border);
+  border-radius: var(--lab-radius-compact);
+  background: var(--fixture-status-surface);
+  color: var(--fixture-status-foreground);
+  font-size: var(--lab-type-metadata-size);
+  font-weight: 700;
+}
+
+.presentation-status::before {
+  width: var(--space-2);
+  height: var(--space-2);
+  margin-inline-end: var(--space-2);
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  content: "";
+}
+
+.presentation-status[data-presentation-status="ready"] {
+  --fixture-status-foreground: var(--lab-status-ready-foreground);
+  --fixture-status-border: var(--lab-status-ready-border);
+  --fixture-status-surface: var(--lab-status-ready-surface);
+}
+
+.presentation-status[data-presentation-status="current"] {
+  --fixture-status-foreground: var(--lab-status-current-foreground);
+  --fixture-status-border: var(--lab-status-current-border);
+  --fixture-status-surface: var(--lab-status-current-surface);
+}
+
+.presentation-status[data-presentation-status="stale"] {
+  --fixture-status-foreground: var(--lab-status-stale-foreground);
+  --fixture-status-border: var(--lab-status-stale-border);
+  --fixture-status-surface: var(--lab-status-stale-surface);
+}
+
+.presentation-status[data-presentation-status="caution"] {
+  --fixture-status-foreground: var(--lab-status-caution-foreground);
+  --fixture-status-border: var(--lab-status-caution-border);
+  --fixture-status-surface: var(--lab-status-caution-surface);
+}
+
+.presentation-status[data-presentation-status="failed"] {
+  --fixture-status-foreground: var(--lab-status-failure-foreground);
+  --fixture-status-border: var(--lab-status-failure-border);
+  --fixture-status-surface: var(--lab-status-failure-surface);
+}
+
+.presentation-status[data-presentation-status="planned"] {
+  --fixture-status-foreground: var(--lab-status-planned-foreground);
+  --fixture-status-border: var(--lab-status-planned-border);
+  --fixture-status-surface: var(--lab-status-planned-surface);
+}
+
+.presentation-control-panel {
+  padding: var(--space-4);
+  border: 1px solid var(--lab-border-quiet);
+  border-radius: var(--lab-radius-section);
+  background: var(--lab-surface-stage);
+}
+
+.presentation-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.presentation-action,
+.presentation-fields :where(input, select) {
+  min-height: calc(var(--space-8) + var(--space-3));
+  border: 1px solid var(--lab-control-default-border);
+  border-radius: var(--lab-radius-control);
+  background: var(--lab-control-default-background);
+  color: var(--lab-control-default-foreground);
+  font: inherit;
+}
+
+.presentation-action {
+  padding: var(--space-2) var(--space-4);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.presentation-action-primary {
+  border-color: var(--lab-action-primary-border);
+  background: var(--lab-action-primary-background);
+  color: var(--lab-action-primary-foreground);
+}
+
+.presentation-action-secondary {
+  border-color: var(--lab-action-secondary-border);
+  background: var(--lab-action-secondary-background);
+  color: var(--lab-action-secondary-foreground);
+}
+
+.presentation-action-quiet {
+  border-color: var(--lab-action-quiet-border);
+  background: var(--lab-action-quiet-background);
+  color: var(--lab-action-quiet-foreground);
+}
+
+.presentation-action-danger {
+  border-color: var(--lab-action-danger-border);
+  background: var(--lab-action-danger-background);
+  color: var(--lab-action-danger-foreground);
+}
+
+.presentation-action:hover:not(:disabled),
+.presentation-fields :where(input, select):hover {
+  border-color: var(--lab-control-hover-border);
+  background: var(--lab-control-hover-background);
+  color: var(--lab-control-default-foreground);
+}
+
+.presentation-action:active:not(:disabled) {
+  border-color: var(--lab-control-active-border);
+  background: var(--lab-control-active-background);
+}
+
+.presentation-action:disabled {
+  border-color: var(--lab-control-disabled-border);
+  background: var(--lab-control-disabled-background);
+  color: var(--lab-control-disabled-foreground);
+  cursor: not-allowed;
+}
+
+.presentation-system-fixture :where(button, input, select, summary):focus-visible {
+  outline: var(--lab-focus-ring-width) solid var(--lab-control-focus-ring);
+  outline-offset: var(--lab-focus-ring-offset);
+}
+
+.presentation-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.presentation-field {
+  display: grid;
+  gap: var(--space-2);
+  color: var(--color-text-secondary);
+  font-size: var(--lab-type-metadata-size);
+  font-weight: 700;
+}
+
+.presentation-fields :where(input, select) {
+  width: 100%;
+  min-width: 0;
+  padding: var(--space-2) var(--space-3);
+}
+
+.presentation-fields [aria-invalid="true"] {
+  border-color: var(--lab-control-invalid-border);
+  background: var(--lab-control-invalid-surface);
+  color: var(--lab-control-invalid-foreground);
+}
+
+.presentation-system-fixture .native-math {
+  display: inline-block;
+  max-width: 100%;
+  color: var(--color-text-primary);
+}
+
+.presentation-system-fixture .native-math-visual {
+  max-width: 100%;
+  color: inherit;
+  font-family: "Cambria Math", "STIX Two Math", "Latin Modern Math", serif;
+  font-size: 1.35rem;
+}
+
+.presentation-system-fixture .native-math-visual mtable {
+  column-gap: 0.55em;
+  row-gap: 0.2em;
+}
+
+.presentation-system-fixture .native-math-visual mtd {
+  padding-inline: 0.15em;
+}
+
+@media (max-width: 64rem) {
+  .presentation-stage-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .presentation-meaning-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+}
+
+@media (max-width: 48rem) {
+  .presentation-fixture-header,
+  .presentation-foundation-grid,
+  .presentation-interaction-grid,
+  .presentation-result-relationship {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .presentation-identity-words {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .presentation-identity-words li {
+    text-align: left;
+  }
+
+  .presentation-result-heading {
+    padding-inline-end: 0;
+  }
+
+  .presentation-current-marker {
+    position: static;
+    width: fit-content;
+  }
+
+  .presentation-result-problem {
+    padding-inline-end: 0;
+  }
+
+  .presentation-result-answer {
+    padding: var(--lab-space-block) 0 0;
+    border-top: 1px solid var(--lab-border-standard);
+    border-inline-start: 0;
+  }
+
+  .presentation-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 36rem) {
+  .presentation-stage-grid,
+  .presentation-type-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .presentation-stage-label {
+    margin-bottom: var(--space-2);
+  }
+
+  .presentation-result-specimen {
+    padding: var(--lab-space-block);
+    border-inline-start-width: var(--space-1);
+  }
+
+  .presentation-type-row {
+    gap: var(--space-1);
+  }
+}
+
+@media (forced-colors: active) {
+  .presentation-stage-specimen,
+  .presentation-result-specimen,
+  .presentation-surface,
+  .presentation-control-panel,
+  .presentation-metrics > div,
+  .presentation-status {
+    border-color: CanvasText;
+    background: Canvas;
+    color: CanvasText;
+    box-shadow: none;
+  }
+
+  .presentation-fixture-header::before,
+  .presentation-status::before {
+    background: Highlight;
+  }
+}

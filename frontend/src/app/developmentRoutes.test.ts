@@ -32,6 +32,18 @@ function mathmlDevelopmentRoute(
   };
 }
 
+function presentationDevelopmentRoute(
+  loader: () => Promise<RouteModule>
+): DevelopmentRouteDefinitionInput {
+  return {
+    id: "presentation-system",
+    path: "/__dev/presentation-system",
+    title: "Presentation System v1 | Numerical T Lab",
+    kind: "page",
+    loader,
+  };
+}
+
 describe("development route injection", () => {
   it("matches the exact route only when explicitly injected", () => {
     const module: RouteModule = {
@@ -64,6 +76,36 @@ describe("development route injection", () => {
     ).toBe("mathml-capability");
     expect(
       matchRoute(production, "/__dev/mathml-capability").definition.id
+    ).toBe("not-found");
+    expect(
+      production
+        .filter((definition) => definition.path !== null)
+        .map((definition) => definition.path)
+    ).toEqual([
+      "/",
+      "/ode",
+      "/ode/initial-value-problems",
+      "/linear-algebra",
+      "/linear-algebra/linear-systems",
+      "/pde",
+      "/about",
+    ]);
+  });
+
+  it("keeps the Presentation System fixture outside public route definitions", () => {
+    const module: RouteModule = {
+      mount: () => ({ dispose: vi.fn() }),
+    };
+    const injected = createRouteDefinitions({
+      developmentRoutes: [presentationDevelopmentRoute(async () => module)],
+    });
+    const production = createRouteDefinitions();
+
+    expect(
+      matchRoute(injected, "/__dev/presentation-system").definition.id
+    ).toBe("presentation-system");
+    expect(
+      matchRoute(production, "/__dev/presentation-system").definition.id
     ).toBe("not-found");
     expect(
       production

@@ -29,6 +29,7 @@ import type {
 
 const GLOSSARY_PLAYGROUND_PATH = "/__dev/glossary-playground";
 const MATHML_CAPABILITY_PATH = "/__dev/mathml-capability";
+const PRESENTATION_SYSTEM_PATH = "/__dev/presentation-system";
 
 export interface PlatformBootstrap {
   readonly store: AppSessionStore;
@@ -159,6 +160,24 @@ export function createPlatformBootstrap(options: {
                   typeof import("../dev/mathml/mathmlCapabilityRoute")
                 >
               ).then((module) => module.createMathmlCapabilityRoute());
+            },
+          },
+          {
+            id: "presentation-system",
+            path: PRESENTATION_SYSTEM_PATH,
+            title: "Presentation System v1 | Numerical T Lab",
+            kind: "page",
+            loader: () => {
+              const modulePath =
+                "../dev/presentation/presentationSystemRoute.ts";
+              return (
+                import(
+                  /* @vite-ignore */
+                  modulePath
+                ) as Promise<
+                  typeof import("../dev/presentation/presentationSystemRoute")
+                >
+              ).then((module) => module.createPresentationSystemRoute());
             },
           },
         ]

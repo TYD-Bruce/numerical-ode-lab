@@ -30,7 +30,10 @@ export interface NormalizedApplicationLocation {
 }
 
 export interface DevelopmentRouteDefinitionInput {
-  readonly id: Extract<RouteId, "glossary-playground" | "mathml-capability">;
+  readonly id: Extract<
+    RouteId,
+    "glossary-playground" | "mathml-capability" | "presentation-system"
+  >;
   readonly path: string;
   readonly title: string;
   readonly kind: RouteKind;

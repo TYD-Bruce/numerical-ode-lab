@@ -7,6 +7,16 @@ const APP_DIR = dirname(fileURLToPath(import.meta.url));
 const SRC_DIR = dirname(APP_DIR);
 const PAGES_DIR = join(SRC_DIR, "pages");
 
+function themeBlock(theme: string, name: "light" | "dark"): string {
+  const match = theme.match(
+    new RegExp(
+      `html\\[data-theme=["']${name}["']\\]\\s*\\{([\\s\\S]*?)(?=\\n\\}|$)`
+    )
+  );
+  expect(match, `${name} theme block`).not.toBeNull();
+  return match?.[1] ?? "";
+}
+
 function filesUnder(root: string): string[] {
   return readdirSync(root).flatMap((name) => {
     const path = join(root, name);
@@ -101,6 +111,87 @@ describe("platform theme tokens", () => {
     ]) {
       expect(theme).toContain(`.${state}`);
     }
+  });
+
+  it("defines the complete Phase 0 Lab presentation vocabulary without domain coupling", () => {
+    const theme = readFileSync(join(APP_DIR, "theme.css"), "utf8");
+    const light = themeBlock(theme, "light");
+    const dark = themeBlock(theme, "dark");
+    const stages = ["method", "data", "output", "analysis"];
+    const stageRoles = ["accent", "foreground", "surface", "border", "selected"];
+
+    for (const stage of stages) {
+      for (const role of stageRoles) {
+        const token = `--lab-stage-${stage}-${role}`;
+        expect(light, `Light ${token}`).toContain(`${token}:`);
+        expect(dark, `Dark ${token}`).toContain(`${token}:`);
+      }
+    }
+
+    const stageTokenIdentifiers = [
+      ...theme.matchAll(/--lab-stage-[a-z-]+(?=:)/g),
+    ].map(([identifier]) => identifier);
+    expect(stageTokenIdentifiers).not.toHaveLength(0);
+    expect(stageTokenIdentifiers.join("\n")).not.toMatch(/ode|linear-systems|pde/);
+
+    for (const surface of ["page", "stage", "section", "inset", "elevated"]) {
+      expect(light).toContain(`--lab-surface-${surface}:`);
+      expect(dark).toContain(`--lab-surface-${surface}:`);
+    }
+    for (const border of ["quiet", "standard", "strong"]) {
+      expect(light).toContain(`--lab-border-${border}:`);
+      expect(dark).toContain(`--lab-border-${border}:`);
+    }
+    for (const role of [
+      "lab-title",
+      "stage-title",
+      "section-title",
+      "body",
+      "metadata",
+      "eyebrow",
+      "numeric",
+      "supporting",
+    ]) {
+      expect(theme).toContain(`--lab-type-${role}-size:`);
+    }
+    for (const space of ["inline", "header", "stage", "section", "block", "compact"]) {
+      expect(theme).toMatch(
+        new RegExp(`--lab-space-${space}:\\s*var\\(--space-(?:1|2|3|4|6|8|12)\\)`)
+      );
+    }
+    for (const radius of ["stage", "section", "control", "compact"]) {
+      expect(theme).toMatch(
+        new RegExp(`--lab-radius-${radius}:\\s*var\\(--radius-(?:sm|md|lg)\\)`)
+      );
+    }
+    for (const status of [
+      "neutral",
+      "ready",
+      "current",
+      "stale",
+      "caution",
+      "failure",
+      "planned",
+    ]) {
+      for (const role of ["foreground", "border", "surface"]) {
+        const token = `--lab-status-${status}-${role}:`;
+        expect(light).toContain(token);
+        expect(dark).toContain(token);
+      }
+    }
+    for (const action of ["primary", "secondary", "quiet", "danger"]) {
+      for (const role of ["foreground", "border", "background"]) {
+        const token = `--lab-action-${action}-${role}:`;
+        expect(light).toContain(token);
+        expect(dark).toContain(token);
+      }
+    }
+    for (const state of ["default", "hover", "active", "focus", "disabled", "invalid"]) {
+      expect(theme).toContain(`--lab-control-${state}-`);
+    }
+    expect(theme).toContain("--lab-focus-ring-color:");
+    expect(theme).toMatch(/--lab-focus-ring-width:\s*3px/);
+    expect(theme).not.toMatch(/@import\s|url\s*\(/i);
   });
 
   it("boots the supported saved theme before the application module", () => {

@@ -10,6 +10,7 @@ export type RouteId =
   | "about"
   | "glossary-playground"
   | "mathml-capability"
+  | "presentation-system"
   | "not-found";
 
 export type LabModuleId = "ode" | "linear_algebra" | "pde";

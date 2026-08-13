@@ -25,6 +25,35 @@
   --ease-standard: cubic-bezier(.2, 0, 0, 1);
   --ease-transform: cubic-bezier(.22, 1, .36, 1);
   --texture-decorative: none;
+
+  /* Cross-Lab Presentation System v1: semantic geometry and type only. */
+  --lab-space-inline: var(--space-6);
+  --lab-space-header: var(--space-8);
+  --lab-space-stage: var(--space-12);
+  --lab-space-section: var(--space-8);
+  --lab-space-block: var(--space-6);
+  --lab-space-compact: var(--space-2);
+  --lab-radius-stage: var(--radius-lg);
+  --lab-radius-section: var(--radius-md);
+  --lab-radius-control: var(--radius-sm);
+  --lab-radius-compact: var(--radius-sm);
+  --lab-font-body: "DM Sans", system-ui, sans-serif;
+  --lab-font-technical: "JetBrains Mono", ui-monospace, monospace;
+  --lab-type-lab-title-size: clamp(2rem, 4vw, 3rem);
+  --lab-type-lab-title-line: 1.08;
+  --lab-type-stage-title-size: clamp(1.4rem, 2.5vw, 1.9rem);
+  --lab-type-stage-title-line: 1.16;
+  --lab-type-section-title-size: 1.125rem;
+  --lab-type-section-title-line: 1.3;
+  --lab-type-body-size: 1rem;
+  --lab-type-body-line: 1.65;
+  --lab-type-metadata-size: 0.78rem;
+  --lab-type-eyebrow-size: 0.72rem;
+  --lab-type-numeric-size: clamp(1.65rem, 4vw, 2.35rem);
+  --lab-type-supporting-size: 0.88rem;
+  --lab-readable-measure: 68ch;
+  --lab-focus-ring-width: 3px;
+  --lab-focus-ring-offset: var(--space-1);
 }
 
 .computation-marker {
@@ -135,6 +164,84 @@ html[data-theme="light"] {
     radial-gradient(circle at 91% 9%, rgba(46, 121, 117, 0.07), transparent 25rem),
     linear-gradient(180deg, #eef2f6 0%, var(--color-page-background) 32rem);
   --background-data-ink: linear-gradient(90deg, #4d77ad, #3d8c88, #776aa4);
+
+  /* Cross-Lab Presentation System v1: Light / Technical Daylight. */
+  --lab-stage-method-accent: var(--color-method-accent);
+  --lab-stage-method-foreground: var(--color-accent-primary-strong);
+  --lab-stage-method-surface: var(--color-method-surface);
+  --lab-stage-method-border: color-mix(in srgb, var(--color-method-accent) 58%, var(--color-border));
+  --lab-stage-method-selected: color-mix(in srgb, var(--color-method-accent) 15%, var(--color-surface-raised));
+  --lab-stage-data-accent: var(--color-data-accent);
+  --lab-stage-data-foreground: var(--color-data-accent);
+  --lab-stage-data-surface: var(--color-data-surface);
+  --lab-stage-data-border: color-mix(in srgb, var(--color-data-accent) 58%, var(--color-border));
+  --lab-stage-data-selected: color-mix(in srgb, var(--color-data-accent) 15%, var(--color-surface-raised));
+  --lab-stage-output-accent: var(--color-output-accent);
+  --lab-stage-output-foreground: var(--color-output-accent);
+  --lab-stage-output-surface: var(--color-output-surface);
+  --lab-stage-output-border: color-mix(in srgb, var(--color-output-accent) 58%, var(--color-border));
+  --lab-stage-output-selected: color-mix(in srgb, var(--color-output-accent) 16%, var(--color-surface-raised));
+  --lab-stage-analysis-accent: var(--color-convergence-accent);
+  --lab-stage-analysis-foreground: var(--color-convergence-accent);
+  --lab-stage-analysis-surface: var(--color-convergence-surface);
+  --lab-stage-analysis-border: color-mix(in srgb, var(--color-convergence-accent) 52%, var(--color-border));
+  --lab-stage-analysis-selected: color-mix(in srgb, var(--color-convergence-accent) 13%, var(--color-surface-raised));
+  --lab-surface-page: var(--color-page-background);
+  --lab-surface-stage: var(--color-surface-primary);
+  --lab-surface-section: var(--color-surface-raised);
+  --lab-surface-inset: var(--color-surface-inset);
+  --lab-surface-elevated: var(--color-surface-raised);
+  --lab-border-quiet: color-mix(in srgb, var(--color-border) 68%, transparent);
+  --lab-border-standard: var(--color-border);
+  --lab-border-strong: var(--color-border-strong);
+  --lab-focus-ring-color: var(--color-focus-ring);
+  --lab-status-neutral-foreground: var(--color-text-secondary);
+  --lab-status-neutral-border: var(--lab-border-standard);
+  --lab-status-neutral-surface: var(--color-surface-soft);
+  --lab-status-ready-foreground: var(--color-success);
+  --lab-status-ready-border: color-mix(in srgb, var(--color-success) 62%, var(--color-border));
+  --lab-status-ready-surface: var(--color-success-surface);
+  --lab-status-current-foreground: var(--color-accent-primary-strong);
+  --lab-status-current-border: var(--color-accent-primary);
+  --lab-status-current-surface: var(--color-surface-accent);
+  --lab-status-stale-foreground: var(--color-text-secondary);
+  --lab-status-stale-border: color-mix(in srgb, var(--color-caution) 48%, var(--color-border));
+  --lab-status-stale-surface: color-mix(in srgb, var(--color-caution-surface) 48%, var(--color-surface-soft));
+  --lab-status-caution-foreground: var(--color-caution);
+  --lab-status-caution-border: var(--color-caution);
+  --lab-status-caution-surface: var(--color-caution-surface);
+  --lab-status-failure-foreground: var(--color-danger);
+  --lab-status-failure-border: var(--color-danger);
+  --lab-status-failure-surface: var(--color-danger-surface);
+  --lab-status-planned-foreground: var(--color-text-secondary);
+  --lab-status-planned-border: var(--lab-border-quiet);
+  --lab-status-planned-surface: var(--color-surface-inset);
+  --lab-action-primary-foreground: var(--color-on-accent);
+  --lab-action-primary-border: var(--color-accent-primary);
+  --lab-action-primary-background: var(--color-accent-primary-strong);
+  --lab-action-secondary-foreground: var(--color-accent-primary-strong);
+  --lab-action-secondary-border: var(--lab-border-strong);
+  --lab-action-secondary-background: var(--color-surface-raised);
+  --lab-action-quiet-foreground: var(--color-text-primary);
+  --lab-action-quiet-border: transparent;
+  --lab-action-quiet-background: transparent;
+  --lab-action-danger-foreground: var(--color-on-accent);
+  --lab-action-danger-border: var(--color-danger);
+  --lab-action-danger-background: var(--color-danger);
+  --lab-control-default-foreground: var(--color-text-primary);
+  --lab-control-default-border: var(--lab-border-standard);
+  --lab-control-default-background: var(--color-surface-raised);
+  --lab-control-hover-border: var(--color-accent-primary);
+  --lab-control-hover-background: var(--color-surface-accent);
+  --lab-control-active-border: var(--color-accent-primary-strong);
+  --lab-control-active-background: var(--color-surface-inset);
+  --lab-control-focus-ring: var(--lab-focus-ring-color);
+  --lab-control-disabled-foreground: var(--color-disabled-text);
+  --lab-control-disabled-border: var(--lab-border-quiet);
+  --lab-control-disabled-background: var(--color-disabled-surface);
+  --lab-control-invalid-foreground: var(--color-danger);
+  --lab-control-invalid-border: var(--color-danger);
+  --lab-control-invalid-surface: var(--color-danger-surface);
 }
 
 html[data-theme="dark"] {
@@ -195,4 +302,92 @@ html[data-theme="dark"] {
   --shadow-popover: 0 1.25rem 3rem rgba(0, 0, 0, 0.42);
   --background-page-canvas: radial-gradient(1200px 600px at 20% -10%, #1c2a55, var(--color-page-background));
   --background-data-ink: linear-gradient(90deg, #6c8cff, #7ae2a8, #b8a3ff);
+
+  /* Cross-Lab Presentation System v1: Dark / technical low-glare. */
+  --lab-stage-method-accent: var(--color-method-accent);
+  --lab-stage-method-foreground: var(--color-method-accent);
+  --lab-stage-method-surface: var(--color-method-surface);
+  --lab-stage-method-border: color-mix(in srgb, var(--color-method-accent) 54%, var(--color-border));
+  --lab-stage-method-selected: color-mix(in srgb, var(--color-method-accent) 16%, var(--color-surface-raised));
+  --lab-stage-data-accent: var(--color-data-accent);
+  --lab-stage-data-foreground: var(--color-data-accent);
+  --lab-stage-data-surface: var(--color-data-surface);
+  --lab-stage-data-border: color-mix(in srgb, var(--color-data-accent) 52%, var(--color-border));
+  --lab-stage-data-selected: color-mix(in srgb, var(--color-data-accent) 14%, var(--color-surface-raised));
+  --lab-stage-output-accent: var(--color-output-accent);
+  --lab-stage-output-foreground: var(--color-output-accent);
+  --lab-stage-output-surface: var(--color-output-surface);
+  --lab-stage-output-border: color-mix(in srgb, var(--color-output-accent) 54%, var(--color-border));
+  --lab-stage-output-selected: color-mix(in srgb, var(--color-output-accent) 16%, var(--color-surface-raised));
+  --lab-stage-analysis-accent: var(--color-convergence-accent);
+  --lab-stage-analysis-foreground: var(--color-convergence-accent);
+  --lab-stage-analysis-surface: var(--color-convergence-surface);
+  --lab-stage-analysis-border: color-mix(in srgb, var(--color-convergence-accent) 48%, var(--color-border));
+  --lab-stage-analysis-selected: color-mix(in srgb, var(--color-convergence-accent) 12%, var(--color-surface-raised));
+  --lab-surface-page: var(--color-page-background);
+  --lab-surface-stage: var(--color-surface-primary);
+  --lab-surface-section: var(--color-surface-raised);
+  --lab-surface-inset: var(--color-surface-inset);
+  --lab-surface-elevated: var(--color-surface-raised);
+  --lab-border-quiet: color-mix(in srgb, var(--color-border) 66%, transparent);
+  --lab-border-standard: var(--color-border);
+  --lab-border-strong: var(--color-border-strong);
+  --lab-focus-ring-color: var(--color-focus-ring);
+  --lab-status-neutral-foreground: var(--color-text-secondary);
+  --lab-status-neutral-border: var(--lab-border-standard);
+  --lab-status-neutral-surface: var(--color-surface-soft);
+  --lab-status-ready-foreground: var(--color-success);
+  --lab-status-ready-border: color-mix(in srgb, var(--color-success) 58%, var(--color-border));
+  --lab-status-ready-surface: var(--color-success-surface);
+  --lab-status-current-foreground: var(--color-accent-primary-strong);
+  --lab-status-current-border: var(--color-accent-primary);
+  --lab-status-current-surface: var(--color-surface-accent);
+  --lab-status-stale-foreground: var(--color-text-secondary);
+  --lab-status-stale-border: color-mix(in srgb, var(--color-caution) 42%, var(--color-border));
+  --lab-status-stale-surface: color-mix(in srgb, var(--color-caution-surface) 44%, var(--color-surface-soft));
+  --lab-status-caution-foreground: var(--color-caution);
+  --lab-status-caution-border: var(--color-caution);
+  --lab-status-caution-surface: var(--color-caution-surface);
+  --lab-status-failure-foreground: var(--color-danger);
+  --lab-status-failure-border: var(--color-danger);
+  --lab-status-failure-surface: var(--color-danger-surface);
+  --lab-status-planned-foreground: var(--color-text-secondary);
+  --lab-status-planned-border: var(--lab-border-quiet);
+  --lab-status-planned-surface: var(--color-surface-inset);
+  --lab-action-primary-foreground: var(--color-on-accent);
+  --lab-action-primary-border: var(--color-accent-primary);
+  --lab-action-primary-background: var(--color-accent-primary);
+  --lab-action-secondary-foreground: var(--color-text-primary);
+  --lab-action-secondary-border: var(--lab-border-strong);
+  --lab-action-secondary-background: var(--color-surface-raised);
+  --lab-action-quiet-foreground: var(--color-text-primary);
+  --lab-action-quiet-border: transparent;
+  --lab-action-quiet-background: transparent;
+  --lab-action-danger-foreground: var(--color-on-accent);
+  --lab-action-danger-border: var(--color-danger);
+  --lab-action-danger-background: var(--color-danger);
+  --lab-control-default-foreground: var(--color-text-primary);
+  --lab-control-default-border: var(--lab-border-standard);
+  --lab-control-default-background: var(--color-surface-raised);
+  --lab-control-hover-border: var(--color-accent-primary);
+  --lab-control-hover-background: var(--color-surface-accent);
+  --lab-control-active-border: var(--color-accent-primary-strong);
+  --lab-control-active-background: var(--color-surface-inset);
+  --lab-control-focus-ring: var(--lab-focus-ring-color);
+  --lab-control-disabled-foreground: var(--color-disabled-text);
+  --lab-control-disabled-border: var(--lab-border-quiet);
+  --lab-control-disabled-background: var(--color-disabled-surface);
+  --lab-control-invalid-foreground: var(--color-danger);
+  --lab-control-invalid-border: var(--color-danger);
+  --lab-control-invalid-surface: var(--color-danger-surface);
+}
+
+@media (max-width: 48rem) {
+  :root {
+    --lab-space-inline: var(--space-4);
+    --lab-space-header: var(--space-6);
+    --lab-space-stage: var(--space-8);
+    --lab-space-section: var(--space-6);
+    --lab-space-block: var(--space-4);
+  }
 }
