@@ -70,6 +70,33 @@ describe("public route bundle ownership", () => {
     }
     const eagerSource = [...graph].map(source).join("\n");
     expect(eagerSource).not.toContain("@numerical-t-lab/numerics");
+    expect(
+      [...graph].filter((path) => path.startsWith("components/lab-presentation/"))
+    ).toEqual([]);
+  });
+
+  it("keeps shared Lab presentation behind both complete-Lab lazy boundaries", () => {
+    const expectedShared = [
+      "components/lab-presentation/labShell.ts",
+      "components/lab-presentation/stageSection.ts",
+      "components/lab-presentation/supportingElements.ts",
+      "components/lab-presentation/workflowNavigation.ts",
+    ];
+    const odeGraph = eagerGraph("labs/ode/initialValueProblemsRoute.ts");
+    const linearSystemsGraph = eagerGraph(
+      "labs/linear-algebra/linearSystemsRoute.ts"
+    );
+
+    for (const sharedPath of expectedShared) {
+      expect(odeGraph.has(sharedPath), `${sharedPath} missing from ODE`).toBe(true);
+      expect(
+        linearSystemsGraph.has(sharedPath),
+        `${sharedPath} missing from Linear Systems`
+      ).toBe(true);
+    }
+    expect(source("components/lab-presentation/labShell.ts")).toContain(
+      'import "./labPresentation.css"'
+    );
   });
 
   it("registers ODE through a dynamic import and no production placeholder", () => {
@@ -163,7 +190,7 @@ describe("public route bundle ownership", () => {
       /odeApp|initialValueProblemsRoute|Chart|MathLive|localStorage|sessionStorage/
     );
     const odeApp = source("labs/ode/odeApp.ts");
-    expect(odeApp).toContain("data-new-experiment");
+    expect(odeApp).toContain("dataset.newExperiment");
     expect(odeApp).not.toMatch(
       /AppSessionStore|createPlatformRouter|window\.history|history\.(?:pushState|replaceState)/
     );

@@ -119,6 +119,17 @@ import {
   type OdeGlossaryRenderTransaction,
   type OdeWave1AnnotationId,
 } from "./odeGlossary";
+import {
+  createLabHeader,
+  createLabShell,
+} from "../../components/lab-presentation/labShell";
+import { createStageSection } from "../../components/lab-presentation/stageSection";
+import { applyLabActionRole } from "../../components/lab-presentation/supportingElements";
+import {
+  createWorkflowNavigation,
+  disposeWorkflowNavigation,
+  type LabStageRole,
+} from "../../components/lab-presentation/workflowNavigation";
 import "./odeApp.css";
 
 runCoefficientValidation();
@@ -819,6 +830,117 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     heading.replaceChildren(glossaryTermNode(glossaryRender, annotationId));
   }
 
+  function sameMethodSelection(
+    left: SelectedMethod,
+    right: SelectedMethod
+  ): boolean {
+    const leftOrder = left.order ?? catalogByFamily(left.family).orderDefault;
+    const rightOrder = right.order ?? catalogByFamily(right.family).orderDefault;
+    return left.family === right.family && leftOrder === rightOrder;
+  }
+
+  function hasSuccessfulOutput(): boolean {
+    if (lastCompare) {
+      return (
+        session.mode === "compare" &&
+        sameMethodSelection(session.a, lastCompare.a) &&
+        sameMethodSelection(session.b, lastCompare.b)
+      );
+    }
+    const selectedCatalog = selected
+      ? catalogByFamily(selected.family)
+      : undefined;
+    return Boolean(
+      lastResult &&
+        lastResultExpression &&
+        session.mode === "single" &&
+        selected &&
+        selected.family === lastResult.metadata.family &&
+        (!selectedCatalog?.hasOrderSelector ||
+          (selected.order ?? selectedCatalog.orderDefault) ===
+            lastResult.metadata.order)
+    );
+  }
+
+  function canNavigateToData(): boolean {
+    return (
+      session.mode === "compare" ||
+      (session.mode === "single" && selected !== null)
+    );
+  }
+
+  function focusWorkflowStepAfterRender(
+    workflowStep: "method" | "data" | "output"
+  ): void {
+    const focusGeneration = uiGeneration;
+    queueMicrotask(() => {
+      if (!isCurrentGeneration(focusGeneration)) return;
+      app
+        .querySelector<HTMLButtonElement>(
+          `[data-workflow-step="${workflowStep}"]`
+        )
+        ?.focus({ preventScroll: true });
+    });
+  }
+
+  function goToWorkflowStep(
+    workflowStep: "method" | "data" | "output"
+  ): void {
+    const current =
+      step === "choose" ? "method" : step === "configure" ? "data" : "output";
+    if (workflowStep === current) return;
+    if (workflowStep === "method") {
+      step = "choose";
+      render();
+      focusWorkflowStepAfterRender("method");
+      return;
+    }
+    if (workflowStep === "data") {
+      if (!canNavigateToData()) return;
+      step = "configure";
+      render();
+      focusWorkflowStepAfterRender("data");
+      return;
+    }
+    if (!hasSuccessfulOutput()) return;
+    step = "results";
+    render();
+    focusWorkflowStepAfterRender("output");
+  }
+
+  function createOdeWorkflowNavigation(): HTMLElement {
+    const current =
+      step === "choose" ? "method" : step === "configure" ? "data" : "output";
+    const steps: readonly {
+      key: "method" | "data" | "output";
+      label: string;
+      role: LabStageRole;
+      available: boolean;
+    }[] = [
+      { key: "method", label: "Method", role: "method", available: true },
+      {
+        key: "data",
+        label: "Data",
+        role: "data",
+        available: canNavigateToData(),
+      },
+      {
+        key: "output",
+        label: "Output",
+        role: "output",
+        available: hasSuccessfulOutput(),
+      },
+    ];
+    return createWorkflowNavigation({
+      label: "Initial Value Problems workflow",
+      steps: steps.map((workflowStep) => ({
+        ...workflowStep,
+        current: current === workflowStep.key,
+        onActivate: () => goToWorkflowStep(workflowStep.key),
+      })),
+    });
+  }
+
   function render(): void {
     if (disposed) return;
     const generation = ++uiGeneration;
@@ -828,10 +950,10 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       disposeExpressionUi();
       disposeConvergenceUi();
       disposePrimaryChart();
+      disposeWorkflowNavigation(
+        app.querySelector<HTMLElement>("[data-workflow-navigation]")
+      );
       app.replaceChildren();
-
-      const shell = document.createElement("div");
-      shell.className = "shell";
 
       const comparePicking = session.mode === "compare_pick";
       let workflowNote = "";
@@ -844,55 +966,84 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       const experimentIdentity = experimentIdentityPresentation();
       const compactExperimentIdentity = step === "results";
 
-      shell.innerHTML = `
-    <header class="hero">
-      <nav class="ode-breadcrumb" aria-label="Breadcrumb">
-        <a href="/ode">Numerical ODE</a>
-        <span aria-hidden="true">/</span>
-        <span>Initial Value Problems Lab</span>
-      </nav>
-      <p class="eyebrow">AI-Assisted Educational Solver</p>
-      <div class="lab-title-actions">
-        <h1 tabindex="-1" data-route-focus>Initial Value Problems Lab</h1>
-        <button type="button" class="btn ghost new-experiment-trigger" data-new-experiment>New experiment</button>
-      </div>
-      <p class="lede" data-ode-glossary-lede></p>
-      ${workflowNote ? `<p class="ivp-note">${workflowNote}</p>` : ""}
-      <div class="experiment-identity${compactExperimentIdentity ? " is-compact" : ""}" data-experiment-identity="${experimentIdentity.label === "Beginner starter" ? "beginner-starter" : "custom-experiment"}">
-        <strong data-experiment-label>${experimentIdentity.label}</strong>
-        ${compactExperimentIdentity ? "" : `<p data-experiment-description>${experimentIdentity.description}</p>`}
-      </div>
-      <p class="ivp-note">Enter the equation in familiar mathematical notation. First-order fields use t and y; Leap-Frog acceleration uses t and u.</p>
-      ${comparePickError
-        ? `<p class="compare-error" role="alert">${comparePickError}</p>`
-        : ""
+      const breadcrumb = document.createElement("nav");
+      breadcrumb.setAttribute("aria-label", "Breadcrumb");
+      const overview = document.createElement("a");
+      overview.href = "/ode";
+      overview.textContent = "Numerical ODE";
+      const separator = document.createElement("span");
+      separator.setAttribute("aria-hidden", "true");
+      separator.textContent = "/";
+      breadcrumb.append(
+        overview,
+        separator,
+        document.createTextNode("Initial Value Problems Lab")
+      );
+      const eyebrow = document.createElement("p");
+      eyebrow.textContent = "AI-Assisted Educational Solver";
+      const title = document.createElement("h1");
+      title.tabIndex = -1;
+      title.dataset.routeFocus = "true";
+      title.textContent = "Initial Value Problems Lab";
+      const reset = applyLabActionRole(
+        document.createElement("button"),
+        "secondary"
+      );
+      reset.type = "button";
+      reset.classList.add("btn", "ghost", "new-experiment-trigger");
+      reset.dataset.newExperiment = "true";
+      reset.textContent = "New experiment";
+      reset.addEventListener("click", () => openResetDialog(reset));
+      const lede = document.createElement("p");
+      lede.dataset.odeGlossaryLede = "true";
+      const identity = document.createElement("div");
+      identity.classList.toggle("is-compact", compactExperimentIdentity);
+      identity.dataset.experimentIdentity =
+        experimentIdentity.label === "Beginner starter"
+          ? "beginner-starter"
+          : "custom-experiment";
+      const identityLabel = document.createElement("strong");
+      identityLabel.dataset.experimentLabel = "true";
+      identityLabel.textContent = experimentIdentity.label;
+      identity.append(identityLabel);
+      if (!compactExperimentIdentity) {
+        const identityDescription = document.createElement("p");
+        identityDescription.dataset.experimentDescription = "true";
+        identityDescription.textContent = experimentIdentity.description;
+        identity.append(identityDescription);
       }
-      <div class="steps" role="navigation" aria-label="Progress">
-        <span class="pill ${step === "choose" ? "active" : ""}">1 · Method</span>
-        <span class="arrow">→</span>
-        <span class="pill ${step === "configure" ? "active" : ""}">2 · Data</span>
-        <span class="arrow">→</span>
-        <span class="pill ${step === "results" ? "active" : ""}">3 · Output</span>
-      </div>
-    </header>
-  `;
-      renderContextLede(shell, glossaryRender);
+      const headerDetails: HTMLElement[] = [];
+      if (workflowNote) {
+        const note = document.createElement("p");
+        note.textContent = workflowNote;
+        headerDetails.push(note);
+      }
+      const inputNote = document.createElement("p");
+      inputNote.textContent =
+        "Enter the equation in familiar mathematical notation. First-order fields use t and y; Leap-Frog acceleration uses t and u.";
+      headerDetails.push(inputNote);
+      if (comparePickError) {
+        const error = document.createElement("p");
+        error.className = "compare-error";
+        error.setAttribute("role", "alert");
+        error.textContent = comparePickError;
+        headerDetails.push(error);
+      }
 
-      shell
-        .querySelector<HTMLButtonElement>("[data-new-experiment]")
-        ?.addEventListener("click", (event) => {
-          openResetDialog(event.currentTarget as HTMLElement);
-        });
-
-      const main = document.createElement("main");
-      main.className = "panel";
+      const stageRole: LabStageRole =
+        step === "choose" ? "method" : step === "configure" ? "data" : "output";
+      const stageLabel =
+        stageRole === "method" ? "Method" : stageRole === "data" ? "Data" : "Output";
+      const stage = createStageSection({ role: stageRole, label: stageLabel });
+      stage.dataset.workflowPanel = stageLabel.toLowerCase();
+      stage.dataset.workflowStage = stageRole;
       let outputMountPending = false;
 
       if (step === "choose") {
-        main.append(renderChoosePanel(glossaryRender));
+        stage.append(renderChoosePanel(glossaryRender));
       } else if (step === "configure") {
         if (session.mode === "compare") {
-          main.append(
+          stage.append(
             renderCompareForm(
               catalogEntry(session.a),
               catalogEntry(session.b),
@@ -902,15 +1053,19 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
             )
           );
         } else if (meta && selected) {
-          main.append(renderForm(meta, selected, glossaryRender));
+          stage.append(renderForm(meta, selected, glossaryRender));
         } else {
           step = "choose";
-          main.append(renderChoosePanel(glossaryRender));
+          stage.dataset.stageRole = "method";
+          stage.dataset.workflowPanel = "method";
+          stage.dataset.workflowStage = "method";
+          stage.querySelector<HTMLElement>("[data-stage-label]")!.textContent = "Method";
+          stage.append(renderChoosePanel(glossaryRender));
         }
       } else if (step === "results") {
         if (lastCompare) {
           outputMountPending = true;
-          main.append(
+          stage.append(
             renderCompareResultsShell(
               catalogEntry(lastCompare.a),
               catalogEntry(lastCompare.b),
@@ -922,7 +1077,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
           );
         } else if (meta && lastResult && lastResultExpression) {
           outputMountPending = true;
-          main.append(
+          stage.append(
             renderResultsShell(
               meta,
               lastResult,
@@ -932,19 +1087,36 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
           );
         } else {
           step = "configure";
-          main.append(renderChoosePanel(glossaryRender));
+          stage.dataset.stageRole = "data";
+          stage.dataset.workflowPanel = "data";
+          stage.dataset.workflowStage = "data";
+          stage.querySelector<HTMLElement>("[data-stage-label]")!.textContent = "Data";
+          stage.append(renderChoosePanel(glossaryRender));
         }
       } else {
         step = "choose";
-        main.append(renderChoosePanel(glossaryRender));
+        stage.dataset.stageRole = "method";
+        stage.dataset.workflowPanel = "method";
+        stage.dataset.workflowStage = "method";
+        stage.querySelector<HTMLElement>("[data-stage-label]")!.textContent = "Method";
+        stage.append(renderChoosePanel(glossaryRender));
       }
 
-      const workflowStage =
-        step === "choose" ? "method" : step === "configure" ? "data" : "output";
-      main.classList.add("workflow-panel", `workflow-stage-${workflowStage}`);
-      main.dataset.workflowStage = workflowStage;
-
-      shell.append(main);
+      const shell = createLabShell({
+        header: createLabHeader({
+          breadcrumb,
+          eyebrow,
+          title,
+          lede,
+          identity,
+          actions: [reset],
+          details: headerDetails,
+        }),
+        workflow: createOdeWorkflowNavigation(),
+        stage,
+        className: "shell ode-lab-shell",
+      });
+      renderContextLede(shell, glossaryRender);
       app.append(shell);
       glossaryRender.commitImmediateScopes();
       if (!outputMountPending) glossaryRender.commitOutputScope();
@@ -2763,6 +2935,9 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       disposeExpressionUi();
       disposeConvergenceUi();
       disposePrimaryChart();
+      disposeWorkflowNavigation(
+        app.querySelector<HTMLElement>("[data-workflow-navigation]")
+      );
       window.removeEventListener(THEME_CHANGE_EVENT, onThemeChange);
       glossaryRuntime.dispose();
       tutorBindingControl.dispose();

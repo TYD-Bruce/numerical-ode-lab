@@ -1,4 +1,4 @@
-.shell {
+.ode-lab-shell {
   color-scheme: light;
   --bg: var(--color-page-background);
   --panel: var(--color-surface-primary);
@@ -15,31 +15,12 @@
   line-height: 1.5;
 }
 
-.shell code {
+.ode-lab-shell code {
   font-family: "JetBrains Mono", ui-monospace, monospace;
   font-size: 0.92em;
   background: var(--color-surface-inset);
   padding: 0.1em 0.35em;
   border-radius: 4px;
-}
-
-.shell {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.hero h1 {
-  margin: 0 0 8px;
-  font-size: clamp(2rem, 4vw, 2.75rem);
-  letter-spacing: -0.035em;
-}
-
-.lab-title-actions {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
 }
 
 .new-experiment-trigger {
@@ -94,55 +75,18 @@
   color: var(--color-danger, var(--danger));
 }
 
-.ode-breadcrumb {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 16px;
-  color: var(--muted);
-  font-size: 0.86rem;
-}
-
-.ode-breadcrumb a {
-  color: var(--accent);
-}
-
-.experiment-identity {
-  margin: 14px 0;
-  padding: 13px 16px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--color-surface-accent);
-}
-
-.experiment-identity strong {
+.ode-lab-shell .lab-header-identity strong {
   color: var(--accent-2);
 }
 
-.experiment-identity p {
+.ode-lab-shell .lab-header-identity p {
   margin: 4px 0 0;
   color: var(--muted);
 }
 
-.experiment-identity.is-compact {
+.ode-lab-shell .lab-header-identity.is-compact {
   display: inline-flex;
-  margin-block: 8px 14px;
-  padding: 4px 10px;
-  border-radius: 999px;
-}
-
-.eyebrow {
-  margin: 0 0 6px;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 0.72rem;
-  color: var(--muted);
-}
-
-.lede {
-  margin: 0 0 12px;
-  max-width: 72ch;
-  color: var(--muted);
+  padding-block: 4px;
 }
 
 .ivp-note {
@@ -155,50 +99,6 @@
 .multistep-note {
   grid-column: 1 / -1;
   color: var(--accent-2);
-}
-
-.steps {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-}
-
-.pill {
-  padding: 6px 12px;
-  border-radius: 999px;
-  border: 1px solid var(--color-border-strong);
-  font-size: 0.85rem;
-  color: var(--muted);
-}
-
-.pill.active {
-  border-color: var(--accent);
-  color: var(--color-on-accent);
-  background: var(--accent);
-  font-weight: 700;
-}
-
-.pill:nth-of-type(1) {
-  --stage-accent: var(--color-method-accent);
-}
-
-.pill:nth-of-type(3) {
-  --stage-accent: var(--color-data-accent);
-}
-
-.pill:nth-of-type(5) {
-  --stage-accent: var(--color-output-accent);
-}
-
-.pill.active {
-  border-color: var(--stage-accent, var(--accent));
-  background: var(--stage-accent, var(--accent));
-}
-
-.arrow {
-  color: var(--muted);
-  font-size: 0.85rem;
 }
 
 .choose-panel {
@@ -243,36 +143,6 @@
   background: var(--color-surface-accent);
   border-color: var(--color-accent-primary);
   color: var(--color-accent-primary-strong);
-}
-
-.panel {
-  position: relative;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: clamp(18px, 2vw, 26px);
-  box-shadow: var(--shadow-card);
-  overflow: clip;
-}
-
-.workflow-panel::before {
-  position: absolute;
-  inset: 0 0 auto;
-  height: var(--space-1);
-  background: var(--workflow-accent);
-  content: "";
-}
-
-.workflow-stage-method {
-  --workflow-accent: var(--color-method-accent);
-}
-
-.workflow-stage-data {
-  --workflow-accent: var(--color-data-accent);
-}
-
-.workflow-stage-output {
-  --workflow-accent: var(--color-output-accent);
 }
 
 .grid-methods {
@@ -797,27 +667,27 @@
   background: var(--color-surface-primary);
 }
 
-.shell table {
+.ode-lab-shell table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.88rem;
 }
 
-.shell th,
-.shell td {
+.ode-lab-shell th,
+.ode-lab-shell td {
   padding: 8px 10px;
   text-align: right;
   border-bottom: 1px solid var(--border);
 }
 
-.shell th {
+.ode-lab-shell th {
   text-align: right;
   color: var(--muted);
   font-weight: 600;
   background: var(--color-surface-inset);
 }
 
-.shell tbody tr:nth-child(even) {
+.ode-lab-shell tbody tr:nth-child(even) {
   background: var(--color-surface-soft);
 }
 
@@ -1029,19 +899,6 @@
 }
 
 @media (max-width: 640px) {
-  .shell {
-    gap: 18px;
-  }
-
-  .panel {
-    padding: 16px;
-  }
-
-  .lab-title-actions {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
   .new-experiment-actions {
     align-items: stretch;
     flex-direction: column-reverse;
@@ -1061,7 +918,6 @@
 }
 
 @media (forced-colors: active) {
-  .panel,
   .card,
   .field input,
   .field select,
@@ -1078,7 +934,6 @@
     box-shadow: none;
   }
 
-  .pill.active,
   .card.is-selected,
   .card[aria-pressed="true"] {
     border-color: Highlight;

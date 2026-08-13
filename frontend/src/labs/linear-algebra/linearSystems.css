@@ -1,5 +1,4 @@
 .linear-systems-shell {
-  --ls-stage-accent: var(--color-method-accent);
   display: flex;
   min-width: 0;
   flex-direction: column;
@@ -53,34 +52,6 @@
   border: 0 !important;
 }
 
-.ls-hero {
-  display: grid;
-  gap: var(--space-3);
-}
-
-.ls-breadcrumb {
-  color: var(--color-text-secondary);
-  font-size: 0.86rem;
-}
-
-.ls-breadcrumb a {
-  color: var(--color-accent-primary);
-}
-
-.ls-title-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-4);
-}
-
-.ls-title-row h1 {
-  margin: 0;
-  font-size: clamp(2rem, 5vw, 3rem);
-  letter-spacing: -0.04em;
-}
-
-.ls-lede,
 .ls-muted,
 .ls-walkthrough-intro {
   max-width: 74ch;
@@ -88,7 +59,6 @@
   color: var(--color-text-secondary);
 }
 
-.ls-experiment-identity,
 .ls-preset-identity {
   width: fit-content;
   margin: 0;
@@ -100,90 +70,7 @@
   font-size: 0.85rem;
 }
 
-.ls-workflow-rail {
-  overflow-x: auto;
-  padding-block: 0.15rem;
-}
-
-.ls-workflow-rail ol {
-  display: grid;
-  min-width: 36rem;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-2);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.ls-workflow-rail li {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.ls-workflow-number {
-  display: grid;
-  width: 1.75rem;
-  height: 1.75rem;
-  flex: 0 0 auto;
-  place-items: center;
-  border: 1px solid var(--color-border-strong);
-  border-radius: 50%;
-  color: var(--color-text-secondary);
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: 0.75rem;
-}
-
-.ls-workflow-step {
-  width: 100%;
-  padding: 0.65rem 0.8rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-pill);
-  background: var(--color-surface-raised);
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  font: inherit;
-  font-weight: 700;
-}
-
-.ls-workflow-step[aria-current="step"] {
-  border-color: var(--color-accent-primary);
-  background: var(--color-accent-primary);
-  color: var(--color-on-accent);
-}
-
-.ls-workflow-step:disabled {
-  border-color: var(--color-border);
-  background: var(--color-disabled-surface);
-  color: var(--color-disabled-text);
-  cursor: not-allowed;
-}
-
-.ls-panel {
-  position: relative;
-  min-width: 0;
-  overflow: clip;
-  padding: clamp(1.1rem, 3vw, 2rem);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  background: var(--color-surface-primary);
-  box-shadow: var(--shadow-card);
-}
-
-.ls-workflow-panel::before {
-  position: absolute;
-  inset: 0 0 auto;
-  height: var(--space-1);
-  background: var(--ls-stage-accent);
-  content: "";
-}
-
-.ls-stage-method { --ls-stage-accent: var(--color-method-accent); }
-.ls-stage-data { --ls-stage-accent: var(--color-data-accent); }
-.ls-stage-output { --ls-stage-accent: var(--color-output-accent); }
-.ls-stage-diagnostics { --ls-stage-accent: var(--color-convergence-accent); }
-
-.ls-panel > h2,
+.lab-stage-section > h2,
 .ls-result-header h2,
 .ls-factorization-rail h3,
 .ls-walkthrough-phase h3,
@@ -253,7 +140,6 @@
   color: var(--color-danger);
 }
 
-.ls-workflow-step:focus-visible,
 .ls-button:focus-visible,
 .ls-input-matrix input:focus-visible,
 .ls-control-field select:focus-visible,
@@ -799,23 +685,6 @@
 }
 
 @media (max-width: 44rem) {
-  .linear-systems-shell {
-    gap: var(--space-4);
-  }
-
-  .ls-title-row {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .ls-title-row .ls-button {
-    width: fit-content;
-  }
-
-  .ls-panel {
-    padding: var(--space-4);
-  }
-
   .ls-equation-editor {
     overflow: visible;
   }
@@ -1327,7 +1196,7 @@
 .ls-v2-phase::before {
   background: linear-gradient(
     to bottom,
-    var(--ls-stage-accent),
+    var(--lab-role-accent, var(--color-output-accent)),
     var(--color-border)
   );
 }

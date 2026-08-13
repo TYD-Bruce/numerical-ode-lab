@@ -32,6 +32,16 @@ import {
   createComputationWalkthrough,
 } from "./computationWalkthrough";
 import {
+  createLabHeader,
+  createLabShell,
+} from "../../components/lab-presentation/labShell";
+import { createStageSection } from "../../components/lab-presentation/stageSection";
+import { applyLabActionRole } from "../../components/lab-presentation/supportingElements";
+import {
+  createWorkflowNavigation,
+  disposeWorkflowNavigation,
+} from "../../components/lab-presentation/workflowNavigation";
+import {
   createMathNumber,
   createStructuredMath,
   formatMathNumber,
@@ -274,35 +284,47 @@ export function mountLinearSystemsApp(
     focusAfterRender(`[data-workflow-step="${step}"]`);
   }
 
-  function createWorkflowRail(): HTMLElement {
-    const nav = el("nav", undefined, "ls-workflow-rail");
-    nav.setAttribute("aria-label", "Linear Systems workflow");
-    const list = document.createElement("ol");
-    const steps: readonly [LinearSystemsWorkflowStep, string][] = [
-      ["method", "Method"],
-      ["data", "Data"],
-      ["output", "Output"],
-      ["diagnostics", "Diagnostics"],
-    ];
-    steps.forEach(([step, label], index) => {
-      const item = document.createElement("li");
-      const control = button(label, "ls-workflow-step", () => goToStep(step));
-      control.dataset.workflowStep = step;
-      control.disabled =
-        (step === "output" || step === "diagnostics") &&
-        !session.latestSuccessfulResult;
-      if (session.step === step) {
-        control.setAttribute("aria-current", "step");
-      }
-      item.append(el("span", String(index + 1), "ls-workflow-number"), control);
-      list.append(item);
+  function createLinearSystemsWorkflowNavigation(): HTMLElement {
+    const resultAvailable = Boolean(session.latestSuccessfulResult);
+    return createWorkflowNavigation({
+      label: "Linear Systems workflow",
+      steps: [
+        {
+          key: "method",
+          label: "Method",
+          role: "method",
+          current: session.step === "method",
+          onActivate: () => goToStep("method"),
+        },
+        {
+          key: "data",
+          label: "Data",
+          role: "data",
+          current: session.step === "data",
+          onActivate: () => goToStep("data"),
+        },
+        {
+          key: "output",
+          label: "Output",
+          role: "output",
+          available: resultAvailable,
+          current: session.step === "output",
+          onActivate: () => goToStep("output"),
+        },
+        {
+          key: "diagnostics",
+          label: "Diagnostics",
+          role: "analysis",
+          available: resultAvailable,
+          current: session.step === "diagnostics",
+          onActivate: () => goToStep("diagnostics"),
+        },
+      ],
     });
-    nav.append(list);
-    return nav;
   }
 
   function createMethodPanel(): HTMLElement {
-    const panel = el("section", undefined, "ls-panel ls-workflow-panel ls-stage-method");
+    const panel = createStageSection({ role: "method", label: "Method" });
     panel.dataset.workflowPanel = "method";
     panel.append(
       createLinearSystemsMethodTeaching(),
@@ -589,7 +611,7 @@ export function mountLinearSystemsApp(
   }
 
   function createDataPanel(): HTMLElement {
-    const panel = el("section", undefined, "ls-panel ls-workflow-panel ls-stage-data");
+    const panel = createStageSection({ role: "data", label: "Data" });
     panel.dataset.workflowPanel = "data";
     const heading = el("h2", "Data — define A and b");
     heading.tabIndex = -1;
@@ -749,7 +771,7 @@ export function mountLinearSystemsApp(
   }
 
   function createOutputPanel(): HTMLElement {
-    const panel = el("section", undefined, "ls-panel ls-workflow-panel ls-stage-output");
+    const panel = createStageSection({ role: "output", label: "Output" });
     panel.dataset.workflowPanel = "output";
     const result = session.latestSuccessfulResult;
     if (!result) {
@@ -837,11 +859,7 @@ export function mountLinearSystemsApp(
   }
 
   function createDiagnosticsPanel(): HTMLElement {
-    const panel = el(
-      "section",
-      undefined,
-      "ls-panel ls-workflow-panel ls-stage-diagnostics"
-    );
+    const panel = createStageSection({ role: "analysis", label: "Diagnostics" });
     panel.dataset.workflowPanel = "diagnostics";
     const heading = el("h2", "Diagnostics — check the equation mismatch");
     heading.tabIndex = -1;
@@ -1284,8 +1302,7 @@ export function mountLinearSystemsApp(
 
   function render(): void {
     if (!isCurrent()) return;
-    const root = el("div", undefined, "linear-systems-shell");
-    const breadcrumb = el("nav", undefined, "ls-breadcrumb");
+    const breadcrumb = el("nav");
     breadcrumb.setAttribute("aria-label", "Breadcrumb");
     const overview = document.createElement("a");
     overview.href = "/linear-algebra";
@@ -1295,45 +1312,57 @@ export function mountLinearSystemsApp(
       document.createTextNode(" / "),
       el("span", "Linear Systems Lab")
     );
-    const header = el("header", undefined, "ls-hero");
-    const titleRow = el("div", undefined, "ls-title-row");
     const title = el("h1", "Linear Systems Lab");
     title.dataset.routeFocus = "true";
     title.tabIndex = -1;
-    const reset = button("New experiment", "ls-button ls-button-ghost", () =>
-      openResetDialog(reset)
+    const reset: HTMLButtonElement = applyLabActionRole(
+      button("New experiment", "ls-button ls-button-ghost", () =>
+        openResetDialog(reset)
+      ),
+      "secondary"
     );
     reset.dataset.newExperiment = "true";
-    titleRow.append(title, reset);
-    header.append(
-      breadcrumb,
-      titleRow,
-      paragraph(
-        [
-          "Solve ",
-          math("A x = b", "A times x equals b", "system-equation"),
-          ", inspect how partial pivoting builds ",
-          math("P A = L U", "P times A equals L times U", "factorization-relation"),
-          ", and check the computed solution against the original equations.",
-        ],
-        "ls-lede"
-      )
+    const lede = paragraph(
+      [
+        "Solve ",
+        math("A x = b", "A times x equals b", "system-equation"),
+        ", inspect how partial pivoting builds ",
+        math("P A = L U", "P times A equals L times U", "factorization-relation"),
+        ", and check the computed solution against the original equations.",
+      ]
     );
-    const identity = el("p", undefined, "ls-experiment-identity");
+    const identity = el("p");
     identity.dataset.experimentIdentity = "true";
     identity.textContent = experimentIdentityText();
-    header.append(identity);
-    root.append(header, createWorkflowRail());
-    if (session.step === "method") root.append(createMethodPanel());
-    if (session.step === "data") root.append(createDataPanel());
-    if (session.step === "output") root.append(createOutputPanel());
-    if (session.step === "diagnostics") root.append(createDiagnosticsPanel());
+    const stage =
+      session.step === "method"
+        ? createMethodPanel()
+        : session.step === "data"
+          ? createDataPanel()
+          : session.step === "output"
+            ? createOutputPanel()
+            : createDiagnosticsPanel();
     const announcements = el("p", undefined, "sr-only");
     announcements.setAttribute("role", "status");
     announcements.setAttribute("aria-live", "polite");
     announcements.setAttribute("aria-atomic", "true");
     announcements.dataset.linearSystemsStatus = "true";
-    root.append(announcements);
+    const root = createLabShell({
+      header: createLabHeader({
+        breadcrumb,
+        title,
+        lede,
+        identity,
+        actions: [reset],
+      }),
+      workflow: createLinearSystemsWorkflowNavigation(),
+      stage,
+      afterStage: [announcements],
+      className: "linear-systems-shell",
+    });
+    disposeWorkflowNavigation(
+      app.querySelector<HTMLElement>("[data-workflow-navigation]")
+    );
     app.replaceChildren(root);
   }
 
@@ -1356,6 +1385,9 @@ export function mountLinearSystemsApp(
       closeResetDialog(false);
       if (activeMounts.get(app) === token) {
         activeMounts.delete(app);
+        disposeWorkflowNavigation(
+          app.querySelector<HTMLElement>("[data-workflow-navigation]")
+        );
         app.replaceChildren();
       }
     },

@@ -62,7 +62,9 @@ describe("Initial Value Problems route", () => {
     expect(secondTarget.querySelector("h1")?.textContent).toBe(
       "Initial Value Problems Lab"
     );
-    const breadcrumb = firstTarget.querySelector(".ode-breadcrumb");
+    expect(firstTarget.querySelectorAll("h1")).toHaveLength(1);
+    expect(firstTarget.querySelector("[data-lab-shell]")).not.toBeNull();
+    const breadcrumb = firstTarget.querySelector("[data-lab-breadcrumb]");
     const overviewLink = breadcrumb?.querySelector("a");
     expect(overviewLink?.textContent).toBe("Numerical ODE");
     expect(overviewLink?.getAttribute("href")).toBe("/ode");
@@ -70,6 +72,20 @@ describe("Initial Value Problems route", () => {
     expect(firstTarget.textContent).toContain(
       "Explore fixed-step methods for a first-order ordinary differential equation posed as an initial value problem"
     );
+    expect(
+      [...firstTarget.querySelectorAll<HTMLButtonElement>("[data-workflow-step]")].map(
+        (control) => ({
+          key: control.dataset.workflowStep,
+          current: control.getAttribute("aria-current"),
+          disabled: control.disabled,
+        })
+      )
+    ).toEqual([
+      { key: "method", current: "step", disabled: false },
+      { key: "data", current: null, disabled: false },
+      { key: "output", current: null, disabled: true },
+    ]);
+    expect(firstTarget.querySelector("[data-stage-role='method']")).not.toBeNull();
     expect(firstTarget.querySelector("[data-experiment-identity]")?.textContent).toContain(
       "Beginner starter"
     );
@@ -109,7 +125,7 @@ describe("Initial Value Problems route", () => {
       navigate: vi.fn(),
     });
 
-    expect(target.querySelector(".lede")?.textContent).toBe(
+    expect(target.querySelector("[data-lab-header-lede]")?.textContent).toBe(
       "Explore fixed-step methods for a first-order ordinary differential equation posed as an initial value problem, then analyze numerical error, observed convergence, and method behavior as the time-step size changes."
     );
     const cards = [...target.querySelectorAll<HTMLButtonElement>(".card")];
@@ -222,6 +238,15 @@ describe("Initial Value Problems route", () => {
       navigate: vi.fn(),
     });
 
+    expect(
+      target.querySelector<HTMLButtonElement>("[data-workflow-step='data']")
+        ?.disabled
+    ).toBe(true);
+    expect(
+      target.querySelector<HTMLButtonElement>("[data-workflow-step='output']")
+        ?.disabled
+    ).toBe(true);
+
     const forwardEuler = [...target.querySelectorAll<HTMLButtonElement>(".card")].find(
       (button) => button.querySelector("h2")?.textContent === "Forward Euler"
     )!;
@@ -231,6 +256,36 @@ describe("Initial Value Problems route", () => {
       target.querySelector<HTMLInputElement>("[data-exact-solution-toggle]")?.checked
     ).toBe(false);
     expect(mounted.getSession().form.presetId).toBeUndefined();
+    mounted.dispose();
+  });
+
+  it("navigates only to ODE stages authorized by the existing workflow and output state", async () => {
+    const { mount } = await import("./initialValueProblemsRoute");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const mounted = mount({
+      target,
+      session: createBeginnerStarterSession(),
+      navigate: vi.fn(),
+    });
+
+    target.querySelector<HTMLButtonElement>("[data-workflow-step='data']")!.click();
+    expect(mounted.getSession().step).toBe("configure");
+    expect(
+      target
+        .querySelector("[data-workflow-step='data']")
+        ?.getAttribute("aria-current")
+    ).toBe("step");
+    expect(target.querySelector("[data-stage-role='data']")).not.toBeNull();
+
+    target.querySelector<HTMLButtonElement>("[data-workflow-step='method']")!.click();
+    expect(mounted.getSession().step).toBe("choose");
+    expect(
+      target
+        .querySelector("[data-workflow-step='method']")
+        ?.getAttribute("aria-current")
+    ).toBe("step");
+    expect(target.querySelector("[data-workflow-step='analysis']")).toBeNull();
     mounted.dispose();
   });
 

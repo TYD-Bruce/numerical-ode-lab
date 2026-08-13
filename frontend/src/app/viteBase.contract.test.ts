@@ -8,7 +8,7 @@ let outputDirectory = "";
 let indexHtml = "";
 let manifest: Record<
   string,
-  { file: string; css?: string[]; dynamicImports?: string[] }
+  { file: string; css?: string[]; imports?: string[]; dynamicImports?: string[] }
 > = {};
 let emittedCss = "";
 let emittedJavaScript = "";
@@ -89,6 +89,26 @@ describe("Vite root-base deployment contract", () => {
     expect(entry?.dynamicImports).toContain(
       "src/labs/linear-algebra/linearSystemsRoute.ts"
     );
+  });
+
+  it("emits Lab presentation as a shared lazy child of both complete Labs", () => {
+    const entry = manifest["index.html"];
+    const ode = manifest["src/labs/ode/initialValueProblemsRoute.ts"];
+    const linearSystems =
+      manifest["src/labs/linear-algebra/linearSystemsRoute.ts"];
+    const sharedCandidates = (linearSystems?.imports ?? []).filter(
+      (key) =>
+        (ode?.imports ?? []).includes(key) &&
+        (manifest[key]?.css?.length ?? 0) > 0
+    );
+
+    expect(sharedCandidates).toHaveLength(1);
+    const shared = sharedCandidates[0]!;
+    expect(entry?.imports ?? []).not.toContain(shared);
+    expect(manifest[shared]?.file).toMatch(/^assets\/.+\.js$/);
+    expect(manifest[shared]?.css?.[0]).toMatch(/^assets\/.+\.css$/);
+    expect(emittedCss).toContain(".lab-shell");
+    expect(emittedCss).toContain(".lab-workflow-navigation");
   });
 
   it("excludes the development Glossary route and fixtures from production output", () => {

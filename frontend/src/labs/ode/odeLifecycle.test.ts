@@ -281,6 +281,54 @@ describe("mounted ODE lifecycle", () => {
     expect(disposeConvergence).toHaveBeenCalledTimes(1);
   });
 
+  it("keeps successful Output available while browsing Method through the shared workflow", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const initial = outputSession();
+    const mounted = mountOdeApp({ target, initialSession: initial });
+    await Promise.resolve();
+
+    target.querySelector<HTMLButtonElement>("[data-workflow-step='method']")!.click();
+
+    const outputStep = target.querySelector<HTMLButtonElement>(
+      "[data-workflow-step='output']"
+    )!;
+    expect(outputStep.disabled).toBe(false);
+    expect(mounted.getSession().output.single?.result.points).toBe(
+      initial.output.single.result.points
+    );
+
+    outputStep.click();
+    await Promise.resolve();
+
+    expect(
+      target
+        .querySelector("[data-workflow-step='output']")
+        ?.getAttribute("aria-current")
+    ).toBe("step");
+    expect(target.querySelector("[data-stage-role='output']")).not.toBeNull();
+    expect(mounted.getSession().output.single?.result.points).toBe(
+      initial.output.single.result.points
+    );
+
+    target.querySelector<HTMLButtonElement>("[data-workflow-step='method']")!.click();
+    const rk4 = [...target.querySelectorAll<HTMLButtonElement>(".card")].find(
+      (button) => button.querySelector("h2")?.textContent === "Runge-Kutta 4"
+    )!;
+    rk4.click();
+
+    expect(
+      target.querySelector<HTMLButtonElement>("[data-workflow-step='output']")
+        ?.disabled
+    ).toBe(true);
+    expect(mounted.getSession().output.single?.result.points).toBe(
+      initial.output.single.result.points
+    );
+
+    mounted.dispose();
+  });
+
   it("applies Tutor zoom bounds without changing the chart-owned title", async () => {
     const { mountOdeApp } = await import("./odeApp");
     const target = document.createElement("div");
@@ -575,12 +623,21 @@ describe("mounted ODE lifecycle", () => {
     expect(recordMeaningfulInteraction).not.toHaveBeenCalled();
     expect(mounted.getSession().output.single?.result.points).toBe(points);
     expect(
+      target.querySelector<HTMLButtonElement>("[data-workflow-step='output']")
+        ?.disabled
+    ).toBe(false);
+    expect(
       (mounted.getTutorBinding().getContext() as {
         result: { points: readonly unknown[] };
       }).result.points
     ).toBe(points);
     target.querySelector<HTMLButtonElement>("[data-return-output]")!.click();
     await Promise.resolve();
+    expect(
+      target
+        .querySelector("[data-workflow-step='output']")
+        ?.getAttribute("aria-current")
+    ).toBe("step");
     const saved = mounted.getSession();
     mounted.dispose();
 

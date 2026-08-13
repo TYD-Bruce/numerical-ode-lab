@@ -61,8 +61,12 @@ describe("Linear Systems route and complete-Lab lifecycle", () => {
       session: linearSystemsRoute.createBeginnerStarterSession(),
       navigate: vi.fn(),
     });
+    expect(target.querySelector("[data-lab-shell]")).not.toBeNull();
+    expect(target.querySelectorAll("h1")).toHaveLength(1);
     expect(target.querySelector("h1")?.textContent).toBe("Linear Systems Lab");
-    expect(target.querySelector(".ls-breadcrumb a")?.getAttribute("href")).toBe(
+    expect(
+      target.querySelector("[data-lab-breadcrumb] a")?.getAttribute("href")
+    ).toBe(
       "/linear-algebra"
     );
     expect("getTutorBinding" in mounted).toBe(false);

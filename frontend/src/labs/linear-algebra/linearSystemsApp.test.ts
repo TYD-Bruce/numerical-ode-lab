@@ -85,8 +85,13 @@ describe("Linear Systems Lab Teaching v2 application", () => {
   it("keeps the four-step workflow and renders the Method teaching framework", () => {
     const { target, mounted } = mount();
 
+    expect(target.querySelector("[data-lab-shell]")).not.toBeNull();
+    expect(target.querySelectorAll("h1")).toHaveLength(1);
     expect(target.querySelector("h1")?.textContent).toBe("Linear Systems Lab");
+    expect(target.querySelector("[data-lab-breadcrumb]")).not.toBeNull();
+    expect(target.querySelector("[data-lab-header-eyebrow]")).toBeNull();
     expect(target.querySelectorAll("[data-workflow-step]")).toHaveLength(4);
+    expect(target.querySelector("[data-workflow-navigation] ol")).not.toBeNull();
     expect(
       target.querySelector("[data-workflow-step='method']")?.getAttribute(
         "aria-current"
@@ -96,6 +101,16 @@ describe("Linear Systems Lab Teaching v2 application", () => {
       target.querySelector<HTMLButtonElement>("[data-workflow-step='output']")
         ?.disabled
     ).toBe(true);
+    expect(
+      target
+        .querySelector("[data-workflow-step='diagnostics']")
+        ?.getAttribute("data-stage-role")
+    ).toBe("analysis");
+    expect(
+      target
+        .querySelector("[data-workflow-panel='method']")
+        ?.getAttribute("data-stage-role")
+    ).toBe("method");
     expect(
       target.querySelector("[data-method-problem] [data-native-math='system-equation']")
     ).not.toBeNull();
@@ -152,6 +167,11 @@ describe("Linear Systems Lab Teaching v2 application", () => {
     expect(target.querySelector("[data-workflow-panel]")?.getAttribute("data-workflow-panel")).toBe(
       "data"
     );
+    expect(
+      target
+        .querySelector("[data-workflow-panel='data']")
+        ?.getAttribute("data-stage-role")
+    ).toBe("data");
     expect(
       [...target.querySelectorAll<HTMLSelectElement>("[data-preset-select] option")].map(
         (option) => option.textContent
@@ -294,6 +314,11 @@ describe("Linear Systems Lab Teaching v2 application", () => {
   it("renders Diagnostics as distinct residual blocks with subordinate safeguards", () => {
     const { target, mounted } = mount(successfulSession());
     target.querySelector<HTMLButtonElement>("[data-workflow-step='diagnostics']")!.click();
+    expect(
+      target
+        .querySelector("[data-workflow-panel='diagnostics']")
+        ?.getAttribute("data-stage-role")
+    ).toBe("analysis");
 
     const result = mounted.getSession().latestSuccessfulResult!;
     const context = target.querySelector<HTMLElement>("[data-diagnostics-context]")!;

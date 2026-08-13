@@ -292,7 +292,7 @@ describe("ODE Wave 1 Glossary runtime contract", () => {
       initialSession: createBeginnerStarterSession(),
     });
 
-    const lede = target.querySelector(".lede")!;
+    const lede = target.querySelector("[data-lab-header-lede]")!;
     expect(lede.textContent).toBe(
       "Explore fixed-step methods for a first-order ordinary differential equation posed as an initial value problem, then analyze numerical error, observed convergence, and method behavior as the time-step size changes."
     );
@@ -304,7 +304,7 @@ describe("ODE Wave 1 Glossary runtime contract", () => {
     );
     expect(target.querySelector("h1 .glossary-term-trigger")).toBeNull();
     expect(
-      target.querySelector(".ode-breadcrumb .glossary-term-trigger")
+      target.querySelector("[data-lab-breadcrumb] .glossary-term-trigger")
     ).toBeNull();
 
     const helper = target.querySelector<HTMLElement>(
