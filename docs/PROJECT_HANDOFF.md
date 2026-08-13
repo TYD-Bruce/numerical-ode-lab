@@ -2,6 +2,249 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
+## Cross-Lab Presentation Sync Phase 1 — shell and workflow audit candidate — 2026-08-12
+
+### Authorization, result, and stop gate
+
+The Maintainer formally accepts **Cross-Lab Presentation Sync Phase 0** at
+final Phase 0 HEAD `0c392e218dd7006d43811ddc4d7401a0ccb7c495` (tree
+`3d0bc052f9a2e58b50aeb67b52ddb36f10dcd994`). Phase 1 was separately
+authorized and is now implemented and locally verified as an audit candidate.
+It is not Maintainer accepted.
+
+The shared-source commit is `48eef685aab3b31e7e206befde5944c96308f16a`
+(tree `6c87027f456cee9a6af247abd731271d4b891f51`). The outer-Lab migration commit is
+`d0c77f84ce444afbe418adcbdd94cfca18e1e32b` (tree
+`bc6131880e0a57388c45586c4aea948d8a572835`). The exact next gate is
+**independent Cross-Lab Presentation Phase 1 shell/workflow audit**, followed
+by **Maintainer visual review**. Stop before Phase 2.
+
+### Shared ownership and composition
+
+`frontend/src/components/lab-presentation/` now owns the smallest Phase 1
+shared area:
+
+- `labShell.ts` exports the required `LabHeader` structure with authored
+  breadcrumb, optional eyebrow, one native route-focus `h1`, lede, identity,
+  details, and native actions; `LabShell` places that header before workflow,
+  active stage, and optional existing platform/domain-owned nodes;
+- `workflowNavigation.ts` renders a named `nav`, ordered list, and variable
+  native-button descriptors with `aria-current="step"`, disabled
+  unavailability, visible labels/numbers, role metadata, Lab-supplied
+  callbacks, and bounded local current-item reveal on focus, construction, and
+  rail resize. Its observer has explicit route-render/disposal cleanup;
+- `stageSection.ts` owns one native labelled `section` and the shared Method,
+  Data, Output, or Analysis visual role without interpreting content;
+- `supportingElements.ts` applies Phase 0 action roles to existing native
+  buttons/links. Phase 1 uses the secondary role for both New experiment
+  actions;
+- `labPresentation.css` owns only shared shell/header/workflow/stage and outer
+  action geometry. It consumes accepted Phase 0 semantic surface, role,
+  border, typography, spacing, radius, control, and focus tokens. It adds no
+  palette, decorative gradient, glass, animation, or dependency.
+
+Shared code receives already-authored nodes and does not clone mathematical
+content. It imports no Router, Store, domain session, numerical package,
+Chart.js, MathLive, Compute Engine, Tutor, Glossary, Computation Trace, or
+MathML renderer. Domain live regions remain domain owned; no duplicate live
+region was added.
+
+### ODE migration and workflow authority
+
+The ODE-owned `.shell`/`.hero`, title row, breadcrumb, identity, passive
+`.steps`/`.pill`, `.panel`, and `.workflow-stage-*` outer presentation is
+replaced by the shared header, three-button workflow, and active stage
+section. Existing exact header/learner copy, optional technical eyebrow,
+Method cards, Data form, editable mathematics, Run, Output, chart, tables,
+Compare, Convergence, Tutor, Glossary, statuses, and dialog internals remain
+domain owned.
+
+ODE availability derives from existing authority and creates no second state
+model:
+
+| Stage | Available when | Activation |
+|---|---|---|
+| Method | Always | Browse method choices without deleting a successful output |
+| Data | Single mode has a selected method, or current mode is Compare | Use the existing configured Data surface |
+| Output | A successful single result matches the current selected method/order, or a successful comparison matches the current comparison pair | Reopen the existing successful Output |
+
+Output is disabled before success and after a failed Run. Browsing Method
+preserves and can return to the matching successful Output. Selecting a
+different method makes the old Output unreachable but preserves the immutable
+stored snapshot until an existing successful run replaces it; this avoids both
+false reachability and premature result loss. ODE retains exactly three top-
+level steps. Convergence did not become a fourth step.
+
+Browser reset checks covered cancel and confirm. Cancel preserved successful
+Output; confirm returned to the existing Beginner Starter Method lifecycle and
+removed Output availability. Bounded ODE Host checks opened/closed Tutor and a
+Glossary definition; focus returned to the connected Open AI Tutor and term
+trigger controls. No Tutor or Glossary feature source changed.
+
+### Linear Systems migration and preserved teaching/math
+
+The Linear-Systems-owned `.ls-hero`, breadcrumb/title row/identity,
+`.ls-workflow-*`, `.ls-panel`, `.ls-workflow-panel`, and `.ls-stage-*` outer
+presentation is replaced by the same shared family. Its existing four-stage
+session and callbacks remain authoritative: Method and Data are always
+available; Output and Diagnostics require the existing successful snapshot.
+Current/stale/failure rules are unchanged. The visible **Diagnostics** title
+maps only to the shared `analysis` presentation role.
+
+Universal and selected-method Teaching v2 content, matrix/vector editor,
+result context, factorization, transformation corridor, trace-owned static
+walkthrough, row arithmetic, residual-led Diagnostics, safeguards, and pivot
+failure content are unchanged. A successful browser run retained solution
+`[1, 2, −1]` and Diagnostics retained the accepted near-machine residual
+`8.881784 × 10^-16`. Native MathML retains one labelled formula owner over one
+hidden visual tree; the representative solution/result and residual owners
+remain structurally unchanged. Show computation still reveals the existing
+static walkthrough and no Replay control appears. Focused tests retain stale
+snapshot authority, controlled pivot rejection, failure-evidence cleanup, and
+no invented Output after failure.
+
+Linear Systems New experiment cancel preserved Diagnostics and its successful
+snapshot. Confirm returned to Starter 3×3 Method with Output and Diagnostics
+disabled and the prior result removed through the existing reset authority.
+
+### Browser, accessibility, and visual evidence
+
+Fresh in-app browser verification used actual 1440 × 900-class DOM width,
+390 × 844, and 320-pixel stress. Comparable external screenshots cover ODE
+and Linear Systems Method/Data/Output in desktop Light, ODE Output and Linear
+Systems Method/Output in Dark, Linear Systems Diagnostics, both Labs at 390,
+all required Method/Output/Diagnostics states at 320, focus, and the
+computation disclosure. Evidence is outside the repository at:
+
+`C:/Users/bruce/.codex/visualizations/2026/08/12/019ff741-984c-7e42-967c-d757d759589a/phase1-shell-sync`
+
+The paired review answers are positive: both Labs now share max width, title
+scale, breadcrumb/lede/identity rhythm, workflow geometry, role rails, stage
+surface, action hierarchy, and focus language. Neither dominates through an
+accidental outer wrapper. ODE retains its exploratory cards, editable math,
+chart, Compare, and Convergence character. Linear Systems retains its denser
+Teaching v2, MathML, factorization, walkthrough, and diagnostic character.
+Mathematical objects and charts remain the evidence; the shared chrome stays
+neutral and restrained.
+
+Every checked mobile state has `document.scrollWidth === clientWidth`.
+Workflow overflow is contained to the rail; the current Method/Output/
+Diagnostics button is fully within the rail at 390 and 320. Header actions
+stack, titles wrap, and stage padding remains bounded. An initial desktop-to-
+mobile resize exposed a current-step clipping case because construction-time
+reveal had already run at desktop width. A rail-scoped `ResizeObserver` now
+repeats bounded reveal after width changes and is explicitly disconnected on
+render replacement/disposal.
+
+DOM/accessibility evidence confirms one native `h1` per Lab route, named
+Breadcrumb and workflow navigation landmarks, ordered native buttons,
+disabled unavailable stages, text plus `aria-current` for current state,
+visible role labels, labelled stage sections, and unchanged heading/math/live-
+region ownership. Actual browser keyboard events focused current workflow
+buttons in both Labs. Computed focus outlines were solid 2.66667 px with
+Light `rgb(93, 80, 161)` and Dark `rgb(139, 169, 255)` colors. Existing native
+inner controls remain keyboard focusable. This is browser/DOM evidence, not a
+screen-reader certification. Browser warning/error logs were empty.
+
+Real route leaves and returns restored ODE successful Output and Linear
+Systems successful Diagnostics according to their existing in-memory session
+contracts. Hidden Lab DOM was not retained; the new workflow resize observer
+is part of explicit route-owned cleanup.
+
+### CSS retirement, lazy graph, and bundle evidence
+
+Only duplicated outer selectors were retired after the shared replacement was
+mounted, focused tests passed, browser comparison passed, and `rg` found no
+remaining owners. Retired ODE selectors include `.hero`,
+`.lab-title-actions`, `.ode-breadcrumb`, `.experiment-identity`, `.steps`,
+`.pill`, `.arrow`, `.panel`, `.workflow-panel`, and `.workflow-stage-*`.
+Retired Linear Systems selectors include `.ls-hero`, `.ls-breadcrumb`,
+`.ls-title-row`, `.ls-experiment-identity`, `.ls-workflow-rail`,
+`.ls-workflow-step`, `.ls-workflow-number`, `.ls-panel`,
+`.ls-workflow-panel`, and `.ls-stage-*`. Domain editor, card, chart, table,
+Teaching, MathML, factorization, walkthrough, failure, disclosure, and
+Diagnostics rules remain local.
+
+The Production build transforms 104 modules, up from 99. Exact raw/gzip
+bundle metrics are:
+
+| Asset | Before Phase 1 | After Phase 1 |
+|---|---:|---:|
+| Entry JS | 56.64 / 17.45 kB | 56.73 / 17.49 kB |
+| Platform CSS | 29.51 / 5.39 kB | 29.51 / 5.39 kB |
+| Shared Lab JS | none | 4.41 / 1.54 kB |
+| Shared Lab CSS | none | 7.62 / 1.67 kB |
+| ODE JS | 293.60 / 94.05 kB | 295.53 / 94.57 kB |
+| ODE CSS | 16.59 / 3.85 kB | 14.71 / 3.46 kB |
+| Linear Systems JS | 71.11 / 21.06 kB | 71.01 / 21.15 kB |
+| Linear Systems CSS | 30.33 / 5.42 kB | 28.08 / 5.05 kB |
+
+The manifest entry dynamically imports both complete Labs and does not import
+the shared presentation asset. Both complete-Lab manifests import the same
+shared 4.41 kB JS asset and its 7.62 kB CSS. ODE and Linear Systems remain
+independently lazy; Chart.js, Tutor, Glossary, MathLive, Compute Engine, and
+Computation Trace retain their existing boundaries. No `manualChunks` was
+added. The existing large MathLive/Compute Engine warning is unrelated.
+
+Production-exclusion tests continue to prove that
+`presentationSystemRoute`, `presentationSystem.css`, fixture marker/body copy,
+and fixture selector do not enter Production. Production primitives import
+Phase 0 tokens from theme authority, not DEV fixture modules.
+
+### Tests, exact paths, and reusable rules
+
+Focused integration verification passes 13 files / 109 tests. It covers the
+9-test shared primitive contract, entry/lazy ownership and real manifest,
+ODE route/lifecycle/reset/Tutor/Glossary, Linear Systems app/route/Teaching v2/
+walkthrough/MathML, stale and failure authority, and DEV exclusion. The full
+suite passes 93 files / 1,249 tests. Import boundaries pass for four owners
+plus the Vercel adapter. Frontend, numerics, contracts, backend/API typechecks,
+Production build, complete `npm.cmd run verify`, and `git diff --check` pass.
+
+Implementation paths changed exactly:
+
+- shared: `frontend/src/components/lab-presentation/labShell.ts`,
+  `workflowNavigation.ts`, `stageSection.ts`, `supportingElements.ts`,
+  `labPresentation.css`, and `labPresentation.test.ts`;
+- ODE: `frontend/src/labs/ode/odeApp.ts`, `odeApp.css`,
+  `initialValueProblemsRoute.test.ts`, `odeLifecycle.test.ts`, and
+  `odeGlossary.test.ts`;
+- Linear Systems: `frontend/src/labs/linear-algebra/linearSystemsApp.ts`,
+  `linearSystems.css`, `linearSystemsApp.test.ts`, and
+  `linearSystemsRoute.test.ts`;
+- ownership/build tests: `frontend/src/app/routeBundleOwnership.test.ts` and
+  `viteBase.contract.test.ts`.
+
+Canonical status paths changed by the verification commit are this handoff,
+the accepted design, the implementation plan, `PLAN.md`, `docs/INDEX.md`, and
+the narrow current-architecture ownership map. README remains unchanged.
+
+Durable rules:
+
+1. Shared Lab presentation primitives own semantic composition and visual
+   roles, never domain state or numerical authority.
+2. A shared primitive is not entry-safe merely because it is shared.
+   Complete-Lab presentation remains behind complete-Lab lazy routes.
+3. Workflow availability is derived from the owning Lab's existing state;
+   shared navigation never invents a reachable stage.
+4. Domain titles may differ while sharing presentation roles. Diagnostics and
+   Convergence may both be Analysis without sharing lifecycle or mathematics.
+5. Remove duplicated domain presentation only after its shared replacement is
+   mounted, tested, browser-verified, and proven unused.
+6. Responsive workflow reveal requires both activation/focus handling and a
+   width-change path; contain scrolling to the workflow rail and dispose its
+   observer with the owning route.
+
+The implementation encountered no remaining severity finding. The temporary
+mobile rail clipping and ODE matching-output reachability questions were
+resolved by bounded shared reveal/disposal and domain-derived method/result
+matching respectively. `P0 = P1 = P2 = P3 = 0` at handoff.
+
+No Phase 2 primitive, numerical code, Computation Trace, session schema,
+Teaching v2 content, MathML architecture, Motion, Tutor feature, Glossary
+feature, PDE, dependency, deployment configuration, push, Preview, or
+Production deployment changed.
+
 ## Cross-Lab Presentation System v1 approval and Phase 0 foundation — 2026-08-12
 
 ### Approval and authorization record
@@ -16,10 +259,10 @@ correction implementation is commit
 `a196041a49ac3a396e779f3905ff8152f94e603a` (tree
 `53a8490db24460c8a708269ba3ba2b9494e09690`).
 
-Phase 0 implementation ready for Maintainer acceptance. This is not a self-
-declaration of acceptance. The exact next gate is **final Maintainer visual
-acceptance of Phase 0**. Phase 1 and all later migration phases remain
-unauthorized.
+Phase 0 is **MAINTAINER ACCEPTED** at final Phase 0 HEAD
+`0c392e218dd7006d43811ddc4d7401a0ccb7c495` (tree
+`3d0bc052f9a2e58b50aeb67b52ddb36f10dcd994`). The Phase 1 section above
+supersedes this section's former stop gate; Phase 2+ remains unauthorized.
 
 ### Phase 0 Maintainer visual review corrections
 

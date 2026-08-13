@@ -1,13 +1,13 @@
 # Cross-Lab Presentation System v1 Implementation Plan
 
-**Status:** Phase 0 is the current authorized phase and is implemented locally; maintainer visual approval pending; Phase 1+ not authorized
+**Status:** Phase 0 Maintainer accepted; Phase 1 separately authorized and implemented as an audit candidate at `d0c77f84ce444afbe418adcbdd94cfca18e1e32b`; Phase 2+ unauthorized
 
 **Design authority:**
 [`2026-08-12-cross-lab-presentation-system-v1-design.md`](../specs/2026-08-12-cross-lab-presentation-system-v1-design.md)
 
 **Starting implementation prerequisite:** Satisfied at design commit `3b77f7133a95bef855c2eb3e3a69db37e16f1e46`
 
-**Current gate:** Stop after Phase 0 before shared primitives or Lab migration
+**Current gate:** Stop after Phase 1 for independent shell/workflow audit, then Maintainer visual review
 
 ## 1. Objective and boundary
 
@@ -76,11 +76,9 @@ domain renderers into this folder.
 
 ## 4. Phase 0 — lock tokens and contracts
 
-**Execution status:** Implemented and locally verified at
-`b81a8dfc8d1ab49be9f07cd3fff59cb5d7c3cf05` (tree
-`56b810a3d4e0f5fe9c4f235b9bde0cfdabff06d0`). The exact stop gate remains
-maintainer visual approval of the tokens and DEV fixture. Phase 1 is not
-authorized.
+**Execution status:** Maintainer accepted at final Phase 0 HEAD
+`0c392e218dd7006d43811ddc4d7401a0ccb7c495` (tree
+`3d0bc052f9a2e58b50aeb67b52ddb36f10dcd994`).
 
 ### Changes
 
@@ -115,9 +113,16 @@ fixture markers are absent.
 
 ### Stop gate
 
-Maintainer approval of token vocabulary and fixture before shared primitives.
+Satisfied: Maintainer approval of token vocabulary and fixture before shared
+primitives.
 
 ## 5. Phase 1 — Lab shell, header, workflow, and stage
+
+**Execution status:** Separately authorized and implemented as an audit
+candidate at `d0c77f84ce444afbe418adcbdd94cfca18e1e32b` (tree
+`bc6131880e0a57388c45586c4aea948d8a572835`). The exact stop gate is the
+independent Cross-Lab Presentation Phase 1 shell/workflow audit followed by
+Maintainer visual review. Phase 2+ remains unauthorized.
 
 ### Changes
 
@@ -424,5 +429,6 @@ Implementation is complete only after Phase 7 acceptance and documentation
 updates accurately label it implemented and locally verified. Production
 remains unchanged until a separately authorized release/deployment task.
 
-Current exact next gate: **maintainer visual approval of Phase 0 semantic
-tokens and the DEV fixture**. Stop before Phase 1.
+Current exact next gate: **independent Cross-Lab Presentation Phase 1
+shell/workflow audit**, followed by **Maintainer visual review**. Stop before
+Phase 2.

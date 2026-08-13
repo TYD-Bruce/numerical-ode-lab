@@ -2,9 +2,9 @@
 
 ## Current status
 
-**Active milestone: Cross-Lab Presentation Sync — Phase 0 semantic tokens and
-DEV fixture implemented and locally verified; maintainer visual approval is
-the next gate.**
+**Active milestone: Cross-Lab Presentation Sync — Phase 0 Maintainer accepted;
+Phase 1 shared shell/workflow implementation is locally verified and awaiting
+independent audit.**
 
 Linear Systems Teaching v2 is **MAINTAINER ACCEPTED** at commit
 `484fc9153de33be7949e82b29386c94fe63d19c8` (tree
@@ -19,9 +19,11 @@ The maintainer approved the authoritative
 and
 [repository-grounded implementation plan](docs/superpowers/plans/2026-08-12-cross-lab-presentation-system-v1-implementation-plan.md)
 at commit `3b77f7133a95bef855c2eb3e3a69db37e16f1e46` (tree
-`95908ac5c0a773675bf237d3d49679106a4091f7`) and separately authorized Phase
-0. They define a best-of-both presentation architecture for the Initial Value
-Problems and Linear Systems Labs, with domain-neutral compatibility for a
+`95908ac5c0a773675bf237d3d49679106a4091f7`). Phase 0 is **MAINTAINER
+ACCEPTED** at final HEAD `0c392e218dd7006d43811ddc4d7401a0ccb7c495`
+(tree `3d0bc052f9a2e58b50aeb67b52ddb36f10dcd994`), and Phase 1 was separately
+authorized. The authorities define a best-of-both presentation architecture
+for the Initial Value Problems and Linear Systems Labs, with domain-neutral compatibility for a
 future PDE Lab. The design selects exactly ten top-level primitives: `LabShell`,
 `WorkflowNavigation`, `StageSection`, `ProblemContext`, `TeachingBlock`,
 `PrimaryResult`, `EvidenceBlock`, `ComputationWalkthroughShell`,
@@ -40,6 +42,17 @@ absent from Production route matching, manifest/assets, styles, and marker
 copy. Browser review passes 1440 × 900, 390 × 844, 320-pixel stress, Light/
 Dark, and focus checks without page overflow or console warning/error.
 
+Phase 1 is implemented as an audit candidate in two local commits:
+`48eef685aab3b31e7e206befde5944c96308f16a` adds the Lab-shared lazy
+presentation source, and `d0c77f84ce444afbe418adcbdd94cfca18e1e32b`
+(tree `bc6131880e0a57388c45586c4aea948d8a572835`) migrates only the ODE and
+Linear Systems outer header, workflow, and stage wrappers. Both Labs now use
+the same `LabShell`/required `LabHeader`, variable native-button
+`WorkflowNavigation`, `StageSection`, and secondary header-action language.
+ODE retains three stages and derives reachability from its existing method and
+successful-output authority. Linear Systems retains four stages and maps its
+visible Diagnostics title to the shared Analysis presentation role.
+
 The design keeps ODE's exploration, presets, Compare, charts, Convergence,
 Tutor, and Glossary strengths; keeps Linear Systems Teaching v2's explicit
 problem/result context, method-profile teaching, native MathML, trace-owned
@@ -50,14 +63,21 @@ Shared complete-Lab primitives remain Lab-shared lazy; only `ModuleOverview`
 is entry-safe. The platform entry must remain free of complete-Lab, Chart.js,
 Tutor, Glossary, MathLive, and Compute Engine runtime.
 
-No production Lab markup or product style has migrated. ODE and Linear Systems
-retain their current source, domain behavior, and independently lazy route
-ownership. Numerical behavior, Computation Trace, MathML architecture, Motion,
-Tutor, Glossary, PDE, dependencies, deployment, and Production state are
-unchanged. The exact next gate is **maintainer visual approval of Phase 0
-semantic tokens and the DEV fixture**. Phase 1 and every later migration phase
-remain unauthorized; do not begin shared primitives, Lab migration, Motion,
-or Tutor before that gate.
+Browser verification covers paired desktop Method/Data/Output surfaces, Linear
+Systems Diagnostics, Light/Dark, 390 × 844, and 320-pixel stress. Current steps
+remain fully visible inside local rails with no page overflow; New experiment,
+ODE Tutor/Glossary focus return, route/remount, Teaching v2, native MathML,
+walkthrough, stale/failure authority, and representative numerical displays
+remain intact. The Production manifest emits one shared Lab-only dynamic
+presentation asset imported by both complete-Lab chunks and absent from the
+platform entry. Numerical behavior, Computation Trace, session schemas, MathML
+architecture, Motion, Tutor/Glossary feature logic, PDE, dependencies,
+deployment, and Production state are unchanged.
+
+The exact next gate is **independent Cross-Lab Presentation Phase 1
+shell/workflow audit**, followed by **Maintainer visual review**. Phase 2 and
+every later migration phase remain unauthorized; do not begin them, Motion,
+or Tutor.
 
 ## Superseded Teaching v2 execution record
 

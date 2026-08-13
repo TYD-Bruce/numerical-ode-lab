@@ -37,16 +37,17 @@ The maintainer-approved
 [Cross-Lab Presentation System v1 design](superpowers/specs/2026-08-12-cross-lab-presentation-system-v1-design.md)
 and
 [repository-grounded implementation plan](superpowers/plans/2026-08-12-cross-lab-presentation-system-v1-implementation-plan.md)
-now govern the active milestone. Fresh source and browser comparison covers
-all public routes, both complete Labs, paired Method/Data/Output/Analysis
-surfaces, advanced/stale/failure states, desktop/mobile, and Light/Dark. The
-design selects ten vanilla TypeScript/CSS presentation primitives, preserves
-complete-Lab lazy boundaries and all domain behavior, and defines a staged
-best-of-both migration. Phase 0 is implemented and locally verified as an
-entry-safe semantic token vocabulary plus the DEV-only
-`/__dev/presentation-system` visual fixture. No production Lab has migrated.
-The exact next gate is **maintainer visual approval of Phase 0 tokens and the
-DEV fixture**; later phases remain unauthorized.
+govern the active milestone. Phase 0 is **MAINTAINER ACCEPTED** at final HEAD
+`0c392e218dd7006d43811ddc4d7401a0ccb7c495` (tree
+`3d0bc052f9a2e58b50aeb67b52ddb36f10dcd994`). Phase 1 was separately
+authorized and is implemented as a locally verified audit candidate at
+`d0c77f84ce444afbe418adcbdd94cfca18e1e32b` (tree
+`bc6131880e0a57388c45586c4aea948d8a572835`). The complete ODE and Linear
+Systems routes now share Lab-shared lazy shell/header, workflow-navigation,
+stage-section, and outer action presentation while preserving domain content,
+state, mathematics, and lifecycle. The exact next gate is **independent
+Cross-Lab Presentation Phase 1 shell/workflow audit**, followed by
+**Maintainer visual review**. Phase 2+ remains unauthorized.
 
 ## Superseded Teaching v2 milestone record
 
@@ -278,7 +279,7 @@ maintainer acceptance of the F2 review commit.
 
 | Document | Status |
 |---|---|
-| [Cross-Lab Presentation System v1 Design](superpowers/specs/2026-08-12-cross-lab-presentation-system-v1-design.md) | Maintainer approved at `3b77f7133a95bef855c2eb3e3a69db37e16f1e46`; Phase 0 tokens/DEV fixture implemented and locally verified; no Lab migration |
+| [Cross-Lab Presentation System v1 Design](superpowers/specs/2026-08-12-cross-lab-presentation-system-v1-design.md) | Maintainer approved; Phase 0 Maintainer accepted; Phase 1 locally verified as an audit candidate; Phase 2+ unauthorized |
 | [Linear Systems Teaching v2 Design](superpowers/specs/2026-08-11-linear-systems-teaching-v2-design.md) | Maintainer-accepted at `484fc9153de33be7949e82b29386c94fe63d19c8`; final teaching-copy audit passed P0/P1/P2/P3 = 0; Motion paused; Tutor later; not deployed |
 | [Linear Systems Lab Version 1 Design](superpowers/specs/2026-08-10-linear-systems-lab-v1-design.md) | Maintainer-approved design; Day 1/1.5 numerical evidence and Day 2 route/UI implemented locally; Tutor pending |
 | [Theme-Ready Platform Shell Design](superpowers/specs/2026-07-13-theme-ready-platform-shell-design.md) | Implemented, Vercel Preview-verified, safe to release |
@@ -292,7 +293,7 @@ maintainer acceptance of the F2 review commit.
 
 | Document | Status |
 |---|---|
-| [Cross-Lab Presentation System v1 Implementation Plan](superpowers/plans/2026-08-12-cross-lab-presentation-system-v1-implementation-plan.md) | Phase 0 is the current authorized phase and is locally implemented pending maintainer visual approval; Phase 1+ remain unauthorized |
+| [Cross-Lab Presentation System v1 Implementation Plan](superpowers/plans/2026-08-12-cross-lab-presentation-system-v1-implementation-plan.md) | Phase 0 Maintainer accepted; Phase 1 separately authorized and locally verified as an audit candidate; Phase 2+ unauthorized |
 | [Linear Systems Teaching v2 Implementation Plan](superpowers/plans/2026-08-11-linear-systems-teaching-v2-implementation-plan.md) | Executed and maintainer-accepted; final teaching-copy audit passed; Motion remount and Tutor remain separate later gates |
 | [Linear Systems Lab Version 1 Implementation Plan](superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md) | Repository-grounded; Day 1/1.5 and Day 2 implemented locally; independent product-audit corrections verified, correction re-audit next, Tutor deferred to a later gate |
 | [Theme-Ready Platform Shell Implementation Plan](superpowers/plans/2026-07-13-theme-ready-platform-shell-implementation-plan.md) | Implemented historical plan; check the final review and architecture map for current state |

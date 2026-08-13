@@ -28,6 +28,9 @@ Browser ownership is organized as:
 - `frontend/src/app/`: shell, router, route registry, in-memory Store, Tutor
   and Glossary Hosts, modal/focus ownership, theme, scroll, and lifecycle;
 - `frontend/src/pages/`: Home, About, module overviews, and Not Found;
+- `frontend/src/components/lab-presentation/`: Lab-shared lazy `LabShell`/
+  `LabHeader`, `WorkflowNavigation`, `StageSection`, and outer action-role
+  presentation imported only by complete-Lab route graphs;
 - `frontend/src/labs/ode/`: the mountable Initial Value Problems Lab, ODE
   workflow/session state, Convergence presentation, presets, and bindings;
 - `frontend/src/labs/linear-algebra/`: the pure editable session, complete
@@ -104,12 +107,14 @@ Forbidden reverse edges are documented in
 frontend entry
   -> shell, router, store, and static pages
   -> dynamic Initial Value Problems route
+  -> shared Lab presentation chunk
   -> ODE UI, numerical package subpaths, Chart.js, and Convergence
   -> first-open Tutor panel
   -> interaction-deferred MathLive and Compute Engine
 
 frontend entry
   -> dynamic Linear Systems route
+  -> shared Lab presentation chunk
   -> frontend session and static Teaching v2 matrix/workflow presentation
   -> lightweight native MathML atoms plus controlled DOM/CSS composition
   -> Linear Systems numerical package and immutable computation trace
@@ -126,6 +131,12 @@ Public routes are `/`, `/about`, `/ode`, `/ode/initial-value-problems`,
 render the in-shell Not Found page. Both complete Labs have independent dynamic
 route boundaries. The Linear Systems route intentionally exposes neither a
 Tutor binding nor a Glossary binding at this gate.
+
+Both complete-Lab route manifests import the same small presentation JS/CSS
+chunk. The platform entry does not import that chunk. Shared presentation owns
+only semantic DOM composition, role styling, and contained workflow reveal;
+each Lab still owns state, availability, callbacks, numerical content, live
+regions, platform bindings, and disposal.
 
 The route module registry, Tutor Host, Glossary Host, and editable-math loader
 retain distinct dynamic imports. Package extraction does not create an eager
