@@ -163,6 +163,9 @@ describe("Phase 2 Lab presentation primitives", () => {
       );
       expect(new Set(labelledBy).size).toBe(instances.length);
       expect(labelledBy.every(Boolean)).toBe(true);
+      labelledBy.forEach((id, index) => {
+        expect(instances[index]?.querySelector(`[id='${id}']`)).not.toBeNull();
+      });
     }
 
     const answerIds = results.map(
@@ -173,6 +176,9 @@ describe("Phase 2 Lab presentation primitives", () => {
     );
     expect(new Set(answerIds).size).toBe(results.length);
     expect(answerIds.every(Boolean)).toBe(true);
+    answerIds.forEach((id, index) => {
+      expect(results[index]?.querySelector(`[id='${id}']`)).not.toBeNull();
+    });
   });
 
   it("preserves every supplied native h2-h6 tag across structural primitives", () => {
