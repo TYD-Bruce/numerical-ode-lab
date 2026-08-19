@@ -193,10 +193,10 @@ unchanged; no `manualChunks`, dependency, or eager-loading change was made.
 5. Convergence and Diagnostics may share Analysis presentation later without
    sharing state, numerical meaning, or lifecycle.
 
-All Phase 3 findings found during implementation are corrected. Current
-candidate severity is `P0 = 0`, `P1 = 0`, `P2 = 0`, `P3 = 0`.
-`PHASE2-P3-04` is the only explicit cross-phase carry-forward and remains
-Phase 4-owned.
+All in-scope Phase 3 findings found during implementation are corrected.
+Current cross-milestone severity is `P0 = 0`, `P1 = 0`, `P2 = 0`, `P3 = 1`:
+the sole P3 is `PHASE2-P3-04`, the explicit out-of-scope carry-forward that
+remains Phase 4-owned.
 
 There is no Linear Systems inner migration, AnalysisSurface migration, ODE
 Computation Walkthrough, numerical or Computation Trace change,
