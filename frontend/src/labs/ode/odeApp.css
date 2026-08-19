@@ -494,7 +494,14 @@
 
 .results-main {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--lab-space-block);
+  min-width: 0;
+}
+
+[data-convergence-study-host],
+.convergence-drawer,
+.convergence-drawer-content {
   min-width: 0;
 }
 
@@ -877,6 +884,10 @@
 
   .convergence-controls {
     grid-template-columns: 1fr;
+  }
+
+  .compare-meta-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .convergence-drawer-content {
