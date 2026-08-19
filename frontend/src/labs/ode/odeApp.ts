@@ -21,7 +21,7 @@ import {
   displayNameFor,
   type MethodCatalogEntry,
 } from "@numerical-t-lab/numerics/ode/method-catalog";
-import { escapeHtml, formatCoefficients } from "./mathDisplay";
+import { formatCoefficients } from "./mathDisplay";
 import type { ChartInstruction } from "@numerical-t-lab/contracts/tutor";
 import { methodMathContent } from "../../math/ui/methodMathContent";
 import { renderReadonlyMath } from "../../math/ui/readonlyMath";
@@ -124,7 +124,14 @@ import {
   createLabShell,
 } from "../../components/lab-presentation/labShell";
 import { createStageSection } from "../../components/lab-presentation/stageSection";
-import { applyLabActionRole } from "../../components/lab-presentation/supportingElements";
+import { createEvidenceBlock } from "../../components/lab-presentation/evidenceBlock";
+import { createPrimaryResult } from "../../components/lab-presentation/primaryResult";
+import { createProblemContext } from "../../components/lab-presentation/problemContext";
+import {
+  applyLabActionRole,
+  createNumericalTable,
+} from "../../components/lab-presentation/supportingElements";
+import { createTeachingBlock } from "../../components/lab-presentation/teachingBlock";
 import {
   createWorkflowNavigation,
   disposeWorkflowNavigation,
@@ -1075,13 +1082,19 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
               glossaryRender
             )
           );
-        } else if (meta && lastResult && lastResultExpression) {
+        } else if (
+          meta &&
+          lastResult &&
+          lastResultExpression &&
+          lastProblemInputs
+        ) {
           outputMountPending = true;
           stage.append(
             renderResultsShell(
               meta,
               lastResult,
               lastResultExpression,
+              lastProblemInputs,
               glossaryRender
             )
           );
@@ -1130,9 +1143,6 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
   function renderChoosePanel(
     glossaryRender: OdeGlossaryRenderTransaction
   ): HTMLElement {
-    const wrap = document.createElement("div");
-    wrap.className = "choose-panel";
-
     if (session.mode === "compare_pick") {
       const bar = document.createElement("div");
       bar.className = "choose-actions";
@@ -1143,10 +1153,15 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
         markMeaningfulInteraction();
         render();
       });
-      wrap.append(bar);
-      wrap.append(renderMethodGlossaryHelper(glossaryRender));
-      wrap.append(renderCompareMethodGrid());
-      return wrap;
+      const heading = document.createElement("h2");
+      heading.textContent = "Choose a method";
+      const teaching = createTeachingBlock({
+        heading,
+        lead: renderMethodGlossaryHelper(glossaryRender),
+        examples: [bar, renderCompareMethodGrid()],
+      });
+      teaching.classList.add("choose-panel", "ode-method-teaching");
+      return teaching;
     }
 
     const bar = document.createElement("div");
@@ -1161,10 +1176,15 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       markMeaningfulInteraction();
       render();
     });
-    wrap.append(bar);
-    wrap.append(renderMethodGlossaryHelper(glossaryRender));
-    wrap.append(renderSingleMethodGrid());
-    return wrap;
+    const heading = document.createElement("h2");
+    heading.textContent = "Choose a method";
+    const teaching = createTeachingBlock({
+      heading,
+      lead: renderMethodGlossaryHelper(glossaryRender),
+      examples: [bar, renderSingleMethodGrid()],
+    });
+    teaching.classList.add("choose-panel", "ode-method-teaching");
+    return teaching;
   }
 
   function renderMethodCard(
@@ -1184,7 +1204,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
         ? "First-order y′ = f(t, y)"
         : "Second-order u″ = a(t, u)";
     card.innerHTML = `
-    <h2>${cat.displayName}</h2>
+    <h3>${cat.displayName}</h3>
     <p>${cat.blurb}</p>
     <span class="tag">${tag}</span>
   `;
@@ -1766,6 +1786,40 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     </form>
   `;
 
+    if (!isSecond) {
+      const guidance = wrap.querySelector<HTMLElement>(
+        "[data-preset-guidance]"
+      )!;
+      const summary = guidance.querySelector<HTMLParagraphElement>(
+        "[data-preset-summary]"
+      )!;
+      const observation = guidance.querySelector<HTMLParagraphElement>(
+        "[data-preset-observation]"
+      )!;
+      const methods = guidance.querySelector<HTMLParagraphElement>(
+        "[data-preset-methods]"
+      )!;
+      const warning = guidance.querySelector<HTMLParagraphElement>(
+        "[data-preset-warning]"
+      )!;
+      const explicit = guidance.querySelector<HTMLParagraphElement>(
+        "[data-preset-explicit-guidance]"
+      )!;
+      const previews = guidance.querySelector<HTMLElement>(
+        ".preset-math-preview"
+      )!;
+      const heading = document.createElement("h3");
+      heading.textContent = "Preset guidance";
+      const teaching = createTeachingBlock({
+        heading,
+        lead: summary,
+        examples: [observation, methods, explicit, previews],
+        limitation: warning,
+      });
+      teaching.classList.add("ode-preset-teaching");
+      guidance.replaceChildren(teaching);
+    }
+
     replaceSelectedMethodHeading(wrap, sel, glossaryRender);
     const hInput = wrap.querySelector<HTMLInputElement>('[name="h"]')!;
     addFieldGlossaryCompanion(
@@ -1820,7 +1874,9 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
         `What to observe: ${preset.observationGuidance}`;
       wrap.querySelector<HTMLElement>("[data-preset-methods]")!.textContent =
         `Suggested methods: ${preset.suggestedMethods.map((family) => displayNameFor(family)).join(", ")}.`;
-      wrap.querySelector<HTMLElement>("[data-preset-warning]")!.textContent = preset.warning;
+      const warning = wrap.querySelector<HTMLElement>("[data-preset-warning]")!;
+      warning.hidden = !preset.warning;
+      warning.textContent = preset.warning;
       const explicit = wrap.querySelector<HTMLElement>("[data-preset-explicit-guidance]")!;
       explicit.hidden = !preset.explicitStepGuidance;
       explicit.textContent = preset.explicitStepGuidance ?? "";
@@ -2130,6 +2186,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
         tutorBindingControl.requestConversationReset();
         step = "results";
         render();
+        focusPrimaryResultAfterRender();
       } catch (e) {
         err.textContent = e instanceof Error ? e.message : String(e);
         err.hidden = false;
@@ -2324,6 +2381,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
         tutorBindingControl.requestConversationReset();
         step = "results";
         render();
+        focusPrimaryResultAfterRender();
       } catch (e) {
         err.textContent = e instanceof Error ? e.message : String(e);
         err.hidden = false;
@@ -2355,58 +2413,273 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     return value.toPrecision(6);
   }
 
-  function implicitDiagnosticsHtml(meta: ReadonlySolverResult["metadata"]): string {
-    const diagnostics = meta.implicitDiagnostics;
-    if (!diagnostics) return "";
-    const solverName =
-      diagnostics.nonlinearMethod === "fixed_point" ? "Fixed-point" : "Newton";
-    return `
-    <h4>Implicit solve diagnostics</h4>
-    <dl class="meta-dl implicit-diagnostics">
-      <dt>Nonlinear solver</dt><dd>${solverName}</dd>
-      <dt>Total nonlinear iterations</dt><dd>${diagnostics.totalIterations}</dd>
-      <dt>Maximum iterations in one step</dt><dd>${diagnostics.maxIterationsPerStep}</dd>
-      <dt>Final residual</dt><dd>${formatImplicitResidual(diagnostics.finalResidual)}</dd>
-      <dt>Maximum residual</dt><dd>${formatImplicitResidual(diagnostics.maxResidual)}</dd>
-      <dt>Failed steps</dt><dd>${diagnostics.failedSteps}</dd>
-    </dl>
-    <p class="implicit-diagnostics-note">Nonlinear-solver convergence is different from absolute stability of the numerical method. A stable implicit scheme can still fail if its nonlinear equation is not solved successfully.</p>
-  `;
+  function createHeading(
+    level: 2 | 3 | 4,
+    text: string
+  ): HTMLHeadingElement {
+    const heading = document.createElement(`h${level}`) as HTMLHeadingElement;
+    heading.textContent = text;
+    return heading;
   }
 
-  function metadataPanelHtml(meta: ReadonlySolverResult["metadata"]): string {
+  function createMetricsList(
+    entries: readonly { readonly label: string; readonly value: string }[],
+    className?: string
+  ): HTMLDListElement {
+    const list = document.createElement("dl");
+    if (className) list.className = className;
+    for (const entry of entries) {
+      const item = document.createElement("div");
+      const term = document.createElement("dt");
+      term.textContent = entry.label;
+      const value = document.createElement("dd");
+      value.textContent = entry.value;
+      item.append(term, value);
+      list.append(item);
+    }
+    return list;
+  }
+
+  function formatContextNumber(value: number): string {
+    return Number.isInteger(value)
+      ? String(value)
+      : String(Number(value.toPrecision(12)));
+  }
+
+  function createSingleProblemContext(
+    expression: SuccessfulExpressionSnapshot,
+    inputs: OdeProblemInputs
+  ): HTMLElement {
+    const statement = document.createElement("div");
+    renderReadonlyMath(statement, expression.equation, { display: "block" });
+    const parameters =
+      inputs.kind === "first_order"
+        ? [
+          { label: "Start time t₀", value: formatContextNumber(inputs.t0) },
+          { label: "End time", value: formatContextNumber(inputs.tEnd) },
+          { label: "Time-step size h", value: formatContextNumber(inputs.h) },
+          { label: "Initial value y₀", value: formatContextNumber(inputs.y0!) },
+        ]
+        : [
+          { label: "Start time t₀", value: formatContextNumber(inputs.t0) },
+          { label: "End time", value: formatContextNumber(inputs.tEnd) },
+          { label: "Time-step size h", value: formatContextNumber(inputs.h) },
+          {
+            label: "Initial position u₀",
+            value: formatContextNumber(inputs.u0!),
+          },
+          {
+            label: "Initial velocity u′₀",
+            value: formatContextNumber(inputs.v0!),
+          },
+        ];
+    return createProblemContext({
+      heading: createHeading(3, "Problem context"),
+      statement,
+      parameters,
+    });
+  }
+
+  function createComparisonProblemContext(
+    expression: SuccessfulExpressionSnapshot,
+    series: readonly SeriesPoint[]
+  ): HTMLElement {
+    const first = series[0]!;
+    const last = series[series.length - 1]!;
+    const stepSize = series.length > 1 ? series[1]!.t - first.t : 0;
+    const statement = document.createElement("div");
+    renderReadonlyMath(statement, expression.equation, { display: "block" });
+    return createProblemContext({
+      heading: createHeading(3, "Shared problem context"),
+      statement,
+      parameters: [
+        { label: "Start time t₀", value: formatContextNumber(first.t) },
+        { label: "End time", value: formatContextNumber(last.t) },
+        { label: "Time-step size h", value: formatContextNumber(stepSize) },
+        { label: "Initial value y₀", value: formatContextNumber(first.y) },
+      ],
+    });
+  }
+
+  function createMethodEvidence(
+    meta: ReadonlySolverResult["metadata"]
+  ): HTMLElement {
+    const metrics = createMetricsList(
+      [
+        { label: "Method", value: meta.displayName },
+        { label: "Theoretical order p", value: String(meta.order) },
+        { label: "Type", value: meta.isImplicit ? "Implicit" : "Explicit" },
+        ...(meta.startupMethod
+          ? [{ label: "Startup", value: meta.startupMethod }]
+          : []),
+      ],
+      "meta-dl ode-metric-dl"
+    );
+    const block = createEvidenceBlock({
+      level: "standard",
+      heading: createHeading(3, "Method details"),
+      metrics,
+    });
+    block.classList.add("ode-method-evidence");
+
+    const diagnostics = meta.implicitDiagnostics;
+    if (diagnostics) {
+      const solverName =
+        diagnostics.nonlinearMethod === "fixed_point" ? "Fixed-point" : "Newton";
+      const diagnosticsList = createMetricsList(
+        [
+          { label: "Nonlinear solver", value: solverName },
+          {
+            label: "Total nonlinear iterations",
+            value: String(diagnostics.totalIterations),
+          },
+          {
+            label: "Maximum iterations in one step",
+            value: String(diagnostics.maxIterationsPerStep),
+          },
+          {
+            label: "Final residual",
+            value: formatImplicitResidual(diagnostics.finalResidual),
+          },
+          {
+            label: "Maximum residual",
+            value: formatImplicitResidual(diagnostics.maxResidual),
+          },
+          { label: "Failed steps", value: String(diagnostics.failedSteps) },
+        ],
+        "meta-dl ode-metric-dl implicit-diagnostics"
+      );
+      const note = document.createElement("p");
+      note.className = "implicit-diagnostics-note";
+      note.textContent =
+        "Nonlinear-solver convergence is different from absolute stability of the numerical method. A stable implicit scheme can still fail if its nonlinear equation is not solved successfully.";
+      block.append(
+        createHeading(4, "Implicit solve diagnostics"),
+        diagnosticsList,
+        note
+      );
+    }
+
+    const formula = document.createElement("div");
+    formula.className = "formula-block";
+    formula.dataset.methodFormula = "true";
+    formula.textContent = meta.formulaDisplay;
+    block.append(createHeading(4, "Formula"), formula);
+
     const coeffText = formatCoefficients(
       meta.coefficients?.alpha,
       meta.coefficients?.beta
     );
-    const notesHtml = meta.notes
-      .map((n) => `<li>${escapeHtml(n)}</li>`)
-      .join("");
-    return `
-    <section class="edu-panel">
-      <h3>Method details</h3>
-      <dl class="meta-dl">
-        <dt>Method</dt><dd>${escapeHtml(meta.displayName)}</dd>
-        <dt>Theoretical order p</dt><dd>${meta.order}</dd>
-        <dt>Type</dt><dd>${meta.isImplicit ? "Implicit" : "Explicit"}</dd>
-        ${meta.startupMethod
-        ? `<dt>Startup</dt><dd>${escapeHtml(meta.startupMethod)}</dd>`
-        : ""
+    if (coeffText) {
+      const coefficients = document.createElement("div");
+      coefficients.className = "formula-inline";
+      coefficients.textContent = coeffText;
+      block.append(createHeading(4, "Coefficients"), coefficients);
+    }
+    if (meta.notes.length) {
+      const notes = document.createElement("ul");
+      notes.className = "edu-notes";
+      for (const note of meta.notes) {
+        const item = document.createElement("li");
+        item.textContent = note;
+        notes.append(item);
       }
-      </dl>
-      ${implicitDiagnosticsHtml(meta)}
-      <h4>Formula</h4>
-      <div class="formula-block" data-method-formula>${escapeHtml(meta.formulaDisplay)}</div>
-      ${coeffText
-        ? `<h4>Coefficients</h4><div class="formula-inline">${escapeHtml(coeffText)}</div>`
-        : ""
+      block.append(createHeading(4, "Notes"), notes);
+    }
+    return block;
+  }
+
+  function createChartEvidence(): HTMLElement {
+    const frame = document.createElement("div");
+    frame.className = "ode-chart-frame";
+    const canvas = document.createElement("canvas");
+    canvas.id = "plot";
+    canvas.height = 120;
+    canvas.setAttribute("aria-label", "Numerical approximation vs time chart");
+    frame.append(canvas);
+    return createEvidenceBlock({
+      level: "standard",
+      heading: createHeading(3, "Numerical approximation vs time"),
+      chart: frame,
+    });
+  }
+
+  function createSingleValuesEvidence(
+    series: readonly SeriesPoint[],
+    mode: "first" | "second"
+  ): HTMLElement {
+    const table = createNumericalTable({
+      caption: "Last 12 values",
+      rowHeader: "t",
+      columns: [
+        { label: mode === "second" ? "u" : "y", numeric: true },
+        ...(mode === "second" ? [{ label: "u′", numeric: true }] : []),
+      ],
+      rows: series.slice(-12).map((point) => ({
+        label: point.t.toFixed(5),
+        cells: [
+          point.y.toFixed(8),
+          ...(mode === "second" ? [point.v?.toFixed(8) ?? ""] : []),
+        ],
+      })),
+    });
+    table.classList.add("ode-values-table");
+    return createEvidenceBlock({
+      level: "standard",
+      heading: createHeading(3, "Stored values"),
+      numericalTable: table,
+    });
+  }
+
+  function createCompareValuesEvidence(
+    seriesA: readonly SeriesPoint[],
+    seriesB: readonly SeriesPoint[],
+    metaA: ReadonlySolverResult["metadata"],
+    metaB: ReadonlySolverResult["metadata"]
+  ): HTMLElement {
+    const tailA = seriesA.slice(-12);
+    const offset = seriesA.length - tailA.length;
+    const table = createNumericalTable({
+      caption: "Last 12 stored grid points (both methods)",
+      rowHeader: "t",
+      columns: [
+        { label: `y — ${metaA.displayName}`, numeric: true },
+        { label: `y — ${metaB.displayName}`, numeric: true },
+        { label: "|Δy|", numeric: true },
+      ],
+      rows: tailA.map((pointA, index) => {
+        const pointB = seriesB[offset + index]!;
+        return {
+          label: pointA.t.toFixed(5),
+          cells: [
+            pointA.y.toFixed(8),
+            pointB.y.toFixed(8),
+            Math.abs(pointA.y - pointB.y).toExponential(4),
+          ],
+        };
+      }),
+    });
+    table.classList.add("ode-values-table");
+    return createEvidenceBlock({
+      level: "standard",
+      heading: createHeading(3, "Stored comparison values"),
+      numericalTable: table,
+    });
+  }
+
+  function focusPrimaryResultAfterRender(): void {
+    const focusGeneration = uiGeneration;
+    queueMicrotask(() => {
+      if (!isCurrentGeneration(focusGeneration)) return;
+      const heading = app.querySelector<HTMLElement>(
+        ".lab-primary-result-heading"
+      );
+      try {
+        heading?.focus({ preventScroll: true });
+      } catch {
+        heading?.focus();
       }
-      ${notesHtml
-        ? `<h4>Notes</h4><ul class="edu-notes">${notesHtml}</ul>`
-        : ""
-      }
-    </section>
-  `;
+    });
   }
 
   function renderMethodFormulas(
@@ -2423,6 +2696,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     meta: MethodCatalogEntry,
     result: ReadonlySolverResult,
     expression: SuccessfulExpressionSnapshot,
+    problemInputs: OdeProblemInputs,
     glossaryRender: OdeGlossaryRenderTransaction
   ): HTMLElement {
     const generation = uiGeneration;
@@ -2448,7 +2722,13 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
         return;
       }
       try {
-        mountResults(meta, result, expression, glossaryRender);
+        mountResults(
+          meta,
+          result,
+          expression,
+          problemInputs,
+          glossaryRender
+        );
         glossaryRender.commitOutputScope();
       } catch (cause) {
         glossaryRender.abort();
@@ -2514,6 +2794,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     meta: MethodCatalogEntry,
     result: ReadonlySolverResult,
     expression: SuccessfulExpressionSnapshot,
+    problemInputs: OdeProblemInputs,
     glossaryRender: OdeGlossaryRenderTransaction
   ): void {
     const body = app.querySelector("#results-body");
@@ -2521,77 +2802,43 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
 
     const series = result.points;
     const last = series[series.length - 1]!;
-    const valueLabel = meta.mode === "second" ? "u" : "y";
-
-    body.innerHTML = `
-    <section class="summary">
-      <h2>${result.metadata.displayName} · results</h2>
-      <div class="problem-equation" data-problem-equation></div>
-      <div class="stat-grid">
-        <div class="stat">
-          <span class="stat-label">Grid points stored</span>
-          <span class="stat-value">${series.length}</span>
-        </div>
-        <div class="stat">
-          <span class="stat-label">Final time</span>
-          <span class="stat-value">${last.t.toFixed(6)}</span>
-        </div>
-        <div class="stat" data-final-numerical-approximation>
-          <span class="stat-label" data-final-numerical-approximation-label></span>
-          <span class="stat-value">${last.y.toFixed(8)}</span>
-        </div>
-        ${meta.mode === "second" && last.v !== undefined
-        ? `<div class="stat"><span class="stat-label">Final u′</span><span class="stat-value">${last.v.toFixed(8)}</span></div>`
-        : ""
-      }
-      </div>
-    </section>
-    ${metadataPanelHtml(result.metadata)}
-    ${meta.mode === "first" ? '<div data-convergence-study-host></div>' : ""}
-    <section class="chart-section">
-      <canvas id="plot" height="120"></canvas>
-    </section>
-    <section class="table-section">
-      <h3>Last 12 values</h3>
-      <div class="table-scroll">
-        <table>
-          <thead>
-            <tr><th>t</th><th>${valueLabel}</th>${meta.mode === "second" ? "<th>u′</th>" : ""}</tr>
-          </thead>
-          <tbody>
-            ${series
-        .slice(-12)
-        .map(
-          (p) =>
-            `<tr><td>${p.t.toFixed(5)}</td><td>${p.y.toFixed(8)}</td>${meta.mode === "second"
-              ? `<td>${p.v?.toFixed(8) ?? ""}</td>`
-              : ""
-            }</tr>`
-        )
-        .join("")}
-          </tbody>
-        </table>
-      </div>
-    </section>
-  `;
-
-    const finalApproximationLabel = body.querySelector<HTMLElement>(
-      "[data-final-numerical-approximation-label]"
-    )!;
-    const finalApproximationTerm = glossaryTermNode(
-      glossaryRender,
-      "ODE-W1-ANN-006"
+    const resultHeading = createHeading(
+      2,
+      `${result.metadata.displayName} · results`
     );
-    if (finalApproximationTerm instanceof HTMLElement) {
-      finalApproximationTerm.classList.add("stat-label");
-    }
-    finalApproximationLabel.replaceWith(finalApproximationTerm);
+    resultHeading.tabIndex = -1;
+    resultHeading.dataset.resultFocus = "true";
+    const answerLabel = document.createElement("p");
+    answerLabel.dataset.finalNumericalApproximation = "true";
+    answerLabel.append(glossaryTermNode(glossaryRender, "ODE-W1-ANN-006"));
+    const answerValue = document.createElement("span");
+    answerValue.className = "ode-primary-numeric-value";
+    answerValue.textContent = last.y.toFixed(8);
+    const metrics = createMetricsList([
+      { label: "Grid points stored", value: String(series.length) },
+      { label: "Final time", value: last.t.toFixed(6) },
+      ...(meta.mode === "second" && last.v !== undefined
+        ? [{ label: "Final u′", value: last.v.toFixed(8) }]
+        : []),
+    ]);
+    const primary = createPrimaryResult({
+      heading: resultHeading,
+      problemContext: createSingleProblemContext(expression, problemInputs),
+      primaryAnswer: { label: answerLabel, content: answerValue },
+      metrics,
+    });
+    const convergenceHost = document.createElement("div");
+    convergenceHost.dataset.convergenceStudyHost = "true";
+    const content: Node[] = [primary, createMethodEvidence(result.metadata)];
+    if (meta.mode === "first") content.push(convergenceHost);
+    content.push(
+      createChartEvidence(),
+      createSingleValuesEvidence(series, meta.mode)
+    );
+    body.replaceChildren(...content);
 
-    const equationTarget = body.querySelector<HTMLElement>("[data-problem-equation]");
-    if (equationTarget) renderReadonlyMath(equationTarget, expression.equation, { display: "block" });
     renderMethodFormulas(body, [meta]);
 
-    const convergenceHost = body.querySelector<HTMLElement>("[data-convergence-study-host]");
     if (convergenceHost && lastFirstOrderRunSnapshot) {
       const snapshot = lastFirstOrderRunSnapshot;
       const eligibility = convergenceEligibility({ kind: "first_order", snapshot });
@@ -2724,61 +2971,63 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     const diff = Math.abs(la.y - lb.y);
 
     if (seriesA.length !== seriesB.length) {
-      body.innerHTML =
-        '<p class="compare-error">The two result series have different lengths, so the comparison plot was not created. Rerun both methods on the same aligned grid.</p>';
+      const error = document.createElement("p");
+      error.className = "compare-error";
+      error.textContent =
+        "The two result series have different lengths, so the comparison plot was not created. Rerun both methods on the same aligned grid.";
+      body.replaceChildren(error);
       return;
     }
 
-    body.innerHTML = `
-    <section class="summary">
-      <h2>Comparison · ${resultA.metadata.displayName} vs ${resultB.metadata.displayName}</h2>
-      <div class="problem-equation" data-problem-equation></div>
-      <div class="stat-grid">
-        <div class="stat"><span class="stat-label">Stored grid points (each)</span><span class="stat-value">${seriesA.length}</span></div>
-        <div class="stat"><span class="stat-label">Final time</span><span class="stat-value">${la.t.toFixed(6)}</span></div>
-        <div class="stat"><span class="stat-label">Final numerical approximation — ${escapeHtml(resultA.metadata.displayName)}</span><span class="stat-value">${la.y.toFixed(8)}</span></div>
-        <div class="stat"><span class="stat-label">Final numerical approximation — ${escapeHtml(resultB.metadata.displayName)}</span><span class="stat-value">${lb.y.toFixed(8)}</span></div>
-        <div class="stat"><span class="stat-label">Absolute difference between final numerical approximations</span><span class="stat-value">${diff.toExponential(4)}</span></div>
-      </div>
-    </section>
-    <div class="compare-meta-grid">
-      ${metadataPanelHtml(resultA.metadata)}
-      ${metadataPanelHtml(resultB.metadata)}
-    </div>
-    <section class="chart-section">
-      <canvas id="plot" height="120"></canvas>
-    </section>
-    <section class="table-section">
-      <h3>Last 12 stored grid points (both methods)</h3>
-      <div class="table-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th>t</th>
-              <th>y — ${escapeHtml(resultA.metadata.displayName)}</th>
-              <th>y — ${escapeHtml(resultB.metadata.displayName)}</th>
-              <th>|Δy|</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${(() => {
-        const tailA = seriesA.slice(-12);
-        const off = seriesA.length - tailA.length;
-        return tailA
-          .map((pa, idx) => {
-            const pb = seriesB[off + idx]!;
-            return `<tr><td>${pa.t.toFixed(5)}</td><td>${pa.y.toFixed(8)}</td><td>${pb.y.toFixed(8)}</td><td>${Math.abs(pa.y - pb.y).toExponential(4)}</td></tr>`;
-          })
-          .join("");
-      })()}
-          </tbody>
-        </table>
-      </div>
-    </section>
-  `;
-
-    const equationTarget = body.querySelector<HTMLElement>("[data-problem-equation]");
-    if (equationTarget) renderReadonlyMath(equationTarget, expression.equation, { display: "block" });
+    const heading = createHeading(
+      2,
+      `Comparison · ${resultA.metadata.displayName} vs ${resultB.metadata.displayName}`
+    );
+    heading.tabIndex = -1;
+    heading.dataset.resultFocus = "true";
+    const labelA = document.createElement("p");
+    labelA.textContent =
+      `Final numerical approximation — ${resultA.metadata.displayName}`;
+    const valueA = document.createElement("span");
+    valueA.className = "ode-primary-numeric-value";
+    valueA.textContent = la.y.toFixed(8);
+    const labelB = document.createElement("p");
+    labelB.textContent =
+      `Final numerical approximation — ${resultB.metadata.displayName}`;
+    const valueB = document.createElement("span");
+    valueB.className = "ode-primary-numeric-value";
+    valueB.textContent = lb.y.toFixed(8);
+    const primary = createPrimaryResult({
+      heading,
+      problemContext: createComparisonProblemContext(expression, seriesA),
+      primaryAnswer: { label: labelA, content: valueA },
+      comparisonAnswer: { label: labelB, content: valueB },
+      metrics: createMetricsList([
+        { label: "Stored grid points (each)", value: String(seriesA.length) },
+        { label: "Final time", value: la.t.toFixed(6) },
+        {
+          label: "Absolute difference between final numerical approximations",
+          value: diff.toExponential(4),
+        },
+      ]),
+    });
+    const methodEvidence = document.createElement("div");
+    methodEvidence.className = "compare-meta-grid";
+    methodEvidence.append(
+      createMethodEvidence(resultA.metadata),
+      createMethodEvidence(resultB.metadata)
+    );
+    body.replaceChildren(
+      primary,
+      methodEvidence,
+      createChartEvidence(),
+      createCompareValuesEvidence(
+        seriesA,
+        seriesB,
+        resultA.metadata,
+        resultB.metadata
+      )
+    );
 
     renderMethodFormulas(body, [metaA, metaB]);
 

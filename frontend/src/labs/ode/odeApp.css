@@ -111,6 +111,16 @@
   padding: 0 2px;
 }
 
+.ode-method-teaching {
+  max-width: none;
+}
+
+.ode-method-teaching .lab-teaching-block-examples {
+  gap: 16px;
+  padding-inline-start: 0;
+  border-inline-start: 0;
+}
+
 .choose-actions {
   display: flex;
   flex-wrap: wrap;
@@ -194,12 +204,12 @@
   line-height: 1;
 }
 
-.card.is-selected h2,
-.card[aria-pressed="true"] h2 {
+.card.is-selected h3,
+.card[aria-pressed="true"] h3 {
   padding-right: 2rem;
 }
 
-.card h2 {
+.card h3 {
   margin: 0 0 8px;
   font-size: 1.05rem;
 }
@@ -361,6 +371,17 @@
   font-size: 0.88rem;
 }
 
+.ode-preset-teaching {
+  max-width: none;
+  padding-bottom: 0;
+  border-top-color: var(--color-data-accent);
+}
+
+.ode-preset-teaching .lab-teaching-block-examples {
+  padding-inline-start: 0;
+  border-inline-start: 0;
+}
+
 .preset-warning {
   color: var(--color-caution);
 }
@@ -472,6 +493,8 @@
 }
 
 .results-main {
+  display: grid;
+  gap: var(--lab-space-block);
   min-width: 0;
 }
 
@@ -486,90 +509,24 @@
   border: 0;
 }
 
-.summary {
-  position: relative;
-  margin-bottom: 16px;
-  padding: 16px 16px 18px;
-  border: 1px solid color-mix(in srgb, var(--color-output-accent) 38%, var(--border));
-  border-radius: 12px;
-  background: linear-gradient(135deg, var(--color-output-surface), var(--color-surface-soft));
-  overflow: hidden;
-}
-
-.summary::before {
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: var(--space-1);
-  background: var(--color-output-accent);
-  content: "";
-}
-
-.summary h2 {
-  margin: 0 0 12px;
-}
-
-.problem-equation {
-  margin: 0 0 14px;
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--color-surface-accent);
-  overflow-x: auto;
-}
-
-.stat-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 12px;
-}
-
-.stat {
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 12px;
-  background: var(--color-surface-soft);
-}
-
-.stat:nth-child(3n + 1) {
-  border-top-color: var(--color-method-accent);
-}
-
-.stat:nth-child(3n + 2) {
-  border-top-color: var(--color-data-accent);
-}
-
-.stat:nth-child(3n) {
-  border-top-color: var(--color-output-accent);
-}
-
-.stat-label {
-  display: block;
-  font-size: 0.78rem;
-  color: var(--muted);
-  margin-bottom: 4px;
-}
-
-.stat-value {
+.ode-primary-numeric-value {
   font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: 1rem;
+  font-size: var(--lab-type-numeric-size);
+  font-variant-numeric: tabular-nums;
 }
 
-.edu-panel {
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 16px;
-  background: var(--color-surface-soft);
-  margin-bottom: 16px;
+.ode-lab-shell .lab-primary-result-heading:focus-visible {
+  outline: var(--lab-focus-ring-width) solid var(--lab-focus-ring-color);
+  outline-offset: var(--lab-focus-ring-offset);
 }
 
-.edu-panel h3,
-.edu-panel h4 {
+.ode-method-evidence > h4 {
   margin: 0 0 10px;
   font-size: 1rem;
 }
 
-.edu-panel h4 {
-  margin-top: 14px;
+.ode-method-evidence > h4:not(:first-child) {
+  margin-top: var(--space-2);
   font-size: 0.92rem;
   color: var(--muted);
 }
@@ -590,6 +547,10 @@
 .meta-dl dd {
   margin: 0;
   font-family: "JetBrains Mono", ui-monospace, monospace;
+}
+
+.ode-metric-dl {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
 }
 
 .implicit-diagnostics {
@@ -648,46 +609,52 @@
   gap: 14px;
 }
 
-.chart-section {
+.ode-chart-frame {
+  min-width: 0;
   height: 320px;
-  padding: 10px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface-primary);
 }
 
-.table-section h3 {
-  margin: 0 0 8px;
+.ode-chart-frame canvas {
+  max-width: 100%;
 }
 
-.table-scroll {
-  overflow: auto;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--color-surface-primary);
+.ode-values-table tbody th {
+  font-family: var(--lab-font-technical);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
 }
 
-.ode-lab-shell table {
+.ode-lab-shell
+  :where(.convergence-table-scroll, .convergence-results-table)
+  table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.88rem;
 }
 
-.ode-lab-shell th,
-.ode-lab-shell td {
+.ode-lab-shell
+  :where(.convergence-table-scroll, .convergence-results-table)
+  th,
+.ode-lab-shell
+  :where(.convergence-table-scroll, .convergence-results-table)
+  td {
   padding: 8px 10px;
   text-align: right;
   border-bottom: 1px solid var(--border);
 }
 
-.ode-lab-shell th {
+.ode-lab-shell
+  :where(.convergence-table-scroll, .convergence-results-table)
+  th {
   text-align: right;
   color: var(--muted);
   font-weight: 600;
   background: var(--color-surface-inset);
 }
 
-.ode-lab-shell tbody tr:nth-child(even) {
+.ode-lab-shell
+  :where(.convergence-table-scroll, .convergence-results-table)
+  tbody tr:nth-child(even) {
   background: var(--color-surface-soft);
 }
 
@@ -922,9 +889,6 @@
   .field input,
   .field select,
   .preset-panel,
-  .stat,
-  .edu-panel,
-  .table-scroll,
   .convergence-drawer,
   .convergence-table-scroll,
   .convergence-chart-scroll {

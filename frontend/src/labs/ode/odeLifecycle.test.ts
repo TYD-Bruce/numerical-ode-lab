@@ -230,6 +230,41 @@ describe("mounted ODE lifecycle", () => {
     expect(target.textContent).toContain("Theoretical order p");
     expect(target.textContent).not.toContain("Steps taken");
     expect(target.textContent).not.toContain("Order of accuracy p");
+    const primaryResult = target.querySelector<HTMLElement>(
+      "[data-primary-result]"
+    )!;
+    const problemContext = target.querySelector<HTMLElement>(
+      "[data-problem-context]"
+    )!;
+    const answer = primaryResult.querySelector<HTMLElement>(
+      "[data-primary-answer]"
+    )!;
+    expect(target.querySelectorAll("[data-primary-result]")).toHaveLength(1);
+    expect(target.querySelectorAll("[data-problem-context]")).toHaveLength(1);
+    expect(primaryResult.contains(problemContext)).toBe(true);
+    expect(
+      [...primaryResult.children].indexOf(problemContext)
+    ).toBeLessThan(
+      [...primaryResult.children].indexOf(
+        primaryResult.querySelector("[data-primary-result-answers]")!
+      )
+    );
+    expect(answer.textContent).toContain("0.80000000");
+    expect(problemContext.textContent).toContain("0.2");
+    expect(problemContext.querySelectorAll('[role="math"]')).toHaveLength(1);
+    expect(
+      target.querySelectorAll("[data-evidence-block]").length
+    ).toBeGreaterThanOrEqual(3);
+    expect(
+      target.querySelector("[data-evidence-chart] canvas#plot")
+    ).not.toBeNull();
+    expect(
+      target.querySelector("[data-numerical-table-containment='local'] caption")
+        ?.textContent
+    ).toBe("Last 12 values");
+    expect(
+      target.querySelector("[data-primary-result] h2")?.textContent
+    ).toBe("Forward Euler · results");
     expect(chartConfigurations).toHaveLength(1);
     expect(chartConfigurations[0]).toMatchObject({
       data: {
@@ -314,7 +349,7 @@ describe("mounted ODE lifecycle", () => {
 
     target.querySelector<HTMLButtonElement>("[data-workflow-step='method']")!.click();
     const rk4 = [...target.querySelectorAll<HTMLButtonElement>(".card")].find(
-      (button) => button.querySelector("h2")?.textContent === "Runge-Kutta 4"
+      (button) => button.querySelector("h3")?.textContent === "Runge-Kutta 4"
     )!;
     rk4.click();
 
@@ -492,6 +527,12 @@ describe("mounted ODE lifecycle", () => {
     });
     const session = {
       ...base,
+      form: updatePresetProblemFields(base.form, {
+        ...base.form.current,
+        tEnd: "99",
+        runStepSize: "0.9",
+        y0: "7",
+      }),
       workflow: {
         mode: "compare" as const,
         a: { family: "forward_euler" as const },
@@ -523,31 +564,106 @@ describe("mounted ODE lifecycle", () => {
     );
     expect(target.textContent).not.toContain("Final y —");
     expect(target.textContent).not.toContain("|uₙ − yₙ| at final t");
-    const compareStats = [...target.querySelectorAll<HTMLElement>(".stat")];
+    const compareStats = [...target.querySelectorAll<HTMLElement>(
+      "[data-primary-result-metrics] > div"
+    )];
     const storedPointStat = compareStats.find(
       (stat) =>
-        stat.querySelector(".stat-label")?.textContent ===
+        stat.querySelector("dt")?.textContent ===
         "Stored grid points (each)"
     );
     expect(stepCount).toBe(25);
     expect(countContractPoints).toHaveLength(26);
-    expect(storedPointStat?.querySelector(".stat-value")?.textContent).toBe(
+    expect(storedPointStat?.querySelector("dd")?.textContent).toBe(
       "26"
     );
     expect(
       compareStats.map(
-        (stat) => stat.querySelector(".stat-label")?.textContent
+        (stat) => stat.querySelector("dt")?.textContent
       )
     ).not.toContain("Steps (each)");
     expect(
-      target.querySelector(".table-section h3")?.textContent
+      target.querySelector("[data-numerical-table-containment='local'] caption")
+        ?.textContent
     ).toBe("Last 12 stored grid points (both methods)");
     expect(target.textContent).not.toContain(
       "Last 12 steps (both methods)"
     );
+    const compareResult = target.querySelector<HTMLElement>(
+      "[data-primary-result]"
+    )!;
+    expect(compareResult.classList).toContain("lab-primary-result-comparison");
+    expect(compareResult.querySelectorAll("[data-result-answer]")).toHaveLength(
+      2
+    );
+    expect(compareResult.querySelector("[data-problem-context]")).not.toBeNull();
+    const compareParameters = Object.fromEntries(
+      [...compareResult.querySelectorAll("[data-problem-parameters] > div")].map(
+        (item) => [
+          item.querySelector("dt")?.textContent,
+          item.querySelector("dd")?.textContent,
+        ]
+      )
+    );
+    expect(compareParameters).toMatchObject({
+      "End time": "5",
+      "Time-step size h": "0.2",
+      "Initial value y₀": "1",
+    });
+    expect(
+      target.querySelector("[data-numerical-table-containment='local'] caption")
+        ?.textContent
+    ).toBe("Last 12 stored grid points (both methods)");
+    expect(
+      target.querySelectorAll("[data-evidence-chart] canvas#plot")
+    ).toHaveLength(1);
     expect(mounted.getTutorBinding().getContext()).toEqual({ enabled: false });
     expect(mounted.getSession().output.single).toBeUndefined();
     expect(mounted.getSession().output.comparison?.resultB).toBe(second);
+    mounted.dispose();
+  });
+
+  it("uses one logical h1/h2/h3 Method hierarchy and a TeachingBlock around domain controls", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const mounted = mountOdeApp({
+      target,
+      initialSession: createBeginnerStarterSession(),
+    });
+
+    expect(target.querySelectorAll("h1")).toHaveLength(1);
+    expect(
+      target.querySelector("[data-stage-role='method'] > [data-teaching-block] > h2")
+        ?.textContent
+    ).toBe("Choose a method");
+    expect(target.querySelectorAll(".card h2")).toHaveLength(0);
+    expect(target.querySelectorAll(".card h3").length).toBeGreaterThan(1);
+
+    mounted.dispose();
+  });
+
+  it("keeps preset guidance inside Data teaching hierarchy without replacing the form", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const mounted = mountOdeApp({
+      target,
+      initialSession: configuredSession(),
+      loadEditableMathField: async () => ({
+        mountEditableMathField: () => editableHandle(),
+      }),
+    });
+    await Promise.resolve();
+
+    expect(target.querySelector("#ode-form")).not.toBeNull();
+    expect(
+      target.querySelector(
+        "[data-preset-guidance] [data-teaching-block] > h3"
+      )?.textContent
+    ).toBe("Preset guidance");
+    expect(target.querySelector("[data-expression-field]")).not.toBeNull();
+
     mounted.dispose();
   });
 
@@ -638,6 +754,19 @@ describe("mounted ODE lifecycle", () => {
         .querySelector("[data-workflow-step='output']")
         ?.getAttribute("aria-current")
     ).toBe("step");
+    const resultParameters = Object.fromEntries(
+      [...target.querySelectorAll("[data-problem-parameters] > div")].map(
+        (item) => [
+          item.querySelector("dt")?.textContent,
+          item.querySelector("dd")?.textContent,
+        ]
+      )
+    );
+    expect(resultParameters).toMatchObject({
+      "End time": "5",
+      "Time-step size h": "0.2",
+      "Initial value y₀": "1",
+    });
     const saved = mounted.getSession();
     mounted.dispose();
 
@@ -676,7 +805,7 @@ describe("mounted ODE lifecycle", () => {
       now: () => 321,
     });
     const rk4 = [...target.querySelectorAll<HTMLButtonElement>(".card")].find(
-      (button) => button.querySelector("h2")?.textContent === "Runge-Kutta 4"
+      (button) => button.querySelector("h3")?.textContent === "Runge-Kutta 4"
     )!;
     rk4.click();
 
@@ -1020,6 +1149,15 @@ describe("mounted ODE lifecycle", () => {
     expect(resetTutor).toHaveBeenCalledTimes(1);
     expect(mounted.getSession().step).toBe("results");
     expect(mounted.getSession().output.single).toBeDefined();
+    await vi.waitFor(() =>
+      expect(
+        target.querySelector("[data-primary-answer] .ode-primary-numeric-value")
+          ?.textContent
+      ).toBe("0.00377789")
+    );
+    expect(document.activeElement).toBe(
+      target.querySelector(".lab-primary-result-heading")
+    );
     mounted.dispose();
   });
 });

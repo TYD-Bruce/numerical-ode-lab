@@ -132,7 +132,7 @@ function annotationIds(target: ParentNode): string[] {
 
 function methodCard(target: ParentNode, name: string): HTMLButtonElement {
   const card = [...target.querySelectorAll<HTMLButtonElement>(".card")].find(
-    (candidate) => candidate.querySelector("h2")?.textContent === name
+    (candidate) => candidate.querySelector("h3")?.textContent === name
   );
   if (!card) throw new Error(`Missing method card: ${name}`);
   return card;
@@ -458,9 +458,15 @@ describe("ODE Wave 1 Glossary runtime contract", () => {
 
     const outputTrigger = annotation(target, "ODE-W1-ANN-006")!;
     expect(outputTrigger.textContent).toBe("Final numerical approximation");
-    expect(outputTrigger.classList.contains("stat-label")).toBe(true);
-    expect(outputTrigger.nextElementSibling?.classList.contains("stat-value"))
-      .toBe(true);
+    const answerLabel = outputTrigger.closest<HTMLElement>(
+      ".lab-primary-result-answer-label"
+    )!;
+    expect(answerLabel).not.toBeNull();
+    expect(
+      answerLabel.nextElementSibling?.classList.contains(
+        "ode-primary-numeric-value"
+      )
+    ).toBe(true);
 
     target.querySelector<HTMLButtonElement>("[data-back]")!.click();
     expect(annotation(target, "ODE-W1-ANN-006")).toBeNull();

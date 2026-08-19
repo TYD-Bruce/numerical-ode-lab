@@ -130,7 +130,7 @@ describe("Initial Value Problems route", () => {
     );
     const cards = [...target.querySelectorAll<HTMLButtonElement>(".card")];
     const card = (name: string) =>
-      cards.find((button) => button.querySelector("h2")?.textContent === name)!;
+      cards.find((button) => button.querySelector("h3")?.textContent === name)!;
     expect(card("Forward Euler").textContent).toContain(
       "Explicit first-order method. Its theoretical order is 1 under the method’s usual smoothness and stability assumptions."
     );
@@ -159,10 +159,10 @@ describe("Initial Value Problems route", () => {
       .click();
     target.querySelector<HTMLButtonElement>("[data-compare]")!.click();
     [...target.querySelectorAll<HTMLButtonElement>(".card")]
-      .find((button) => button.querySelector("h2")?.textContent === "Forward Euler")!
+      .find((button) => button.querySelector("h3")?.textContent === "Forward Euler")!
       .click();
     [...target.querySelectorAll<HTMLButtonElement>(".card")]
-      .find((button) => button.querySelector("h2")?.textContent === "Runge-Kutta 4")!
+      .find((button) => button.querySelector("h3")?.textContent === "Runge-Kutta 4")!
       .click();
     const compareLabels = [
       ...target.querySelectorAll<HTMLElement>(".field > span"),
@@ -248,7 +248,7 @@ describe("Initial Value Problems route", () => {
     ).toBe(true);
 
     const forwardEuler = [...target.querySelectorAll<HTMLButtonElement>(".card")].find(
-      (button) => button.querySelector("h2")?.textContent === "Forward Euler"
+      (button) => button.querySelector("h3")?.textContent === "Forward Euler"
     )!;
     forwardEuler.click();
     expect(target.querySelector<HTMLInputElement>('[name="h"]')?.value).toBe("0.05");

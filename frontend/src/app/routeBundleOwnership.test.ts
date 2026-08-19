@@ -99,30 +99,48 @@ describe("public route bundle ownership", () => {
     );
   });
 
-  it("keeps fixture-proven Phase 2 presentation modules out of entry and real Lab graphs until migration", () => {
-    const phaseTwoModules = [
+  it("loads Phase 2 structures only with ODE while keeping entry and Linear Systems unmigrated", () => {
+    const odePresentationModules = [
       "components/lab-presentation/problemContext.ts",
       "components/lab-presentation/teachingBlock.ts",
       "components/lab-presentation/primaryResult.ts",
       "components/lab-presentation/evidenceBlock.ts",
+    ];
+    const deferredModules = [
       "components/lab-presentation/computationWalkthroughShell.ts",
     ];
-    const graphs = [
-      eagerGraph("main.ts"),
-      eagerGraph("labs/ode/initialValueProblemsRoute.ts"),
-      eagerGraph("labs/linear-algebra/linearSystemsRoute.ts"),
-    ];
+    const entryGraph = eagerGraph("main.ts");
+    const odeGraph = eagerGraph("labs/ode/initialValueProblemsRoute.ts");
+    const linearSystemsGraph = eagerGraph(
+      "labs/linear-algebra/linearSystemsRoute.ts"
+    );
 
-    for (const graph of graphs) {
-      for (const modulePath of phaseTwoModules) {
-        expect(graph.has(modulePath), `${modulePath} entered ${[...graph].join(", ")}`).toBe(
-          false
-        );
-      }
+    for (const modulePath of odePresentationModules) {
+      expect(odeGraph.has(modulePath), `${modulePath} missing from ODE`).toBe(
+        true
+      );
+      expect(entryGraph.has(modulePath), `${modulePath} entered production entry`).toBe(
+        false
+      );
+      expect(
+        linearSystemsGraph.has(modulePath),
+        `${modulePath} entered Linear Systems before Phase 4`
+      ).toBe(false);
     }
-    const phaseTwoSource = phaseTwoModules.map(source).join("\n");
+    for (const modulePath of deferredModules) {
+      expect(entryGraph.has(modulePath)).toBe(false);
+      expect(odeGraph.has(modulePath)).toBe(false);
+      expect(linearSystemsGraph.has(modulePath)).toBe(false);
+    }
+    const phaseTwoSource = [
+      ...odePresentationModules,
+      ...deferredModules,
+    ].map(source).join("\n");
     expect(phaseTwoSource).not.toMatch(
       /labs\/(?:ode|linear-algebra)|app\/(?:router|appSessionStore)|@numerical-t-lab|chart\.js|mathlive|compute-engine|Tutor|Glossary|ComputationTrace|computationTrace|computationMotion|convergenceStudy/
+    );
+    expect(source("labs/ode/odeApp.ts")).not.toMatch(
+      /createComputationWalkthroughShell|createAnalysisSurface/
     );
   });
 
