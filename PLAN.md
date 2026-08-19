@@ -2,9 +2,9 @@
 
 ## Current status
 
-**Active milestone: Cross-Lab Presentation Sync — Phases 0 and 1 Maintainer
-accepted; Phase 2 content-hierarchy primitives are implemented and locally
-verified as a review candidate.**
+**Active milestone: Cross-Lab Presentation Sync — Phases 0, 1, and 2
+Maintainer accepted; Phase 3 ODE inner presentation is implemented and locally
+verified as an audit candidate.**
 
 Linear Systems Teaching v2 is **MAINTAINER ACCEPTED** at commit
 `484fc9153de33be7949e82b29386c94fe63d19c8` (tree
@@ -66,10 +66,26 @@ Phase 2 implementation commit `6add7174fb160cf4e377664d486905152583e4c2`
 `ProblemContext`, `TeachingBlock`, `PrimaryResult`, `EvidenceBlock`, and
 `ComputationWalkthroughShell` primitives plus semantic `NumericalTable` and
 native closed `AdvancedDetails` support. They accept domain-authored nodes by
-identity, infer no mathematical meaning, and are proven only through authored
-content on the extended DEV-only `/__dev/presentation-system` fixture. Their
-TypeScript modules are not yet imported by either real Lab; broad ODE and
-Linear Systems inner migration remains Phase 3/4 work.
+identity and infer no mathematical meaning. Phase 2 is **MAINTAINER ACCEPTED
+WITH P3 CARRY-FORWARD** at HEAD
+`331bea3e695fb59620e7c316a27480549643c6f4` (tree
+`9e49edeae9aff206435dca577933046189a86ddc`); its independent audit reported
+`P0 = 0`, `P1 = 0`, `P2 = 0`, and `P3 = 4`.
+
+Phase 3 closes the two shared Phase 2 CSS/test findings and corrects the live
+fixture handoff count to 33 formula owners. The ODE migration is implemented
+at `cc6850b75c6102258101a059856870a57e8657f5`, with final narrow-layout
+correction at `e1eefd98480b2f11eb796ea6117e7a428753c62a` (tree
+`251220912f44ad28dbe85d56a174e9dde7cea7e4`), with final local-label proof at
+`4c9720b811e2001683e25ff733052b77c2dca67a` (tree
+`874b07332625c1f5d2be6fed38c86d5e452b2847`). Method and preset guidance now
+use `TeachingBlock`; successful single and Compare Output use result-owned
+`ProblemContext`, `PrimaryResult`, method/chart/table `EvidenceBlock`s, and
+semantic `NumericalTable`. Chart.js, ODE state/math, Convergence, Tutor,
+Glossary, lifecycle, and numerical authority remain domain-owned. No ODE
+walkthrough is mounted, and Convergence is not migrated to `AnalysisSurface`.
+Linear Systems inner migration remains Phase 4 pending, including
+`PHASE2-P3-04`.
 
 The design keeps ODE's exploration, presets, Compare, charts, Convergence,
 Tutor, and Glossary strengths; keeps Linear Systems Teaching v2's explicit
@@ -92,9 +108,10 @@ platform entry. Numerical behavior, Computation Trace, session schemas, MathML
 architecture, Motion, Tutor/Glossary feature logic, PDE, dependencies,
 deployment, and Production state are unchanged.
 
-The exact next gate is **Maintainer visual review of the Phase 2 primitive
-fixture**, followed by **independent primitive/boundary audit before Phase 3**.
-Phase 3+ remains unauthorized; do not begin domain migration, Motion, or Tutor.
+The exact next gate is **independent Phase 3 ODE presentation /
+behavior-equivalence audit**, followed by **Maintainer visual review**. Phase
+4+ remains unauthorized; do not begin Linear Systems inner migration,
+AnalysisSurface alignment, Motion, or Tutor.
 
 ## Superseded Teaching v2 execution record
 

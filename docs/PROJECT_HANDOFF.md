@@ -2,7 +2,215 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
-## Cross-Lab Presentation Sync Phase 2 — content-hierarchy review candidate — 2026-08-19
+## Cross-Lab Presentation Sync Phase 3 — ODE migration candidate — 2026-08-19
+
+### Authorization, accepted prerequisite, and result
+
+Cross-Lab Presentation Sync Phase 2 is **MAINTAINER ACCEPTED WITH P3
+CARRY-FORWARD** at HEAD `331bea3e695fb59620e7c316a27480549643c6f4`
+(tree `9e49edeae9aff206435dca577933046189a86ddc`). Its independent audit
+reported `P0 = 0`, `P1 = 0`, `P2 = 0`, and `P3 = 4`. Phase 3 started from
+that clean accepted checkpoint and was separately authorized for ODE inner
+presentation only.
+
+The Phase 2 findings are disposed as follows:
+
+- `PHASE2-P3-01` is closed: the two shared `font-size: 1rem` declarations now
+  use the accepted Phase 0 body typography token;
+- `PHASE2-P3-02` is closed: adversarial tests cover multiple generated-ID
+  instances, local valid `aria-labelledby` targets, and caller-owned native
+  `h2` through `h6` preservation;
+- `PHASE2-P3-03` is corrected here: the complete live fixture contains **33
+  formula owners**, not 29, and every owner has one direct hidden visual
+  MathML tree; and
+- `PHASE2-P3-04` remains open for Phase 4. Linear Systems still owns its
+  existing `.ls-primary-result[data-primary-result]`; Phase 4 must replace,
+  not nest, that identity when its Output migrates.
+
+Phase 3 is implemented and locally verified as a candidate. The carry-forward
+closure commits are `249225ea6703dbe53da689b28a67e8cfc35ae91a` (tree
+`63089e027935b6e1dea86c685953b28b85fe12b1`) and
+`033017fa69d9b4b10edcee0e9449ec752d17d7a9` (tree
+`449e26077243c0331b22a852911d59b8d311fb05`). The ODE migration is
+`cc6850b75c6102258101a059856870a57e8657f5` (tree
+`319fb71e8d769ef50058a9c81b988754039581a7`), followed by the narrow
+320-pixel containment correction `e1eefd98480b2f11eb796ea6117e7a428753c62a`
+(tree `251220912f44ad28dbe85d56a174e9dde7cea7e4`). The final explicit local
+ARIA-target proof is `4c9720b811e2001683e25ff733052b77c2dca67a`
+(tree `874b07332625c1f5d2be6fed38c86d5e452b2847`). Phase 3 is not Maintainer
+accepted.
+
+### ODE presentation mapping and domain authority
+
+The real Initial Value Problems Lab now consumes the accepted Phase 2 shared
+presentation primitives where its existing evidence naturally maps:
+
+- Method uses one `TeachingBlock` headed **Choose a method** around the
+  existing method list and Compare controls. The eight method cards remain
+  domain-owned native buttons, retain their order, descriptions, selection,
+  and formula rendering, and use subordinate `h3` headings.
+- Data keeps its existing form, field labels, presets, MathLive editors,
+  exact-solution controls, validation, and Run behavior. Only the existing
+  preset teaching is composed as a `TeachingBlock` headed **Preset guidance**;
+  no field-card nesting or copy rewrite was added.
+- Successful single Output uses one `ProblemContext` before one
+  `PrimaryResult`. The context is authored only from the successful expression
+  snapshot and the immutable `lastProblemInputs` captured by the successful
+  Run; current edited drafts never supply prior-result context. The final
+  numerical approximation is the explicit primary answer, followed by compact
+  stored-grid-point, final-time, and applicable final-derivative metrics.
+- Method metadata/formula uses a standard `EvidenceBlock`; the Chart.js canvas
+  uses another standard `EvidenceBlock`; and the last 12 stored values use the
+  shared semantic `NumericalTable` inside a standard `EvidenceBlock`. ODE still
+  owns metadata, mathematical rendering, chart datasets/options/theme/lifecycle,
+  row selection, and numeric formatting.
+- Compare uses one shared result-owned `ProblemContext` and one
+  `PrimaryResult` containing two explicitly labelled method answers plus the
+  neutral absolute-difference metric. Two method evidence blocks, one existing
+  two-series chart, and one semantic comparison table follow. It declares no
+  winner, and Tutor remains unavailable exactly as before.
+
+The accepted Forward Euler starter still displays `0.00377789`; the browser
+Compare run still displays Forward Euler `0.00377789` and RK4 `0.00673848`.
+Existing exact-solution entry and Convergence exact/error evidence remain
+unchanged; Phase 3 invents no error metric. Successful Run moves focus to the
+result `h2` with `preventScroll`. Hydration, ordinary navigation, failed Run,
+and return to a stored Output do not create a second result announcement or
+replace immutable successful evidence.
+
+No `ComputationWalkthroughShell` is mounted in ODE because ODE has no
+authoritative computation trace. Result/grid arrays are not treated as a
+trace. Phase 3 adds no `AdvancedDetails`: existing visible method teaching
+stays visible and existing native Convergence disclosures remain under the
+Convergence owner. Convergence is intentionally not migrated to
+`AnalysisSurface`; its state, controls, exact-solution eligibility, preview,
+run, classifications, table, chart, teaching, budgets, and lifecycle remain
+domain-local pending Phase 5.
+
+### CSS, accessibility, lifecycle, and boundaries
+
+ODE retired the duplicate `.summary`, `.stat*`, `.edu-panel`,
+`.problem-equation`, `.chart-section`, `.table-section`, `.table-scroll`, and
+broad output-table presentation rules after their shared replacements were
+mounted. `odeApp.css` now keeps domain-specific method/preset composition,
+editor, formula, Chart.js frame, Compare, Convergence, and ODE numeric
+typography. Shared presentation CSS continues to own primitive surfaces,
+spacing, status, heading, table, and disclosure language.
+
+A 320-pixel browser stress pass exposed two contained-layout defects. First,
+the Convergence host was a min-content grid item wider than its Stage. Second,
+Compare's existing 280-pixel minimum method-evidence track widened direct
+children inside a 239-pixel content track. The correction adds `min-width: 0`
+to the ODE results/Convergence containment chain and changes only the narrow
+Compare grid minimum to `minmax(0, 1fr)`. After recheck, both Stages have equal
+client/scroll widths, the workflow and numerical table alone retain intended
+local horizontal scrolling, and document overflow is zero.
+
+The migrated ODE retains one page `h1`, one current native workflow step, a
+stage `h2`, subordinate `h3`/`h4` evidence headings, unique IDs with valid
+local labels, one accessible owner per formula, a labelled Primary Result and
+Problem Context, a named chart canvas, native caption/header/table semantics,
+visible focus, native disclosures, existing Glossary trigger semantics, and
+Tutor focus return. This is a structural and browser audit, not screen-reader
+certification. Failed Run leaves the prior successful result reachable and
+shows attempt-owned validation; matching-output reachability, New experiment,
+route remount, scroll capture, session ownership, Chart destruction/recreation,
+Tutor, and Glossary lifecycle tests remain green.
+
+### Browser, Linear Systems smoke, and screenshots
+
+Fresh in-app browser review passed desktop Light and Dark, 390-pixel mobile,
+and 320-pixel stress for Method, Data, successful single Output, Compare,
+chart/table evidence, and current Convergence. The primary answer precedes its
+evidence; cards are one column on mobile; context and answers stack without
+clipping; Chart.js remains contained; the values table scrolls locally; and
+Light/Dark preserve equivalent hierarchy. Tutor and Glossary opened and closed
+at 320 pixels without page overflow. Warning/error logs were empty.
+
+A bounded Linear Systems regression smoke confirmed its unmigrated Method,
+Output, and Diagnostics presentation at desktop and 390 pixels. The route has
+no Replay/Motion mount, remains page-contained, and still exposes the accepted
+residual evidence. No Linear Systems inner source was changed, and
+`PHASE2-P3-04` was not fixed.
+
+The external, uncommitted evidence directory is:
+
+`C:/Users/bruce/.codex/visualizations/2026/08/12/019ff741-984c-7e42-967c-d757d759589a`
+
+It contains `phase3-ode-method-light`, `phase3-ode-data-light`,
+`phase3-ode-output-light`, `phase3-ode-output-dark`,
+`phase3-ode-compare-light`, `phase3-ode-chart`,
+`phase3-ode-mobile-output`, `phase3-ode-mobile-compare`,
+`phase3-ls-method-smoke`, and `phase3-ls-output-smoke` PNG evidence.
+
+### Verification, Production graph, and bundle
+
+The migration-focused gate passed 16 files / 142 tests. The final containment
+recheck passed four presentation/ODE/boundary files / 51 tests plus the
+Convergence view file / 15 tests; the tightened local-label assertion then
+passed its focused file / 12 tests. The standalone full suite and mandatory
+`npm.cmd run verify` both pass 94 files / 1,266 tests. Frontend, numerics,
+contracts, backend/API typechecks pass; import boundaries remain four owners
+plus the Vercel adapter; and `git diff --check` passes.
+
+The Production build transforms 108 modules. The DEV presentation route and
+markers are absent from `dist`. The platform entry names the ODE, Linear
+Systems, and shared presentation chunks only as dynamic route dependencies;
+it does not absorb them. Exact raw/gzip metrics are:
+
+| Asset | Phase 2 accepted | Phase 3 candidate |
+|---|---:|---:|
+| Entry JS | 56.73 / 17.48 kB | 56.73 / 17.49 kB |
+| Platform CSS | 29.51 / 5.39 kB | 29.51 / 5.39 kB |
+| Shared Lab JS | 4.54 / 1.59 kB | 5.69 / 1.88 kB |
+| Shared Lab CSS | 18.46 / 3.22 kB | 18.50 / 3.22 kB |
+| ODE JS | 295.53 / 94.57 kB | 303.72 / 96.53 kB |
+| ODE CSS | 14.71 / 3.46 kB | 14.62 / 3.51 kB |
+| Linear Systems JS | 71.01 / 21.15 kB | 71.01 / 21.15 kB |
+| Linear Systems CSS | 28.08 / 5.05 kB | 28.08 / 5.05 kB |
+
+The ODE JS increase is the real domain's first consumption of the Phase 2
+composition code and its new authored DOM assembly. Chart.js remains inside
+the ODE route asset rather than a shared/entry asset. The separately emitted
+Convergence state asset remains 58.11 / 17.24 kB. Tutor remains separately
+deferred at 12.14 / 4.61 kB JS and 6.61 / 1.81 kB CSS; Glossary remains
+separately deferred at 10.13 / 3.50 kB JS and 4.83 / 1.31 kB CSS. MathLive and
+editable/Compute Engine remain interaction-deferred at 819.11 / 228.04 kB and
+1,143.84 / 308.80 kB JS respectively. The existing large-chunk advisory is
+unchanged; no `manualChunks`, dependency, or eager-loading change was made.
+
+### Durable rules, remaining findings, and next gate
+
+1. Use a shared primitive only where domain evidence naturally maps to its
+   semantic role; cross-Lab consistency does not require every domain to use
+   every primitive.
+2. An ODE Computation Walkthrough requires authoritative ODE trace evidence;
+   grid and result arrays are not retroactively a trace.
+3. Output problem context comes from successful evidence authority, never
+   unrelated current drafts.
+4. Domain visualization remains domain-owned when framed by a shared
+   `EvidenceBlock`.
+5. Convergence and Diagnostics may share Analysis presentation later without
+   sharing state, numerical meaning, or lifecycle.
+
+All Phase 3 findings found during implementation are corrected. Current
+candidate severity is `P0 = 0`, `P1 = 0`, `P2 = 0`, `P3 = 0`.
+`PHASE2-P3-04` is the only explicit cross-phase carry-forward and remains
+Phase 4-owned.
+
+There is no Linear Systems inner migration, AnalysisSurface migration, ODE
+Computation Walkthrough, numerical or Computation Trace change,
+expression-authority or session-schema change, Motion remount, Tutor or
+Glossary feature/content change, PDE work, dependency change, push, Preview,
+or Production deployment. The exact next gate is **independent Phase 3 ODE
+presentation / behavior-equivalence audit**, then **Maintainer visual
+review**. Stop before Phase 4 and Phase 5.
+
+The documentation checkpoint commit containing this candidate record is
+reported externally because a commit cannot self-reference its final SHA and
+tree.
+
+## Cross-Lab Presentation Sync Phase 2 — Maintainer accepted with P3 carry-forward — 2026-08-19
 
 ### Authorization, Phase 1 acceptance, and result
 
@@ -16,10 +224,13 @@ therefore **MAINTAINER ACCEPTED**.
 That acceptance carried exactly one non-blocking P3,
 `PHASE1-VIS-01`, for the non-current workflow visual hierarchy. The
 Maintainer separately authorized Phase 2 plus that one correction. Phase 2 is
-implemented and locally verified as a review candidate at implementation
+implemented and locally verified at implementation
 commit `6add7174fb160cf4e377664d486905152583e4c2` (tree
-`3f7dd9c49106c2e4631c6e01dde789cb051a4178`). Phase 2 is not Maintainer
-accepted.
+`3f7dd9c49106c2e4631c6e01dde789cb051a4178`). The Maintainer subsequently
+accepted Phase 2 at HEAD `331bea3e695fb59620e7c316a27480549643c6f4`
+(tree `9e49edeae9aff206435dca577933046189a86ddc`) with the independent-audit
+result `P0 = 0`, `P1 = 0`, `P2 = 0`, `P3 = 4`. The Phase 3 section above
+records the exact disposition of those four carry-forwards.
 
 ### Shared primitive ownership and contracts
 
@@ -59,7 +270,7 @@ walkthrough region is labelled by a native heading; Teaching retains native
 `dl`/`ol`; Primary Result gives each answer its own visible label;
 NumericalTable uses native table semantics; walkthrough phases and steps are
 native ordered lists; AdvancedDetails is native `details`/`summary`; and no
-automatic live region was introduced. The authored fixture contains 29
+automatic live region was introduced. The complete live fixture contains 33
 accessible formula owners, each with exactly one direct `aria-hidden="true"`
 MathML visual tree, zero unowned MathML trees, and zero duplicate visual
 owners.
@@ -193,12 +404,12 @@ Durable rules:
 5. Phase 2 primitives are proven through authored fixtures before domain Lab
    migration.
 
-There is no real ODE or Linear Systems inner migration, AnalysisSurface
-production implementation, Phase 3/4 work, numerical/Trace/session/Teaching
-v2/native-MathML architecture change, Motion, Tutor, Glossary, PDE,
-dependency, push, Preview, or Production deployment. The exact next gate is
-**Maintainer visual review of the Phase 2 primitive fixture**, followed by
-**independent primitive/boundary audit before Phase 3**. Stop before Phase 3.
+At this historical Phase 2 checkpoint there was no real ODE or Linear Systems
+inner migration, AnalysisSurface production implementation, numerical/Trace/
+session/Teaching v2/native-MathML architecture change, Motion, Tutor,
+Glossary, PDE, dependency, push, Preview, or Production deployment. Its former
+review gate is superseded by the accepted prerequisite and Phase 3 candidate
+record above.
 The documentation commit containing this section is reported externally
 because a commit cannot self-reference its own final SHA/tree.
 

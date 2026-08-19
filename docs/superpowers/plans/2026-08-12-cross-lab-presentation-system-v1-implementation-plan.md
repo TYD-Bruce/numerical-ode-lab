@@ -1,13 +1,13 @@
 # Cross-Lab Presentation System v1 Implementation Plan
 
-**Status:** Phase 0 Maintainer accepted; Phase 1 Maintainer accepted at `881795715799cde4d41f7bd933303bea4db1f8a8`; Phase 2 authorized and implemented as a review candidate at `6add7174fb160cf4e377664d486905152583e4c2`; Phase 3+ unauthorized
+**Status:** Phases 0, 1, and 2 Maintainer accepted; Phase 3 ODE migration implemented as a locally verified audit candidate at `4c9720b811e2001683e25ff733052b77c2dca67a`; Phase 4+ unauthorized
 
 **Design authority:**
 [`2026-08-12-cross-lab-presentation-system-v1-design.md`](../specs/2026-08-12-cross-lab-presentation-system-v1-design.md)
 
 **Starting implementation prerequisite:** Satisfied at design commit `3b77f7133a95bef855c2eb3e3a69db37e16f1e46`
 
-**Current gate:** Stop after Phase 2 for Maintainer visual review of the primitive fixture, then independent primitive/boundary audit before Phase 3
+**Current gate:** Stop after Phase 3 for independent ODE presentation / behavior-equivalence audit, then Maintainer visual review
 
 ## 1. Objective and boundary
 
@@ -178,12 +178,16 @@ acceptance recorded at final Phase 1 HEAD
 
 ## 6. Phase 2 — context, teaching, result, evidence, and walkthrough primitives
 
-**Execution status:** Authorized and implemented as a review candidate at
+**Execution status:** Maintainer accepted with P3 carry-forward at final HEAD
+`331bea3e695fb59620e7c316a27480549643c6f4` (tree
+`9e49edeae9aff206435dca577933046189a86ddc`). Implemented initially at
 `6add7174fb160cf4e377664d486905152583e4c2` (tree
 `3f7dd9c49106c2e4631c6e01dde789cb051a4178`). The authored DEV fixture,
 structural/accessibility tests, real-Lab workflow-only smoke, lazy-boundary
-checks, and full verification pass. No real Lab inner presentation consumes
-the new TypeScript primitives yet.
+checks, and full verification passed. The independent audit reported
+`P0 = 0`, `P1 = 0`, `P2 = 0`, and `P3 = 4`; Phase 3 closes the shared CSS and
+test findings and corrects the handoff formula-owner count, while the Linear
+Systems result-identity finding remains Phase 4-owned.
 
 ### Changes
 
@@ -221,6 +225,17 @@ complete-Lab lazy graph and import no domain/runtime packages.
 Maintainer approval of the compositional hierarchy before a Lab migration.
 
 ## 7. Phase 3 — migrate ODE presentation
+
+**Execution status:** Implemented and locally verified as an audit candidate.
+Shared carry-forward closure is recorded at
+`249225ea6703dbe53da689b28a67e8cfc35ae91a` and
+`033017fa69d9b4b10edcee0e9449ec752d17d7a9`; the ODE migration is
+`cc6850b75c6102258101a059856870a57e8657f5`; and final narrow containment is
+`e1eefd98480b2f11eb796ea6117e7a428753c62a` (tree
+`251220912f44ad28dbe85d56a174e9dde7cea7e4`), followed by explicit local
+ARIA-target proof at `4c9720b811e2001683e25ff733052b77c2dca67a` (tree
+`874b07332625c1f5d2be6fed38c86d5e452b2847`). No Phase 4 or Phase 5 work is
+included.
 
 ### Changes
 
@@ -439,6 +454,6 @@ Implementation is complete only after Phase 7 acceptance and documentation
 updates accurately label it implemented and locally verified. Production
 remains unchanged until a separately authorized release/deployment task.
 
-Current exact next gate: **Maintainer visual review of the Phase 2 primitive
-fixture**, followed by **independent primitive/boundary audit before Phase 3**.
-Stop before Phase 3.
+Current exact next gate: **independent Phase 3 ODE presentation /
+behavior-equivalence audit**, followed by **Maintainer visual review**. Stop
+before Phase 4 and Phase 5.

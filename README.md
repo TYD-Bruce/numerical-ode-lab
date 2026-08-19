@@ -180,6 +180,17 @@ design specifications, implementation plans, reviews, and feature handoffs.
 
 ## Changelog
 
+### 2026-08-19 — ODE presentation hierarchy migrated locally
+
+- Composed the Initial Value Problems Lab's Method, preset guidance, successful
+  Output, Compare, chart evidence, and stored-value tables through the accepted
+  shared presentation system while preserving ODE state, mathematics,
+  Chart.js, Convergence, Tutor, Glossary, and lifecycle ownership.
+- Passed 94 files / 1,266 tests, workspace/API typechecks, import boundaries,
+  the 108-module Production build, and desktop/mobile Light/Dark browser
+  review. Linear Systems inner presentation, Analysis alignment, Motion,
+  numerical behavior, dependencies, push, and deployment are unchanged.
+
 ### 2026-08-12 — Linear Systems Teaching v2 corrected locally
 
 - Reworked the existing four-step Linear Systems Lab into a computation-led

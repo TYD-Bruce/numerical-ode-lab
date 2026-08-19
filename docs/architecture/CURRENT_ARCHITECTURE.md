@@ -32,9 +32,13 @@ Browser ownership is organized as:
   `LabHeader`, `WorkflowNavigation`, `StageSection`, outer action-role
   presentation, and the implemented Phase 2 `ProblemContext`, `TeachingBlock`,
   `PrimaryResult`, `EvidenceBlock`, `ComputationWalkthroughShell`, semantic
-  numerical-table, and native advanced-disclosure source;
+  numerical-table, and native advanced-disclosure source. ODE now consumes
+  the compatible context/teaching/result/evidence/table subset; shared source
+  still owns no domain state, math, visualization, or lifecycle;
 - `frontend/src/labs/ode/`: the mountable Initial Value Problems Lab, ODE
-  workflow/session state, Convergence presentation, presets, and bindings;
+  workflow/session state, successful-result context composition, Method/Data/
+  Output/Compare presentation, Chart.js lifecycle, Convergence presentation,
+  presets, and bindings;
 - `frontend/src/labs/linear-algebra/`: the pure editable session, complete
   Linear Systems route, Method/Data/Output/Diagnostics application, visible
   teaching model, domain-specific MathML composition helpers, and
@@ -44,7 +48,8 @@ Browser ownership is organized as:
   and lazy surface;
 - `frontend/src/math/`: MathLive/Compute Engine browser adapters, lightweight
   native-MathML authored-math primitives, and safe math presentation; and
-- `frontend/src/dev/`: development-only Glossary tooling.
+- `frontend/src/dev/`: development-only Glossary tooling and Presentation
+  System fixture.
 
 `frontend/vite.config.ts` uses the frontend directory as Vite root and emits
 to the repository-root `dist/`. Public base remains `/`.
@@ -141,12 +146,22 @@ only semantic DOM composition, role styling, and contained workflow reveal;
 each Lab still owns state, availability, callbacks, numerical content, live
 regions, platform bindings, and disposal.
 
-The Phase 2 primitive TypeScript modules exist as real shared source but are
-not yet imported by either complete-Lab route. Their authored composition is
-proved only by the DEV-only Presentation System fixture, which remains absent
-from Production route matching and emitted assets. Phase 3/4 will separately
-govern real ODE and Linear Systems inner migration. Phase 2 does not change
-product mathematics, numerical/session/trace ownership, or domain content.
+The accepted Phase 2 primitive TypeScript modules are real shared source. The
+ODE complete-Lab route now consumes `ProblemContext`, `TeachingBlock`,
+`PrimaryResult`, `EvidenceBlock`, and `NumericalTable` for its inner Method,
+Data, single Output, and Compare hierarchy. ODE supplies successful immutable
+problem evidence, method metadata, mathematical DOM, result values, chart
+configuration/data, and table rows; the shared primitives only compose those
+authored nodes. Chart.js, ODE numerical/session/expression authority, Tutor,
+Glossary, and disposal remain ODE-owned.
+
+ODE does not consume `ComputationWalkthroughShell` because no authoritative
+ODE computation trace exists. ODE Convergence remains domain-local and is not
+yet composed through `AnalysisSurface`. Linear Systems inner presentation
+remains unmigrated pending Phase 4; its accepted Teaching v2, native MathML,
+walkthrough, Diagnostics, result identity, and domain styling are unchanged.
+The DEV-only Presentation System fixture remains absent from Production route
+matching and emitted assets.
 
 The route module registry, Tutor Host, Glossary Host, and editable-math loader
 retain distinct dynamic imports. Package extraction does not create an eager
