@@ -134,6 +134,80 @@ describe("Phase 2 Lab presentation primitives", () => {
     expect(teaching.dataset.teachingBlock).toBe("true");
   });
 
+  it("keeps generated component and answer IDs unique across multiple instances", () => {
+    const contexts = [0, 1].map(() =>
+      createProblemContext({
+        heading: heading(3, "Problem"),
+        statement: mathOwner("y prime equals y"),
+      })
+    );
+    const results = [0, 1].map(() =>
+      createPrimaryResult({
+        heading: heading(3, "Result"),
+        primaryAnswer: {
+          label: paragraph("Final value"),
+          content: mathOwner("y of one equals two"),
+        },
+      })
+    );
+    const evidence = [0, 1].map(() =>
+      createEvidenceBlock({
+        level: "standard",
+        heading: heading(3, "Evidence"),
+      })
+    );
+
+    for (const instances of [contexts, results, evidence]) {
+      const labelledBy = instances.map((instance) =>
+        instance.getAttribute("aria-labelledby")
+      );
+      expect(new Set(labelledBy).size).toBe(instances.length);
+      expect(labelledBy.every(Boolean)).toBe(true);
+    }
+
+    const answerIds = results.map(
+      (result) =>
+        result
+          .querySelector("[data-primary-answer]")
+          ?.getAttribute("aria-labelledby")
+    );
+    expect(new Set(answerIds).size).toBe(results.length);
+    expect(answerIds.every(Boolean)).toBe(true);
+  });
+
+  it("preserves every supplied native h2-h6 tag across structural primitives", () => {
+    for (const level of [2, 3, 4, 5, 6] as const) {
+      const contextHeading = heading(level, `Problem h${level}`);
+      const resultHeading = heading(level, `Result h${level}`);
+      const evidenceHeading = heading(level, `Evidence h${level}`);
+
+      const context = createProblemContext({
+        heading: contextHeading,
+        statement: paragraph("Snapshot"),
+      });
+      const result = createPrimaryResult({
+        heading: resultHeading,
+        primaryAnswer: {
+          label: paragraph("Answer"),
+          content: paragraph("1"),
+        },
+      });
+      const evidence = createEvidenceBlock({
+        level: "standard",
+        heading: evidenceHeading,
+      });
+
+      expect(context.querySelector(":scope > :first-child")).toBe(contextHeading);
+      expect(result.querySelector(":scope > .lab-primary-result-heading")).toBe(
+        resultHeading
+      );
+      expect(evidence.querySelector(":scope > :first-child")).toBe(evidenceHeading);
+      expect(contextHeading.tagName).toBe(`H${level}`);
+      expect(resultHeading.tagName).toBe(`H${level}`);
+      expect(evidenceHeading.tagName).toBe(`H${level}`);
+    }
+  });
+
   it("orders PrimaryResult status and problem context before one explicitly labelled answer", () => {
     const problemHeading = heading(4, "Problem");
     const problem = createProblemContext({

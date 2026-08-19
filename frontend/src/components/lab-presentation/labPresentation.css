@@ -572,7 +572,7 @@
 }
 
 .lab-evidence-advanced .lab-evidence-block-heading {
-  font-size: 1rem;
+  font-size: var(--lab-type-body-size);
 }
 
 .lab-evidence-block-chart {
@@ -687,7 +687,7 @@
 }
 
 .lab-walkthrough-step > :first-child {
-  font-size: 1rem;
+  font-size: var(--lab-type-body-size);
 }
 
 .lab-walkthrough-step {
