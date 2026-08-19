@@ -156,10 +156,21 @@ describe("shared Lab presentation primitives", () => {
         "aria-current"
       )
     ).toBe("step");
+    expect(
+      nav.querySelector("[data-workflow-step='method']")?.getAttribute(
+        "data-workflow-state"
+      )
+    ).toBe("available");
+    expect(
+      nav.querySelector("[data-workflow-step='data']")?.getAttribute(
+        "data-workflow-state"
+      )
+    ).toBe("current");
     const unavailable = nav.querySelector<HTMLButtonElement>(
       "[data-workflow-step='output']"
     )!;
     expect(unavailable.disabled).toBe(true);
+    expect(unavailable.dataset.workflowState).toBe("unavailable");
     nav.querySelector<HTMLButtonElement>("[data-workflow-step='method']")!.click();
     unavailable.click();
     expect(activate).toHaveBeenCalledTimes(1);
@@ -193,6 +204,24 @@ describe("shared Lab presentation primitives", () => {
     expect(nav.querySelector("[aria-current='step']")?.textContent).toContain(
       "Method"
     );
+    expect(
+      new Set(
+        [...nav.querySelectorAll<HTMLElement>("[data-workflow-state]")].map(
+          (node) => node.dataset.workflowState
+        )
+      )
+    ).toEqual(new Set(["current", "available", "unavailable"]));
+  });
+
+  it("uses only current, available, and unavailable workflow state language", async () => {
+    const sourceModule = await import("./workflowNavigation.ts?raw");
+    const combined = sourceModule.default;
+
+    expect(combined).toContain("dataset.workflowState");
+    expect(combined).toContain('"current"');
+    expect(combined).toContain('"available"');
+    expect(combined).toContain('"unavailable"');
+    expect(combined).not.toMatch(/completed|visited|done/i);
   });
 
   it("keeps current-stage reveal inside the local workflow rail", () => {

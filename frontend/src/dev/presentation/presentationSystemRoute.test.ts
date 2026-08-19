@@ -83,6 +83,64 @@ describe("development-only Presentation System fixture", () => {
     }
   });
 
+  it("demonstrates every Phase 2 primitive with authored cross-domain content", () => {
+    const target = document.createElement("main");
+    document.body.append(target);
+    createPresentationSystemRoute().mount({
+      target,
+      navigate: vi.fn(),
+      location: {
+        pathname: "/__dev/presentation-system",
+        search: "",
+        hash: "",
+      },
+    });
+
+    expect(target.textContent).toContain("Phase 2 · Content hierarchy");
+    for (const title of [
+      "Problem Context",
+      "Teaching Block",
+      "Primary Result",
+      "Evidence levels",
+      "Numerical Table",
+      "Advanced Details",
+      "Computation Walkthrough shell",
+    ]) {
+      expect(target.textContent).toContain(title);
+    }
+    expect(target.querySelectorAll("[data-problem-context]")).toHaveLength(6);
+    expect(target.textContent).toContain("Linear system snapshot");
+    expect(target.textContent).toContain("Initial value problem");
+    expect(target.textContent).toContain("Future PDE composition");
+    expect(target.querySelectorAll("[data-teaching-block]").length).toBeGreaterThanOrEqual(2);
+    expect(target.querySelectorAll("[data-primary-result]")).toHaveLength(3);
+    expect(
+      [...target.querySelectorAll<HTMLElement>("[data-evidence-level]")].map(
+        (block) => block.dataset.evidenceLevel
+      )
+    ).toEqual(["summary", "standard", "advanced"]);
+    expect(target.querySelector("table caption")?.textContent).toBe(
+      "ODE refinement evidence"
+    );
+    expect(target.querySelector("details[data-advanced-details]")).not.toBeNull();
+    expect(target.querySelector("[data-computation-walkthrough-shell]")).not.toBeNull();
+    expect(
+      [...target.querySelectorAll("[data-walkthrough-part]")].map((part) =>
+        part.getAttribute("data-walkthrough-part")
+      )
+    ).toEqual([
+      "source",
+      "operation",
+      "target",
+      "source",
+      "operation",
+      "target",
+      "source",
+      "operation",
+      "target",
+    ]);
+  });
+
   it("owns the complete scientific exponent as one accessible MathML formula", () => {
     const target = document.createElement("main");
     document.body.append(target);
@@ -127,7 +185,12 @@ describe("development-only Presentation System fixture", () => {
     const css = readFileSync(join(FIXTURE_DIR, "presentationSystem.css"), "utf8");
 
     expect(source).not.toMatch(/mathlive|compute-engine|innerHTML|https?:\/\//i);
-    expect(source).not.toMatch(/LabShell|WorkflowNavigation|StageSection|PrimaryResult/);
+    expect(source).toMatch(
+      /createProblemContext|createTeachingBlock|createPrimaryResult|createEvidenceBlock|createComputationWalkthroughShell/
+    );
+    expect(source).not.toMatch(
+      /labs\/(?:ode|linear-algebra)|@numerical-t-lab|chart\.js|mathlive|compute-engine|ComputationTrace|computationMotion/
+    );
     expect(css).not.toMatch(/@import\s|url\s*\(|#[0-9a-f]{3,8}\b|\brgba?\s*\(/i);
     expect(css).toContain("forced-colors");
     expect(css).toContain("overflow-x: auto");

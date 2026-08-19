@@ -99,6 +99,33 @@ describe("public route bundle ownership", () => {
     );
   });
 
+  it("keeps fixture-proven Phase 2 presentation modules out of entry and real Lab graphs until migration", () => {
+    const phaseTwoModules = [
+      "components/lab-presentation/problemContext.ts",
+      "components/lab-presentation/teachingBlock.ts",
+      "components/lab-presentation/primaryResult.ts",
+      "components/lab-presentation/evidenceBlock.ts",
+      "components/lab-presentation/computationWalkthroughShell.ts",
+    ];
+    const graphs = [
+      eagerGraph("main.ts"),
+      eagerGraph("labs/ode/initialValueProblemsRoute.ts"),
+      eagerGraph("labs/linear-algebra/linearSystemsRoute.ts"),
+    ];
+
+    for (const graph of graphs) {
+      for (const modulePath of phaseTwoModules) {
+        expect(graph.has(modulePath), `${modulePath} entered ${[...graph].join(", ")}`).toBe(
+          false
+        );
+      }
+    }
+    const phaseTwoSource = phaseTwoModules.map(source).join("\n");
+    expect(phaseTwoSource).not.toMatch(
+      /labs\/(?:ode|linear-algebra)|app\/(?:router|appSessionStore)|@numerical-t-lab|chart\.js|mathlive|compute-engine|Tutor|Glossary|ComputationTrace|computationTrace|computationMotion|convergenceStudy/
+    );
+  });
+
   it("registers ODE through a dynamic import and no production placeholder", () => {
     const registry = source("app/moduleRegistry.ts");
     expect(registry).toMatch(

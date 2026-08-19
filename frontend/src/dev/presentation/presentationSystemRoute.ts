@@ -1,13 +1,27 @@
 import type { RouteModule } from "../../app/contracts";
+import { createComputationWalkthroughShell } from "../../components/lab-presentation/computationWalkthroughShell";
+import { createEvidenceBlock } from "../../components/lab-presentation/evidenceBlock";
+import { createPrimaryResult } from "../../components/lab-presentation/primaryResult";
+import { createProblemContext } from "../../components/lab-presentation/problemContext";
+import {
+  createAdvancedDetails,
+  createNumericalTable,
+} from "../../components/lab-presentation/supportingElements";
+import { createTeachingBlock } from "../../components/lab-presentation/teachingBlock";
 import {
   createNativeMath,
+  mathFraction,
   mathIdentifier,
   mathMatrix,
   mathNumber,
   mathNumberLiteral,
   mathOperator,
   mathOver,
+  mathRow,
+  mathSubscript,
+  mathSuperscript,
 } from "../../math/nativeMath";
+import "../../components/lab-presentation/labPresentation.css";
 import "./presentationSystem.css";
 
 type StageRole = "method" | "data" | "output" | "analysis";
@@ -34,6 +48,21 @@ function specimenHeading(
   const heading = textElement("h2", "presentation-stage-title", title);
   const intro = textElement("p", "presentation-supporting", description);
   header.append(eyebrow, heading, intro);
+  return header;
+}
+
+function phaseTwoSpecimenHeading(
+  index: string,
+  title: string,
+  description: string
+): HTMLElement {
+  const header = document.createElement("header");
+  header.className = "presentation-specimen-heading";
+  header.append(
+    textElement("p", "presentation-eyebrow", index),
+    textElement("h3", "presentation-section-title", title),
+    textElement("p", "presentation-supporting", description)
+  );
   return header;
 }
 
@@ -347,6 +376,771 @@ function createMeaningSurfaces(): HTMLElement {
   return section;
 }
 
+function formula(
+  content: Element | readonly (Element | string)[],
+  accessibleText: string,
+  dataMath: string
+): HTMLElement {
+  return createNativeMath(content, accessibleText, {
+    display: "block",
+    dataMath,
+  });
+}
+
+function matrix(values: readonly (readonly (number | string)[])[]): Element {
+  return mathMatrix(
+    values.map((row) =>
+      row.map((value) => mathNumberLiteral(String(value)))
+    )
+  );
+}
+
+function metrics(
+  entries: readonly (readonly [string, string | Node])[]
+): HTMLDListElement {
+  const list = document.createElement("dl");
+  for (const [label, value] of entries) {
+    const item = document.createElement("div");
+    const description = document.createElement("dd");
+    description.append(value);
+    item.append(textElement("dt", "", label), description);
+    list.append(item);
+  }
+  return list;
+}
+
+function linearSystemContext(headingLevel: "h4" | "h5"): HTMLElement {
+  return createProblemContext({
+    heading: textElement(
+      headingLevel,
+      "",
+      headingLevel === "h4" ? "Linear system snapshot" : "Problem"
+    ),
+    statement: formula(
+      [
+        matrix([
+          [3, 1],
+          [1, 2],
+        ]),
+        mathOperator("⁢"),
+        mathIdentifier("x"),
+        mathOperator("="),
+        matrix([[5], [4]]),
+      ],
+      "The matrix 3 1, 1 2 times x equals the column vector 5, 4",
+      `phase2-linear-context-${headingLevel}`
+    ),
+    parameters: [
+      { label: "System size", value: "2 × 2" },
+      { label: "Method", value: "Gaussian elimination with partial pivoting" },
+    ],
+    provenance: textElement(
+      "p",
+      "",
+      "Successful Run 04 · Starter teaching snapshot"
+    ),
+    staleNote:
+      headingLevel === "h4"
+        ? textElement(
+            "p",
+            "",
+            "Stale result · current Data differs from this successful snapshot."
+          )
+        : undefined,
+  });
+}
+
+function odeContext(headingLevel: "h4" | "h5"): HTMLElement {
+  const differentialEquation = mathRow([
+    mathIdentifier("y"),
+    mathOperator("′"),
+    mathOperator("="),
+    mathIdentifier("f"),
+    mathOperator("("),
+    mathIdentifier("t"),
+    mathOperator(","),
+    mathIdentifier("y"),
+    mathOperator(")"),
+  ]);
+  const initialCondition = mathRow([
+    mathIdentifier("y"),
+    mathOperator("("),
+    mathSubscript(mathIdentifier("t"), mathNumberLiteral("0")),
+    mathOperator(")"),
+    mathOperator("="),
+    mathSubscript(mathIdentifier("y"), mathNumberLiteral("0")),
+  ]);
+  return createProblemContext({
+    heading: textElement(
+      headingLevel,
+      "",
+      headingLevel === "h4" ? "Initial value problem" : "Problem"
+    ),
+    statement: formula(
+      [differentialEquation, mathOperator(","), initialCondition],
+      "y prime equals f of t and y, with y at t zero equal to y zero",
+      `phase2-ode-context-${headingLevel}`
+    ),
+    parameters: [
+      {
+        label: "Interval",
+        value: createNativeMath(
+          [
+            mathNumberLiteral("0"),
+            mathOperator("≤"),
+            mathIdentifier("t"),
+            mathOperator("≤"),
+            mathNumberLiteral("5"),
+          ],
+          "t from 0 through 5",
+          { dataMath: `phase2-ode-interval-${headingLevel}` }
+        ),
+      },
+      { label: "Step size", value: "0.2" },
+      { label: "Method", value: "Forward Euler" },
+    ],
+    provenance: textElement("p", "", "Exponential decay · authored fixture"),
+  });
+}
+
+function pdeContext(): HTMLElement {
+  return createProblemContext({
+    heading: textElement("h4", "", "Future PDE composition"),
+    statement: formula(
+      [
+        mathSubscript(mathIdentifier("u"), mathIdentifier("t")),
+        mathOperator("="),
+        mathIdentifier("α"),
+        mathSubscript(mathIdentifier("u"), mathRow([mathIdentifier("x"), mathIdentifier("x")])),
+      ],
+      "u sub t equals alpha times u sub x x",
+      "phase2-pde-context"
+    ),
+    parameters: [
+      {
+        label: "Domain",
+        value: createNativeMath(
+          [
+            mathNumberLiteral("0"),
+            mathOperator("≤"),
+            mathIdentifier("x"),
+            mathOperator("≤"),
+            mathNumberLiteral("1"),
+          ],
+          "x from 0 through 1",
+          { dataMath: "phase2-pde-domain" }
+        ),
+      },
+      { label: "Boundary summary", value: "Fixed values at both endpoints" },
+    ],
+    provenance: textElement(
+      "p",
+      "",
+      "Conceptual fixture only · no PDE implementation"
+    ),
+  });
+}
+
+function createPhaseTwoProblemContexts(): HTMLElement {
+  const section = document.createElement("section");
+  section.className = "presentation-phase-two-section";
+  section.append(
+    phaseTwoSpecimenHeading(
+      "P2.1 · Context",
+      "Problem Context",
+      "The successful mathematical problem stays visible without competing with the answer."
+    )
+  );
+  const grid = document.createElement("div");
+  grid.className = "presentation-phase-two-context-grid";
+  grid.append(linearSystemContext("h4"), odeContext("h4"), pdeContext());
+  section.append(grid);
+  return section;
+}
+
+function createPhaseTwoTeaching(): HTMLElement {
+  const section = document.createElement("section");
+  section.className = "presentation-phase-two-section";
+  section.append(
+    phaseTwoSpecimenHeading(
+      "P2.2 · Teaching",
+      "Teaching Block",
+      "Meaning and limits lead; mechanics stay ordered and subordinate."
+    )
+  );
+  const definitions = document.createElement("dl");
+  for (const [term, description] of [
+    ["Pivot", "The active entry used to eliminate entries below it."],
+    ["Multiplier", "The factor that scales the pivot row before subtraction."],
+  ]) {
+    definitions.append(
+      textElement("dt", "", term),
+      textElement("dd", "", description)
+    );
+  }
+  const steps = document.createElement("ol");
+  for (const copy of [
+    "Compare the candidate magnitudes.",
+    "Select the first largest candidate.",
+    "Eliminate entries below the pivot.",
+  ]) {
+    steps.append(textElement("li", "", copy));
+  }
+  const teaching = createTeachingBlock({
+    eyebrow: textElement("p", "", "Core meaning"),
+    heading: textElement("h4", "", "Why the pivot matters"),
+    lead: textElement(
+      "p",
+      "",
+      "A usable pivot anchors one elimination column and keeps the next division within the Lab's accepted safeguard."
+    ),
+    math: [
+      formula(
+        [
+          mathSubscript(mathIdentifier("R"), mathNumberLiteral("2")),
+          mathOperator("−"),
+          mathFraction(mathNumberLiteral("1"), mathNumberLiteral("3")),
+          mathSubscript(mathIdentifier("R"), mathNumberLiteral("1")),
+          mathOperator("→"),
+          mathSubscript(mathIdentifier("R"), mathNumberLiteral("2")),
+        ],
+        "row two minus one third row one becomes row two",
+        "phase2-teaching-operation"
+      ),
+    ],
+    definitions,
+    steps,
+    examples: [
+      textElement(
+        "p",
+        "",
+        "Example · a row swap can place a larger-magnitude entry in the pivot position."
+      ),
+    ],
+    limitation: textElement(
+      "p",
+      "",
+      "A pivot safeguard is an engineering acceptance rule, not a proof of singularity."
+    ),
+    advancedDetails: createAdvancedDetails({
+      summary: "Implementation detail",
+      content: [
+        textElement(
+          "p",
+          "",
+          "The threshold scales with the original matrix and remains domain-owned evidence."
+        ),
+      ],
+    }),
+  });
+  const compact = createTeachingBlock({
+    eyebrow: textElement("p", "", "Compact teaching"),
+    heading: textElement("h4", "", "Residual and solution error differ"),
+    lead: textElement(
+      "p",
+      "",
+      "Residual measures equation mismatch; it does not by itself measure solution error."
+    ),
+  });
+  const grid = document.createElement("div");
+  grid.className = "presentation-phase-two-teaching-grid";
+  grid.append(teaching, compact);
+  section.append(grid);
+  return section;
+}
+
+function createPhaseTwoPrimaryResults(): HTMLElement {
+  const section = document.createElement("section");
+  section.className = "presentation-phase-two-section";
+  section.append(
+    phaseTwoSpecimenHeading(
+      "P2.3 · Answer",
+      "Primary Result",
+      "One successful answer dominates; context and metrics explain what it belongs to."
+    )
+  );
+  const linearResult = createPrimaryResult({
+    eyebrow: textElement("p", "", "Linear Systems · Output"),
+    heading: textElement("h4", "", "Problem and computed solution"),
+    status: textElement("p", "", "Current result"),
+    problemContext: linearSystemContext("h5"),
+    primaryAnswer: {
+      label: textElement("p", "", "Computed solution"),
+      content: formula(
+        [
+          xHat(),
+          mathOperator("="),
+          matrix([[1], [2]]),
+        ],
+        "x hat equals the column vector one, two",
+        "phase2-linear-answer"
+      ),
+    },
+    metrics: metrics([
+      [
+        "Residual infinity norm",
+        createNativeMath(
+          mathNumber(2.31e-14, "diagnostic"),
+          "2.31 times ten to the minus 14",
+          { dataMath: "phase2-linear-residual" }
+        ),
+      ],
+      [
+        "Factorization",
+        createNativeMath(
+          [
+            mathIdentifier("P"),
+            mathIdentifier("A"),
+            mathOperator("="),
+            mathIdentifier("L"),
+            mathIdentifier("U"),
+          ],
+          "P A equals L U",
+          { dataMath: "phase2-linear-factorization" }
+        ),
+      ],
+    ]),
+  });
+  const odeResult = createPrimaryResult({
+    eyebrow: textElement("p", "", "ODE · Output"),
+    heading: textElement("h4", "", "Final numerical approximation"),
+    status: textElement("p", "", "Current result"),
+    problemContext: odeContext("h5"),
+    primaryAnswer: {
+      label: textElement("p", "", "Approximation at t = 5"),
+      content: formula(
+        [
+          mathIdentifier("u"),
+          mathOperator("("),
+          mathNumberLiteral("5"),
+          mathOperator(")"),
+          mathOperator("≈"),
+          mathNumberLiteral("0.32768"),
+        ],
+        "u at 5 is approximately 0.32768",
+        "phase2-ode-answer"
+      ),
+    },
+    metrics: metrics([
+      ["Stored points", "26"],
+      ["Method", "Forward Euler"],
+    ]),
+  });
+  const compareProblem = createProblemContext({
+    heading: textElement("h5", "", "Shared problem"),
+    statement: formula(
+      [
+        mathIdentifier("y"),
+        mathOperator("′"),
+        mathOperator("="),
+        mathOperator("−"),
+        mathIdentifier("y"),
+      ],
+      "y prime equals negative y",
+      "phase2-compare-problem"
+    ),
+    parameters: [{ label: "Endpoint", value: "t = 5" }],
+  });
+  const comparison = createPrimaryResult({
+    eyebrow: textElement("p", "", "Compare · Output"),
+    heading: textElement("h4", "", "Two methods, one problem"),
+    status: textElement("p", "", "Current comparison"),
+    problemContext: compareProblem,
+    primaryAnswer: {
+      label: textElement("p", "", "Forward Euler"),
+      content: formula(
+        mathNumberLiteral("0.32768"),
+        "Forward Euler answer 0.32768",
+        "phase2-compare-euler"
+      ),
+    },
+    comparisonAnswer: {
+      label: textElement("p", "", "Runge–Kutta 4"),
+      content: formula(
+        mathNumberLiteral("0.36788"),
+        "Runge Kutta 4 answer 0.36788",
+        "phase2-compare-rk4"
+      ),
+    },
+  });
+  const variants = document.createElement("div");
+  variants.className = "presentation-phase-two-result-grid";
+  variants.append(odeResult, comparison);
+  section.append(linearResult, variants);
+  return section;
+}
+
+function createChartPlaceholder(): HTMLElement {
+  const figure = document.createElement("figure");
+  figure.className = "presentation-authored-chart";
+  figure.setAttribute("aria-label", "Authored maximum-error chart frame");
+  const plot = document.createElement("div");
+  plot.className = "presentation-authored-chart-plot";
+  plot.setAttribute("aria-hidden", "true");
+  for (const height of ["34%", "52%", "73%", "88%"] as const) {
+    const point = document.createElement("span");
+    point.style.setProperty("--fixture-point-height", height);
+    plot.append(point);
+  }
+  figure.append(
+    textElement("figcaption", "", "Maximum error decreases under refinement"),
+    plot
+  );
+  return figure;
+}
+
+function createPhaseTwoEvidence(): HTMLElement {
+  const section = document.createElement("section");
+  section.className = "presentation-phase-two-section";
+  section.append(
+    phaseTwoSpecimenHeading(
+      "P2.4 · Evidence",
+      "Evidence levels",
+      "Summary, standard, and advanced evidence have deliberately different authority."
+    )
+  );
+  const evidence = document.createElement("div");
+  evidence.className = "presentation-phase-two-evidence-grid";
+  evidence.append(
+    createEvidenceBlock({
+      level: "summary",
+      heading: textElement("h4", "", "Residual check"),
+      lead: textElement(
+        "p",
+        "",
+        "The stored residual is near machine precision for this snapshot."
+      ),
+      formulas: [
+        formula(
+          [
+            mathIdentifier("r"),
+            mathOperator("="),
+            mathIdentifier("b"),
+            mathOperator("−"),
+            mathIdentifier("A"),
+            xHat(),
+          ],
+          "r equals b minus A times x hat",
+          "phase2-residual-formula"
+        ),
+      ],
+    }),
+    createEvidenceBlock({
+      level: "standard",
+      heading: textElement("h4", "", "ODE method evidence"),
+      lead: textElement(
+        "p",
+        "",
+        "A static chart frame and formula show where domain-owned evidence fits."
+      ),
+      formulas: [
+        formula(
+          [
+            mathSubscript(mathIdentifier("u"), mathRow([mathIdentifier("n"), mathOperator("+"), mathNumberLiteral("1")])),
+            mathOperator("="),
+            mathSubscript(mathIdentifier("u"), mathIdentifier("n")),
+            mathOperator("+"),
+            mathIdentifier("h"),
+            mathIdentifier("f"),
+            mathOperator("("),
+            mathSubscript(mathIdentifier("t"), mathIdentifier("n")),
+            mathOperator(","),
+            mathSubscript(mathIdentifier("u"), mathIdentifier("n")),
+            mathOperator(")"),
+          ],
+          "u sub n plus 1 equals u sub n plus h times f of t sub n and u sub n",
+          "phase2-ode-method-evidence"
+        ),
+      ],
+      chart: createChartPlaceholder(),
+    }),
+    createEvidenceBlock({
+      level: "advanced",
+      heading: textElement("h4", "", "Factorization evidence"),
+      lead: textElement(
+        "p",
+        "",
+        "P, L, and U support the answer without competing with it."
+      ),
+      formulas: [
+        formula(
+          [
+            mathIdentifier("P"),
+            mathIdentifier("A"),
+            mathOperator("="),
+            mathIdentifier("L"),
+            mathIdentifier("U"),
+          ],
+          "P A equals L U",
+          "phase2-factorization-evidence"
+        ),
+      ],
+      advancedDetails: createAdvancedDetails({
+        summary: "Factor detail",
+        content: [
+          textElement(
+            "p",
+            "",
+            "Matrices remain authored mathematical objects, not a generic table grid."
+          ),
+        ],
+      }),
+    })
+  );
+  section.append(evidence);
+  return section;
+}
+
+function createPhaseTwoNumericalTable(): HTMLElement {
+  const section = document.createElement("section");
+  section.className = "presentation-phase-two-section";
+  section.append(
+    phaseTwoSpecimenHeading(
+      "P2.5 · Tabular evidence",
+      "Numerical Table",
+      "Real headers and local containment preserve wide numerical relationships."
+    ),
+    createNumericalTable({
+      caption: "ODE refinement evidence",
+      rowHeader: "Level",
+      columns: [
+        { label: "Step size", numeric: true },
+        { label: "Final approximation", numeric: true },
+        { label: "Final-time error", numeric: true },
+        { label: "Observed order", numeric: true },
+      ],
+      rows: [
+        { label: "0", cells: ["0.2", "0.32768", "0.04020", "—"] },
+        { label: "1", cells: ["0.1", "0.34868", "0.01920", "1.07"] },
+        {
+          label: "2",
+          cells: [
+            "0.05",
+            "0.35849",
+            createNativeMath(
+              mathNumber(9.39e-3, "diagnostic"),
+              "9.39 times ten to the minus 3",
+              { dataMath: "phase2-table-error" }
+            ),
+            "1.03",
+          ],
+        },
+      ],
+    })
+  );
+  return section;
+}
+
+function createPhaseTwoAdvancedDetails(): HTMLElement {
+  const section = document.createElement("section");
+  section.className = "presentation-phase-two-section";
+  section.append(
+    phaseTwoSpecimenHeading(
+      "P2.6 · Disclosure",
+      "Advanced Details",
+      "Assumptions and safeguards remain available without hiding the main result."
+    ),
+    createAdvancedDetails({
+      summary: "Solver safeguard details",
+      content: [
+        textElement(
+          "p",
+          "",
+          "The pivot threshold is an engineering safeguard scaled by the original matrix."
+        ),
+        textElement(
+          "p",
+          "",
+          "A rejected pivot stops the attempt without replacing a prior successful result."
+        ),
+      ],
+    })
+  );
+  return section;
+}
+
+function rowOperationFormula(): HTMLElement {
+  return formula(
+    [
+      mathSubscript(mathIdentifier("R"), mathNumberLiteral("2")),
+      mathOperator("−"),
+      mathFraction(mathNumberLiteral("1"), mathNumberLiteral("2")),
+      mathSubscript(mathIdentifier("R"), mathNumberLiteral("1")),
+      mathOperator("→"),
+      mathSubscript(mathIdentifier("R"), mathNumberLiteral("2")),
+    ],
+    "row two minus one half row one becomes row two",
+    "phase2-walkthrough-row-operation"
+  );
+}
+
+function createPhaseTwoWalkthrough(): HTMLElement {
+  const section = document.createElement("section");
+  section.className = "presentation-phase-two-section";
+  section.append(
+    phaseTwoSpecimenHeading(
+      "P2.7 · Ordered evidence",
+      "Computation Walkthrough shell",
+      "The shell hosts authored static evidence and never reconstructs a numerical sequence."
+    )
+  );
+  const shell = createComputationWalkthroughShell({
+    heading: textElement("h4", "", "Three compatible computation shapes"),
+    purpose: textElement(
+      "p",
+      "",
+      "Each phase preserves source, operation, and target order without motion."
+    ),
+    phases: [
+      {
+        heading: textElement("h5", "", "Linear Systems · elimination"),
+        steps: [
+          {
+            heading: textElement("h6", "", "Eliminate the entry below the pivot"),
+            corridor: {
+              source: formula(
+                matrix([
+                  [2, 1],
+                  [1, 3],
+                ]),
+                "matrix before elimination",
+                "phase2-walkthrough-linear-before"
+              ),
+              operation: rowOperationFormula(),
+              target: formula(
+                matrix([
+                  [2, 1],
+                  [0, 2.5],
+                ]),
+                "matrix after elimination",
+                "phase2-walkthrough-linear-after"
+              ),
+            },
+          },
+        ],
+      },
+      {
+        heading: textElement("h5", "", "ODE · one time step"),
+        steps: [
+          {
+            heading: textElement("h6", "", "Advance from one stored time level"),
+            corridor: {
+              source: formula(
+                mathSubscript(mathIdentifier("u"), mathIdentifier("n")),
+                "u sub n",
+                "phase2-walkthrough-ode-before"
+              ),
+              operation: formula(
+                [
+                  mathOperator("+"),
+                  mathIdentifier("h"),
+                  mathIdentifier("f"),
+                  mathOperator("("),
+                  mathSubscript(mathIdentifier("t"), mathIdentifier("n")),
+                  mathOperator(","),
+                  mathSubscript(mathIdentifier("u"), mathIdentifier("n")),
+                  mathOperator(")"),
+                ],
+                "add h times f of t sub n and u sub n",
+                "phase2-walkthrough-ode-operation"
+              ),
+              target: formula(
+                mathSubscript(
+                  mathIdentifier("u"),
+                  mathRow([
+                    mathIdentifier("n"),
+                    mathOperator("+"),
+                    mathNumberLiteral("1"),
+                  ])
+                ),
+                "u sub n plus 1",
+                "phase2-walkthrough-ode-after"
+              ),
+            },
+          },
+        ],
+      },
+      {
+        heading: textElement("h5", "", "Future PDE · conceptual grid step"),
+        steps: [
+          {
+            heading: textElement("h6", "", "Apply an authored stencil relationship"),
+            corridor: {
+              source: formula(
+                mathSuperscript(mathIdentifier("u"), mathIdentifier("n")),
+                "u at time level n",
+                "phase2-walkthrough-pde-before"
+              ),
+              operation: formula(
+                [
+                  mathIdentifier("Δ"),
+                  mathIdentifier("t"),
+                  mathIdentifier("L"),
+                  mathOperator("("),
+                  mathSuperscript(mathIdentifier("u"), mathIdentifier("n")),
+                  mathOperator(")"),
+                ],
+                "delta t times L of u at time level n",
+                "phase2-walkthrough-pde-operation"
+              ),
+              target: formula(
+                mathSuperscript(
+                  mathIdentifier("u"),
+                  mathRow([
+                    mathIdentifier("n"),
+                    mathOperator("+"),
+                    mathNumberLiteral("1"),
+                  ])
+                ),
+                "u at time level n plus 1",
+                "phase2-walkthrough-pde-after"
+              ),
+            },
+          },
+        ],
+      },
+    ],
+    completionEvidence: textElement(
+      "p",
+      "",
+      "Static evidence complete · no Replay or motion controller required."
+    ),
+  });
+  section.append(shell);
+  return section;
+}
+
+function createPhaseTwoFixture(): HTMLElement {
+  const phase = document.createElement("section");
+  phase.className = "presentation-phase-two";
+  phase.setAttribute("aria-labelledby", "presentation-phase-two-title");
+  const header = document.createElement("header");
+  header.className = "presentation-phase-two-header";
+  header.append(
+    textElement("p", "presentation-eyebrow", "Authored compositional fixture"),
+    Object.assign(
+      textElement("h2", "presentation-stage-title", "Phase 2 · Content hierarchy"),
+      { id: "presentation-phase-two-title" }
+    ),
+    textElement(
+      "p",
+      "presentation-supporting",
+      "Context orients, teaching explains, the result answers, evidence supports, and advanced detail recedes."
+    )
+  );
+  phase.append(
+    header,
+    createPhaseTwoProblemContexts(),
+    createPhaseTwoTeaching(),
+    createPhaseTwoPrimaryResults(),
+    createPhaseTwoEvidence(),
+    createPhaseTwoNumericalTable(),
+    createPhaseTwoAdvancedDetails(),
+    createPhaseTwoWalkthrough()
+  );
+  return phase;
+}
+
 function createStatusAndControls(): HTMLElement {
   const section = document.createElement("section");
   section.className = "presentation-fixture-section";
@@ -438,7 +1232,8 @@ export function createPresentationSystemRoute(): RouteModule {
         createFoundations(),
         createResultSpecimen(),
         createMeaningSurfaces(),
-        createStatusAndControls()
+        createStatusAndControls(),
+        createPhaseTwoFixture()
       );
       target.replaceChildren(page);
 

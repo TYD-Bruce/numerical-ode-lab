@@ -602,6 +602,106 @@
   padding-inline: 0.15em;
 }
 
+.presentation-phase-two {
+  display: grid;
+  gap: var(--lab-space-stage);
+  padding-top: var(--lab-space-header);
+  border-top: 1px solid var(--lab-border-strong);
+}
+
+.presentation-phase-two-header {
+  display: grid;
+  max-width: var(--lab-readable-measure);
+  gap: var(--space-2);
+  padding-inline-start: var(--space-4);
+  border-inline-start: var(--space-1) solid var(--lab-stage-output-accent);
+}
+
+.presentation-phase-two-section {
+  display: grid;
+  gap: var(--lab-space-block);
+  min-width: 0;
+}
+
+.presentation-phase-two-context-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--lab-space-block);
+  padding-block: var(--space-2);
+  border-block: 1px solid var(--lab-border-quiet);
+}
+
+.presentation-phase-two-context-grid .lab-problem-context {
+  align-content: start;
+}
+
+.presentation-phase-two-teaching-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(16rem, 0.65fr);
+  align-items: start;
+  gap: var(--lab-space-section);
+}
+
+.presentation-phase-two-result-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: var(--lab-space-block);
+}
+
+.presentation-phase-two-result-grid .lab-primary-result {
+  padding: var(--space-4);
+  border-inline-start-width: var(--space-1);
+  box-shadow: none;
+}
+
+.presentation-phase-two-result-grid .lab-primary-result-heading {
+  font-size: var(--lab-type-section-title-size);
+}
+
+.presentation-phase-two-evidence-grid {
+  display: grid;
+  grid-template-columns: minmax(13rem, 0.75fr) minmax(18rem, 1.4fr) minmax(13rem, 0.85fr);
+  align-items: start;
+  gap: var(--lab-space-block);
+}
+
+.presentation-authored-chart {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.presentation-authored-chart figcaption {
+  color: var(--color-text-secondary);
+  font-size: var(--lab-type-supporting-size);
+}
+
+.presentation-authored-chart-plot {
+  display: flex;
+  height: 8rem;
+  align-items: end;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-inline-start: 1px solid var(--lab-border-strong);
+  border-bottom: 1px solid var(--lab-border-strong);
+}
+
+.presentation-authored-chart-plot span {
+  width: 100%;
+  height: var(--fixture-point-height);
+  border-top: var(--space-1) solid var(--lab-stage-output-accent);
+  background: var(--lab-stage-output-surface);
+}
+
+.presentation-phase-two .lab-advanced-details {
+  max-width: var(--lab-readable-measure);
+}
+
+.presentation-phase-two .lab-computation-walkthrough-shell {
+  max-width: 100%;
+}
+
 @media (max-width: 64rem) {
   .presentation-stage-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -610,6 +710,11 @@
   .presentation-meaning-grid {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-3);
+  }
+
+  .presentation-phase-two-context-grid,
+  .presentation-phase-two-evidence-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -651,6 +756,11 @@
   .presentation-fields {
     grid-template-columns: minmax(0, 1fr);
   }
+
+  .presentation-phase-two-teaching-grid,
+  .presentation-phase-two-result-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 @media (max-width: 36rem) {
@@ -671,6 +781,10 @@
   .presentation-type-row {
     gap: var(--space-1);
   }
+
+  .presentation-phase-two-header {
+    padding-inline-start: var(--space-3);
+  }
 }
 
 @media (forced-colors: active) {
@@ -679,7 +793,9 @@
   .presentation-surface,
   .presentation-control-panel,
   .presentation-metrics > div,
-  .presentation-status {
+  .presentation-status,
+  .presentation-phase-two-header,
+  .presentation-authored-chart-plot {
     border-color: CanvasText;
     background: Canvas;
     color: CanvasText;

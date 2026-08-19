@@ -1,4 +1,8 @@
 export type LabStageRole = "method" | "data" | "output" | "analysis";
+export type WorkflowPresentationState =
+  | "current"
+  | "available"
+  | "unavailable";
 
 export interface WorkflowStepDescriptor {
   readonly key: string;
@@ -71,11 +75,18 @@ export function createWorkflowNavigation(
     const item = document.createElement("li");
     item.className = "lab-workflow-item";
     item.dataset.stageRole = step.role;
+    const presentationState: WorkflowPresentationState = step.current
+      ? "current"
+      : available
+        ? "available"
+        : "unavailable";
+    item.dataset.workflowState = presentationState;
     const control = document.createElement("button");
     control.type = "button";
-    control.className = "lab-workflow-step";
+    control.className = `lab-workflow-step lab-workflow-step-${presentationState}`;
     control.dataset.workflowStep = step.key;
     control.dataset.stageRole = step.role;
+    control.dataset.workflowState = presentationState;
     control.disabled = !available;
     if (step.current) {
       control.setAttribute("aria-current", "step");
