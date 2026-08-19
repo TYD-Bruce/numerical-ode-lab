@@ -11,7 +11,7 @@ import {
 } from "./supportingElements";
 import { createTeachingBlock } from "./teachingBlock";
 
-function heading(level: 2 | 3 | 4 | 5, text: string): HTMLHeadingElement {
+function heading(level: 2 | 3 | 4 | 5 | 6, text: string): HTMLHeadingElement {
   const node = document.createElement(`h${level}`);
   node.textContent = text;
   return node;
