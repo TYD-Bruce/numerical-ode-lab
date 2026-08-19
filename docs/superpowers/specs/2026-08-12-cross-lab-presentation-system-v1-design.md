@@ -1,6 +1,6 @@
 # Cross-Lab Presentation System v1 Design
 
-**Status:** Maintainer approved at `3b77f7133a95bef855c2eb3e3a69db37e16f1e46`; Phase 0 Maintainer accepted; Phase 1 separately authorized and implemented as an audit candidate at `d0c77f84ce444afbe418adcbdd94cfca18e1e32b`; Phase 2+ unauthorized
+**Status:** Maintainer approved at `3b77f7133a95bef855c2eb3e3a69db37e16f1e46`; Phase 0 Maintainer accepted; Phase 1 Maintainer accepted at `881795715799cde4d41f7bd933303bea4db1f8a8`; Phase 2 authorized and implemented as a review candidate at `6add7174fb160cf4e377664d486905152583e4c2`; Phase 3+ unauthorized
 
 **Date:** 2026-08-12
 
@@ -8,7 +8,7 @@
 
 **Starting authority:** Linear Systems Teaching v2 maintainer-accepted at `484fc9153de33be7949e82b29386c94fe63d19c8` (tree `509d245adb745d272e2a5c8185fb678b6e15009d`)
 
-**Next gate:** independent Cross-Lab Presentation Phase 1 shell/workflow audit, then Maintainer visual review
+**Next gate:** Maintainer visual review of the Phase 2 primitive fixture, then independent primitive/boundary audit before Phase 3
 
 ## 1. Decision summary
 

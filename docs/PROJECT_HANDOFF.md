@@ -2,7 +2,211 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
-## Cross-Lab Presentation Sync Phase 1 — shell and workflow audit candidate — 2026-08-12
+## Cross-Lab Presentation Sync Phase 2 — content-hierarchy review candidate — 2026-08-19
+
+### Authorization, Phase 1 acceptance, and result
+
+Work started from clean `main` at the Maintainer-accepted Phase 1 final HEAD
+`881795715799cde4d41f7bd933303bea4db1f8a8` (tree
+`5a64a6973ecddf710cad51c01220f7cacd646bdb`). The independent Phase 1 audit
+passed, its full verification passed 93 files / 1,249 tests, and the
+Maintainer completed visual review. Cross-Lab Presentation Sync Phase 1 is
+therefore **MAINTAINER ACCEPTED**.
+
+That acceptance carried exactly one non-blocking P3,
+`PHASE1-VIS-01`, for the non-current workflow visual hierarchy. The
+Maintainer separately authorized Phase 2 plus that one correction. Phase 2 is
+implemented and locally verified as a review candidate at implementation
+commit `6add7174fb160cf4e377664d486905152583e4c2` (tree
+`3f7dd9c49106c2e4631c6e01dde789cb051a4178`). Phase 2 is not Maintainer
+accepted.
+
+### Shared primitive ownership and contracts
+
+The following presentation-only source now exists under
+`frontend/src/components/lab-presentation/`:
+
+- `problemContext.ts` composes a labelled authoritative problem snapshot from
+  an authored heading, mathematical statement, compact parameters,
+  provenance, and optional visible stale qualification;
+- `teachingBlock.ts` composes optional eyebrow, lead, authored mathematics,
+  definition list, ordered steps, examples, limitation, and subordinate
+  detail without forcing a card for compact teaching;
+- `primaryResult.ts` places visible current/stale text and optional problem
+  context before an explicitly labelled main answer, then optional comparison,
+  metrics, and visualization evidence in content-driven height;
+- `evidenceBlock.ts` supports exactly `summary`, `standard`, and `advanced`
+  evidence levels with authored formula, metric, chart, table, status, and
+  disclosure slots;
+- `supportingElements.ts` now also owns a semantic `NumericalTable` with
+  caption, scoped column/row headers, tabular numeric cells, and one local
+  overflow frame, plus native closed `AdvancedDetails`/`summary` composition;
+- `computationWalkthroughShell.ts` owns ordered authored phases and steps,
+  visible Before/Operation/After source order, optional subordinate detail,
+  failure boundary, and completion evidence. It neither reconstructs nor
+  invents numerical operations and requires no motion or Replay.
+
+All supplied nodes are appended by identity. A mathematical DOM tree has one
+parent; if two accessible owners need the same mathematical meaning, the
+domain caller must author a fresh visual tree. Shared code does not clone,
+serialize, reparse, evaluate, or infer mathematical meaning. It imports no
+Router, Store, Lab session/result type, numerical package, solver, preset,
+Chart.js, MathLive, Compute Engine, Tutor, Glossary, Computation Trace,
+domain math renderer, convergence controller, or Motion controller.
+
+Accessibility contracts are structural: every context/result/evidence/
+walkthrough region is labelled by a native heading; Teaching retains native
+`dl`/`ol`; Primary Result gives each answer its own visible label;
+NumericalTable uses native table semantics; walkthrough phases and steps are
+native ordered lists; AdvancedDetails is native `details`/`summary`; and no
+automatic live region was introduced. The authored fixture contains 29
+accessible formula owners, each with exactly one direct `aria-hidden="true"`
+MathML visual tree, zero unowned MathML trees, and zero duplicate visual
+owners.
+
+### Fixture proof and hierarchy verdict
+
+The existing DEV-only `/__dev/presentation-system` route now has one clearly
+separated **Phase 2 · Content hierarchy** area. It uses static authored data
+only and demonstrates:
+
+- three standalone Problem Contexts for Linear Systems, ODE, and a conceptual
+  future PDE, plus one context inside each of three Primary Results;
+- one full and one compact Teaching Block;
+- dominant Linear Systems and ODE results plus a two-answer Compare result;
+- exactly three Evidence Blocks: residual summary, ODE formula/chart standard
+  evidence, and subordinate P/L/U advanced evidence;
+- one semantic ODE refinement table and three closed advanced disclosures;
+- one walkthrough with Linear Systems elimination, an ODE step, and a
+  conceptual future-PDE stencil step. Every corridor is source, operation,
+  target in that DOM order and the static evidence is complete without
+  animation.
+
+The hierarchy verdict is clean: ProblemContext orients, Teaching reads as
+content rather than stacked cards, PrimaryResult has the strongest Output
+surface, Evidence supports without competing, and AdvancedDetails recedes.
+The fixture uses the accepted Method blue, Data teal, Output violet, Analysis
+amber, typography, surface, border, spacing, radius, and status tokens. It
+adds no palette, font, gradient, animation, framework, or dependency.
+
+### PHASE1-VIS-01 correction and real-Lab regression
+
+`WorkflowNavigation` now exposes only the accepted
+`current / available / unavailable` state vocabulary on each item and native
+button. Current retains the strongest role-specific tint/rail/label weight;
+available is a neutral raised interactive control with calmer border/surface
+and bounded hover/focus; unavailable uses lower contrast, dashed borders, and
+native `disabled`. Existing `aria-current="step"` and availability callbacks
+are unchanged. No `completed`, `visited`, or `done` state, class, or history
+meaning was added.
+
+Fresh browser runs verify both real workflows. ODE begins Method current, Data
+available, Output unavailable; Data makes Method available and Data current;
+a successful Run makes Method/Data available and Output current. Linear
+Systems begins Method current, Data available, Output/Diagnostics unavailable;
+Data becomes current; a successful Run makes Output current and Diagnostics
+available; activating Diagnostics makes it current while Method/Data/Output
+remain available. The smoke changed no inner ODE or Linear Systems markup,
+copy, mathematics, result authority, lifecycle, or numerical behavior.
+
+### Browser and visual evidence
+
+The Phase 2 fixture passed fresh in-app browser review at 1440 × 900 Light and
+Dark, 390 × 844 Light and Dark, and 320-pixel stress. At every width the page
+and Phase 2 root have equal scroll/client widths. Primary results remain the
+dominant surface, metrics wrap, the context/teaching/evidence grids collapse
+without excessive nesting, and walkthrough corridors stack in visible
+Before/Operation/After order. At 320, the 663-pixel numerical table scrolls
+inside its 271-pixel frame and the one remaining wide formula uses local
+`overflow-x: auto`; neither widens the page. Light and Dark use equivalent
+hierarchy, all details begin closed, and browser warning/error logs are empty.
+
+Real workflow visual evidence covers desktop Light plus ODE mobile Dark at
+390. Current remains unmistakable in all four role colors, available remains
+interactive but secondary, and unavailable remains visibly disabled. The
+external, uncommitted review packet is:
+
+`C:/Users/bruce/.codex/visualizations/2026/08/12/019ff741-984c-7e42-967c-d757d759589a/phase2-content-hierarchy`
+
+It contains the required `phase2-context-result-light/dark`,
+`phase2-teaching-evidence-light/dark`, `phase2-walkthrough-desktop`,
+`phase2-mobile-light/dark`, `phase2-320`, `phase2-workflow-ode`, and
+`phase2-workflow-ls` PNG files.
+
+### Tests, Production exclusion, and bundle evidence
+
+The test-first red gate failed only on the deliberately missing Phase 2
+modules, fixture content, and workflow state metadata. The final focused gate
+passes 5 files / 44 tests. It covers primitive structure, node identity,
+current/stale text, explicit answer labels, all three evidence levels,
+semantic table/disclosure contracts, ordered walkthrough/failure/completion
+structure, prohibited imports/framework/cloning, shared route ownership, and
+DEV Production exclusion.
+
+The complete `npm.cmd run verify` passes 94 files / 1,262 tests, frontend/
+numerics/contracts and backend/API typechecks, import boundaries for four
+owners plus the Vercel adapter, and the Production build. The build transforms
+104 modules. Exact raw/gzip metrics are:
+
+| Asset | Phase 1 accepted | Phase 2 candidate |
+|---|---:|---:|
+| Entry JS | 56.73 / 17.49 kB | 56.73 / 17.48 kB |
+| Platform CSS | 29.51 / 5.39 kB | 29.51 / 5.39 kB |
+| Shared Lab JS | 4.41 / 1.54 kB | 4.54 / 1.59 kB |
+| Shared Lab CSS | 7.62 / 1.67 kB | 18.46 / 3.22 kB |
+| ODE JS | 295.53 / 94.57 kB | 295.53 / 94.57 kB |
+| ODE CSS | 14.71 / 3.46 kB | 14.71 / 3.46 kB |
+| Linear Systems JS | 71.01 / 21.15 kB | 71.01 / 21.15 kB |
+| Linear Systems CSS | 28.08 / 5.05 kB | 28.08 / 5.05 kB |
+
+The workflow metadata adds only 0.13/0.05 kB raw/gzip to the shared Lab JS.
+Phase 2 shared CSS adds 10.84/1.55 kB raw/gzip to the existing Lab-only lazy
+stylesheet; it does not enter the platform entry. Static graph tests prove the
+new Phase 2 TypeScript modules are absent from the entry, ODE, and Linear
+Systems route graphs until later migration. The Production manifest/assets
+contain no Presentation System fixture module/style, Phase 2 heading, future
+PDE fixture copy, or fixture selector. `git diff --check` passes.
+
+### Problems, resolutions, durable rules, and stop gate
+
+The first 320-pixel browser pass found three long fixture formulas painting a
+few pixels beyond their primitive slot while the document itself remained
+contained. Root cause was that the new primitive math slots had `max-width`
+but did not consistently own local horizontal overflow. The correction adds
+local overflow only to Phase 2 problem-statement, primary-answer,
+evidence-formula, and walkthrough-corridor math owners. Recheck leaves one
+intentionally wide formula locally scrollable and page overflow at zero. No
+other visual, structural, accessibility, or boundary finding remains; current
+severity is `P0 = P1 = P2 = P3 = 0`.
+
+Durable rules:
+
+1. Shared presentation primitives accept domain-authored content and never
+   infer mathematical meaning.
+2. Supplied mathematical DOM nodes have one parent; composition appends by
+   identity, and callers author fresh trees for additional owners.
+3. `PrimaryResult` dominates; `ProblemContext` orients; `EvidenceBlock`
+   supports; `AdvancedDetails` stays subordinate.
+4. Workflow vocabulary remains `current / available / unavailable` unless a
+   domain explicitly owns another semantic state; presentation never invents
+   completed history.
+5. Phase 2 primitives are proven through authored fixtures before domain Lab
+   migration.
+
+There is no real ODE or Linear Systems inner migration, AnalysisSurface
+production implementation, Phase 3/4 work, numerical/Trace/session/Teaching
+v2/native-MathML architecture change, Motion, Tutor, Glossary, PDE,
+dependency, push, Preview, or Production deployment. The exact next gate is
+**Maintainer visual review of the Phase 2 primitive fixture**, followed by
+**independent primitive/boundary audit before Phase 3**. Stop before Phase 3.
+The documentation commit containing this section is reported externally
+because a commit cannot self-reference its own final SHA/tree.
+
+## Cross-Lab Presentation Sync Phase 1 — historical shell/workflow audit candidate — 2026-08-12
+
+*This section preserves the pre-audit implementation checkpoint. The Phase 2
+section above records the subsequent Phase 1 Maintainer acceptance and
+supersedes its former stop-gate language.*
 
 ### Authorization, result, and stop gate
 

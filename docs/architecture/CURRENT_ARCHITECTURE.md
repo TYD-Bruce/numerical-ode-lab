@@ -29,8 +29,10 @@ Browser ownership is organized as:
   and Glossary Hosts, modal/focus ownership, theme, scroll, and lifecycle;
 - `frontend/src/pages/`: Home, About, module overviews, and Not Found;
 - `frontend/src/components/lab-presentation/`: Lab-shared lazy `LabShell`/
-  `LabHeader`, `WorkflowNavigation`, `StageSection`, and outer action-role
-  presentation imported only by complete-Lab route graphs;
+  `LabHeader`, `WorkflowNavigation`, `StageSection`, outer action-role
+  presentation, and the implemented Phase 2 `ProblemContext`, `TeachingBlock`,
+  `PrimaryResult`, `EvidenceBlock`, `ComputationWalkthroughShell`, semantic
+  numerical-table, and native advanced-disclosure source;
 - `frontend/src/labs/ode/`: the mountable Initial Value Problems Lab, ODE
   workflow/session state, Convergence presentation, presets, and bindings;
 - `frontend/src/labs/linear-algebra/`: the pure editable session, complete
@@ -124,6 +126,7 @@ first valid Glossary request
 
 development only
   -> dynamic Glossary controls and Playground
+  -> dynamic Presentation System fixture with authored Phase 2 content
 ```
 
 Public routes are `/`, `/about`, `/ode`, `/ode/initial-value-problems`,
@@ -137,6 +140,13 @@ chunk. The platform entry does not import that chunk. Shared presentation owns
 only semantic DOM composition, role styling, and contained workflow reveal;
 each Lab still owns state, availability, callbacks, numerical content, live
 regions, platform bindings, and disposal.
+
+The Phase 2 primitive TypeScript modules exist as real shared source but are
+not yet imported by either complete-Lab route. Their authored composition is
+proved only by the DEV-only Presentation System fixture, which remains absent
+from Production route matching and emitted assets. Phase 3/4 will separately
+govern real ODE and Linear Systems inner migration. Phase 2 does not change
+product mathematics, numerical/session/trace ownership, or domain content.
 
 The route module registry, Tutor Host, Glossary Host, and editable-math loader
 retain distinct dynamic imports. Package extraction does not create an eager

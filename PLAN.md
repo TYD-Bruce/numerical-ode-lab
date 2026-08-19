@@ -2,9 +2,9 @@
 
 ## Current status
 
-**Active milestone: Cross-Lab Presentation Sync — Phase 0 Maintainer accepted;
-Phase 1 shared shell/workflow implementation is locally verified and awaiting
-independent audit.**
+**Active milestone: Cross-Lab Presentation Sync — Phases 0 and 1 Maintainer
+accepted; Phase 2 content-hierarchy primitives are implemented and locally
+verified as a review candidate.**
 
 Linear Systems Teaching v2 is **MAINTAINER ACCEPTED** at commit
 `484fc9153de33be7949e82b29386c94fe63d19c8` (tree
@@ -21,8 +21,10 @@ and
 at commit `3b77f7133a95bef855c2eb3e3a69db37e16f1e46` (tree
 `95908ac5c0a773675bf237d3d49679106a4091f7`). Phase 0 is **MAINTAINER
 ACCEPTED** at final HEAD `0c392e218dd7006d43811ddc4d7401a0ccb7c495`
-(tree `3d0bc052f9a2e58b50aeb67b52ddb36f10dcd994`), and Phase 1 was separately
-authorized. The authorities define a best-of-both presentation architecture
+(tree `3d0bc052f9a2e58b50aeb67b52ddb36f10dcd994`). Phase 1 is **MAINTAINER
+ACCEPTED** at final HEAD `881795715799cde4d41f7bd933303bea4db1f8a8`
+(tree `5a64a6973ecddf710cad51c01220f7cacd646bdb`) after independent audit and
+Maintainer visual review. The authorities define a best-of-both presentation architecture
 for the Initial Value Problems and Linear Systems Labs, with domain-neutral compatibility for a
 future PDE Lab. The design selects exactly ten top-level primitives: `LabShell`,
 `WorkflowNavigation`, `StageSection`, `ProblemContext`, `TeachingBlock`,
@@ -42,7 +44,7 @@ absent from Production route matching, manifest/assets, styles, and marker
 copy. Browser review passes 1440 × 900, 390 × 844, 320-pixel stress, Light/
 Dark, and focus checks without page overflow or console warning/error.
 
-Phase 1 is implemented as an audit candidate in two local commits:
+Phase 1 was implemented in two local commits:
 `48eef685aab3b31e7e206befde5944c96308f16a` adds the Lab-shared lazy
 presentation source, and `d0c77f84ce444afbe418adcbdd94cfca18e1e32b`
 (tree `bc6131880e0a57388c45586c4aea948d8a572835`) migrates only the ODE and
@@ -52,6 +54,22 @@ the same `LabShell`/required `LabHeader`, variable native-button
 ODE retains three stages and derives reachability from its existing method and
 successful-output authority. Linear Systems retains four stages and maps its
 visible Diagnostics title to the shared Analysis presentation role.
+
+Its acceptance carried one non-blocking P3, `PHASE1-VIS-01`. Phase 2 closes
+that finding without changing workflow semantics: `current`, `available`, and
+`unavailable` now have a stable visual hierarchy, native disabled and
+`aria-current="step"` behavior remain unchanged, and presentation does not
+invent completed/visited history.
+
+Phase 2 implementation commit `6add7174fb160cf4e377664d486905152583e4c2`
+(tree `3f7dd9c49106c2e4631c6e01dde789cb051a4178`) adds the Lab-shared lazy
+`ProblemContext`, `TeachingBlock`, `PrimaryResult`, `EvidenceBlock`, and
+`ComputationWalkthroughShell` primitives plus semantic `NumericalTable` and
+native closed `AdvancedDetails` support. They accept domain-authored nodes by
+identity, infer no mathematical meaning, and are proven only through authored
+content on the extended DEV-only `/__dev/presentation-system` fixture. Their
+TypeScript modules are not yet imported by either real Lab; broad ODE and
+Linear Systems inner migration remains Phase 3/4 work.
 
 The design keeps ODE's exploration, presets, Compare, charts, Convergence,
 Tutor, and Glossary strengths; keeps Linear Systems Teaching v2's explicit
@@ -74,10 +92,9 @@ platform entry. Numerical behavior, Computation Trace, session schemas, MathML
 architecture, Motion, Tutor/Glossary feature logic, PDE, dependencies,
 deployment, and Production state are unchanged.
 
-The exact next gate is **independent Cross-Lab Presentation Phase 1
-shell/workflow audit**, followed by **Maintainer visual review**. Phase 2 and
-every later migration phase remain unauthorized; do not begin them, Motion,
-or Tutor.
+The exact next gate is **Maintainer visual review of the Phase 2 primitive
+fixture**, followed by **independent primitive/boundary audit before Phase 3**.
+Phase 3+ remains unauthorized; do not begin domain migration, Motion, or Tutor.
 
 ## Superseded Teaching v2 execution record
 

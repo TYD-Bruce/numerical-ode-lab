@@ -1,13 +1,13 @@
 # Cross-Lab Presentation System v1 Implementation Plan
 
-**Status:** Phase 0 Maintainer accepted; Phase 1 separately authorized and implemented as an audit candidate at `d0c77f84ce444afbe418adcbdd94cfca18e1e32b`; Phase 2+ unauthorized
+**Status:** Phase 0 Maintainer accepted; Phase 1 Maintainer accepted at `881795715799cde4d41f7bd933303bea4db1f8a8`; Phase 2 authorized and implemented as a review candidate at `6add7174fb160cf4e377664d486905152583e4c2`; Phase 3+ unauthorized
 
 **Design authority:**
 [`2026-08-12-cross-lab-presentation-system-v1-design.md`](../specs/2026-08-12-cross-lab-presentation-system-v1-design.md)
 
 **Starting implementation prerequisite:** Satisfied at design commit `3b77f7133a95bef855c2eb3e3a69db37e16f1e46`
 
-**Current gate:** Stop after Phase 1 for independent shell/workflow audit, then Maintainer visual review
+**Current gate:** Stop after Phase 2 for Maintainer visual review of the primitive fixture, then independent primitive/boundary audit before Phase 3
 
 ## 1. Objective and boundary
 
@@ -118,11 +118,12 @@ primitives.
 
 ## 5. Phase 1 — Lab shell, header, workflow, and stage
 
-**Execution status:** Separately authorized and implemented as an audit
-candidate at `d0c77f84ce444afbe418adcbdd94cfca18e1e32b` (tree
-`bc6131880e0a57388c45586c4aea948d8a572835`). The exact stop gate is the
-independent Cross-Lab Presentation Phase 1 shell/workflow audit followed by
-Maintainer visual review. Phase 2+ remains unauthorized.
+**Execution status:** Maintainer accepted at final Phase 1 HEAD
+`881795715799cde4d41f7bd933303bea4db1f8a8` (tree
+`5a64a6973ecddf710cad51c01220f7cacd646bdb`) after independent audit and
+Maintainer visual review. Its one non-blocking P3 workflow-hierarchy
+carry-forward is corrected in the Phase 2 candidate without adding a
+completed/visited state.
 
 ### Changes
 
@@ -171,9 +172,18 @@ Engine runtime.
 
 ### Stop gate
 
-Independent shell/workflow accessibility and lazy-boundary review.
+Satisfied by the independent shell/workflow audit and Maintainer visual
+acceptance recorded at final Phase 1 HEAD
+`881795715799cde4d41f7bd933303bea4db1f8a8`.
 
 ## 6. Phase 2 — context, teaching, result, evidence, and walkthrough primitives
+
+**Execution status:** Authorized and implemented as a review candidate at
+`6add7174fb160cf4e377664d486905152583e4c2` (tree
+`3f7dd9c49106c2e4631c6e01dde789cb051a4178`). The authored DEV fixture,
+structural/accessibility tests, real-Lab workflow-only smoke, lazy-boundary
+checks, and full verification pass. No real Lab inner presentation consumes
+the new TypeScript primitives yet.
 
 ### Changes
 
@@ -429,6 +439,6 @@ Implementation is complete only after Phase 7 acceptance and documentation
 updates accurately label it implemented and locally verified. Production
 remains unchanged until a separately authorized release/deployment task.
 
-Current exact next gate: **independent Cross-Lab Presentation Phase 1
-shell/workflow audit**, followed by **Maintainer visual review**. Stop before
-Phase 2.
+Current exact next gate: **Maintainer visual review of the Phase 2 primitive
+fixture**, followed by **independent primitive/boundary audit before Phase 3**.
+Stop before Phase 3.
