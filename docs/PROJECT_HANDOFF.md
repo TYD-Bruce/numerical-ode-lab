@@ -190,6 +190,106 @@ corrections are retained. The exact next gate remains **independent Phase 3
 ODE presentation / behavior-equivalence audit**, then **final Maintainer
 visual review**.
 
+### Phase 3 peer-alignment polish
+
+The Maintainer identified three peer groups whose semantic roles were already
+correct but whose visual baselines drifted with preceding copy or separate
+layout ownership. The bounded structural correction is implementation commit
+`31f9ccee3d1f9fcf67fd2b1bb80cf389dc55c1ee` (tree
+`91192bd4c82c859ec02354bbf08b88c7f0b3ff0d`). It preserves the accepted
+hierarchy, typography, copy, routes, status language, action priority,
+method-card content, and numerical behavior.
+
+Home module cards already stretched to one equal-height desktop grid row, but
+their children remained in normal block flow. `homePage.ts` now gives all
+three actions the same `.platform-module-card-action` owner, while
+`platform.css` makes `.platform-module-card` a content-driven flex column and
+settles that owner with `margin-top: auto`. No spacer, blank content,
+copy-specific margin, fixed card height, or PDE-only offset was introduced.
+At 1440 × 1000 in both Light and Dark, the Numerical ODE **Open Lab**,
+Numerical Linear Algebra **Open Lab**, and Numerical PDE **View roadmap**
+controls each measured top `819.17`, bottom `863.17`, height `44.00`, and
+vertical center `841.17` pixels inside equal `244.76`-pixel cards. At 390 and
+320 pixels the cards stack at their natural individual heights, retain a
+16-pixel description-to-action gap, and have no page-level overflow or added
+dead space. Primary Open Lab and secondary View roadmap styling, Available /
+Planned truth, link semantics, routes, and focus treatment are unchanged.
+
+The ODE header drift had two connected structural causes. `New experiment`
+was inside the shared LabHeader action group while the Platform Tutor launcher
+was rendered in a separate shell rail; at 390 pixels the launcher consequently
+appeared near the end of a 2,290-pixel page instead of in the header. In
+addition, legacy domain button classes could override the low-specificity
+shared action geometry. `LabHeader` now exposes its existing action group with
+`data-lab-header-actions`. `PlatformTutorHost` projects only its closed-state
+launcher into that owner when one exists, retains the rail for the loaded
+Tutor presentation and for non-LabHeader fallbacks, removes/recreates the
+launcher across open, close, suspend, disconnect, and dispose, and restores
+focus to the recreated launcher. The launcher remains a native primary button
+after the native secondary New experiment button. Shared
+`labPresentation.css` now owns header-action flex centering, 44-pixel minimum
+height, padding, and radius through `.lab-header-actions > .lab-action`; the
+old sticky launcher rule is limited to a direct rail fallback.
+
+At 1440 × 1000 in Light and Dark, both ODE actions measured top `157.79`,
+bottom `201.79`, height `44.00`, vertical center `179.79`, 10-pixel radius,
+8-pixel block padding, 24-pixel line height, and an intentional `8.00`-pixel
+gap. DOM order is exactly **New experiment**, then **Open AI Tutor**. At 390
+pixels both remain side-by-side with the same 44-pixel geometry and 8-pixel
+gap. At 320 pixels they wrap naturally in that source order at top `260.02`
+and `312.02`, remain 44 pixels high, and do not widen the page. Opening and
+closing the projected launcher is structurally tested, including focus return.
+The current Linear Systems Lab has no Tutor launcher; its bounded shared-style
+smoke retained the native secondary New experiment button at 44 pixels high,
+10-pixel radius, 8-pixel block padding, zero page overflow, and successful
+Cancel focus return. No Linear Systems source changed.
+
+ODE method cards already stretched naturally to each CSS Grid row, but their
+scope tags followed variable-length descriptions in normal flow. The existing
+shared card renderer now adds the common `.method-scope-tag` owner to every
+applicability tag. ODE CSS makes the method card a flex column and gives that
+tag owner `margin-top: auto`. There is no per-method class, fixed description
+height, universal row height, spacer, transform, absolute position, or copy
+change. At 1440 × 1000 in Light and Dark, row 1's four tags all measured top
+`810.68`, bottom `834.01`, height `23.33`; row 2's four tags all measured top
+`980.68`, bottom `1004.01`, height `23.33`. Row 1 cards remain naturally
+`186.67` pixels high and row 2 cards `154.00` pixels high. All eight names,
+order, descriptions, first-order text, Leap-Frog second-order text, native
+button semantics, selected state, click/keyboard behavior, Glossary
+annotations, and Compare behavior remain unchanged. The one bounded adjacent
+same-owner effect is beneficial: Compare's method-selection cards use this
+same renderer and therefore inherit the same durable tag-footer alignment; no
+additional surface was changed.
+
+Mobile browser review at 390 × 844 and 320 × 844 confirmed content-driven Home
+cards, equal and comfortable header actions, one-column method cards with each
+tag naturally below its own description, expected local workflow-rail
+scrolling, and zero page-level overflow. Desktop and mobile browser logs had
+zero warnings and zero errors. The external, uncommitted evidence directory is
+`C:/Users/bruce/.codex/visualizations/2026/08/12/019ff741-984c-7e42-967c-d757d759589a`
+and contains the `phase3-2-home-light.jpg`, `phase3-2-home-dark.jpg`,
+`phase3-2-ode-light.jpg`, `phase3-2-ode-dark.jpg`,
+`phase3-2-home-390-viewport.jpg`, `phase3-2-ode-390-viewport.jpg`,
+`phase3-2-methods-390-viewport.jpg`, `phase3-2-home-320-viewport.jpg`,
+`phase3-2-ode-320-viewport.jpg`, and
+`phase3-2-linear-systems-smoke.jpg` evidence.
+
+Focused verification passed seven files / 81 tests across Home, shared Lab
+presentation, Platform Tutor Host placement/lifecycle, ODE route/lifecycle/New
+experiment, and Linear Systems. Import boundaries passed. The required full
+`npm.cmd run verify` passed 95 files / 1,271 tests, all
+frontend/numerics/contracts/backend typechecks, and the 108-module Production
+build; `git diff --check` passed. No numerical, expression, session, Output,
+Compare, Convergence, Motion, Tutor-feature, Glossary, PDE, dependency,
+deployment, or Phase 4/5 change was made.
+
+Phase 3 remains an implemented and locally verified candidate and is not
+self-declared Maintainer accepted. Current cross-milestone severity remains
+`P0 = 0`, `P1 = 0`, `P2 = 0`, `P3 = 1`; the sole P3 is still
+`PHASE2-P3-04`, open and Phase 4-owned. The exact next gate remains
+**independent Phase 3 ODE presentation / behavior-equivalence audit**, then
+**final Maintainer visual review**.
+
 ### ODE presentation mapping and domain authority
 
 The real Initial Value Problems Lab now consumes the accepted Phase 2 shared
