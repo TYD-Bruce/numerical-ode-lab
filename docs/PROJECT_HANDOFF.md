@@ -40,6 +40,59 @@ ARIA-target proof is `4c9720b811e2001683e25ff733052b77c2dca67a`
 (tree `874b07332625c1f5d2be6fed38c86d5e452b2847`). Phase 3 is not Maintainer
 accepted.
 
+### Phase 3 Maintainer visual corrections
+
+The Maintainer's direct visual review opened two P3 presentation findings, and
+the narrow correction is implementation commit
+`ff01b80c8d570520eb20b345046d5d9343877816` (tree
+`b10012675b49146dcac5a56dff60ea0ebdd08076`). `PHASE3-VIS-01` originated in
+the ODE-owned `.ode-primary-numeric-value` rule: it used the Phase 0
+`--lab-type-numeric-size` hero-scale token even though the value is a technical
+primary answer, not a dashboard KPI. The ODE rule now uses the existing fluid
+`--lab-type-stage-title-size` token and the accepted technical-font token. It
+does not change the `PrimaryResult` structure, accessible label, value,
+precision, formatter, or supporting-metric ownership. Primary numerical
+importance is expressed through hierarchy, not extreme font size.
+
+`PHASE3-VIS-02` was the combined effect of the shared `NumericalTable` row-
+header default and the intentional ODE caller structure: the first cell is a
+semantic `<th scope="row">`, so the generic `tbody th` weight of 700 applied;
+the ODE numeric rule did not override that inherited presentation. The row
+header remains a row header. An ODE-scoped rule now gives both stored-value
+`tbody th` and `tbody td` the same regular weight while preserving the caption,
+column headers, tabular technical font, alignment, values, precision, row
+selection, and local overflow. Peer numerical columns do not receive arbitrary
+weight differences, and native table semantics may remain stronger than visual
+font weight. No final-row emphasis was introduced.
+
+Fresh browser verification passed successful Forward Euler Output at 1440 ×
+900 in Light and Dark, 390 × 844, and 320-pixel stress. The primary value is
+30.4 px against 16 px supporting values on desktop, has a content-driven
+109.6-pixel answer box, and fluidly reduces to 22.4 px at both narrow widths;
+`0.00377789` remains unclipped, visibly primary, and page-contained. Stored
+values retain 700-weight column headers while both body columns compute to 400
+in desktop Light/Dark and at 390 pixels. The 12 rows remain readable, the table
+keeps local horizontal scrolling on mobile, and there is no page-level
+overflow. Browser warning/error logs were empty.
+
+The Compare smoke retained balanced 30.4-pixel answers and the unchanged
+Forward Euler `0.00377789` / Runge-Kutta 4 `0.00673848` values. The bounded
+Linear Systems Output smoke retained one non-nested `data-primary-result`, the
+computed solution, existing MathML/factorization presentation, and no ODE
+numeric selector; no Linear Systems source or `PHASE2-P3-04` state changed.
+Focused verification passed four files / 43 tests. Import boundaries passed,
+and the one required complete `npm.cmd run verify` passed 95 files / 1,268
+tests, all frontend/numerics/contracts/backend typechecks, and the 108-module
+Production build; `git diff --check` passed. No other Phase 3 redesign was
+made.
+
+The two Maintainer visual findings are corrected, but Phase 3 remains a
+candidate and is not self-declared accepted. Cross-milestone severity remains
+`P0 = 0`, `P1 = 0`, `P2 = 0`, `P3 = 1`; the sole P3 is the out-of-scope
+`PHASE2-P3-04`, still open and Phase 4-owned. The exact next gate is
+**independent Phase 3 ODE presentation / behavior-equivalence audit**, then
+**final Maintainer visual review**.
+
 ### ODE presentation mapping and domain authority
 
 The real Initial Value Problems Lab now consumes the accepted Phase 2 shared
