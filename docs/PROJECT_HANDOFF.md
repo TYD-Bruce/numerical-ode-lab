@@ -93,6 +93,103 @@ candidate and is not self-declared accepted. Cross-milestone severity remains
 **independent Phase 3 ODE presentation / behavior-equivalence audit**, then
 **final Maintainer visual review**.
 
+### Phase 3 Maintainer information-hierarchy refinement
+
+`PHASE3-HIER-01` was a P2 presentation finding: ODE had adopted the shared
+LabShell, LabHeader, workflow, and Stage primitives without fully retiring its
+older pre-system header copy layers and information placement. The result was
+a correct component vocabulary wrapped in a visibly denser hierarchy than the
+current Linear Systems reference. The bounded ODE-only correction is
+implementation commit `013fb552f09824921a5eda664462df0f0bf2f21f` (tree
+`33d1061ac1fc739776dff642fb63d731b52bc448`). No shared primitive or Linear
+Systems source required a change.
+
+The ODE header now follows breadcrumb, one `h1`, one concise mathematical
+purpose, one compact experiment identity, actions, then workflow. The old
+`AI-Assisted Educational Solver` eyebrow was deleted without replacement. The
+long purpose now reads: `Explore fixed-step methods for a first-order ordinary
+differential equation posed as an initial value problem, then examine error,
+convergence, and numerical behavior.` Its two accepted Glossary annotations
+remain in the sentence. Existing derived state now presents `Beginner starter
+· Forward Euler` or `Custom experiment` as one compact identity owner. The
+persistent starter explanation was removed because Method selection and Data
+preset guidance already carry its useful teaching intent.
+
+The combined header instruction about familiar mathematical notation and the
+`t`/`y` versus `t`/`u` profiles was relocated to the relevant Data editor. The
+first-order editor now says `Enter the equation in familiar mathematical
+notation. First-order fields use t and y.` The Leap-Frog editor uses the same
+lead followed by `Leap-Frog acceleration uses t and u.` The existing editable
+field component owns the visible description and includes its ID, together
+with the status ID, in the field's `aria-describedby`; this is an information-
+placement change only and does not alter expression authority, MathLive,
+validation, or variable profiles.
+
+Method now scans as Stage label, `Choose a method`, Compare, and the unchanged
+eight-card catalog. The approved Explicit-scheme sentence is no longer a
+catalog-wide lead above explicit and implicit choices. Its complete annotated
+owner, exact wording, and Glossary binding move together into a compact
+`aside` labelled `Explicit method concept` after the method grid. The Compare
+entry no longer has a large inset-bar treatment; its behavior, prompt, error
+alert, and shared-model meaning are unchanged, with active pick guidance now
+owned inside Method instead of LabHeader. Method card identity, descriptions,
+order, selection, formulas, annotations, and availability are unchanged.
+
+Fresh paired browser review used the real ODE and Linear Systems routes. At
+1440 × 900 in Light, ODE header height fell from 330.9 px to 199.4 px and the
+Method Stage top moved from 571.6 px to 440.1 px; the untouched Linear Systems
+reference measured 210.4 px and 435.1 px. Both therefore use the same outer
+header/workflow/Stage grammar while ODE remains an exploratory method catalog
+and Linear Systems remains teaching-focused. Desktop Dark Method and Data
+preserved equivalent hierarchy and page containment. At 390 × 844, ODE fell
+from a 520.9-pixel header and 732.9-pixel Stage top to 326.0 px and 538.0 px;
+Linear Systems remained 280.8 px and 508.8 px. ODE's remaining height reflects
+its longer domain purpose and two-line title at that width rather than an extra
+slogan or teaching layer. At 320 pixels ODE remained page-contained with a
+compact identity, naturally wrapped actions/copy, 403.1-pixel header, and
+612.7-pixel Method Stage top. ODE Data at 390 pixels retained readable editor
+help and its accessible association. Browser warning/error logs were empty for
+both Labs.
+
+The external, uncommitted evidence directory remains
+`C:/Users/bruce/.codex/visualizations/2026/08/12/019ff741-984c-7e42-967c-d757d759589a`
+and now also contains `phase3-1-ode-method-light`,
+`phase3-1-ls-method-light`, `phase3-1-ode-data-light`,
+`phase3-1-ls-data-light`, `phase3-1-ode-header-mobile`, and
+`phase3-1-ls-header-mobile` PNG evidence.
+
+The browser regression smoke retained the successful Forward Euler
+`0.00377789` result, the accepted 30.4-pixel desktop primary-answer size, and
+400-weight stored-value row headers and peer cells. Output structure,
+formatting, precision, chart, Compare results, and Convergence did not change.
+New experiment retained its accessible confirmation dialog and cancellation;
+Tutor retained lazy open/close behavior and focus; both Context and relocated
+Method Glossary owners opened correctly. Focused verification passed seven
+files / 67 tests. The mandatory complete `npm.cmd run verify` passed 95 files /
+1,270 tests, all frontend/numerics/contracts/backend typechecks, import
+boundaries, and the 108-module Production build. The Production exclusion scan
+found no DEV route/path/title markers in built HTML, CSS, or JavaScript, and
+`git diff --check` passed.
+
+Durable information-hierarchy rules are:
+
+1. Cross-Lab consistency includes information placement, not only shared
+   components and CSS.
+2. LabHeader orients the learner; stage-specific teaching belongs in the Stage
+   where it is needed.
+3. A shared presentation primitive does not justify retaining obsolete pre-
+   system wrappers or copy layers around it.
+4. Cross-Lab synchronization standardizes information grammar, not domain
+   personality.
+
+`PHASE3-HIER-01` is corrected, but Phase 3 remains an implemented and locally
+verified candidate and is not self-declared Maintainer accepted. Current
+cross-milestone severity is `P0 = 0`, `P1 = 0`, `P2 = 0`, `P3 = 1`; the sole
+P3 remains `PHASE2-P3-04`, still open and Phase 4-owned. The accepted Output
+corrections are retained. The exact next gate remains **independent Phase 3
+ODE presentation / behavior-equivalence audit**, then **final Maintainer
+visual review**.
+
 ### ODE presentation mapping and domain authority
 
 The real Initial Value Problems Lab now consumes the accepted Phase 2 shared
