@@ -4,6 +4,144 @@ This is the durable handoff for future contributors. Use it with the current cod
 
 ## Cross-Lab Presentation Sync Phase 3 — ODE migration candidate — 2026-08-19
 
+### Phase 3 independent-audit corrections
+
+The independent Phase 3 ODE presentation / behavior-equivalence audit returned
+**BLOCKED — CROSS-LAB PHASE 3 NEEDS CORRECTION** with two findings:
+`PHASE3-P1-01` (P1 Tutor launcher lifecycle) and `PHASE3-P3-01` (P3 Return to
+current output authority). Both findings are corrected in implementation commit
+`0c727358da90f71cc19febfc063c80f0dcfa5ea4` (tree
+`0fb0e373fdadcf76a4e7a9cd65c0ea61add70f36`). Phase 3 remains a candidate;
+this correction does not self-declare Maintainer acceptance.
+
+`PHASE3-P1-01` originated at the boundary between a stable platform target and
+replaceable Lab-authored DOM. `PlatformTutorHost` initially projected its
+closed launcher into the current `[data-lab-header-actions]`, but every ordinary
+ODE render calls `app.replaceChildren()` on the shell outlet that is also the
+Host's stable `labTarget`. The replacement detached both the action group and
+launcher while the Host retained only a reference to the detached launcher.
+Refresh-only repair was insufficient because method selection, Run, Compare,
+and New experiment rerender internally without notifying the platform Host.
+
+The correction remains platform-owned. `PlatformTutorHost` now has one
+idempotent launcher-placement reconciler and one `MutationObserver` on the
+connected stable `labTarget`. When a valid connection and existing closed-state
+launcher exist, the reconciler queries the current live header action group,
+moves that same launcher node there, and no-ops when placement is already
+correct. If no live group exists, the accepted Tutor rail remains the fallback.
+Appending the launcher produces another child-list mutation, but the next
+reconciliation observes that the node already has the correct parent and does
+nothing; no polling, timer, duplicate owner, Tutor session mutation, or Tutor
+runtime load is involved.
+
+Observer ownership follows the Host connection. A new observation starts only
+for a connected `labTarget`; connection replacement first disconnects the prior
+observer; `disconnect()` and `dispose()` also disconnect it. The callback
+captures connection identity and rejects stale ownership. Mutations after
+disconnect cannot project a launcher. ODE imports no Host and has no post-render
+Host callback.
+
+Open-state behavior is unchanged because opening removes the closed launcher,
+leaving the reconciler no node and therefore no authority to project. Browser
+and DOM tests replace the Lab subtree while Tutor is open and retain exactly one
+panel with zero closed launchers. Closing recreates the closed launcher through
+the existing lifecycle, projects it into the newest action group, and restores
+focus to that connected node when the original trigger was detached. Existing
+Glossary suspension/resume and fallback-rail behavior remain intact.
+
+`PHASE3-P3-01` originated in ODE Data presentation. Workflow Output already
+used `hasSuccessfulOutput()`, which matches the current single method/order or
+current comparison pair to stored successful evidence, while both Data return
+controls used stored-object presence (`lastResult`/`lastCompare`). The controls
+now render only when `hasSuccessfulOutput()` is true. Matching Forward Euler
+and matching Compare pairs retain **Return to current output**; selecting RK4
+after Forward Euler, or choosing a different comparison pair, disables Output
+and removes the return control. Stored results, `lastProblemInputs`, matching
+logic, session schema, result publication, failed-attempt preservation, and all
+numerical values remain unchanged.
+
+Test-first evidence reproduced the defects before implementation. The first
+red gate ran two files / 40 tests with four intended failures: repeated real
+`labTarget.replaceChildren(newLabDom)` placement, reconnect placement after
+disconnect, real ODE rerender placement, and mismatching-method return control.
+A second one-file / 23-test red gate reproduced the comparison-pair mismatch.
+The final Host/ODE gate passes two files / 42 tests. It covers existing-node
+reuse, repeated replacements with no duplicates, open-state replacement,
+close into the latest action group, connected focus return, disconnect,
+dispose, connection replacement, exactly one observer per active connection,
+real ODE method/Run/Compare/New experiment rerenders, matching and mismatching
+single output, matching and mismatching Compare output, and stored-result
+identity. The expanded lifecycle gate passes eight files / 88 tests across
+Tutor Host, Glossary/Tutor integration, route adapter/bootstrap, ODE lifecycle,
+route, reset, and Glossary. A pre-existing Glossary/Tutor integration assertion
+that no observer existed at all was narrowed to acknowledge the one placement
+observer while still proving it cannot auto-restore a blocked Tutor.
+
+Fresh browser verification used the real ODE route. At 1440 × 900 Light,
+initial Method, RK4 selection, restored Forward Euler Data, successful Forward
+Euler Output, every Compare transition, successful comparison, and confirmed
+New experiment each retained exactly one closed launcher in the current header
+and zero page overflow. The successful single value remained `0.00377789`; the
+comparison remained Forward Euler `0.00377789` and Runge-Kutta 4 `0.00673848`.
+Forward Euler success followed by RK4 selection produced disabled Output and no
+return control; restoring Forward Euler produced enabled Output and one return
+control.
+
+Opening Tutor produced zero launchers and one visible panel. Selecting RK4
+while it remained open replaced the Lab header without reprojecting the closed
+launcher. Close then produced exactly one launcher inside the newest header and
+focused that connected button. Navigation ODE → About removed all Tutor
+presentation; browser Back remounted ODE with exactly one current launcher.
+At 390 × 844 both actions remained on one row at 44 pixels high; method and
+successful-Run rerenders retained one launcher, and the mobile modal Tutor
+opened with zero launchers, `aria-modal="true"`, and inert Lab, then closed to
+one focused connected launcher. At 320 × 844 the actions wrapped in source
+order at approximately `260.02` and `312.02` pixels, remained 44 pixels high,
+and the same Method, Run, open, close, and focus checks passed. Both widths had
+zero page-level overflow.
+
+Bounded non-regression browser smoke passed. Home's two **Open Lab** actions and
+**View roadmap** shared the same `1076.01`-pixel top and 44-pixel height at
+1440 × 1000. Linear Systems retained one **New experiment** action, no Tutor
+launcher, and zero overflow. The ODE Glossary opened and closed its mobile
+definition surface independently while the closed Tutor launcher remained in
+the header. Browser warning/error logs were empty.
+
+Focused verification passes eight files / 88 tests. `verify:boundaries` passes
+four owners plus the Vercel adapter. The standalone suite and complete
+`npm.cmd run verify` pass 95 files / 1,277 tests, all frontend/numerics/contracts
+and backend/API typechecks, and the 108-module Production build. The Production
+entry retains dynamic imports for ODE, Linear Systems, Tutor, and Glossary; ODE
+still dynamically imports editable math, and readonly math still dynamically
+imports MathLive. Representative raw/gzip assets are entry `57.27 / 17.72 kB`,
+Tutor `12.14 / 4.62 kB`, shared Lab `5.73 / 1.89 kB`, ODE
+`303.10 / 96.33 kB`, Linear Systems `71.01 / 21.15 kB`, editable math
+`1,143.84 / 308.80 kB`, and MathLive `819.11 / 228.04 kB`. Presentation DEV
+route/title markers remain absent from `dist`; the existing large-chunk advisory
+is unchanged. `git diff --check` passes.
+
+Durable lifecycle rules are:
+
+1. A platform-owned control projected into Lab-authored DOM must survive
+   replacement of that Lab subtree. Projection ownership includes
+   reconciliation after target DOM replacement.
+2. Platform-owned projection reconciliation must be idempotent and disposed
+   with its target. Never solve projection loss by creating duplicate controls.
+3. Lab internals do not call platform-host implementation hooks after each
+   render merely to repair platform-owned presentation.
+4. Secondary navigation controls use the same availability authority as the
+   primary workflow. A stored historical result does not by itself make a
+   **current output** control valid.
+
+The in-scope Phase 3 correction severity is `P0 = 0`, `P1 = 0`, `P2 = 0`, and
+`P3 = 0`. Separately, `PHASE2-P3-04` remains **OPEN / Phase 4** and is not a
+Phase 3 remaining defect. No Phase 4 or Phase 5 work started. There is no
+numerical, expression-authority, Convergence, Compare numerical, Linear Systems
+inner, Computation Trace, Motion, Tutor feature/prompt/API, Glossary model or
+content, PDE, dependency, deployment-configuration, push, or deployment change.
+The exact next gate is **narrow independent Phase 3 correction re-audit, then
+final Maintainer Phase 3 acceptance**.
+
 ### Authorization, accepted prerequisite, and result
 
 Cross-Lab Presentation Sync Phase 2 is **MAINTAINER ACCEPTED WITH P3
