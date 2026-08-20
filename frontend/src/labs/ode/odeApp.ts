@@ -454,34 +454,26 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
   }
 
   function experimentIdentityPresentation(): {
-    label: "Beginner starter" | "Custom experiment";
-    description: string;
+    kind: "beginner-starter" | "custom-experiment";
+    label: string;
   } {
-    return getExperimentIdentity(createSessionSnapshot(false)) === "beginner-starter"
-      ? {
-        label: "Beginner starter",
-        description:
-          "This example is ready to run. Use it as-is, choose another preset, or enter your own problem.",
-      }
-      : {
-        label: "Custom experiment",
-        description: "You have changed the starter problem.",
-      };
+    if (getExperimentIdentity(createSessionSnapshot(false)) !== "beginner-starter") {
+      return { kind: "custom-experiment", label: "Custom experiment" };
+    }
+    const method = selectedMeta()?.displayName;
+    return {
+      kind: "beginner-starter",
+      label: method ? `Beginner starter · ${method}` : "Beginner starter",
+    };
   }
 
   function refreshExperimentIdentityPresentation(): void {
     const status = app.querySelector<HTMLElement>("[data-experiment-identity]");
     if (!status) return;
     const presentation = experimentIdentityPresentation();
-    status.dataset.experimentIdentity = presentation.label === "Beginner starter"
-      ? "beginner-starter"
-      : "custom-experiment";
+    status.dataset.experimentIdentity = presentation.kind;
     const label = status.querySelector<HTMLElement>("[data-experiment-label]");
-    const description = status.querySelector<HTMLElement>(
-      "[data-experiment-description]"
-    );
     if (label) label.textContent = presentation.label;
-    if (description) description.textContent = presentation.description;
   }
 
   function readPersistedFromFormEl(form: HTMLFormElement): void {
@@ -746,7 +738,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       document.createTextNode(" posed as an "),
       glossaryTermNode(glossaryRender, "ODE-W1-ANN-002"),
       document.createTextNode(
-        ", then analyze numerical error, observed convergence, and method behavior as the time-step size changes."
+        ", then examine error, convergence, and numerical behavior."
       )
     );
   }
@@ -754,9 +746,10 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
   function renderMethodGlossaryHelper(
     glossaryRender: OdeGlossaryRenderTransaction
   ): HTMLElement {
-    const helper = document.createElement("p");
+    const helper = document.createElement("aside");
     helper.className = "hint ode-method-glossary-helper";
     helper.dataset.odeMethodGlossaryHelper = "";
+    helper.setAttribute("aria-label", "Explicit method concept");
     helper.append(
       glossaryTermNode(glossaryRender, "ODE-W1-ANN-008"),
       document.createTextNode(
@@ -962,16 +955,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       );
       app.replaceChildren();
 
-      const comparePicking = session.mode === "compare_pick";
-      let workflowNote = "";
-      if (comparePicking && session.mode === "compare_pick") {
-        workflowNote =
-          session.first === null
-            ? "Choose the first first-order method, then a second method. You will enter one shared model y′ = f(t, y)."
-            : `First method: ${methodLabel(session.first)}. Choose a different second method.`;
-      }
       const experimentIdentity = experimentIdentityPresentation();
-      const compactExperimentIdentity = step === "results";
 
       const breadcrumb = document.createElement("nav");
       breadcrumb.setAttribute("aria-label", "Breadcrumb");
@@ -986,8 +970,6 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
         separator,
         document.createTextNode("Initial Value Problems Lab")
       );
-      const eyebrow = document.createElement("p");
-      eyebrow.textContent = "AI-Assisted Educational Solver";
       const title = document.createElement("h1");
       title.tabIndex = -1;
       title.dataset.routeFocus = "true";
@@ -1004,38 +986,12 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       const lede = document.createElement("p");
       lede.dataset.odeGlossaryLede = "true";
       const identity = document.createElement("div");
-      identity.classList.toggle("is-compact", compactExperimentIdentity);
-      identity.dataset.experimentIdentity =
-        experimentIdentity.label === "Beginner starter"
-          ? "beginner-starter"
-          : "custom-experiment";
+      identity.classList.add("is-compact");
+      identity.dataset.experimentIdentity = experimentIdentity.kind;
       const identityLabel = document.createElement("strong");
       identityLabel.dataset.experimentLabel = "true";
       identityLabel.textContent = experimentIdentity.label;
       identity.append(identityLabel);
-      if (!compactExperimentIdentity) {
-        const identityDescription = document.createElement("p");
-        identityDescription.dataset.experimentDescription = "true";
-        identityDescription.textContent = experimentIdentity.description;
-        identity.append(identityDescription);
-      }
-      const headerDetails: HTMLElement[] = [];
-      if (workflowNote) {
-        const note = document.createElement("p");
-        note.textContent = workflowNote;
-        headerDetails.push(note);
-      }
-      const inputNote = document.createElement("p");
-      inputNote.textContent =
-        "Enter the equation in familiar mathematical notation. First-order fields use t and y; Leap-Frog acceleration uses t and u.";
-      headerDetails.push(inputNote);
-      if (comparePickError) {
-        const error = document.createElement("p");
-        error.className = "compare-error";
-        error.setAttribute("role", "alert");
-        error.textContent = comparePickError;
-        headerDetails.push(error);
-      }
 
       const stageRole: LabStageRole =
         step === "choose" ? "method" : step === "configure" ? "data" : "output";
@@ -1118,12 +1074,10 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       const shell = createLabShell({
         header: createLabHeader({
           breadcrumb,
-          eyebrow,
           title,
           lede,
           identity,
           actions: [reset],
-          details: headerDetails,
         }),
         workflow: createOdeWorkflowNavigation(),
         stage,
@@ -1153,12 +1107,30 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
         markMeaningfulInteraction();
         render();
       });
+      const prompt = document.createElement("p");
+      prompt.className = "compare-prompt";
+      prompt.dataset.comparePrompt = "true";
+      prompt.textContent =
+        session.first === null
+          ? "Choose the first first-order method, then a second method. You will enter one shared model y′ = f(t, y)."
+          : `First method: ${methodLabel(session.first)}. Choose a different second method.`;
+      bar.append(prompt);
+      if (comparePickError) {
+        const error = document.createElement("p");
+        error.className = "compare-error";
+        error.setAttribute("role", "alert");
+        error.textContent = comparePickError;
+        bar.append(error);
+      }
       const heading = document.createElement("h2");
       heading.textContent = "Choose a method";
       const teaching = createTeachingBlock({
         heading,
-        lead: renderMethodGlossaryHelper(glossaryRender),
-        examples: [bar, renderCompareMethodGrid()],
+        examples: [
+          bar,
+          renderCompareMethodGrid(),
+          renderMethodGlossaryHelper(glossaryRender),
+        ],
       });
       teaching.classList.add("choose-panel", "ode-method-teaching");
       return teaching;
@@ -1180,8 +1152,11 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     heading.textContent = "Choose a method";
     const teaching = createTeachingBlock({
       heading,
-      lead: renderMethodGlossaryHelper(glossaryRender),
-      examples: [bar, renderSingleMethodGrid()],
+      examples: [
+        bar,
+        renderSingleMethodGrid(),
+        renderMethodGlossaryHelper(glossaryRender),
+      ],
     });
     teaching.classList.add("choose-panel", "ode-method-teaching");
     return teaching;
@@ -1338,8 +1313,8 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
         persistedState.validationKind === "incomplete" ? "gentle" : "strict",
       description:
         profile === "rhs"
-          ? "Use only t and y. Enter textbook-style mathematics."
-          : "Use only t and u for the Leap-Frog acceleration.",
+          ? "Enter the equation in familiar mathematical notation. First-order fields use t and y."
+          : "Enter the equation in familiar mathematical notation. Leap-Frog acceleration uses t and u.",
       onDraftStateChange(snapshot) {
         if (profile === "rhs") {
           persisted.firstExpression = persistMathFieldSnapshot(

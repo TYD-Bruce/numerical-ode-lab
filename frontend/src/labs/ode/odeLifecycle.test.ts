@@ -180,8 +180,10 @@ function configuredSession() {
   };
 }
 
-function editableHandle(dispose = vi.fn()): EditableMathFieldHandle {
-  const element = document.createElement("div");
+function editableHandle(
+  dispose = vi.fn(),
+  element = document.createElement("div")
+): EditableMathFieldHandle {
   return {
     element,
     getState: vi.fn(),
@@ -205,6 +207,147 @@ describe("mounted ODE lifecycle", () => {
     chartInstances.length = 0;
     disposeConvergence.mockClear();
     mountConvergence.mockClear();
+  });
+
+  it("uses the shared compact Lab grammar before the unchanged Method workflow", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const mounted = mountOdeApp({
+      target,
+      initialSession: createBeginnerStarterSession(),
+    });
+
+    const header = target.querySelector<HTMLElement>(".lab-header")!;
+    const identity = header.querySelector<HTMLElement>(
+      "[data-experiment-identity]"
+    )!;
+    expect(target.querySelectorAll("h1")).toHaveLength(1);
+    expect(header.querySelector("[data-lab-header-eyebrow]")).toBeNull();
+    expect(header.textContent).not.toContain("AI-Assisted Educational Solver");
+    expect(header.textContent).not.toContain(
+      "Enter the equation in familiar mathematical notation"
+    );
+    expect(header.textContent).not.toContain("This example is ready to run");
+    expect(
+      header.querySelector("[data-lab-header-lede]")?.textContent
+    ).toBe(
+      "Explore fixed-step methods for a first-order ordinary differential equation posed as an initial value problem, then examine error, convergence, and numerical behavior."
+    );
+    expect(identity.textContent).toBe("Beginner starter · Forward Euler");
+    expect(identity.querySelectorAll("[data-experiment-label]")).toHaveLength(1);
+    expect(identity.querySelector("[data-experiment-description]")).toBeNull();
+    expect(header.querySelector("[data-lab-header-part='detail']")).toBeNull();
+
+    const shell = target.querySelector<HTMLElement>("[data-lab-shell]")!;
+    expect(
+      [...shell.children].map((node) =>
+        node.matches("header")
+          ? "header"
+          : node.matches("[data-workflow-navigation]")
+            ? "workflow"
+            : node.matches(".lab-stage-section")
+              ? "stage"
+              : "other"
+      )
+    ).toEqual(["header", "workflow", "stage"]);
+    expect(
+      [...target.querySelectorAll<HTMLElement>("[data-workflow-step]")].map(
+        (step) => step.dataset.workflowStep
+      )
+    ).toEqual(["method", "data", "output"]);
+    expect(target.querySelector("[data-stage-role='method'] h2")?.textContent).toBe(
+      "Choose a method"
+    );
+    expect(
+      [...target.querySelectorAll<HTMLElement>(".grid-methods .card h3")].map(
+        (heading) => heading.textContent
+      )
+    ).toEqual(METHOD_CATALOG.map((method) => method.displayName));
+
+    const compare = target.querySelector<HTMLButtonElement>("[data-compare]")!;
+    expect(compare.textContent).toBe("Compare two methods");
+    compare.click();
+    expect(mounted.getSession().workflow).toEqual({
+      mode: "compare_pick",
+      first: null,
+    });
+    expect(
+      target.querySelector("[data-lab-header-part='detail']")
+    ).toBeNull();
+    expect(target.querySelector("[data-compare-prompt]")?.textContent).toContain(
+      "Choose the first first-order method"
+    );
+    const forwardEulerCard = [...target.querySelectorAll<HTMLButtonElement>(
+      ".grid-methods .card"
+    )].find((card) => card.querySelector("h3")?.textContent === "Forward Euler")!;
+    forwardEulerCard.click();
+    [...target.querySelectorAll<HTMLButtonElement>(".grid-methods .card")]
+      .find((card) => card.querySelector("h3")?.textContent === "Forward Euler")!
+      .click();
+    expect(
+      target.querySelector("[data-stage-role='method'] .compare-error[role='alert']")
+        ?.textContent
+    ).toContain("Pick a different method");
+    expect(target.querySelector(".lab-header")?.textContent).not.toContain(
+      "Pick a different method"
+    );
+
+    mounted.dispose();
+  });
+
+  it("places variable-profile notation help inside the described Data editor", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const mountEditableMathField = vi.fn(
+      (
+        host: HTMLElement,
+        options: {
+          fieldId: string;
+          description?: string;
+          descriptionId?: string;
+        }
+      ) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "editable-math-field";
+        const field = document.createElement("input");
+        field.id = options.fieldId;
+        const description = document.createElement("p");
+        description.id =
+          options.descriptionId ?? `${options.fieldId}-description`;
+        description.className = "editable-math-description";
+        description.textContent = options.description ?? "";
+        field.setAttribute("aria-describedby", description.id);
+        wrapper.append(field, description);
+        host.replaceChildren(wrapper);
+        return editableHandle(vi.fn(), wrapper);
+      }
+    );
+    const mounted = mountOdeApp({
+      target,
+      initialSession: configuredSession(),
+      loadEditableMathField: async () => ({ mountEditableMathField }),
+    });
+    await vi.waitFor(() => expect(mountEditableMathField).toHaveBeenCalled());
+
+    const header = target.querySelector<HTMLElement>(".lab-header")!;
+    const help = target.querySelector<HTMLElement>(
+      "[data-expression-field] #rhs-expression-description"
+    )!;
+    const field = target.querySelector<HTMLElement>("#rhs-expression")!;
+    expect(header.textContent).not.toContain(
+      "Enter the equation in familiar mathematical notation"
+    );
+    expect(help.textContent).toBe(
+      "Enter the equation in familiar mathematical notation. First-order fields use t and y."
+    );
+    expect(help.closest("[data-expression-field]")).not.toBeNull();
+    expect(field.getAttribute("aria-describedby")?.split(/\s+/)).toContain(
+      help.id
+    );
+
+    mounted.dispose();
   });
 
   it("hydrates successful output and reuses immutable point ownership", async () => {

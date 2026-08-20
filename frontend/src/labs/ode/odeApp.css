@@ -79,11 +79,6 @@
   color: var(--accent-2);
 }
 
-.ode-lab-shell .lab-header-identity p {
-  margin: 4px 0 0;
-  color: var(--muted);
-}
-
 .ode-lab-shell .lab-header-identity.is-compact {
   display: inline-flex;
   padding-block: 4px;
@@ -108,7 +103,13 @@
 }
 
 .ode-method-glossary-helper {
-  padding: 0 2px;
+  align-self: flex-start;
+  max-width: var(--lab-readable-measure);
+  margin: 0;
+  padding: 10px 12px;
+  border-inline-start: 3px solid var(--lab-stage-method-accent);
+  border-radius: 0 var(--lab-radius-compact) var(--lab-radius-compact) 0;
+  background: var(--color-surface-inset);
 }
 
 .ode-method-teaching {
@@ -125,16 +126,16 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  width: fit-content;
+  max-width: 100%;
   gap: 12px 16px;
-  padding: 14px 16px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  background: var(--color-surface-accent);
+  padding: 0;
 }
 
-.compare-hint {
+.compare-hint,
+.compare-prompt {
   margin: 0;
-  flex: 1 1 220px;
+  flex: 0 1 30rem;
   font-size: 0.85rem;
   color: var(--muted);
 }

@@ -294,7 +294,7 @@ describe("ODE Wave 1 Glossary runtime contract", () => {
 
     const lede = target.querySelector("[data-lab-header-lede]")!;
     expect(lede.textContent).toBe(
-      "Explore fixed-step methods for a first-order ordinary differential equation posed as an initial value problem, then analyze numerical error, observed convergence, and method behavior as the time-step size changes."
+      "Explore fixed-step methods for a first-order ordinary differential equation posed as an initial value problem, then examine error, convergence, and numerical behavior."
     );
     expect(annotation(lede, "ODE-W1-ANN-001")?.textContent).toBe(
       "ordinary differential equation"
@@ -316,6 +316,15 @@ describe("ODE Wave 1 Glossary runtime contract", () => {
     expect(annotation(helper, "ODE-W1-ANN-008")?.textContent).toBe(
       "Explicit scheme"
     );
+    expect(helper.getAttribute("aria-label")).toBe("Explicit method concept");
+    const methodGrid = target.querySelector<HTMLElement>(".grid-methods")!;
+    expect(
+      methodGrid.compareDocumentPosition(helper) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(
+      target.querySelector(".ode-method-teaching [data-teaching-lead]")
+    ).toBeNull();
     expect(helper.closest("button")).toBeNull();
     expect(target.querySelector(".card .glossary-term-trigger")).toBeNull();
     expect(target.textContent).not.toContain("Ask Tutor");

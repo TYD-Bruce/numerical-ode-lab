@@ -86,8 +86,8 @@ describe("Initial Value Problems route", () => {
       { key: "output", current: null, disabled: true },
     ]);
     expect(firstTarget.querySelector("[data-stage-role='method']")).not.toBeNull();
-    expect(firstTarget.querySelector("[data-experiment-identity]")?.textContent).toContain(
-      "Beginner starter"
+    expect(firstTarget.querySelector("[data-experiment-identity]")?.textContent).toBe(
+      "Beginner starter · Forward Euler"
     );
     expect(first.getSession().form.presetId).toBe("exponential_decay");
     expect(first.getSession()).toMatchObject({
@@ -126,7 +126,7 @@ describe("Initial Value Problems route", () => {
     });
 
     expect(target.querySelector("[data-lab-header-lede]")?.textContent).toBe(
-      "Explore fixed-step methods for a first-order ordinary differential equation posed as an initial value problem, then analyze numerical error, observed convergence, and method behavior as the time-step size changes."
+      "Explore fixed-step methods for a first-order ordinary differential equation posed as an initial value problem, then examine error, convergence, and numerical behavior."
     );
     const cards = [...target.querySelectorAll<HTMLButtonElement>(".card")];
     const card = (name: string) =>
@@ -202,8 +202,9 @@ describe("Initial Value Problems route", () => {
     expect(target.querySelector<HTMLInputElement>('[name="tEnd"]')?.value).toBe("7");
     expect(target.querySelector<HTMLInputElement>('[name="h"]')?.value).toBe("0.1");
     expect(mounted.getSession().form.current.rhs.draftLatex).toBe("t-y");
-    expect(target.textContent).toContain("Keep this pure error");
-    expect(target.querySelector("[data-experiment-identity]")?.textContent).toContain(
+    expect(mounted.getSession().comparePickError).toBe("Keep this pure error");
+    expect(target.textContent).not.toContain("Keep this pure error");
+    expect(target.querySelector("[data-experiment-identity]")?.textContent).toBe(
       "Custom experiment"
     );
     mounted.dispose();
