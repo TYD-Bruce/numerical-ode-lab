@@ -239,6 +239,15 @@ describe("mounted ODE lifecycle", () => {
     const answer = primaryResult.querySelector<HTMLElement>(
       "[data-primary-answer]"
     )!;
+    const answerLabel = answer.querySelector<HTMLElement>(
+      ".lab-primary-result-answer-label"
+    )!;
+    const answerValue = answer.querySelector<HTMLElement>(
+      ".ode-primary-numeric-value"
+    )!;
+    const supportingMetrics = primaryResult.querySelector<HTMLElement>(
+      "[data-primary-result-metrics]"
+    )!;
     expect(target.querySelectorAll("[data-primary-result]")).toHaveLength(1);
     expect(target.querySelectorAll("[data-problem-context]")).toHaveLength(1);
     expect(primaryResult.contains(problemContext)).toBe(true);
@@ -249,7 +258,12 @@ describe("mounted ODE lifecycle", () => {
         primaryResult.querySelector("[data-primary-result-answers]")!
       )
     );
-    expect(answer.textContent).toContain("0.80000000");
+    expect(answerLabel.textContent).toBe("Final numerical approximation");
+    expect(answerValue.textContent).toBe("0.80000000");
+    expect(supportingMetrics.contains(answerValue)).toBe(false);
+    expect(
+      supportingMetrics.querySelector(".ode-primary-numeric-value")
+    ).toBeNull();
     expect(problemContext.textContent).toContain("0.2");
     expect(problemContext.querySelectorAll('[role="math"]')).toHaveLength(1);
     expect(
@@ -596,6 +610,11 @@ describe("mounted ODE lifecycle", () => {
     expect(compareResult.querySelectorAll("[data-result-answer]")).toHaveLength(
       2
     );
+    expect(
+      [...compareResult.querySelectorAll<HTMLElement>(
+        "[data-result-answer] .ode-primary-numeric-value"
+      )].map((value) => value.textContent)
+    ).toEqual(["0.50000000", "0.50500000"]);
     expect(compareResult.querySelector("[data-problem-context]")).not.toBeNull();
     const compareParameters = Object.fromEntries(
       [...compareResult.querySelectorAll("[data-problem-parameters] > div")].map(
@@ -1155,6 +1174,52 @@ describe("mounted ODE lifecycle", () => {
           ?.textContent
       ).toBe("0.00377789")
     );
+    const storedRows = [...target.querySelectorAll<HTMLTableRowElement>(
+      ".ode-values-table tbody tr"
+    )];
+    expect(storedRows).toHaveLength(12);
+    expect(
+      storedRows.map((row) => row.querySelector("th")?.textContent)
+    ).toEqual([
+      "2.80000",
+      "3.00000",
+      "3.20000",
+      "3.40000",
+      "3.60000",
+      "3.80000",
+      "4.00000",
+      "4.20000",
+      "4.40000",
+      "4.60000",
+      "4.80000",
+      "5.00000",
+    ]);
+    expect(
+      storedRows.map((row) => row.querySelector("td")?.textContent)
+    ).toEqual([
+      "0.04398047",
+      "0.03518437",
+      "0.02814750",
+      "0.02251800",
+      "0.01801440",
+      "0.01441152",
+      "0.01152922",
+      "0.00922337",
+      "0.00737870",
+      "0.00590296",
+      "0.00472237",
+      "0.00377789",
+    ]);
+    for (const row of storedRows) {
+      expect(row.querySelector("th")?.scope).toBe("row");
+      expect(row.querySelector("td[data-numeric='true']")).not.toBeNull();
+      expect(row.className).toBe("");
+    }
+    expect(
+      [...target.querySelectorAll<HTMLTableCellElement>(
+        ".ode-values-table thead th"
+      )].map((header) => header.scope)
+    ).toEqual(["col", "col"]);
     expect(document.activeElement).toBe(
       target.querySelector(".lab-primary-result-heading")
     );

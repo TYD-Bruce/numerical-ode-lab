@@ -517,8 +517,8 @@
 }
 
 .ode-primary-numeric-value {
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: var(--lab-type-numeric-size);
+  font-family: var(--lab-font-technical);
+  font-size: var(--lab-type-stage-title-size);
   font-variant-numeric: tabular-nums;
 }
 
@@ -625,8 +625,10 @@
   max-width: 100%;
 }
 
-.ode-values-table tbody th {
+.ode-values-table tbody th,
+.ode-values-table tbody td {
   font-family: var(--lab-font-technical);
+  font-weight: 400;
   font-variant-numeric: tabular-nums;
   text-align: right;
 }
