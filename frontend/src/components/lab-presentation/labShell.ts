@@ -53,6 +53,7 @@ export function createLabHeader(options: LabHeaderOptions): HTMLElement {
   if (options.actions?.length) {
     const actions = document.createElement("div");
     actions.className = "lab-header-actions";
+    actions.dataset.labHeaderActions = "true";
     for (const action of options.actions) {
       action.dataset.labHeaderAction = "true";
       actions.append(action);

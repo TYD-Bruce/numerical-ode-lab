@@ -163,6 +163,9 @@
 }
 
 .card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   text-align: left;
   border: 1px solid var(--border);
   position: relative;
@@ -229,6 +232,10 @@
   border: 1px solid color-mix(in srgb, var(--accent-2) 35%, var(--color-border));
   background: var(--color-success-surface);
   color: var(--accent-2);
+}
+
+.method-scope-tag {
+  margin-top: auto;
 }
 
 .form-wrap {

@@ -244,7 +244,7 @@ a {
   padding-top: var(--space-3);
 }
 
-.platform-tutor-open,
+.platform-tutor-region > .platform-tutor-open,
 .platform-tutor-loading,
 .platform-tutor-failure {
   position: sticky;
@@ -454,6 +454,16 @@ a {
 }
 
 .platform-resume-card .platform-action {
+  margin-top: auto;
+}
+
+.platform-module-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.platform-module-card-action {
   margin-top: auto;
 }
 

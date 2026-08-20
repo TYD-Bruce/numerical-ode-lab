@@ -59,6 +59,33 @@ describe("static platform pages", () => {
     expect(linearLab.dataset.prefetchRouteId).toBe(
       "linear-algebra-linear-systems"
     );
+    const moduleCards = [
+      ...target.querySelectorAll<HTMLElement>(".platform-module-card"),
+    ];
+    expect(moduleCards).toHaveLength(3);
+    expect(
+      moduleCards.map((card) => ({
+        title: card.querySelector("h3")?.textContent,
+        status: card.querySelector(".platform-status")?.textContent,
+        action: card.querySelector(".platform-module-card-action a")?.textContent,
+      }))
+    ).toEqual([
+      { title: "Numerical ODE", status: "Available", action: "Open Lab" },
+      {
+        title: "Numerical Linear Algebra",
+        status: "Available",
+        action: "Open Lab",
+      },
+      { title: "Numerical PDE", status: "Planned", action: "View roadmap" },
+    ]);
+    for (const card of moduleCards) {
+      const actionOwner = card.querySelector<HTMLElement>(
+        ":scope > .platform-module-card-action"
+      )!;
+      expect(actionOwner.childElementCount).toBe(1);
+      expect(actionOwner.firstElementChild?.tagName).toBe("A");
+      expect(card.querySelector("br, [data-alignment-spacer]")).toBeNull();
+    }
     expect(target.querySelector("button")).toBeNull();
   });
 

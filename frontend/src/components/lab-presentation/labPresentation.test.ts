@@ -73,6 +73,9 @@ describe("shared Lab presentation primitives", () => {
       "Custom experiment"
     );
     expect(shell.querySelector("[data-lab-header-action]")).toBe(action);
+    expect(shell.querySelector("[data-lab-header-actions]")?.children).toHaveLength(
+      1
+    );
     expect(action.tagName).toBe("BUTTON");
     expect(
       [...shell.querySelector("header")!.children].map((node) =>

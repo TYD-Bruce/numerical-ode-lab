@@ -36,6 +36,63 @@ describe("Platform Tutor Host", () => {
     host.dispose();
   });
 
+  it("joins a shared Lab header action group with primary action geometry", async () => {
+    const target = document.createElement("aside");
+    const labTarget = document.createElement("main");
+    const actionGroup = document.createElement("div");
+    actionGroup.className = "lab-header-actions";
+    actionGroup.dataset.labHeaderActions = "true";
+    const reset = document.createElement("button");
+    reset.className = "lab-action lab-action-secondary";
+    reset.dataset.labHeaderAction = "true";
+    reset.dataset.labActionRole = "secondary";
+    reset.textContent = "New experiment";
+    actionGroup.append(reset);
+    labTarget.append(actionGroup);
+    document.body.append(labTarget, target);
+    const store = createAppSessionStore();
+    const focusPanel = vi.fn();
+    const host = createPlatformTutorHost({
+      target,
+      labTarget,
+      isMobile: () => false,
+      loadPanel: async () => ({
+        mountPlatformTutorPanel: () => ({
+          dispose: vi.fn(),
+          focus: focusPanel,
+        }),
+      }),
+    });
+
+    host.connect(binding(), store.createTutorSessionAccess("ode"));
+
+    const launcher = actionGroup.querySelector<HTMLButtonElement>(
+      "[data-tutor-open]"
+    )!;
+    expect(launcher.textContent).toBe("Open AI Tutor");
+    expect(launcher.classList).toContain("lab-action");
+    expect(launcher.classList).toContain("lab-action-primary");
+    expect(launcher.dataset.labActionRole).toBe("primary");
+    expect(launcher.dataset.labHeaderAction).toBe("true");
+    expect(launcher.previousElementSibling).toBe(reset);
+    expect(target.childElementCount).toBe(0);
+
+    await host.open(launcher);
+    expect(actionGroup.querySelector("[data-tutor-open]")).toBeNull();
+    expect(target.querySelector("[data-tutor-presentation]")).not.toBeNull();
+    expect(focusPanel).toHaveBeenCalledOnce();
+
+    host.close();
+    const restored = actionGroup.querySelector<HTMLButtonElement>(
+      "[data-tutor-open]"
+    )!;
+    expect(restored.previousElementSibling).toBe(reset);
+    expect(document.activeElement).toBe(restored);
+
+    host.dispose();
+    expect(actionGroup.querySelector("[data-tutor-open]")).toBeNull();
+  });
+
   it("loads the complete panel only on first open and reuses the fulfilled attempt", async () => {
     const target = document.createElement("div");
     document.body.append(target);

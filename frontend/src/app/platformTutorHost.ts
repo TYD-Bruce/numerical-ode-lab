@@ -67,6 +67,7 @@ export function createPlatformTutorHost(
   let suspensionIdentity: object | undefined;
   let returnFocus: HTMLElement | undefined;
   let presentation: HTMLElement | undefined;
+  let launcher: HTMLButtonElement | undefined;
   let modalLease: PlatformModalLease | undefined;
   const ownsModalEnvironment = options.modalEnvironment === undefined;
   const modalEnvironment =
@@ -99,16 +100,33 @@ export function createPlatformTutorHost(
   };
 
   const appendLauncher = (): HTMLButtonElement => {
+    launcher?.remove();
     const button = document.createElement("button");
     button.type = "button";
-    button.className = "btn primary platform-tutor-open";
+    button.className =
+      "lab-action lab-action-primary btn primary platform-tutor-open";
+    button.dataset.labActionRole = "primary";
     button.dataset.tutorOpen = "";
     button.textContent = "Open AI Tutor";
     button.setAttribute("aria-haspopup", "dialog");
     button.setAttribute("aria-expanded", "false");
     button.addEventListener("click", () => void host.open(button));
-    options.target.append(button);
+    const actionGroup = options.labTarget?.querySelector<HTMLElement>(
+      "[data-lab-header-actions]"
+    );
+    if (actionGroup) {
+      button.dataset.labHeaderAction = "true";
+      actionGroup.append(button);
+    } else {
+      options.target.append(button);
+    }
+    launcher = button;
     return button;
+  };
+
+  const removeLauncher = (): void => {
+    launcher?.remove();
+    launcher = undefined;
   };
 
   const restoreSuspendedPresentation = (
@@ -136,7 +154,7 @@ export function createPlatformTutorHost(
     presentation.hidden = false;
     presentation.removeAttribute("aria-hidden");
     presentation.removeAttribute("inert");
-    options.target.querySelector("[data-tutor-open]")?.remove();
+    removeLauncher();
     const dialog = presentation.querySelector<HTMLElement>(".ai-tutor-panel");
     if (mobile) {
       dialog?.setAttribute("role", "dialog");
@@ -158,12 +176,14 @@ export function createPlatformTutorHost(
     releaseMobileEnvironment();
     options.target.classList.remove("platform-tutor-host-mobile");
     options.target.classList.add("platform-tutor-host");
+    removeLauncher();
     options.target.replaceChildren();
     if (!connection || disposed) return;
     appendLauncher();
   };
 
   const renderLoading = (): HTMLElement => {
+    removeLauncher();
     options.target.replaceChildren();
     presentation = document.createElement("div");
     presentation.dataset.tutorPresentation = "";
@@ -188,6 +208,7 @@ export function createPlatformTutorHost(
     if (disposed || openGeneration !== generation || !connection) return;
     presentation = undefined;
     releaseMobileEnvironment();
+    removeLauncher();
     options.target.replaceChildren();
     const failure = document.createElement("aside");
     failure.className = "platform-tutor-failure";
@@ -258,7 +279,7 @@ export function createPlatformTutorHost(
       generation += 1;
       renderClosed();
       if (!isMobile() && sessionAccess.getSession().desktopOpen) {
-        const trigger = options.target.querySelector<HTMLElement>("[data-tutor-open]");
+        const trigger = launcher;
         if (trigger) void host.open(trigger);
       }
     },
@@ -273,6 +294,7 @@ export function createPlatformTutorHost(
       suspended = false;
       suspensionIdentity = undefined;
       releaseMobileEnvironment();
+      removeLauncher();
       options.target.replaceChildren();
     },
     async open(trigger): Promise<void> {
@@ -356,7 +378,7 @@ export function createPlatformTutorHost(
       if (closeOptions.restoreFocus !== false) {
         const focusTarget = returnFocus?.isConnected
           ? returnFocus
-          : options.target.querySelector<HTMLElement>("[data-tutor-open]");
+          : launcher;
         focusTarget?.focus();
       }
     },

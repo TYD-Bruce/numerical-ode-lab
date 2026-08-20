@@ -22,7 +22,10 @@ function moduleCard(options: {
   const headingRow = document.createElement("div");
   headingRow.className = "platform-card-heading-row";
   headingRow.append(createTextElement("h3", options.title), options.status);
-  card.append(headingRow, createTextElement("p", options.description), options.action);
+  const action = document.createElement("div");
+  action.className = "platform-module-card-action";
+  action.append(options.action);
+  card.append(headingRow, createTextElement("p", options.description), action);
   return card;
 }
 

@@ -86,6 +86,35 @@ describe("Initial Value Problems route", () => {
       { key: "output", current: null, disabled: true },
     ]);
     expect(firstTarget.querySelector("[data-stage-role='method']")).not.toBeNull();
+    const methodCards = [
+      ...firstTarget.querySelectorAll<HTMLButtonElement>(".grid-methods .card"),
+    ];
+    expect(
+      methodCards.map((card) => card.querySelector("h3")?.textContent)
+    ).toEqual([
+      "Forward Euler",
+      "Backward Euler",
+      "Taylor Method (Order 2)",
+      "Runge-Kutta 4",
+      "Adams-Bashforth",
+      "Adams-Moulton",
+      "Backward Differentiation Formula",
+      "Leap-Frog",
+    ]);
+    const scopeTags = methodCards.map((card) =>
+      card.querySelector<HTMLElement>(":scope > .method-scope-tag")
+    );
+    expect(scopeTags.every(Boolean)).toBe(true);
+    expect(scopeTags.map((tag) => tag?.textContent)).toEqual([
+      ...Array(7).fill("First-order y′ = f(t, y)"),
+      "Second-order u″ = a(t, u)",
+    ]);
+    expect(
+      methodCards.every(
+        (card) =>
+          card.querySelectorAll(":scope > .method-scope-tag").length === 1
+      )
+    ).toBe(true);
     expect(firstTarget.querySelector("[data-experiment-identity]")?.textContent).toBe(
       "Beginner starter · Forward Euler"
     );

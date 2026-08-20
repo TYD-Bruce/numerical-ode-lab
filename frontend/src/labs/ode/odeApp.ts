@@ -1181,7 +1181,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     card.innerHTML = `
     <h3>${cat.displayName}</h3>
     <p>${cat.blurb}</p>
-    <span class="tag">${tag}</span>
+    <span class="tag method-scope-tag">${tag}</span>
   `;
     card.addEventListener("click", onClick);
     return card;
