@@ -1668,7 +1668,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     <div class="form-head">
       <button type="button" class="btn ghost" data-back-methods>← All methods (keep my numbers)</button>
       <h2 data-selected-method-heading>${title}</h2>
-      ${lastResult && lastResultExpression ? '<button type="button" class="btn secondary" data-return-output>Return to current output</button>' : ""}
+      ${hasSuccessfulOutput() ? '<button type="button" class="btn secondary" data-return-output>Return to current output</button>' : ""}
     </div>
     <p class="unrun-edits-note" data-unrun-edits hidden>Your edits have not been run yet.</p>
     <form class="form" id="ode-form">
@@ -2187,7 +2187,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     <div class="form-head">
       <button type="button" class="btn ghost" data-back-methods>← Change method pair</button>
       <h2>Compare: ${metaA.displayName} vs ${metaB.displayName}</h2>
-      ${lastCompare ? '<button type="button" class="btn secondary" data-return-output>Return to current output</button>' : ""}
+      ${hasSuccessfulOutput() ? '<button type="button" class="btn secondary" data-return-output>Return to current output</button>' : ""}
     </div>
     <p class="hint">Set order p for each multistep method before running (defaults from method cards).</p>
     <form class="form" id="ode-form">

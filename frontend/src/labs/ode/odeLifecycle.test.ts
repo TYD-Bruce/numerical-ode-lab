@@ -172,6 +172,37 @@ function outputSession() {
   };
 }
 
+function comparisonOutputSession() {
+  const base = outputSession();
+  const second = createReadonlySolverResult({
+    ...RAW_RESULT,
+    metadata: {
+      ...RAW_RESULT.metadata,
+      family: "rk4",
+      displayName: "Runge-Kutta 4",
+      order: 4,
+    },
+  });
+  return {
+    ...base,
+    workflow: {
+      mode: "compare" as const,
+      a: { family: "forward_euler" as const },
+      b: { family: "rk4" as const },
+    },
+    selectedMethod: null,
+    output: {
+      comparison: {
+        a: { family: "forward_euler" as const },
+        b: { family: "rk4" as const },
+        resultA: base.output.single.result,
+        resultB: second,
+        expression: base.output.single.expression,
+      },
+    },
+  };
+}
+
 function configuredSession() {
   return {
     ...createBeginnerStarterSession(),
@@ -514,10 +545,70 @@ describe("mounted ODE lifecycle", () => {
       target.querySelector<HTMLButtonElement>("[data-workflow-step='output']")
         ?.disabled
     ).toBe(true);
+    expect(target.querySelector("[data-return-output]")).toBeNull();
     expect(mounted.getSession().output.single?.result.points).toBe(
       initial.output.single.result.points
     );
 
+    target.querySelector<HTMLButtonElement>("[data-workflow-step='method']")!.click();
+    const forwardEuler = [...target.querySelectorAll<HTMLButtonElement>(".card")].find(
+      (button) => button.querySelector("h3")?.textContent === "Forward Euler"
+    )!;
+    forwardEuler.click();
+
+    expect(
+      target.querySelector<HTMLButtonElement>("[data-workflow-step='output']")
+        ?.disabled
+    ).toBe(false);
+    expect(target.querySelector("[data-return-output]")).not.toBeNull();
+
+    mounted.dispose();
+  });
+
+  it("keeps Compare workflow and Return-to-output availability on the same pair authority", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const initial = comparisonOutputSession();
+    const mounted = mountOdeApp({ target, initialSession: initial });
+    await Promise.resolve();
+
+    target.querySelector<HTMLButtonElement>("[data-workflow-step='method']")!.click();
+    target.querySelector<HTMLButtonElement>("[data-compare]")!.click();
+    const backwardEuler = [...target.querySelectorAll<HTMLButtonElement>(".card")].find(
+      (button) => button.querySelector("h3")?.textContent === "Backward Euler"
+    )!;
+    backwardEuler.click();
+    const rk4 = [...target.querySelectorAll<HTMLButtonElement>(".card")].find(
+      (button) => button.querySelector("h3")?.textContent === "Runge-Kutta 4"
+    )!;
+    rk4.click();
+
+    expect(
+      target.querySelector<HTMLButtonElement>("[data-workflow-step='output']")
+        ?.disabled
+    ).toBe(true);
+    expect(target.querySelector("[data-return-output]")).toBeNull();
+    expect(mounted.getSession().output.comparison?.resultA.points).toBe(
+      initial.output.comparison.resultA.points
+    );
+
+    target.querySelector<HTMLButtonElement>("[data-workflow-step='method']")!.click();
+    target.querySelector<HTMLButtonElement>("[data-compare]")!.click();
+    const forwardEuler = [...target.querySelectorAll<HTMLButtonElement>(".card")].find(
+      (button) => button.querySelector("h3")?.textContent === "Forward Euler"
+    )!;
+    forwardEuler.click();
+    const matchingRk4 = [...target.querySelectorAll<HTMLButtonElement>(".card")].find(
+      (button) => button.querySelector("h3")?.textContent === "Runge-Kutta 4"
+    )!;
+    matchingRk4.click();
+
+    expect(
+      target.querySelector<HTMLButtonElement>("[data-workflow-step='output']")
+        ?.disabled
+    ).toBe(false);
+    expect(target.querySelector("[data-return-output]")).not.toBeNull();
     mounted.dispose();
   });
 
@@ -1076,6 +1167,115 @@ describe("mounted ODE lifecycle", () => {
     expect(recordMeaningfulInteraction).toHaveBeenCalledOnce();
     expect(recordMeaningfulInteraction).toHaveBeenCalledWith(500);
     unsubscribeReset?.();
+    mounted.dispose();
+  });
+
+  it("keeps the Host-owned Tutor launcher in the live ODE header across Run, Method, Compare, and New experiment renders", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const target = document.createElement("div");
+    const tutorTarget = document.createElement("aside");
+    document.body.append(target, tutorTarget);
+    const initial = configuredSession();
+    const mountEditableMathField = vi.fn(
+      (
+        _target: HTMLElement,
+        fieldOptions: {
+          profile: "rhs" | "exact_solution" | "second_order_rhs";
+        }
+      ) => {
+        const expression =
+          fieldOptions.profile === "exact_solution"
+            ? initial.form.current.exactSolution.confirmed!
+            : initial.form.current.rhs.confirmed;
+        const snapshot = {
+          state: {
+            kind: "ready" as const,
+            draftLatex: expression.latex,
+            confirmed: expression,
+          },
+          strict: true,
+        };
+        return {
+          ...editableHandle(),
+          getState: vi.fn(() => snapshot),
+          validateStrict: vi.fn(() => snapshot),
+          getIssue: vi.fn(() => undefined),
+        };
+      }
+    );
+    const mounted = mountOdeApp({
+      target,
+      initialSession: initial,
+      loadEditableMathField: async () => ({ mountEditableMathField }),
+    });
+    const store = createAppSessionStore();
+    const host = createPlatformTutorHost({
+      target: tutorTarget,
+      labTarget: target,
+      isMobile: () => false,
+      loadPanel: async () => ({
+        mountPlatformTutorPanel: () => ({
+          dispose: vi.fn(),
+          focus: vi.fn(),
+        }),
+      }),
+    });
+    host.connect(
+      mounted.getTutorBinding(),
+      store.createTutorSessionAccess("ode")
+    );
+
+    const expectLiveLauncher = async (): Promise<HTMLButtonElement> => {
+      await vi.waitFor(() =>
+        expect(
+          target.querySelectorAll(
+            "[data-lab-header-actions] > [data-tutor-open]"
+          )
+        ).toHaveLength(1)
+      );
+      expect(target.querySelectorAll("[data-tutor-open]")).toHaveLength(1);
+      expect(tutorTarget.querySelector("[data-tutor-open]")).toBeNull();
+      return target.querySelector<HTMLButtonElement>("[data-tutor-open]")!;
+    };
+
+    await Promise.resolve();
+    await Promise.resolve();
+    await expectLiveLauncher();
+
+    target
+      .querySelector<HTMLFormElement>("#ode-form")!
+      .dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+    await vi.waitFor(() =>
+      expect(target.querySelector("#results-body")).not.toBeNull()
+    );
+    await expectLiveLauncher();
+
+    target.querySelector<HTMLButtonElement>("[data-workflow-step='method']")!.click();
+    await expectLiveLauncher();
+    target.querySelector<HTMLButtonElement>("[data-compare]")!.click();
+    await expectLiveLauncher();
+
+    const forwardEuler = [...target.querySelectorAll<HTMLButtonElement>(".card")].find(
+      (button) => button.querySelector("h3")?.textContent === "Forward Euler"
+    )!;
+    forwardEuler.click();
+    await expectLiveLauncher();
+    const rk4 = [...target.querySelectorAll<HTMLButtonElement>(".card")].find(
+      (button) => button.querySelector("h3")?.textContent === "Runge-Kutta 4"
+    )!;
+    rk4.click();
+    await expectLiveLauncher();
+
+    target.querySelector<HTMLButtonElement>("[data-new-experiment]")!.click();
+    document
+      .querySelector<HTMLButtonElement>("[data-reset-confirm]")!
+      .click();
+    await vi.waitFor(() =>
+      expect(target.querySelector("[data-stage-role='method']")).not.toBeNull()
+    );
+    await expectLiveLauncher();
+
+    host.dispose();
     mounted.dispose();
   });
 

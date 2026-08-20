@@ -18,6 +18,26 @@ function binding(moduleId: "ode" = "ode"): LabTutorBinding<unknown> {
   };
 }
 
+function labDom(label: string): {
+  root: HTMLElement;
+  actionGroup: HTMLElement;
+  reset: HTMLButtonElement;
+} {
+  const root = document.createElement("section");
+  root.dataset.labDom = label;
+  const actionGroup = document.createElement("div");
+  actionGroup.className = "lab-header-actions";
+  actionGroup.dataset.labHeaderActions = "true";
+  const reset = document.createElement("button");
+  reset.className = "lab-action lab-action-secondary";
+  reset.dataset.labHeaderAction = "true";
+  reset.dataset.labActionRole = "secondary";
+  reset.textContent = `New experiment ${label}`;
+  actionGroup.append(reset);
+  root.append(actionGroup);
+  return { root, actionGroup, reset };
+}
+
 describe("Platform Tutor Host", () => {
   beforeEach(() => document.body.replaceChildren());
   afterEach(() => vi.unstubAllGlobals());
@@ -91,6 +111,159 @@ describe("Platform Tutor Host", () => {
 
     host.dispose();
     expect(actionGroup.querySelector("[data-tutor-open]")).toBeNull();
+  });
+
+  it("reconciles one existing closed launcher into the newest Lab header after repeated subtree replacement", async () => {
+    const target = document.createElement("aside");
+    const labTarget = document.createElement("main");
+    const first = labDom("first");
+    labTarget.append(first.root);
+    document.body.append(labTarget, target);
+    const store = createAppSessionStore();
+    const host = createPlatformTutorHost({ target, labTarget });
+    host.connect(binding(), store.createTutorSessionAccess("ode"));
+
+    const originalLauncher = first.actionGroup.querySelector<HTMLButtonElement>(
+      "[data-tutor-open]"
+    )!;
+    const second = labDom("second");
+    labTarget.replaceChildren(second.root);
+
+    await vi.waitFor(() =>
+      expect(second.actionGroup.querySelectorAll("[data-tutor-open]")).toHaveLength(1)
+    );
+    expect(second.actionGroup.querySelector("[data-tutor-open]")).toBe(
+      originalLauncher
+    );
+    expect(second.actionGroup.lastElementChild).toBe(originalLauncher);
+    expect(target.querySelector("[data-tutor-open]")).toBeNull();
+
+    const third = labDom("third");
+    labTarget.replaceChildren(third.root);
+    await vi.waitFor(() =>
+      expect(third.actionGroup.querySelectorAll("[data-tutor-open]")).toHaveLength(1)
+    );
+    expect(third.actionGroup.querySelector("[data-tutor-open]")).toBe(
+      originalLauncher
+    );
+    expect(labTarget.querySelectorAll("[data-tutor-open]")).toHaveLength(1);
+    expect(third.actionGroup.lastElementChild).toBe(originalLauncher);
+    host.dispose();
+  });
+
+  it("does not reproject while open, then closes into and focuses the latest Lab header", async () => {
+    const target = document.createElement("aside");
+    const labTarget = document.createElement("main");
+    const first = labDom("first");
+    labTarget.append(first.root);
+    document.body.append(labTarget, target);
+    const store = createAppSessionStore();
+    const host = createPlatformTutorHost({
+      target,
+      labTarget,
+      isMobile: () => false,
+      loadPanel: async () => ({
+        mountPlatformTutorPanel: () => ({
+          dispose: vi.fn(),
+          focus: vi.fn(),
+        }),
+      }),
+    });
+    host.connect(binding(), store.createTutorSessionAccess("ode"));
+    await host.open(
+      first.actionGroup.querySelector<HTMLButtonElement>("[data-tutor-open]")!
+    );
+
+    const second = labDom("second");
+    labTarget.replaceChildren(second.root);
+    await Promise.resolve();
+
+    expect(labTarget.querySelector("[data-tutor-open]")).toBeNull();
+    expect(target.querySelector("[data-tutor-open]")).toBeNull();
+    expect(target.querySelector("[data-tutor-presentation]")).not.toBeNull();
+
+    host.close();
+    const latestLauncher = second.actionGroup.querySelector<HTMLButtonElement>(
+      "[data-tutor-open]"
+    )!;
+    expect(latestLauncher).not.toBeNull();
+    expect(second.actionGroup.querySelectorAll("[data-tutor-open]")).toHaveLength(1);
+    expect(document.activeElement).toBe(latestLauncher);
+    host.dispose();
+  });
+
+  it("stops observing on disconnect and replaces observation with the latest connection", async () => {
+    const target = document.createElement("aside");
+    const labTarget = document.createElement("main");
+    const first = labDom("first");
+    labTarget.append(first.root);
+    document.body.append(labTarget, target);
+    const store = createAppSessionStore();
+    const host = createPlatformTutorHost({ target, labTarget });
+    host.connect(binding(), store.createTutorSessionAccess("ode"));
+    host.disconnect();
+
+    const disconnected = labDom("disconnected");
+    labTarget.replaceChildren(disconnected.root);
+    await Promise.resolve();
+    expect(disconnected.actionGroup.querySelector("[data-tutor-open]")).toBeNull();
+    expect(target.querySelector("[data-tutor-open]")).toBeNull();
+
+    host.connect(binding(), store.createTutorSessionAccess("ode"));
+    expect(disconnected.actionGroup.querySelectorAll("[data-tutor-open]")).toHaveLength(1);
+
+    const replacement = labDom("replacement");
+    labTarget.replaceChildren(replacement.root);
+    host.connect(binding(), store.createTutorSessionAccess("ode"));
+    expect(replacement.actionGroup.querySelectorAll("[data-tutor-open]")).toHaveLength(1);
+
+    const latest = labDom("latest");
+    labTarget.replaceChildren(latest.root);
+    await vi.waitFor(() =>
+      expect(latest.actionGroup.querySelectorAll("[data-tutor-open]")).toHaveLength(1)
+    );
+    host.dispose();
+
+    const disposed = labDom("disposed");
+    labTarget.replaceChildren(disposed.root);
+    await Promise.resolve();
+    expect(disposed.actionGroup.querySelector("[data-tutor-open]")).toBeNull();
+  });
+
+  it("owns exactly one Lab observer per active connection and disconnects it on replacement", () => {
+    const observers: Array<{ disconnect: ReturnType<typeof vi.fn> }> = [];
+    vi.stubGlobal(
+      "MutationObserver",
+      class {
+        readonly disconnect = vi.fn();
+        constructor() {
+          observers.push(this);
+        }
+        observe(): void {}
+        takeRecords(): MutationRecord[] {
+          return [];
+        }
+      }
+    );
+    const target = document.createElement("aside");
+    const labTarget = document.createElement("main");
+    labTarget.append(labDom("first").root);
+    document.body.append(labTarget, target);
+    const store = createAppSessionStore();
+    const host = createPlatformTutorHost({ target, labTarget });
+
+    host.connect(binding(), store.createTutorSessionAccess("ode"));
+    expect(observers).toHaveLength(1);
+    expect(observers[0]!.disconnect).not.toHaveBeenCalled();
+
+    host.connect(binding(), store.createTutorSessionAccess("ode"));
+    expect(observers).toHaveLength(2);
+    expect(observers[0]!.disconnect).toHaveBeenCalledOnce();
+    expect(observers[1]!.disconnect).not.toHaveBeenCalled();
+
+    host.disconnect();
+    expect(observers[1]!.disconnect).toHaveBeenCalledOnce();
+    host.dispose();
   });
 
   it("loads the complete panel only on first open and reuses the fulfilled attempt", async () => {
@@ -404,6 +577,7 @@ describe("Platform Tutor Host", () => {
     "leaves no deferred restore authority after suspended Tutor %s",
     async (action) => {
       const observerConstructed = vi.fn();
+      const observerDisconnected = vi.fn();
       vi.stubGlobal(
         "MutationObserver",
         class {
@@ -411,7 +585,9 @@ describe("Platform Tutor Host", () => {
             observerConstructed();
           }
           observe(): void {}
-          disconnect(): void {}
+          disconnect(): void {
+            observerDisconnected();
+          }
           takeRecords(): MutationRecord[] {
             return [];
           }
@@ -452,7 +628,7 @@ describe("Platform Tutor Host", () => {
       suspension.restore();
       expect(host.isPresentationVisible()).toBe(false);
       expect(target.querySelector("[data-tutor-open]")).not.toBeNull();
-      expect(observerConstructed).not.toHaveBeenCalled();
+      expect(observerConstructed).toHaveBeenCalledOnce();
 
       if (action === "disconnect") {
         host.disconnect();
@@ -467,11 +643,14 @@ describe("Platform Tutor Host", () => {
 
       expect(host.isPresentationVisible()).toBe(false);
       expect(disposePanel).toHaveBeenCalledOnce();
-      expect(observerConstructed).not.toHaveBeenCalled();
+      expect(observerConstructed).toHaveBeenCalledOnce();
       if (action === "close") {
+        expect(observerDisconnected).not.toHaveBeenCalled();
         expect(target.querySelector("[data-tutor-open]")).not.toBeNull();
         host.dispose();
+        expect(observerDisconnected).toHaveBeenCalledOnce();
       } else {
+        expect(observerDisconnected).toHaveBeenCalledOnce();
         expect(target.childElementCount).toBe(0);
         if (action === "disconnect") host.dispose();
       }

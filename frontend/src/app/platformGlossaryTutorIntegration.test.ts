@@ -421,7 +421,7 @@ describe("Platform Tutor and Glossary Host integration", () => {
     await Promise.resolve();
 
     expect(tutorHost.isPresentationVisible()).toBe(false);
-    expect(observerCallbacks).toHaveLength(0);
+    expect(observerCallbacks).toHaveLength(1);
     expect(tutorTarget.querySelector("[data-tutor-open]")).not.toBeNull();
     expect(tutorTarget.querySelector("[data-test-tutor-panel]")).toBe(
       retainedPanel

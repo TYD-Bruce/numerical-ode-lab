@@ -68,6 +68,7 @@ export function createPlatformTutorHost(
   let returnFocus: HTMLElement | undefined;
   let presentation: HTMLElement | undefined;
   let launcher: HTMLButtonElement | undefined;
+  let labTargetObserver: MutationObserver | undefined;
   let modalLease: PlatformModalLease | undefined;
   const ownsModalEnvironment = options.modalEnvironment === undefined;
   const modalEnvironment =
@@ -99,6 +100,44 @@ export function createPlatformTutorHost(
     return true;
   };
 
+  const reconcileLauncherPlacement = (): void => {
+    if (disposed || !connection || !launcher) return;
+    const actionGroup = options.labTarget?.querySelector<HTMLElement>(
+      "[data-lab-header-actions]"
+    );
+    const placement = actionGroup ?? options.target;
+    if (actionGroup) {
+      launcher.dataset.labHeaderAction = "true";
+    } else {
+      delete launcher.dataset.labHeaderAction;
+    }
+    if (launcher.parentElement !== placement) placement.append(launcher);
+  };
+
+  const stopLabTargetObservation = (): void => {
+    labTargetObserver?.disconnect();
+    labTargetObserver = undefined;
+  };
+
+  const startLabTargetObservation = (): void => {
+    stopLabTargetObservation();
+    if (!options.labTarget || typeof MutationObserver === "undefined") return;
+    const observedConnection = connection;
+    const observer = new MutationObserver(() => {
+      if (
+        disposed ||
+        !observedConnection ||
+        connection !== observedConnection ||
+        labTargetObserver !== observer
+      ) {
+        return;
+      }
+      reconcileLauncherPlacement();
+    });
+    labTargetObserver = observer;
+    observer.observe(options.labTarget, { childList: true, subtree: true });
+  };
+
   const appendLauncher = (): HTMLButtonElement => {
     launcher?.remove();
     const button = document.createElement("button");
@@ -111,16 +150,8 @@ export function createPlatformTutorHost(
     button.setAttribute("aria-haspopup", "dialog");
     button.setAttribute("aria-expanded", "false");
     button.addEventListener("click", () => void host.open(button));
-    const actionGroup = options.labTarget?.querySelector<HTMLElement>(
-      "[data-lab-header-actions]"
-    );
-    if (actionGroup) {
-      button.dataset.labHeaderAction = "true";
-      actionGroup.append(button);
-    } else {
-      options.target.append(button);
-    }
     launcher = button;
+    reconcileLauncherPlacement();
     return button;
   };
 
@@ -278,6 +309,7 @@ export function createPlatformTutorHost(
       connection = next;
       generation += 1;
       renderClosed();
+      startLabTargetObservation();
       if (!isMobile() && sessionAccess.getSession().desktopOpen) {
         const trigger = launcher;
         if (trigger) void host.open(trigger);
@@ -285,6 +317,7 @@ export function createPlatformTutorHost(
     },
     disconnect(): void {
       if (disposed && !connection && !panel) return;
+      stopLabTargetObservation();
       generation += 1;
       connection?.unsubscribeReset?.();
       connection = undefined;
