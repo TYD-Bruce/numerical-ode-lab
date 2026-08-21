@@ -118,13 +118,63 @@ with one shared primary result and one chart. Browser warning/error logs were
 empty throughout. This is local browser evidence only; no Preview or Production
 deployment was authorized or performed.
 
+### Phase 4 independent-audit P3 closure
+
+The independent Phase 4 audit returned **PASS WITH P3 CARRY-FORWARD — PHASE 4
+READY FOR MAINTAINER VISUAL REVIEW AND PHASE 5 AUTHORIZATION**. Its sole
+finding, `PHASE4-P3-01`, was stale Linear Systems domain CSS left behind after
+the shared walkthrough presentation took ownership of generic heading and
+corridor chrome. The bounded cleanup is implementation commit
+`e8e6c3d879928e1727a0069c4b808468b34ab301` (tree
+`73a7f0d3d8504314dc3c91d2620da4a57bb58dce`).
+
+Source and live-DOM inspection proved that `.ls-walkthrough-phase h3` and
+`.ls-computation-step h4` matched no Phase 4 walkthrough heading. Successful
+Output renders the walkthrough title, phase headings, and step headings as
+`h3` → `h4` → `h5`; controlled failure renders them as `h4` → `h5` → `h6`
+inside the existing failure hierarchy. The shared
+`.lab-walkthrough-phase > :first-child` and
+`.lab-walkthrough-step > :first-child` rules already own the generic live
+heading presentation. Both stale domain selectors were therefore deleted,
+not retargeted. The two adjacent `.ls-computation-shell` declarations applied
+to the same live owner and are now one coherent rule containing the unchanged
+domain-specific grid, gap, and block-margin declarations. `.ls-output-summary`
+retains its unchanged grid, gap, and top margin in its own rule.
+
+Pre/post browser comparison confirmed that the live computation shell remains
+`display: grid` with a 12-pixel gap and 24-pixel block margins, and that the
+success and failure heading sequences are identical. Successful Output still
+shows three complete Before → Operation → After transformation corridors and
+no Replay/Motion control. Controlled pivot failure retains its qualified
+failure evidence and the `h4` → `h5` → `h6` walkthrough hierarchy, with no
+Replay/Motion control. At 390 × 844, the expanded successful corridor stacks
+Before, Operation, and After in that order; the document remains contained
+(`scrollWidth = clientWidth`), and the long operation remains locally
+scrollable. The ODE starter still runs to one shared primary result, one chart,
+and final Forward Euler value `0.00377789`. Browser warning/error logs remained
+empty.
+
+Focused verification passes two files / 27 tests across the Linear Systems
+application and computation walkthrough. `npm.cmd run verify:boundaries`
+passes four owners plus the Vercel adapter. Fresh `npm.cmd run verify` passes
+95 files / 1,277 tests, all frontend/numerics/contracts and backend/API
+typechecks, and the 109-module Production build. `git diff --check` passes.
+
+`PHASE4-P3-01` is closed with `P0 = P1 = P2 = P3 = 0`. Durable rule: when
+shared presentation takes ownership of generic visual structure, retire
+obsolete domain selectors rather than retargeting them to the new DOM merely
+to keep old CSS alive. Phase 4 remains a candidate awaiting Maintainer visual
+review; it is not Maintainer accepted. Phase 5 has not started. No numerical,
+Computation Trace, Teaching v2, DOM, MathML, Motion, Tutor, Glossary,
+`AnalysisSurface`, dependency, push, Preview, or Production deployment change
+is included.
+
 ### Stop gate
 
-Phase 4 stops here. The exact next gate is **independent Phase 4 Linear Systems
-presentation / Teaching v2 / trace-equivalence audit**, followed by
-**Maintainer visual review**. Phase 5 `AnalysisSurface` alignment, Motion
-remount, Linear Algebra Tutor, Linear Algebra Glossary, PDE work, push, and
-deployment remain unauthorized.
+Phase 4 stops here. The exact next gate is **Maintainer visual review of the
+final Phase 4 candidate**. Phase 5 `AnalysisSurface` alignment has not started;
+Motion remount, Linear Algebra Tutor, Linear Algebra Glossary, PDE work, push,
+and deployment remain unauthorized.
 
 ## Cross-Lab Presentation Sync Phase 3 — Maintainer accepted — 2026-08-21
 
