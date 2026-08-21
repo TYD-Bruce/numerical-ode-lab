@@ -15,6 +15,7 @@ import {
   multiplyNodes,
   xHatNode,
 } from "./linearSystemsMath";
+import { createTeachingBlock } from "../../components/lab-presentation/teachingBlock";
 
 export interface LinearSystemsTeachingConcept {
   readonly id: string;
@@ -259,8 +260,6 @@ function createUniversalTeaching(): HTMLElement {
   const universal = el("div", undefined, "ls-universal-teaching");
   universal.dataset.universalLinearSystemsTeaching = "true";
 
-  const problem = el("section", undefined, "ls-method-problem");
-  problem.dataset.methodProblem = "true";
   const problemHeading = el("h2", "What are we solving?");
   problemHeading.tabIndex = -1;
   const definition = el(
@@ -283,20 +282,15 @@ function createUniversalTeaching(): HTMLElement {
       "The known vector of constants on the right-hand side. It is the target vector that A x must equal."
     )
   );
-  problem.append(
-    el("p", "The problem", "ls-eyebrow"),
-    problemHeading,
-    createSystemEquation("ls-problem-equation"),
-    definition,
-    roles,
-    createTwoEquationExample()
-  );
+  const problem = createTeachingBlock({
+    eyebrow: el("p", "The problem", "ls-eyebrow"),
+    heading: problemHeading,
+    math: [createSystemEquation("ls-problem-equation"), definition],
+    examples: [roles, createTwoEquationExample()],
+  });
+  problem.classList.add("ls-method-problem");
+  problem.dataset.methodProblem = "true";
 
-  const families = el("section", undefined, "ls-method-section");
-  families.append(
-    el("p", "The method landscape", "ls-eyebrow"),
-    el("h3", "Direct and iterative methods")
-  );
   const familyLayout = el("div", undefined, "ls-method-families");
   const direct = el("article", undefined, "ls-method-family is-direct");
   direct.dataset.methodFamily = "direct";
@@ -324,7 +318,12 @@ function createUniversalTeaching(): HTMLElement {
     planned
   );
   familyLayout.append(direct, iterative);
-  families.append(familyLayout);
+  const families = createTeachingBlock({
+    eyebrow: el("p", "The method landscape", "ls-eyebrow"),
+    heading: el("h3", "Direct and iterative methods"),
+    examples: [familyLayout],
+  });
+  families.classList.add("ls-method-section");
   universal.append(problem, families);
   return universal;
 }
@@ -340,22 +339,10 @@ function renderProfileFormula(
 function createSelectedMethodTeaching(
   profile: LinearSystemsMethodTeachingProfile
 ): HTMLElement {
-  const selected = el("section", undefined, "ls-selected-method");
-  selected.dataset.selectedMethod = profile.id;
-  selected.dataset.selectedMethodTeaching = profile.id;
-  const selectedHeading = el("div", undefined, "ls-selected-method-heading");
-  selectedHeading.append(
-    el("h3", `How ${profile.learnerLabel} works`),
-    status("Available · Used in this Lab", "available")
-  );
   const outline = el("ol", undefined, "ls-algorithm-outline");
   profile.algorithmSteps.forEach((item) => outline.append(el("li", item)));
-  selected.append(
-    el("p", "Selected runnable method", "ls-eyebrow"),
-    selectedHeading,
-    el("p", profile.overview),
-    outline
-  );
+  const selectedHeading = el("h3", `How ${profile.learnerLabel} works`);
+  const overview = el("p", profile.overview);
 
   const concepts = el("div", undefined, "ls-concept-path");
   concepts.append(el("p", "Selected-method concepts", "ls-eyebrow"));
@@ -369,36 +356,53 @@ function createSelectedMethodTeaching(
     band.append(el("h4", group.title), terms, formulas);
     concepts.append(band);
   });
-  selected.append(concepts);
+  const selected = createTeachingBlock({
+    eyebrow: el("p", "Selected runnable method", "ls-eyebrow"),
+    heading: selectedHeading,
+    lead: overview,
+    steps: outline,
+    examples: [concepts],
+  });
+  const headingFrame = el("div", undefined, "ls-selected-method-heading");
+  selectedHeading.replaceWith(headingFrame);
+  headingFrame.append(
+    selectedHeading,
+    status("Available · Used in this Lab", "available")
+  );
+  selected.classList.add("ls-selected-method");
+  selected.dataset.selectedMethod = profile.id;
+  selected.dataset.selectedMethodTeaching = profile.id;
   return selected;
 }
 
 function createResultCheckingTeaching(): HTMLElement {
-  const checking = el("section", undefined, "ls-method-section ls-result-checking");
+  const checking = createTeachingBlock({
+    eyebrow: el("p", "After the solve", "ls-eyebrow"),
+    heading: el("h3", "Checking the result"),
+    math: [
+      createNativeMath(
+        [
+          mathIdentifier("r"),
+          mathOperator("="),
+          mathIdentifier("b"),
+          mathOperator("−"),
+          multiplyNodes(mathIdentifier("A"), xHatNode()),
+        ],
+        "r equals b minus A times x hat",
+        { className: "ls-concept-formula", dataMath: "residual-relation" }
+      ),
+      el(
+        "p",
+        "The residual measures equation mismatch: it checks how closely the computed solution satisfies the original equations."
+      ),
+      el(
+        "p",
+        "Conditioning describes how sensitive the solution can be to small changes in the problem data. This Lab does not compute a condition number, so a small residual does not by itself guarantee a small solution error."
+      ),
+    ],
+  });
+  checking.classList.add("ls-method-section", "ls-result-checking");
   checking.dataset.methodResultCheck = "true";
-  checking.append(
-    el("p", "After the solve", "ls-eyebrow"),
-    el("h3", "Checking the result"),
-    createNativeMath(
-      [
-        mathIdentifier("r"),
-        mathOperator("="),
-        mathIdentifier("b"),
-        mathOperator("−"),
-        multiplyNodes(mathIdentifier("A"), xHatNode()),
-      ],
-      "r equals b minus A times x hat",
-      { className: "ls-concept-formula", dataMath: "residual-relation" }
-    ),
-    el(
-      "p",
-      "The residual measures equation mismatch: it checks how closely the computed solution satisfies the original equations."
-    ),
-    el(
-      "p",
-      "Conditioning describes how sensitive the solution can be to small changes in the problem data. This Lab does not compute a condition number, so a small residual does not by itself guarantee a small solution error."
-    )
-  );
   return checking;
 }
 

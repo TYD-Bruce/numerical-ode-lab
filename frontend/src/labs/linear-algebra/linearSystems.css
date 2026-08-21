@@ -71,7 +71,6 @@
 }
 
 .lab-stage-section > h2,
-.ls-result-header h2,
 .ls-factorization-rail h3,
 .ls-walkthrough-phase h3,
 .ls-computation-step h4 {
@@ -297,16 +296,6 @@
   font-weight: 700;
 }
 
-.ls-result-header {
-  display: grid;
-  justify-items: start;
-  gap: var(--space-2);
-  padding: var(--space-4);
-  border: 1px solid var(--color-output-accent);
-  border-radius: var(--radius-md);
-  background: var(--color-output-surface);
-}
-
 .ls-eyebrow {
   margin: 0;
   color: var(--color-text-secondary);
@@ -343,10 +332,7 @@
 
 .ls-factorization-rail {
   margin-block: var(--space-6);
-  padding: clamp(1rem, 3vw, 1.5rem);
-  border: 1px solid var(--color-output-accent);
-  border-radius: var(--radius-md);
-  background: var(--color-output-surface);
+  border-color: var(--color-output-accent);
 }
 
 .ls-factorization-equation,
@@ -391,7 +377,14 @@
 .ls-computation-shell {
   display: grid;
   gap: var(--space-3);
+}
+
+.ls-computation-shell {
   margin-block: var(--space-6);
+}
+
+.ls-output-summary {
+  margin-top: var(--space-3);
 }
 
 .ls-evidence-table {
@@ -436,8 +429,6 @@
   display: grid;
   gap: var(--space-8);
   min-width: 0;
-  padding-top: var(--space-6);
-  border-top: 1px solid var(--color-border);
 }
 
 .ls-walkthrough-phase {
@@ -459,10 +450,6 @@
 
 .ls-computation-step {
   min-width: 0;
-  padding: var(--space-4);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface-raised);
 }
 
 .ls-computation-markers {
@@ -861,6 +848,7 @@
 .ls-method-section,
 .ls-selected-method {
   display: grid;
+  max-width: none;
   min-width: 0;
   gap: var(--space-4);
 }
@@ -1022,7 +1010,7 @@
   background: var(--color-method-surface);
 }
 
-.ls-selected-method > p:not(.ls-eyebrow) {
+.ls-selected-method > .lab-teaching-block-lead {
   margin-block: 0;
   color: var(--color-text-secondary);
 }
@@ -1095,27 +1083,22 @@
   overflow-x: auto;
 }
 
-.ls-primary-result {
-  display: grid;
+.linear-systems-shell .lab-primary-result {
   width: 100%;
-  min-width: 0;
   grid-template-columns: minmax(0, 1.35fr) minmax(12rem, 0.65fr);
-  gap: var(--space-3);
 }
 
-.ls-result-part {
-  display: grid;
-  min-width: 0;
-  align-content: center;
-  gap: var(--space-2);
-  padding: var(--space-4);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: var(--color-surface-raised);
+.linear-systems-shell .lab-primary-result > :where(
+    .lab-primary-result-eyebrow,
+    .lab-primary-result-heading,
+    .lab-primary-result-status
+  ) {
+  grid-column: 1 / -1;
 }
 
-.ls-result-part.is-solution {
-  border-color: var(--color-output-accent);
+.linear-systems-shell .lab-primary-result-problem,
+.linear-systems-shell .lab-primary-result-answers {
+  align-self: stretch;
 }
 
 .ls-result-part h3,
@@ -1202,29 +1185,20 @@
 }
 
 .ls-v2-computation-step {
-  display: grid;
-  gap: var(--space-3);
+  min-width: 0;
 }
 
 .ls-v2-computation-step > p {
   margin-block: 0;
 }
 
-.ls-transformation-corridor {
-  display: grid;
-  min-width: 0;
+.linear-systems-shell .lab-walkthrough-corridor {
   grid-template-columns:
-    minmax(max-content, 1fr)
-    minmax(11rem, auto)
-    minmax(max-content, 1fr);
+    minmax(0, 1fr)
+    minmax(11rem, 0.72fr)
+    minmax(0, 1fr);
   align-items: center;
   gap: var(--space-4);
-  padding: var(--space-3);
-  overflow-x: auto;
-  overscroll-behavior-inline: contain;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: var(--color-surface-inset);
 }
 
 .ls-transformation-state,
@@ -1238,15 +1212,6 @@
 .ls-transformation-state {
   align-self: stretch;
   align-content: center;
-  padding: var(--space-3);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: var(--color-surface-raised);
-}
-
-.ls-transformation-state.is-after {
-  border-color: var(--color-output-accent);
-  box-shadow: inset 0 -2px var(--color-output-accent);
 }
 
 .ls-transformation-operation {
@@ -1360,38 +1325,14 @@
 }
 
 .ls-diagnostic-block {
-  display: grid;
-  min-width: 0;
-  gap: var(--space-2);
-  padding: var(--space-4);
-  border: 1px solid var(--color-border);
   border-inline-start: var(--space-1) solid var(--color-convergence-accent);
-  border-radius: var(--radius-md);
-  background: var(--color-surface-raised);
 }
 
 .ls-diagnostics-context {
-  display: grid;
-  gap: var(--space-3);
   margin-block: var(--space-4);
-  padding: var(--space-4);
   border: 1px solid var(--color-convergence-accent);
   border-radius: var(--radius-md);
   background: var(--color-surface-inset);
-}
-
-.ls-diagnostics-context-heading {
-  display: grid;
-  gap: var(--space-1);
-}
-
-.ls-diagnostics-context-heading h3,
-.ls-diagnostics-context-heading p {
-  margin: 0;
-}
-
-.ls-diagnostics-context-heading > p:last-child {
-  color: var(--color-text-secondary);
 }
 
 .ls-diagnostics-context-math {
@@ -1435,14 +1376,17 @@
   text-transform: uppercase;
 }
 
-.ls-diagnostic-block > .native-math {
+.ls-diagnostic-block .lab-evidence-block-formulas > .native-math {
   display: block;
   width: fit-content;
   max-width: 100%;
   overflow-x: auto;
 }
 
-.ls-diagnostic-block > .native-math .native-math-visual {
+.ls-diagnostic-block
+  .lab-evidence-block-formulas
+  > .native-math
+  .native-math-visual {
   font-size: clamp(1.2rem, 3vw, 1.5rem);
 }
 
@@ -1456,12 +1400,7 @@
 }
 
 .ls-reference-comparison {
-  display: grid;
-  gap: var(--space-2);
   margin-block: var(--space-4);
-  padding: var(--space-4);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
   background: var(--color-data-surface);
 }
 
@@ -1476,10 +1415,6 @@
 
 .ls-safeguard-details {
   margin-block: var(--space-6);
-  padding: var(--space-4);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface-inset);
 }
 
 .ls-safeguard-details > summary,
@@ -1517,7 +1452,7 @@
 
 @media (max-width: 44rem) {
   .ls-linear-system-example,
-  .ls-primary-result,
+  .linear-systems-shell .lab-primary-result,
   .ls-diagnostics-context-math,
   .ls-system-roles,
   .ls-method-families,
@@ -1525,10 +1460,9 @@
     grid-template-columns: 1fr;
   }
 
-  .ls-transformation-corridor {
+  .linear-systems-shell .lab-walkthrough-corridor {
     grid-template-columns: minmax(0, 1fr);
     justify-items: stretch;
-    overflow-x: visible;
   }
 
   .ls-transformation-state,
@@ -1571,7 +1505,6 @@
   .ls-method-family,
   .ls-concept-band,
   .ls-system-role,
-  .ls-transformation-corridor,
   .ls-transformation-state,
   .ls-diagnostic-block {
     padding: var(--space-3);
@@ -1601,7 +1534,6 @@
   .ls-method-family,
   .ls-selected-method,
   .ls-concept-band,
-  .ls-transformation-corridor,
   .ls-transformation-state,
   .ls-walkthrough-final-solution,
   .ls-diagnostic-block,

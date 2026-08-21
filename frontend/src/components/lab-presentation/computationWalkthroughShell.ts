@@ -12,11 +12,16 @@ export interface WalkthroughStep {
   readonly corridor?: WalkthroughCorridor;
   readonly content?: readonly Node[];
   readonly advancedDetails?: HTMLDetailsElement;
+  readonly classNames?: readonly string[];
+  readonly dataAttributes?: Readonly<Record<string, string>>;
 }
 
 export interface WalkthroughPhase {
   readonly heading: HTMLHeadingElement;
+  readonly lead?: HTMLElement;
   readonly steps: readonly WalkthroughStep[];
+  readonly classNames?: readonly string[];
+  readonly dataAttributes?: Readonly<Record<string, string>>;
 }
 
 export interface ComputationWalkthroughShellOptions {
@@ -46,6 +51,19 @@ function corridorPart(
   marker.textContent = label;
   part.append(marker, content);
   return part;
+}
+
+function applyAuthoredPresentationMetadata(
+  owner: HTMLElement,
+  classNames: readonly string[] | undefined,
+  dataAttributes: Readonly<Record<string, string>> | undefined
+): void {
+  if (classNames?.length) owner.classList.add(...classNames);
+  if (dataAttributes) {
+    Object.entries(dataAttributes).forEach(([name, value]) => {
+      owner.dataset[name] = value;
+    });
+  }
 }
 
 /**
@@ -86,7 +104,16 @@ export function createComputationWalkthroughShell(
     }
     const phaseItem = document.createElement("li");
     phaseItem.className = "lab-walkthrough-phase";
+    applyAuthoredPresentationMetadata(
+      phaseItem,
+      phase.classNames,
+      phase.dataAttributes
+    );
     phaseItem.append(phase.heading);
+    if (phase.lead) {
+      phase.lead.classList.add("lab-walkthrough-phase-lead");
+      phaseItem.append(phase.lead);
+    }
     const steps = document.createElement("ol");
     steps.className = "lab-walkthrough-steps";
     steps.dataset.walkthroughSteps = "true";
@@ -97,6 +124,11 @@ export function createComputationWalkthroughShell(
       }
       const stepItem = document.createElement("li");
       stepItem.className = "lab-walkthrough-step";
+      applyAuthoredPresentationMetadata(
+        stepItem,
+        step.classNames,
+        step.dataAttributes
+      );
       stepItem.append(step.heading);
       if (step.lead) {
         step.lead.classList.add("lab-walkthrough-step-lead");

@@ -16,6 +16,13 @@ describe("Linear Systems Teaching v2 method foundation", () => {
   it("makes core roles, method families, statuses, and concepts directly visible", () => {
     const view = createLinearSystemsMethodTeaching();
 
+    expect(view.querySelectorAll("[data-teaching-block]")).toHaveLength(4);
+    expect(
+      view.querySelector("[data-method-problem].lab-teaching-block")
+    ).not.toBeNull();
+    expect(
+      view.querySelector("[data-selected-method-teaching].lab-teaching-block")
+    ).not.toBeNull();
     expect(view.querySelectorAll("[data-system-role]")).toHaveLength(3);
     expect(view.querySelector("[data-linear-system-definition]")?.textContent).toContain(
       "multiple linear equations"

@@ -21,6 +21,11 @@ import {
   type MathNumberContext,
 } from "../../math/structuredMath";
 import {
+  createComputationWalkthroughShell,
+  type WalkthroughPhase,
+  type WalkthroughStep,
+} from "../../components/lab-presentation/computationWalkthroughShell";
+import {
   createComputedSolution,
   createNamedMatrix,
   createNamedVector,
@@ -130,16 +135,23 @@ export function createTraceRetentionNotice(
   return notice;
 }
 
-function phase(
+function walkthroughPhase(
   title: string,
   description: string,
   level: HeadingLevel,
-  dataPhase: string
-): HTMLElement {
-  const section = element("section", undefined, "ls-walkthrough-phase ls-v2-phase");
-  section.dataset.walkthroughPhase = dataPhase;
-  section.append(heading(level, title), element("p", description, "ls-muted"));
-  return section;
+  dataPhase: string,
+  steps: readonly WalkthroughStep[],
+  authoredLead: readonly Node[] = []
+): WalkthroughPhase {
+  const lead = element("div");
+  lead.append(element("p", description, "ls-muted"), ...authoredLead);
+  return {
+    heading: heading(level, title),
+    lead,
+    steps,
+    classNames: ["ls-walkthrough-phase", "ls-v2-phase"],
+    dataAttributes: { walkthroughPhase: dataPhase },
+  };
 }
 
 function stepCard(
@@ -156,6 +168,63 @@ function stepCard(
   card.dataset.traceKind = step.kind;
   card.append(heading(headingLevel, title));
   return card;
+}
+
+function sharedStep(card: HTMLElement): WalkthroughStep {
+  const stepHeading = card.querySelector<HTMLHeadingElement>(
+    ":scope > h2, :scope > h3, :scope > h4, :scope > h5, :scope > h6"
+  );
+  if (!stepHeading) {
+    throw new Error("A Linear Systems walkthrough card requires a heading.");
+  }
+  stepHeading.remove();
+
+  const corridor = card.querySelector<HTMLElement>(
+    ":scope > .ls-transformation-corridor"
+  );
+  const directDetails = card.querySelector<HTMLDetailsElement>(
+    ":scope > details:last-child"
+  );
+  directDetails?.remove();
+
+  let lead: HTMLElement | undefined;
+  let sharedCorridor: WalkthroughStep["corridor"];
+  let content: Node[];
+  if (corridor) {
+    const preceding = Array.from(card.childNodes).slice(
+      0,
+      Array.from(card.childNodes).indexOf(corridor)
+    );
+    if (preceding.length > 0) {
+      lead = element("div", undefined, "ls-walkthrough-step-lead-content");
+      lead.append(...preceding);
+    }
+    const [source, operation, target] = Array.from(corridor.childNodes);
+    if (!source || !operation || !target) {
+      throw new Error("A Linear Systems transformation requires three states.");
+    }
+    sharedCorridor = { source, operation, target };
+    corridor.remove();
+    content = Array.from(card.childNodes);
+  } else {
+    content = Array.from(card.childNodes);
+  }
+
+  const dataAttributes: Record<string, string> = {};
+  Object.keys(card.dataset).forEach((name) => {
+    const value = card.dataset[name];
+    if (value !== undefined) dataAttributes[name] = value;
+  });
+
+  return {
+    heading: stepHeading,
+    lead,
+    corridor: sharedCorridor,
+    content: content.length > 0 ? content : undefined,
+    advancedDetails: directDetails ?? undefined,
+    classNames: [...card.classList],
+    dataAttributes,
+  };
 }
 
 function computationMarker(
@@ -226,7 +295,6 @@ function matrixState(
   const owner = element("div", undefined, `ls-transformation-state is-${state}`);
   owner.dataset.matrixState = state;
   owner.append(
-    computationMarker(state === "before" ? "Before" : "After", state === "before" ? "source" : "changed"),
     createNativeMath(
       numericMatrixNode(matrix, "matrix"),
       `${accessiblePrefix}: matrix with rows ${spokenMatrix(matrix, "matrix")}`,
@@ -785,13 +853,8 @@ export function createComputationWalkthrough(
 ): HTMLElement {
   const phaseHeadingLevel = (options.headingLevel + 1) as HeadingLevel;
   const stepHeadingLevel = (options.headingLevel + 2) as HeadingLevel;
-  const walkthrough = element("div", undefined, "ls-computation-walkthrough ls-computation-walkthrough-v2");
-  walkthrough.dataset.computationWalkthrough = "true";
-  walkthrough.append(
-    heading(
-      options.headingLevel,
-      options.result ? "Computation walkthrough" : "Computation before failure"
-    ),
+  const purpose = element("div");
+  purpose.append(
     element(
       "p",
       "The matrices and arithmetic below come from the computation that produced this attempt. Static evidence remains authoritative.",
@@ -799,19 +862,14 @@ export function createComputationWalkthrough(
     )
   );
   const retention = createTraceRetentionNotice(trace);
-  if (retention) walkthrough.append(retention);
+  if (retention) purpose.append(retention);
+  const phases: WalkthroughPhase[] = [];
 
   const start = trace.steps.find(
     (step): step is Extract<LinearSystemTraceStep, { kind: "factorization_start" }> =>
       step.kind === "factorization_start"
   );
   if (start) {
-    const startSection = phase(
-      "1. Start with the original system",
-      "Gaussian elimination begins with the original matrix and works toward an upper-triangular U.",
-      phaseHeadingLevel,
-      "start"
-    );
     const original = element("div", undefined, "ls-original-system");
     original.append(
       createNamedMatrix("A", start.initialU, "original coefficient matrix A", {
@@ -830,54 +888,80 @@ export function createComputationWalkthrough(
         })
       );
     }
-    startSection.append(
-      element("p", "Selected method: Gaussian elimination with partial pivoting.", "ls-selected-method-line"),
-      original,
-      initialFactorization(start, stepHeadingLevel)
+    phases.push(
+      walkthroughPhase(
+        "1. Start with the original system",
+        "Gaussian elimination begins with the original matrix and works toward an upper-triangular U.",
+        phaseHeadingLevel,
+        "start",
+        [sharedStep(initialFactorization(start, stepHeadingLevel))],
+        [
+          element(
+            "p",
+            "Selected method: Gaussian elimination with partial pivoting.",
+            "ls-selected-method-line"
+          ),
+          original,
+        ]
+      )
     );
-    walkthrough.append(startSection);
   }
 
-  const factorization = phase(
-    "2. Pivot and factorize",
-    "Each pivot decision supports the complete matrix transformations shown in computation order.",
-    phaseHeadingLevel,
-    "factorization"
+  const factorSteps = trace.steps.filter(
+    (
+      step
+    ): step is Extract<
+      LinearSystemTraceStep,
+      { kind: "pivot_selection" | "row_swap" | "elimination" }
+    > =>
+      step.kind === "pivot_selection" ||
+      step.kind === "row_swap" ||
+      step.kind === "elimination"
   );
-  const factorSteps = trace.steps.filter((step) =>
-    step.kind === "pivot_selection" ||
-    step.kind === "row_swap" ||
-    step.kind === "elimination"
-  );
-  factorSteps.forEach((step) => {
+  const authoredFactorSteps = factorSteps.map((step) => {
     if (step.kind === "pivot_selection") {
-      factorization.append(pivotSelection(step, stepHeadingLevel));
-    } else if (step.kind === "row_swap") {
-      factorization.append(rowSwap(step, stepHeadingLevel));
-    } else if (step.kind === "elimination") {
-      factorization.append(elimination(step, stepHeadingLevel));
+      return sharedStep(pivotSelection(step, stepHeadingLevel));
     }
+    if (step.kind === "row_swap") {
+      return sharedStep(rowSwap(step, stepHeadingLevel));
+    }
+    return sharedStep(elimination(step, stepHeadingLevel));
   });
   const completed = trace.steps.find(
     (step): step is Extract<LinearSystemTraceStep, { kind: "factorization_complete" }> =>
       step.kind === "factorization_complete"
   );
-  if (completed) factorization.append(factorizationComplete(completed, stepHeadingLevel));
-  if (factorSteps.length > 0 || completed) walkthrough.append(factorization);
+  if (completed) {
+    authoredFactorSteps.push(
+      sharedStep(factorizationComplete(completed, stepHeadingLevel))
+    );
+  }
+  if (authoredFactorSteps.length > 0) {
+    phases.push(
+      walkthroughPhase(
+        "2. Pivot and factorize",
+        "Each pivot decision supports the complete matrix transformations shown in computation order.",
+        phaseHeadingLevel,
+        "factorization",
+        authoredFactorSteps
+      )
+    );
+  }
 
   const rhs = trace.steps.find(
     (step): step is Extract<LinearSystemTraceStep, { kind: "right_hand_side_permutation" }> =>
       step.kind === "right_hand_side_permutation"
   );
   if (rhs) {
-    const rhsSection = phase(
-      "3. Permute the right-hand side",
-      "The same row ordering applied to A must also be applied to b.",
-      phaseHeadingLevel,
-      "right-hand-side"
+    phases.push(
+      walkthroughPhase(
+        "3. Permute the right-hand side",
+        "The same row ordering applied to A must also be applied to b.",
+        phaseHeadingLevel,
+        "right-hand-side",
+        [sharedStep(rhsPermutation(rhs, stepHeadingLevel))]
+      )
     );
-    rhsSection.append(rhsPermutation(rhs, stepHeadingLevel));
-    walkthrough.append(rhsSection);
   }
 
   const forwardSteps = trace.steps.filter(
@@ -885,25 +969,28 @@ export function createComputationWalkthrough(
       step.kind === "forward_substitution"
   );
   if (forwardSteps.length > 0) {
-    const forward = phase(
-      "4. Solve L y = P b",
-      "L is lower triangular, so y is solved from top to bottom using already known earlier components.",
-      phaseHeadingLevel,
-      "forward-substitution"
-    );
-    forward.append(
-      mathDisplay(
+    phases.push(
+      walkthroughPhase(
+        "4. Solve L y = P b",
+        "L is lower triangular, so y is solved from top to bottom using already known earlier components.",
+        phaseHeadingLevel,
+        "forward-substitution",
+        forwardSteps.map((step) =>
+          sharedStep(substitution(step, stepHeadingLevel))
+        ),
         [
-          multiplyNodes(mathIdentifier("L"), mathIdentifier("y")),
-          mathOperator("="),
-          multiplyNodes(mathIdentifier("P"), mathIdentifier("b")),
-        ],
-        "L times y equals P times b",
-        "forward-substitution-relation"
+          mathDisplay(
+            [
+              multiplyNodes(mathIdentifier("L"), mathIdentifier("y")),
+              mathOperator("="),
+              multiplyNodes(mathIdentifier("P"), mathIdentifier("b")),
+            ],
+            "L times y equals P times b",
+            "forward-substitution-relation"
+          ),
+        ]
       )
     );
-    forwardSteps.forEach((step) => forward.append(substitution(step, stepHeadingLevel)));
-    walkthrough.append(forward);
   }
 
   const backwardSteps = trace.steps.filter(
@@ -911,33 +998,41 @@ export function createComputationWalkthrough(
       step.kind === "backward_substitution"
   );
   if (backwardSteps.length > 0) {
-    const backward = phase(
-      "5. Backward substitution",
-      "Because U is upper triangular, recover the computed solution from bottom to top.",
-      phaseHeadingLevel,
-      "backward-substitution"
+    const authoredBackwardSteps = backwardSteps.map((step) =>
+      sharedStep(substitution(step, stepHeadingLevel))
     );
-    backward.append(
-      mathDisplay(
-        [
-          multiplyNodes(mathIdentifier("U"), xHatNode()),
-          mathOperator("="),
-          mathIdentifier("y"),
+    if (options.result) {
+      authoredBackwardSteps.push({
+        heading: heading(stepHeadingLevel, "Computed solution"),
+        content: [
+          createComputedSolution(
+            options.result.xHat,
+            "ls-walkthrough-solution-math"
+          ),
         ],
-        "U times x hat equals y",
-        "backward-substitution-relation"
+        classNames: ["ls-walkthrough-final-solution"],
+      });
+    }
+    phases.push(
+      walkthroughPhase(
+        "5. Backward substitution",
+        "Because U is upper triangular, recover the computed solution from bottom to top.",
+        phaseHeadingLevel,
+        "backward-substitution",
+        authoredBackwardSteps,
+        [
+          mathDisplay(
+            [
+              multiplyNodes(mathIdentifier("U"), xHatNode()),
+              mathOperator("="),
+              mathIdentifier("y"),
+            ],
+            "U times x hat equals y",
+            "backward-substitution-relation"
+          ),
+        ]
       )
     );
-    backwardSteps.forEach((step) => backward.append(substitution(step, stepHeadingLevel)));
-    if (options.result) {
-      const result = element("section", undefined, "ls-walkthrough-final-solution");
-      result.append(
-        heading(stepHeadingLevel, "Computed solution"),
-        createComputedSolution(options.result.xHat, "ls-walkthrough-solution-math")
-      );
-      backward.append(result);
-    }
-    walkthrough.append(backward);
   }
 
   const residualComponents = trace.steps.filter(
@@ -950,20 +1045,37 @@ export function createComputationWalkthrough(
   );
   const residual = residualPhase(residualComponents, residualNorm, stepHeadingLevel);
   if (residual) {
-    const residualSection = phase(
-      "6. Check the residual",
-      "Use the original A and b to measure how closely the computed solution satisfies the equations.",
-      phaseHeadingLevel,
-      "residual"
-    );
-    residualSection.append(residual);
+    const residualSteps = [sharedStep(residual)];
     const reference = trace.steps.find(
       (step): step is Extract<LinearSystemTraceStep, { kind: "preset_reference_difference" }> =>
         step.kind === "preset_reference_difference"
     );
-    if (reference) residualSection.append(presetReference(reference, stepHeadingLevel));
-    walkthrough.append(residualSection);
+    if (reference) {
+      residualSteps.push(sharedStep(presetReference(reference, stepHeadingLevel)));
+    }
+    phases.push(
+      walkthroughPhase(
+        "6. Check the residual",
+        "Use the original A and b to measure how closely the computed solution satisfies the equations.",
+        phaseHeadingLevel,
+        "residual",
+        residualSteps
+      )
+    );
   }
 
+  const walkthrough = createComputationWalkthroughShell({
+    heading: heading(
+      options.headingLevel,
+      options.result ? "Computation walkthrough" : "Computation before failure"
+    ),
+    purpose,
+    phases,
+  });
+  walkthrough.classList.add(
+    "ls-computation-walkthrough",
+    "ls-computation-walkthrough-v2"
+  );
+  walkthrough.dataset.computationWalkthrough = "true";
   return walkthrough;
 }

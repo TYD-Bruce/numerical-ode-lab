@@ -259,6 +259,9 @@ describe("Linear Systems Lab Teaching v2 application", () => {
 
     const result = mounted.getSession().latestSuccessfulResult!;
     expect(mounted.getSession()).toMatchObject({ step: "output", resultStatus: "current" });
+    expect(document.activeElement).toBe(
+      target.querySelector("[data-primary-result] > h2")
+    );
     const computed = target.querySelector<HTMLElement>(
       "[data-native-math='computed-solution']"
     )!;
@@ -267,6 +270,7 @@ describe("Linear Systems Lab Teaching v2 application", () => {
     expect(computed.querySelectorAll("mtr")).toHaveLength(3);
     expect(computed.getAttribute("aria-label")).toContain("x hat equals");
     const context = target.querySelector<HTMLElement>("[data-output-problem-context]")!;
+    expect(context.classList.contains("lab-problem-context")).toBe(true);
     expect(context.dataset.resultAuthority).toBe("successful-result");
     expect(context.querySelector("[data-native-math='solved-system']")).not.toBeNull();
     expect(context.querySelectorAll("[data-native-math='solved-system'] mtable")).toHaveLength(3);
@@ -278,17 +282,29 @@ describe("Linear Systems Lab Teaching v2 application", () => {
       ...result.originalA.flat().map((value) => formatMathNumber(value, "matrix").text),
       ...result.originalB.map((value) => formatMathNumber(value, "matrix").text),
     ]);
+    expect(target.querySelectorAll("[data-primary-result]")).toHaveLength(1);
     const primary = target.querySelector<HTMLElement>("[data-primary-result]")!;
-    expect(primary.querySelectorAll(":scope > [data-result-part]")).toHaveLength(2);
-    expect(primary.querySelector("[data-result-part='problem'] + [data-result-part='solution']"))
-      .not.toBeNull();
+    expect(primary.classList.contains("lab-primary-result")).toBe(true);
+    expect(primary.classList.contains("ls-primary-result")).toBe(false);
+    expect(primary.querySelector(".ls-primary-result[data-primary-result]"))
+      .toBeNull();
     for (const factor of ["factor-p", "factor-l", "factor-u"]) {
       expect(target.querySelector(`[data-native-math='${factor}'] mtable`)).not.toBeNull();
     }
+    expect(
+      target.querySelector(".ls-factorization-rail[data-evidence-block]")
+    ).not.toBeNull();
 
     const toggle = target.querySelector<HTMLButtonElement>("[data-show-computation]")!;
     expect(toggle.getAttribute("aria-expanded")).toBe("false");
     toggle.click();
+    expect(
+      target.querySelector("[data-computation-walkthrough-shell]")
+    ).not.toBeNull();
+    expect(
+      target.querySelector("[data-trace-kind='elimination'] [data-walkthrough-corridor]")
+    ).not.toBeNull();
+    expect(target.querySelector(".ls-transformation-corridor")).toBeNull();
     expect(target.querySelector("[data-trace-kind='factorization_start'] mtable")).not.toBeNull();
     expect(
       target.querySelector(
@@ -322,6 +338,7 @@ describe("Linear Systems Lab Teaching v2 application", () => {
 
     const result = mounted.getSession().latestSuccessfulResult!;
     const context = target.querySelector<HTMLElement>("[data-diagnostics-context]")!;
+    expect(context.classList.contains("lab-problem-context")).toBe(true);
     expect(context.dataset.resultAuthority).toBe("successful-result");
     expect(context.querySelector("[data-native-math='diagnostic-context-a']")).not.toBeNull();
     expect(context.querySelector("[data-native-math='diagnostic-context-b']")).not.toBeNull();
@@ -346,7 +363,12 @@ describe("Linear Systems Lab Teaching v2 application", () => {
     ).toBe("If A times x hat equals b, then r equals zero");
     expect(target.querySelector("[data-native-math='residual-ideal'] mover")).not.toBeNull();
     const meaning = target.querySelector<HTMLElement>("[data-diagnostic-meaning]")!;
+    expect(meaning.classList.contains("lab-teaching-block")).toBe(true);
     const firstStep = target.querySelector<HTMLElement>("[data-diagnostic-block='matrix-vector']")!;
+    expect(firstStep.classList.contains("lab-evidence-block")).toBe(true);
+    expect(
+      target.querySelectorAll("[data-diagnostic-block].lab-evidence-block")
+    ).toHaveLength(3);
     expect(
       Boolean(meaning.compareDocumentPosition(firstStep) & Node.DOCUMENT_POSITION_FOLLOWING)
     ).toBe(true);
@@ -419,6 +441,7 @@ describe("Linear Systems Lab Teaching v2 application", () => {
     const safeguard = target.querySelector<HTMLDetailsElement>(
       "[data-solver-safeguard-details]"
     )!;
+    expect(safeguard.classList.contains("lab-advanced-details")).toBe(true);
     expect(safeguard.open).toBe(false);
     expect(safeguard.querySelectorAll("msub").length).toBeGreaterThanOrEqual(3);
     const implementation = safeguard.querySelector<HTMLDetailsElement>(
@@ -455,6 +478,12 @@ describe("Linear Systems Lab Teaching v2 application", () => {
     expect(mounted.getSession().latestSuccessfulResult).toBe(result);
     target.querySelector<HTMLButtonElement>("[data-workflow-step='output']")!.click();
     expect(target.querySelector("[data-result-stale]")).not.toBeNull();
+    expect(target.querySelectorAll("[data-primary-result]")).toHaveLength(1);
+    const stalePrimary = target.querySelector<HTMLElement>("[data-primary-result]")!;
+    expect(stalePrimary.classList.contains("lab-primary-result")).toBe(true);
+    expect(stalePrimary.classList.contains("ls-primary-result")).toBe(false);
+    expect(stalePrimary.querySelector(".ls-primary-result[data-primary-result]"))
+      .toBeNull();
     const staleContext = target.querySelector<HTMLElement>("[data-output-problem-context]")!;
     expect(staleContext.textContent).toContain(
       "This result was produced from the previous successful inputs"
@@ -504,6 +533,9 @@ describe("Linear Systems Lab Teaching v2 application", () => {
 
     target.querySelector<HTMLButtonElement>("[data-show-failure-computation]")!.click();
     const walkthrough = target.querySelector<HTMLElement>("[data-failure-walkthrough]")!;
+    expect(walkthrough.matches("[data-computation-walkthrough-shell]")).toBe(
+      true
+    );
     expect(walkthrough.querySelector("[data-trace-kind='pivot_selection']")).not.toBeNull();
     expect(walkthrough.querySelector("[data-trace-kind='forward_substitution']")).toBeNull();
     expect(walkthrough.querySelector("[data-replay-computation-step]")).toBeNull();

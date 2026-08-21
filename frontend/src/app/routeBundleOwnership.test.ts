@@ -99,23 +99,22 @@ describe("public route bundle ownership", () => {
     );
   });
 
-  it("loads Phase 2 structures only with ODE while keeping entry and Linear Systems unmigrated", () => {
-    const odePresentationModules = [
+  it("loads the shared inner-presentation structures only with their migrated Lab routes", () => {
+    const migratedPresentationModules = [
       "components/lab-presentation/problemContext.ts",
       "components/lab-presentation/teachingBlock.ts",
       "components/lab-presentation/primaryResult.ts",
       "components/lab-presentation/evidenceBlock.ts",
     ];
-    const deferredModules = [
-      "components/lab-presentation/computationWalkthroughShell.ts",
-    ];
+    const walkthroughModule =
+      "components/lab-presentation/computationWalkthroughShell.ts";
     const entryGraph = eagerGraph("main.ts");
     const odeGraph = eagerGraph("labs/ode/initialValueProblemsRoute.ts");
     const linearSystemsGraph = eagerGraph(
       "labs/linear-algebra/linearSystemsRoute.ts"
     );
 
-    for (const modulePath of odePresentationModules) {
+    for (const modulePath of migratedPresentationModules) {
       expect(odeGraph.has(modulePath), `${modulePath} missing from ODE`).toBe(
         true
       );
@@ -124,23 +123,24 @@ describe("public route bundle ownership", () => {
       );
       expect(
         linearSystemsGraph.has(modulePath),
-        `${modulePath} entered Linear Systems before Phase 4`
-      ).toBe(false);
+        `${modulePath} missing from migrated Linear Systems`
+      ).toBe(true);
     }
-    for (const modulePath of deferredModules) {
-      expect(entryGraph.has(modulePath)).toBe(false);
-      expect(odeGraph.has(modulePath)).toBe(false);
-      expect(linearSystemsGraph.has(modulePath)).toBe(false);
-    }
+    expect(entryGraph.has(walkthroughModule)).toBe(false);
+    expect(odeGraph.has(walkthroughModule)).toBe(false);
+    expect(linearSystemsGraph.has(walkthroughModule)).toBe(true);
     const phaseTwoSource = [
-      ...odePresentationModules,
-      ...deferredModules,
+      ...migratedPresentationModules,
+      walkthroughModule,
     ].map(source).join("\n");
     expect(phaseTwoSource).not.toMatch(
       /labs\/(?:ode|linear-algebra)|app\/(?:router|appSessionStore)|@numerical-t-lab|chart\.js|mathlive|compute-engine|Tutor|Glossary|ComputationTrace|computationTrace|computationMotion|convergenceStudy/
     );
     expect(source("labs/ode/odeApp.ts")).not.toMatch(
       /createComputationWalkthroughShell|createAnalysisSurface/
+    );
+    expect(source("labs/linear-algebra/linearSystemsApp.ts")).not.toMatch(
+      /createAnalysisSurface/
     );
   });
 

@@ -357,10 +357,15 @@ describe("Phase 2 Lab presentation primitives", () => {
       phases: [
         {
           heading: heading(4, "Factorization"),
+          lead: paragraph("Use the authored factorization evidence."),
+          classNames: ["domain-factorization-phase"],
+          dataAttributes: { phaseKind: "factorization" },
           steps: [
             {
               heading: heading(5, "Eliminate entry below the pivot"),
               corridor: { source: before, operation, target: after },
+              classNames: ["domain-elimination-step"],
+              dataAttributes: { stepKind: "elimination" },
             },
           ],
         },
@@ -379,6 +384,16 @@ describe("Phase 2 Lab presentation primitives", () => {
     });
 
     expect(shell.querySelectorAll(":scope > ol > li")).toHaveLength(2);
+    expect(
+      shell.querySelector(
+        ".domain-factorization-phase[data-phase-kind='factorization'] > .lab-walkthrough-phase-lead"
+      )?.textContent
+    ).toBe("Use the authored factorization evidence.");
+    expect(
+      shell.querySelector(
+        ".domain-elimination-step[data-step-kind='elimination']"
+      )
+    ).not.toBeNull();
     expect(
       [...shell.querySelectorAll("[data-walkthrough-part]")].map((node) =>
         node.getAttribute("data-walkthrough-part")
