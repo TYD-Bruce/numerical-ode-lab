@@ -81,14 +81,24 @@ Fresh `npm.cmd run verify` passes:
 - frontend, numerics, contracts, and backend/API typechecks;
 - Production build: 109 transformed modules.
 
-Representative emitted raw/gzip assets are entry JS `57.27 / 17.72 kB`,
-shared Lab workflow/presentation JS `12.84 / 3.21 kB`, Linear Systems route JS
-`75.22 / 22.44 kB`, Linear Systems route CSS `26.45 / 4.97 kB`, ODE route JS
-`296.45 / 95.01 kB`, and ODE route CSS `14.87 / 3.60 kB`. Static route-graph
-tests prove the shared inner primitives remain behind the complete-Lab lazy
-boundaries, `ComputationWalkthroughShell` enters only the Linear Systems graph,
-and the platform entry remains free of complete-Lab presentation and domain
-runtime. No `manualChunks`, dependency, or eager-import change was introduced.
+Representative emitted raw/gzip changes from the accepted Phase 3 baseline
+are:
+
+| Asset | Phase 3 accepted | Phase 4 candidate |
+|---|---:|---:|
+| Entry JS | 57.27 / 17.72 kB | 57.27 / 17.72 kB |
+| Shared Lab workflow/presentation JS | 5.73 / 1.89 kB | 12.84 / 3.21 kB |
+| Linear Systems route JS | 71.01 / 21.15 kB | 75.22 / 22.44 kB |
+| Linear Systems route CSS | 28.08 / 5.05 kB | 26.45 / 4.97 kB |
+| ODE route JS | 303.10 / 96.33 kB | 296.45 / 95.01 kB |
+
+The Phase 4 ODE route CSS is `14.87 / 3.60 kB`. The JS redistribution reflects
+both complete Labs consuming the shared presentation graph; it is not an ODE
+feature redesign. Static route-graph tests prove the shared inner primitives
+remain behind the complete-Lab lazy boundaries,
+`ComputationWalkthroughShell` enters only the Linear Systems graph, and the
+platform entry remains free of complete-Lab presentation and domain runtime.
+No `manualChunks`, dependency, or eager-import change was introduced.
 
 Real-browser verification used the local Vite route at
 1440 × 900 in Light and Dark, 390 × 844, and 320 × 844. Method, current Output,
