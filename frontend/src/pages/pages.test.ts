@@ -70,12 +70,12 @@ describe("static platform pages", () => {
         action: card.querySelector(".platform-module-card-action a")?.textContent,
       }))
     ).toEqual([
-      { title: "Numerical ODE", status: "Available", action: "Open Lab" },
       {
         title: "Numerical Linear Algebra",
         status: "Available",
         action: "Open Lab",
       },
+      { title: "Numerical ODE", status: "Available", action: "Open Lab" },
       { title: "Numerical PDE", status: "Planned", action: "View roadmap" },
     ]);
     for (const card of moduleCards) {

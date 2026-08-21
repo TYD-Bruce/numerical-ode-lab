@@ -969,6 +969,13 @@ export function mountLinearSystemsApp(
         dataMath: "residual-ideal",
       }
     );
+    const meaningFormulaGroup = el(
+      "div",
+      undefined,
+      "ls-residual-formula-group"
+    );
+    meaningFormulaGroup.dataset.residualFormulaGroup = "true";
+    meaningFormulaGroup.append(meaningDefinition, meaningIdeal);
     const meaning = createTeachingBlock({
       eyebrow: el("p", "Why we check", "ls-eyebrow"),
       heading: el("h3", "What is the residual?"),
@@ -978,8 +985,7 @@ export function mountLinearSystemsApp(
         "ls-diagnostic-lede"
       ),
       math: [
-        meaningDefinition,
-        meaningIdeal,
+        meaningFormulaGroup,
         el(
           "p",
           "If the computed solution satisfies the equations exactly, the residual is zero.",

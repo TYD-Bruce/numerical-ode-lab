@@ -1314,6 +1314,21 @@
   font-size: 1.35rem;
 }
 
+.ls-residual-formula-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  min-width: 0;
+  column-gap: var(--space-6);
+  row-gap: var(--space-2);
+}
+
+.ls-residual-formula-group > .native-math {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: clip;
+}
+
 .ls-diagnostic-story {
   display: grid;
   gap: var(--space-3);

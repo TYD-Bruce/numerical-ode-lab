@@ -127,16 +127,6 @@ export function createHomePage(sessionSource?: HomeSessionSource): RouteModule {
         cards.className = "platform-card-grid";
         cards.append(
           moduleCard({
-            title: "Numerical ODE",
-            status: createStatus("Available", "available"),
-            description:
-              "Experiment with fixed-step methods for initial value problems and analyze numerical error.",
-            action: createRouteLink("Open Lab", "/ode/initial-value-problems", {
-              className: "platform-action",
-              prefetchRouteId: "ode-initial-value-problems",
-            }),
-          }),
-          moduleCard({
             title: "Numerical Linear Algebra",
             status: createStatus("Available", "available"),
             description:
@@ -144,6 +134,16 @@ export function createHomePage(sessionSource?: HomeSessionSource): RouteModule {
             action: createRouteLink("Open Lab", "/linear-algebra/linear-systems", {
               className: "platform-action",
               prefetchRouteId: "linear-algebra-linear-systems",
+            }),
+          }),
+          moduleCard({
+            title: "Numerical ODE",
+            status: createStatus("Available", "available"),
+            description:
+              "Experiment with fixed-step methods for initial value problems and analyze numerical error.",
+            action: createRouteLink("Open Lab", "/ode/initial-value-problems", {
+              className: "platform-action",
+              prefetchRouteId: "ode-initial-value-problems",
             }),
           }),
           moduleCard({

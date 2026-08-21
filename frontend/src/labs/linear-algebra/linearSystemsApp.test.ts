@@ -362,6 +362,30 @@ describe("Linear Systems Lab Teaching v2 application", () => {
       target.querySelector("[data-native-math='residual-ideal']")?.getAttribute("aria-label")
     ).toBe("If A times x hat equals b, then r equals zero");
     expect(target.querySelector("[data-native-math='residual-ideal'] mover")).not.toBeNull();
+    const residualFormulaGroup = target.querySelector<HTMLElement>(
+      "[data-residual-formula-group]"
+    )!;
+    const residualFormulaOwners = [
+      ...residualFormulaGroup.querySelectorAll<HTMLElement>(":scope > [role='math']"),
+    ];
+    expect(residualFormulaOwners).toHaveLength(2);
+    expect(residualFormulaOwners.map((owner) => owner.dataset.nativeMath)).toEqual([
+      "residual-relation",
+      "residual-ideal",
+    ]);
+    expect(residualFormulaOwners.every((owner) => owner.querySelectorAll(":scope > math").length === 1))
+      .toBe(true);
+    expect(
+      [...residualFormulaGroup.childNodes].filter(
+        (node) => node.nodeType === Node.TEXT_NODE && Boolean(node.textContent?.trim())
+      )
+    ).toHaveLength(0);
+    const css = readFileSync(
+      resolve(process.cwd(), "frontend", "src", "labs", "linear-algebra", "linearSystems.css"),
+      "utf8"
+    );
+    expect(css).toMatch(/\.ls-residual-formula-group\s*\{[^}]*display:\s*flex[^}]*flex-wrap:\s*wrap/s);
+    expect(css).toMatch(/\.ls-residual-formula-group\s*\{[^}]*column-gap:\s*var\(--space-[^)]+\)[^}]*row-gap:\s*var\(--space-[^)]+\)/s);
     const meaning = target.querySelector<HTMLElement>("[data-diagnostic-meaning]")!;
     expect(meaning.classList.contains("lab-teaching-block")).toBe(true);
     const firstStep = target.querySelector<HTMLElement>("[data-diagnostic-block='matrix-vector']")!;
