@@ -93,6 +93,33 @@ describe("AnalysisSurface", () => {
     expect(empty.textContent).toBe("Not run");
   });
 
+  it("supports repeated caller-authored evidence slots when the accepted story needs them", () => {
+    const firstEvidence = paragraph("Substitution and mismatch evidence.");
+    const finding = paragraph("Largest mismatch.");
+    const interpretation = paragraph("Interpret the mismatch.");
+    const qualifiedReference = paragraph("Qualified reference evidence.");
+    const surface = createAnalysisSurface({
+      heading: heading(2, "Diagnostics"),
+      sections: [
+        { role: "evidence", nodes: [firstEvidence] },
+        { role: "primary-finding", nodes: [finding] },
+        { role: "interpretation", nodes: [interpretation] },
+        { role: "evidence", nodes: [qualifiedReference] },
+      ],
+    });
+
+    expect(
+      [...surface.querySelectorAll<HTMLElement>(":scope > [data-analysis-role]")].map(
+        (slot) => slot.dataset.analysisRole
+      )
+    ).toEqual(["evidence", "primary-finding", "interpretation", "evidence"]);
+    expect(surface.querySelectorAll("[data-analysis-role='evidence']")).toHaveLength(2);
+    expect(surface.querySelectorAll("[data-analysis-role='evidence']")[0]?.firstChild)
+      .toBe(firstEvidence);
+    expect(surface.querySelectorAll("[data-analysis-role='evidence']")[1]?.firstChild)
+      .toBe(qualifiedReference);
+  });
+
   it("keeps generated labels unique and preserves caller-supplied h2 through h6", () => {
     const surfaces = ([2, 3, 4, 5, 6] as const).map((level) => {
       const title = heading(level, `Analysis h${level}`);

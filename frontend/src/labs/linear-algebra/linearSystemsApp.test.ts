@@ -335,9 +335,33 @@ describe("Linear Systems Lab Teaching v2 application", () => {
         .querySelector("[data-workflow-panel='diagnostics']")
         ?.getAttribute("data-stage-role")
     ).toBe("analysis");
+    const analysis = target.querySelector<HTMLElement>(
+      "[data-workflow-panel='diagnostics'] > [data-analysis-surface='true']"
+    )!;
+    expect(analysis).not.toBeNull();
+    expect(analysis.getAttribute("aria-labelledby")).toBe(
+      analysis.querySelector(":scope > h2")?.id
+    );
+    expect(analysis.querySelector(":scope > h2")?.textContent).toBe(
+      "Diagnostics — check the equation mismatch"
+    );
+    expect(
+      [...analysis.querySelectorAll<HTMLElement>(":scope > [data-analysis-role]")].map(
+        (slot) => slot.dataset.analysisRole
+      )
+    ).toEqual([
+      "purpose",
+      "limitation",
+      "evidence",
+      "primary-finding",
+      "interpretation",
+      "evidence",
+      "advanced-details",
+    ]);
 
     const result = mounted.getSession().latestSuccessfulResult!;
     const context = target.querySelector<HTMLElement>("[data-diagnostics-context]")!;
+    expect(context.closest("[data-analysis-role='purpose']")).not.toBeNull();
     expect(context.classList.contains("lab-problem-context")).toBe(true);
     expect(context.dataset.resultAuthority).toBe("successful-result");
     expect(context.querySelector("[data-native-math='diagnostic-context-a']")).not.toBeNull();
@@ -387,8 +411,10 @@ describe("Linear Systems Lab Teaching v2 application", () => {
     expect(css).toMatch(/\.ls-residual-formula-group\s*\{[^}]*display:\s*flex[^}]*flex-wrap:\s*wrap/s);
     expect(css).toMatch(/\.ls-residual-formula-group\s*\{[^}]*column-gap:\s*var\(--space-[^)]+\)[^}]*row-gap:\s*var\(--space-[^)]+\)/s);
     const meaning = target.querySelector<HTMLElement>("[data-diagnostic-meaning]")!;
+    expect(meaning.closest("[data-analysis-role='purpose']")).not.toBeNull();
     expect(meaning.classList.contains("lab-teaching-block")).toBe(true);
     const firstStep = target.querySelector<HTMLElement>("[data-diagnostic-block='matrix-vector']")!;
+    expect(firstStep.closest("[data-analysis-role='evidence']")).not.toBeNull();
     expect(firstStep.classList.contains("lab-evidence-block")).toBe(true);
     expect(
       target.querySelectorAll("[data-diagnostic-block].lab-evidence-block")
@@ -451,7 +477,7 @@ describe("Linear Systems Lab Teaching v2 application", () => {
             : []
         )
     );
-    expect(target.querySelector("[data-diagnostic-limitation]")?.textContent).toContain(
+    expect(target.querySelector("[data-analysis-role='interpretation']")?.textContent).toContain(
       "A small residual means a small equation mismatch"
     );
     expect(target.querySelector("[data-diagnostic-limitation]")?.textContent).toContain(
@@ -460,12 +486,23 @@ describe("Linear Systems Lab Teaching v2 application", () => {
     expect(target.querySelector("[data-diagnostic-limitation]")?.textContent).toContain(
       "does not compute a condition number"
     );
+    expect(
+      target
+        .querySelector("[data-diagnostic-block='residual-norm']")
+        ?.closest("[data-analysis-role='primary-finding']")
+    ).not.toBeNull();
     expect(target.querySelector("[data-reference-comparison]")).not.toBeNull();
+    expect(
+      target
+        .querySelector("[data-reference-comparison]")
+        ?.closest("[data-analysis-role='evidence']")
+    ).not.toBeNull();
 
     const safeguard = target.querySelector<HTMLDetailsElement>(
       "[data-solver-safeguard-details]"
     )!;
     expect(safeguard.classList.contains("lab-advanced-details")).toBe(true);
+    expect(safeguard.closest("[data-analysis-role='advanced-details']")).not.toBeNull();
     expect(safeguard.open).toBe(false);
     expect(safeguard.querySelectorAll("msub").length).toBeGreaterThanOrEqual(3);
     const implementation = safeguard.querySelector<HTMLDetailsElement>(

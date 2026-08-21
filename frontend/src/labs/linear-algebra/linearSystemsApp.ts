@@ -32,6 +32,10 @@ import {
   createComputationWalkthrough,
 } from "./computationWalkthrough";
 import {
+  createAnalysisSurface,
+  type AnalysisSurfaceSection,
+} from "../../components/lab-presentation/analysisSurface";
+import {
   createLabHeader,
   createLabShell,
 } from "../../components/lab-presentation/labShell";
@@ -876,15 +880,16 @@ export function mountLinearSystemsApp(
     const heading = el("h2", "Diagnostics — check the equation mismatch");
     heading.tabIndex = -1;
     const result = session.latestSuccessfulResult;
-    panel.append(heading);
     if (!result) {
-      panel.append(
+      const setup = el("div", undefined, "ls-diagnostics-setup");
+      setup.append(
         el("p", "Run a valid system from Data to produce diagnostics."),
         button("Go to Data", "ls-button ls-button-primary", () => goToStep("data"))
       );
+      panel.append(createAnalysisSurface({ heading, setup }));
       return panel;
     }
-    if (session.resultStatus === "stale") panel.append(staleNotice());
+    const status = session.resultStatus === "stale" ? staleNotice() : undefined;
     const residualComponents = result.trace.steps.filter(
       (step): step is LinearSystemResidualComponentTraceStep =>
         step.kind === "residual_component"
@@ -1125,22 +1130,27 @@ export function mountLinearSystemsApp(
     norm.prepend(el("p", "Step 3", "ls-diagnostic-step-label"));
     norm.classList.add("ls-diagnostic-block");
     norm.dataset.diagnosticBlock = "residual-norm";
-    story.append(product, residual, norm);
+    story.append(product, residual);
 
-    const limitation = el("aside", undefined, "ls-teaching-note ls-diagnostic-boundary");
+    const limitation = el("aside", undefined, "ls-diagnostic-boundary");
     limitation.dataset.diagnosticLimitation = "true";
     limitation.append(
       el("strong", "Residual is not solution error"),
       el(
         "p",
-        "A small residual means a small equation mismatch. It does not, by itself, guarantee a small solution error. Conditioning describes how sensitive the solution is to small changes in the problem data; this Lab does not compute a condition number or an error bound."
+        "It does not, by itself, guarantee a small solution error. Conditioning describes how sensitive the solution is to small changes in the problem data; this Lab does not compute a condition number or an error bound."
       )
     );
 
-    panel.append(context, meaning, limitation, story);
+    const interpretation = el(
+      "p",
+      "A small residual means a small equation mismatch.",
+      "ls-diagnostic-interpretation"
+    );
 
+    let reference: HTMLElement | undefined;
     if (result.referenceDifferenceInf !== undefined) {
-      const reference = createEvidenceBlock({
+      reference = createEvidenceBlock({
         level: "summary",
         heading: el("h3", "Difference from preset reference solution"),
         formulas: [
@@ -1160,9 +1170,9 @@ export function mountLinearSystemsApp(
       });
       reference.classList.add("ls-reference-comparison");
       reference.dataset.referenceComparison = "true";
-      panel.append(reference);
     }
 
+    let safeguard: HTMLDetailsElement | undefined;
     if (matrixScale?.kind === "matrix_scale") {
       const content = el("div", undefined, "ls-safeguard-content");
       const matrixNormNode = () =>
@@ -1227,14 +1237,31 @@ export function mountLinearSystemsApp(
         )
       );
       content.append(implementation);
-      const safeguard = createAdvancedDetails({
+      safeguard = createAdvancedDetails({
         summary: "Solver safeguard details",
         content: [content],
       });
       safeguard.classList.add("ls-safeguard-details");
       safeguard.dataset.solverSafeguardDetails = "true";
-      panel.append(safeguard);
     }
+    const analysisSections: AnalysisSurfaceSection[] = [];
+    if (status) analysisSections.push({ role: "status", nodes: [status] });
+    analysisSections.push(
+      { role: "purpose", nodes: [context, meaning] },
+      { role: "limitation", nodes: [limitation] },
+      { role: "evidence", nodes: [story] },
+      { role: "primary-finding", nodes: [norm] },
+      { role: "interpretation", nodes: [interpretation] }
+    );
+    if (reference) {
+      analysisSections.push({ role: "evidence", nodes: [reference] });
+    }
+    if (safeguard) {
+      analysisSections.push({ role: "advanced-details", nodes: [safeguard] });
+    }
+    const analysis = createAnalysisSurface({ heading, sections: analysisSections });
+    analysis.classList.add("ls-diagnostics-analysis");
+    panel.append(analysis);
     const actions = el("div", undefined, "ls-panel-actions");
     actions.append(
       button("Back to Output", "ls-button ls-button-ghost", () => goToStep("output")),

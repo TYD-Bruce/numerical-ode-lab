@@ -10,6 +10,11 @@ export type AnalysisSurfaceSlot =
   | "limitation"
   | "advanced-details";
 
+export interface AnalysisSurfaceSection {
+  readonly role: AnalysisSurfaceSlot;
+  readonly nodes: readonly Node[];
+}
+
 export interface AnalysisSurfaceOptions {
   readonly heading: HTMLHeadingElement;
   readonly purpose?: Node;
@@ -21,6 +26,7 @@ export interface AnalysisSurfaceOptions {
   readonly limitation?: Node;
   readonly advancedDetails?: HTMLDetailsElement;
   readonly slotOrder?: readonly AnalysisSurfaceSlot[];
+  readonly sections?: readonly AnalysisSurfaceSection[];
 }
 
 const DEFAULT_SLOT_ORDER: readonly AnalysisSurfaceSlot[] = [
@@ -68,6 +74,20 @@ export function createAnalysisSurface(
   options.heading.classList.add("lab-analysis-surface-heading");
   surface.setAttribute("aria-labelledby", options.heading.id);
   surface.append(options.heading);
+
+  if (options.sections) {
+    for (const section of options.sections) {
+      if (section.nodes.length === 0) continue;
+      if (
+        section.role === "advanced-details" &&
+        section.nodes.some((node) => (node as Element).tagName !== "DETAILS")
+      ) {
+        throw new Error("AnalysisSurface advanced detail must remain native details.");
+      }
+      surface.append(createSlot(section.role, section.nodes));
+    }
+    return surface;
+  }
 
   const slots = new Map<AnalysisSurfaceSlot, HTMLElement>();
   if (options.purpose) {

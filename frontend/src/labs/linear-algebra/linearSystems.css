@@ -640,8 +640,13 @@
 }
 
 .ls-diagnostic-boundary {
-  border-left-color: var(--color-caution);
-  background: var(--color-caution-surface);
+  margin: 0;
+  background: transparent;
+}
+
+.ls-diagnostic-boundary p,
+.ls-diagnostic-interpretation {
+  margin: var(--space-2) 0 0;
 }
 
 .ls-reset-backdrop {
@@ -1426,6 +1431,24 @@
 
 .ls-safeguard-details {
   margin-block: var(--space-6);
+}
+
+.ls-diagnostics-analysis :where(
+  .ls-diagnostics-context,
+  .ls-diagnostic-intro,
+  .ls-diagnostic-story,
+  .ls-reference-comparison,
+  .ls-safeguard-details
+) {
+  margin-block: 0;
+}
+
+.ls-diagnostics-analysis
+  > .lab-analysis-surface-primary-finding
+  > .ls-diagnostic-block {
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
 
 .ls-safeguard-details > summary,
