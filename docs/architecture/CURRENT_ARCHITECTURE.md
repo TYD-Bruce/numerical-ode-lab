@@ -32,9 +32,9 @@ Browser ownership is organized as:
   `LabHeader`, `WorkflowNavigation`, `StageSection`, outer action-role
   presentation, and the implemented Phase 2 `ProblemContext`, `TeachingBlock`,
   `PrimaryResult`, `EvidenceBlock`, `ComputationWalkthroughShell`, semantic
-  numerical-table, and native advanced-disclosure source. ODE consumes the
-  compatible context/teaching/result/evidence/table subset; Linear Systems
-  consumes the context/teaching/result/evidence/walkthrough/disclosure subset;
+  numerical-table, native advanced-disclosure source, and the Phase 5
+  presentation-only `AnalysisSurface`. ODE and Linear Systems both consume the
+  shared Analysis grammar in addition to their compatible earlier subsets;
   shared source still owns no domain state, math, visualization, or lifecycle;
 - `frontend/src/labs/ode/`: the mountable Initial Value Problems Lab, ODE
   workflow/session state, successful-result context composition, Method/Data/
@@ -133,7 +133,7 @@ first valid Glossary request
 
 development only
   -> dynamic Glossary controls and Playground
-  -> dynamic Presentation System fixture with authored Phase 2 content
+  -> dynamic Presentation System fixture with authored Phase 2 and Phase 5 content
 ```
 
 Public routes are `/`, `/about`, `/ode`, `/ode/initial-value-problems`,
@@ -148,7 +148,8 @@ only semantic DOM composition, role styling, and contained workflow reveal;
 each Lab still owns state, availability, callbacks, numerical content, live
 regions, platform bindings, and disposal.
 
-The accepted Phase 2 primitive TypeScript modules are real shared source. The
+The accepted Phase 2 and implemented Phase 5 primitive TypeScript modules are
+real shared source. The
 ODE complete-Lab route now consumes `ProblemContext`, `TeachingBlock`,
 `PrimaryResult`, `EvidenceBlock`, and `NumericalTable` for its inner Method,
 Data, single Output, and Compare hierarchy. ODE supplies successful immutable
@@ -158,8 +159,13 @@ authored nodes. Chart.js, ODE numerical/session/expression authority, Tutor,
 Glossary, and disposal remain ODE-owned.
 
 ODE does not consume `ComputationWalkthroughShell` because no authoritative
-ODE computation trace exists. ODE Convergence remains domain-local and is not
-yet composed through `AnalysisSurface`.
+ODE computation trace exists. ODE Convergence now composes its setup,
+domain-authored conclusion, evidence, interpretation, limitation, and existing
+advanced disclosures through `AnalysisSurface`. Its controller, eligibility,
+exact-solution checks, budgets, refinement calculations, classifications,
+native table, Chart.js instance/data/lifecycle, and session behavior remain
+ODE-owned. Convergence remains nested inside Output; ODE still has exactly the
+Method, Data, and Output workflow stages.
 
 Linear Systems Method composes its natural large teaching regions through
 `TeachingBlock`. Successful current and stale Output have exactly one shared
@@ -171,10 +177,19 @@ computed answer; both are authored only from immutable `originalA`,
 ordered phases, steps, and before/operation/after corridors, while
 `computationWalkthrough.ts` remains the sole trace-kind interpreter and owns
 all captions, formulas, matrices, substitutions, residual evidence, and
-failure boundaries. Diagnostics remains a top-level analysis `StageSection`
-and does not consume `AnalysisSurface` at this gate. The DEV-only Presentation
-System fixture remains absent from Production route matching and emitted
-assets.
+failure boundaries. Diagnostics remains the user-facing top-level analysis
+`StageSection` and now composes successful context, residual purpose, finding,
+evidence, interpretation, limitation, and safeguards through
+`AnalysisSurface`. All residual mathematics, successful/stale snapshot
+authority, preset qualification, and safeguard values remain Linear
+Systems-owned. The DEV-only Presentation System fixture remains absent from
+Production route matching and emitted assets.
+
+`AnalysisSurface` is only a labelled DOM-composition and role-style owner. It
+appends caller-authored nodes by identity, supports caller-native heading
+levels, creates no live region, and performs no interpretation or calculation.
+There is no shared analysis result, session, controller, state machine,
+calculation, or numerical DTO between the Labs.
 
 The route module registry, Tutor Host, Glossary Host, and editable-math loader
 retain distinct dynamic imports. Package extraction does not create an eager

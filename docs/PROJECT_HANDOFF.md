@@ -2,6 +2,213 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
+## Cross-Lab Presentation Sync Phase 4 — Maintainer accepted — 2026-08-21
+
+The Maintainer formally accepts **Cross-Lab Presentation Sync Phase 4** at
+final accepted HEAD `692551774966bd9774900ecfef3d7fe03de61d7e` (tree
+`6d7db2ed156a2c6415d1b362ea870fae4ff0c7ef`). The sole independent-audit P3,
+`PHASE4-P3-01`, was closed before acceptance, and Maintainer visual review
+passed. Final Phase 4 severity is `P0 = 0`, `P1 = 0`, `P2 = 0`, and `P3 = 0`.
+The historical Phase 4 candidate and P3-closure record below remains exact
+point-in-time evidence; statements there that Phase 4 awaits acceptance or
+that Phase 5 is unauthorized are superseded by this acceptance and the Phase
+5 authorization recorded next.
+
+## Cross-Lab Presentation Sync Phase 5 — AnalysisSurface candidate — 2026-08-21
+
+Phase 5 is implemented and locally verified as an audit candidate. It starts
+from the accepted Phase 4 HEAD/tree above and stops before Phase 6. Shared
+analysis presentation now unifies explanatory hierarchy, never domain state
+or numerical authority.
+
+### Preliminary Maintainer polish
+
+The two approved formulas under Linear Systems “What is the residual?” were
+already separate native mathematical/accessibility owners, but their parent
+had no explicit responsive composition gap. They therefore read as one
+concatenated expression even though the authored mathematics was correct. The
+new `.ls-residual-formula-group` retains both original owners by identity and
+uses wrapping flex layout, baseline alignment, a 24-pixel semantic column gap,
+and a smaller semantic row gap. It uses no whitespace characters, string-
+specific margins, cloning, reparsing, or duplicate accessible owner. At 390
+and 320 pixels both formula owners remain present, the group wraps naturally,
+and neither the group nor the page overflows.
+
+Home now appends module cards in semantic DOM/data order: Numerical Linear
+Algebra → Numerical ODE → Numerical PDE. Routes, Available/Planned labels,
+Open Lab/View roadmap actions, native roles, and the accepted aligned action
+wrapper are unchanged. Desktop action tops remain aligned; the same order is
+the native mobile reading order, with no CSS `order` override.
+
+### Shared AnalysisSurface contract
+
+`frontend/src/components/lab-presentation/analysisSurface.ts` is a
+presentation-only primitive. It creates one semantic section labelled by a
+caller-supplied native `h2`–`h6`, generating a local unique heading ID only
+when the caller did not supply one. Optional caller-authored purpose, primary
+finding, evidence, interpretation, limitation, and advanced-detail nodes may
+be supplied through shorthand slots or an explicitly ordered repeated-section
+list. Every supplied node is appended by identity. The primitive does not
+clone, serialize, parse, calculate, infer a result, choose a heading level, or
+create a live region.
+
+Its shared CSS is rooted under `.lab-analysis-surface`, reuses the accepted
+Phase 0 Analysis tokens, provides a sparse question/finding/evidence/
+interpretation/limitation rhythm, and includes narrow-width and forced-colors
+handling. It has no imports from either Lab, packages/numerics, sessions,
+controllers, Chart.js, MathLive, Compute Engine, Tutor, Glossary, or Router.
+The authored DEV-only presentation fixture exercises the grammar but remains
+absent from Production routing and assets.
+
+### Linear Systems Diagnostics mapping
+
+Diagnostics remains the user-facing fourth workflow stage and the outer
+analysis-role `StageSection`; it is not renamed “Analysis” and gains no
+redundant giant heading. Its `AnalysisSurface` maps the accepted story as:
+
+1. successful-result `ProblemContext` plus the existing residual purpose and
+   definition;
+2. the “Residual is not solution error” boundary, including the existing no-
+   condition-number/no-error-bound qualification;
+3. authored `A x̂` substitution and `r = b - A x̂` residual-vector evidence;
+4. the restrained `‖r‖∞` evidence as the primary analytical finding;
+5. the existing distinct interpretation that a small residual means small
+   equation mismatch;
+6. the optional, qualified preset reference as additional evidence; and
+7. native closed Solver safeguard details, with `Number.EPSILON` still nested
+   as subordinate implementation detail.
+
+The no-result state uses only setup guidance. Current, stale, and Custom
+states keep their prior authority: stale Diagnostics is built from immutable
+successful `originalA`, `originalB`, `xHat`, and stored result evidence, never
+the edited draft; Custom results do not fabricate a preset reference.
+Residual definitions, vector/norm values, formatting, and all calculations
+remain Linear Systems-owned.
+
+### ODE Convergence mapping
+
+Convergence remains nested under ODE Output; Method, Data, and Output remain
+the only ODE workflow stages. Its `AnalysisSurface` maps the existing feature
+as:
+
+1. the existing purpose — checking how quickly numerical error decreases as
+   the step size becomes smaller — and the domain-owned experiment setup;
+2. for successful runs, the existing method/theoretical-order/primary observed
+   order conclusion as the restrained primary finding;
+3. the existing refinement table, exact errors, observed orders, and plot as
+   domain-owned evidence;
+4. the existing conclusion explanation as a separate interpretation role;
+5. the existing proof/eligibility and non-asymptotic boundaries as a
+   subordinate limitation; and
+6. all eight existing native teaching disclosures as advanced details.
+
+Unavailable, exact-solution-missing, eligible not-run, preview, invalid, and
+successful states remain supported without fabricating a finding. Setup
+controls, levels, preview, Run, budgets, classifications, observed-order
+values, exact errors, table order/precision, current/stale behavior, messages,
+and disposal are unchanged. The native table remains ODE-owned. Chart.js,
+chart data/axes/accessibility name, instance creation/update/destruction, and
+all controller/session lifecycle remain ODE-owned. No shared analysis result,
+session, controller, calculation, state machine, or numerical DTO exists.
+
+### Verification, browser evidence, and bundle boundary
+
+Focused gates pass across the primitive, Home/preflight, Linear Systems,
+Convergence, route ownership, and cross-Lab regressions. Fresh
+`npm.cmd run verify` passes import boundaries, 97 test files / 1,286 tests,
+frontend/numerics/contracts/backend/API typechecks, and the 110-module
+Production build. Explicit `npm.cmd run verify:boundaries`, `npm.cmd run
+typecheck`, `npm.cmd run typecheck:api`, and `npm.cmd run build` also pass.
+
+Browser verification used a task-owned local Vite server. At a 1440 × 1000
+desktop viewport, paired Light/Dark Diagnostics and Convergence show the same
+Analysis family while retaining distinct residual-reasoning and empirical-
+experiment personalities. Diagnostics current/stale/Custom states,
+Convergence exact-missing/eligible-not-run/successful states, the ODE metric
+rerender, and native advanced details were exercised. At 390 × 844 and 320 ×
+844 there is no page-level horizontal overflow; wide ODE table/chart evidence
+uses its existing local scroll frames. Browser warning/error logs were empty.
+
+Regression smoke confirms the Phase 4 Linear Systems Method, successful
+Output, and expanded static walkthrough remain intact with no Motion/Replay.
+The Phase 3 ODE Method, successful single Output, Compare, and Tutor
+open/rerender/close behavior remain intact. External, uncommitted evidence is
+named `phase5-home-module-order.png`, `phase5-ls-diagnostics-light.png`,
+`phase5-ode-convergence-light.png`, `phase5-ls-diagnostics-dark.png`,
+`phase5-ode-convergence-dark.png`, `phase5-ls-analysis-mobile.png`, and
+`phase5-ode-analysis-mobile.png`.
+
+Representative emitted raw/gzip sizes are:
+
+| Asset | Accepted Phase 4 | Phase 5 candidate |
+|---|---:|---:|
+| Entry JS | 57.27 / 17.72 kB | 57.27 / 17.72 kB |
+| Platform CSS | 29.66 / 5.40 kB | 29.66 / 5.40 kB |
+| Shared Lab JS | 12.84 / 3.21 kB | 14.43 / 3.57 kB |
+| Shared Lab CSS | 18.58 / 3.24 kB | 21.08 / 3.45 kB |
+| ODE route JS | 296.45 / 95.01 kB | 297.45 / 95.30 kB |
+| ODE route CSS | 14.87 / 3.60 kB | 15.90 / 3.75 kB |
+| Linear Systems route JS | 75.22 / 22.44 kB | 75.80 / 22.63 kB |
+| Linear Systems route CSS | 26.39 / 4.95 kB | 26.94 / 5.05 kB |
+| Tutor JS / CSS | 12.14 / 4.61; 6.61 / 1.81 kB | unchanged |
+| Glossary JS / CSS | 10.13 / 3.50; 4.83 / 1.31 kB | 10.13 / 3.49; 4.83 / 1.31 kB |
+| MathLive | 819.11 / 228.04 kB | unchanged |
+| Compute Engine/editable math | 1,143.84 / 308.81 kB | unchanged |
+
+The small redistribution is the shared primitive/style plus each Lab's domain
+composition. The generated entry statically imports no complete-Lab code;
+both lazy Lab graphs reach the shared AnalysisSurface chunk. ODE's
+Convergence controller/chart stay route-local, Linear Systems Diagnostics
+logic stays route-local, Tutor/Glossary stay deferred, MathLive/Compute Engine
+boundaries are unchanged, and Motion remains absent.
+
+Two verification problems were found and resolved. First, the initial full
+suite exposed one stale Phase 4 route-boundary assertion that still required
+Linear Systems not to import `AnalysisSurface`; the Phase 5 contract requires
+both lazy Lab graphs to import it while excluding it from the entry. The test
+was updated to assert the current boundary and then passed in the full suite.
+Second, mobile ODE evidence initially let CSS Grid's automatic min-content
+track widen the chart/table column even though the page clipped it. The shared
+evidence track now uses `minmax(0, 1fr)`, and the domain table/chart/teaching
+children allow `min-width: 0`; 390- and 320-pixel browser measurements confirm
+page containment with local evidence scrolling.
+
+### Commits, durable rules, and stop gate
+
+Phase 5 implementation is split into these exact commits and trees:
+
+| Commit | Tree | Purpose |
+|---|---|---|
+| `d9b7442d8672f3180b011b25c9d8e70fcfb0999c` | `2eb575d9ee506cdb25cb5bd34941689d1316a5ec` | Refine analysis formula and module order |
+| `1c017ff00ccd1c8a778166d17433436a064ff195` | `45f23ddf95ce8d3a2ac2e0a815357110c9b6ee23` | Add shared AnalysisSurface |
+| `ab15cc7d3f0f9a02517f52e5788dd783a04262ca` | `5e7a49d2ce5b7901bf3df06dc40e5da449f8adbf` | Migrate Linear Systems Diagnostics |
+| `15b012cdf7cc518e659d4809fe5da0cd480bd419` | `3a0e6e959e429f195a2e98bf405420c334d839f1` | Migrate ODE Convergence presentation |
+| `fb280c01bd83f2c0ff0d42487396d8e523f257e7` | `55955db40f2713ab0caf1290059687c805c4e100` | Verify cross-Lab analysis presentation |
+| `69a3a4a80e3f107d91fc284990f86393ee06852d` | `91a05822d9a281cd2abae62c47f208190267e250` | Update AnalysisSurface lazy boundary coverage |
+
+Durable rules:
+
+1. Shared analysis presentation unifies explanatory hierarchy, never domain
+   state or numerical authority.
+2. Analysis evidence and analysis interpretation are distinct presentation
+   roles.
+3. A limitation is first-class teaching content but remains subordinate to
+   the primary analytical finding.
+4. Separate mathematical formula owners receive explicit responsive layout;
+   whitespace characters are not a presentation system.
+5. Module order is represented in semantic DOM/data order, not CSS visual
+   reordering.
+
+Candidate self-review finds `P0 = P1 = P2 = P3 = 0`; this is not an
+independent-audit verdict. There is no numerical, Computation Trace, session,
+Teaching v2, walkthrough, ODE Compare/core Output, Motion, Linear Algebra
+Tutor/Glossary, PDE, dependency, push, Preview, Production deployment, or
+Production-state change.
+
+Phase 5 stops here. The exact next gate is **independent Phase 5
+analysis-presentation / state-separation audit**, followed by **Maintainer
+visual review**. Phase 6 and all later work remain unauthorized.
+
 ## Cross-Lab Presentation Sync Phase 4 — Linear Systems migration candidate — 2026-08-21
 
 Cross-Lab Presentation Sync Phase 4 is implemented and locally verified as an

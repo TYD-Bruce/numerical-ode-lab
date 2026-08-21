@@ -1,6 +1,6 @@
 # Cross-Lab Presentation System v1 Design
 
-**Status:** Maintainer approved at `3b77f7133a95bef855c2eb3e3a69db37e16f1e46`; Phases 0 through 3 Maintainer accepted; Phase 4 Linear Systems migration implemented and locally verified as an audit candidate at `15e04db939938ae01234d67149f832c4efeaad60`; Phase 5+ unauthorized
+**Status:** Maintainer approved at `3b77f7133a95bef855c2eb3e3a69db37e16f1e46`; Phases 0 through 4 Maintainer accepted, with final Phase 4 acceptance at `692551774966bd9774900ecfef3d7fe03de61d7e` (tree `6d7db2ed156a2c6415d1b362ea870fae4ff0c7ef`) and `P0 = P1 = P2 = P3 = 0`; Phase 5 shared Analysis presentation implemented and locally verified as an audit candidate through `69a3a4a80e3f107d91fc284990f86393ee06852d` (tree `91a05822d9a281cd2abae62c47f208190267e250`); Phase 6+ unauthorized
 
 **Date:** 2026-08-12
 
@@ -8,7 +8,7 @@
 
 **Starting authority:** Linear Systems Teaching v2 maintainer-accepted at `484fc9153de33be7949e82b29386c94fe63d19c8` (tree `509d245adb745d272e2a5c8185fb678b6e15009d`)
 
-**Next gate:** Independent Phase 4 Linear Systems presentation / Teaching v2 / trace-equivalence audit, then Maintainer visual review
+**Next gate:** Independent Phase 5 analysis-presentation / state-separation audit, then Maintainer visual review
 
 ## 1. Decision summary
 

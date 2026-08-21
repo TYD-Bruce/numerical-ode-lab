@@ -2,9 +2,9 @@
 
 ## Current status
 
-**Active milestone: Cross-Lab Presentation Sync — Phases 0 through 3
-Maintainer accepted; Phase 4 Linear Systems inner presentation is implemented
-and locally verified as an audit candidate.**
+**Active milestone: Cross-Lab Presentation Sync — Phases 0 through 4
+Maintainer accepted; Phase 5 shared Analysis presentation is implemented and
+locally verified as an audit candidate.**
 
 Linear Systems Teaching v2 is **MAINTAINER ACCEPTED** at commit
 `484fc9153de33be7949e82b29386c94fe63d19c8` (tree
@@ -89,8 +89,11 @@ semantic `NumericalTable`. Chart.js, ODE state/math, Convergence, Tutor,
 Glossary, lifecycle, and numerical authority remain domain-owned. No ODE
 walkthrough is mounted, and Convergence is not migrated to `AnalysisSurface`.
 
-Phase 4 is implemented and locally verified as an audit candidate in
-`15e04db939938ae01234d67149f832c4efeaad60` (tree
+Phase 4 is **MAINTAINER ACCEPTED** at final HEAD
+`692551774966bd9774900ecfef3d7fe03de61d7e` (tree
+`6d7db2ed156a2c6415d1b362ea870fae4ff0c7ef`) after its final audit and
+Maintainer visual review passed with `P0 = P1 = P2 = P3 = 0`. Its original
+implementation is `15e04db939938ae01234d67149f832c4efeaad60` (tree
 `ed6756791fc5c553a1d39d99dd79cd3aabaa155e`). Linear Systems Method now
 uses the shared `TeachingBlock` at its natural large-region boundaries.
 Successful current and stale Output use exactly one shared `PrimaryResult`
@@ -101,8 +104,35 @@ use native closed `AdvancedDetails`. The shared
 `ComputationWalkthroughShell` is the rendered outer owner of ordered phases,
 steps, and before/operation/after corridors, while
 `computationWalkthrough.ts` remains the sole Linear Systems trace interpreter.
-Diagnostics remains a top-level analysis `StageSection`; Phase 4 does not use
-`AnalysisSurface`.
+At the accepted Phase 4 boundary, Diagnostics remained a top-level analysis
+`StageSection` and did not yet use `AnalysisSurface`.
+
+Phase 5 is implemented and locally verified as an audit candidate in six
+coherent implementation commits: `d9b7442d8672f3180b011b25c9d8e70fcfb0999c`
+(tree `2eb575d9ee506cdb25cb5bd34941689d1316a5ec`),
+`1c017ff00ccd1c8a778166d17433436a064ff195` (tree
+`45f23ddf95ce8d3a2ac2e0a815357110c9b6ee23`),
+`ab15cc7d3f0f9a02517f52e5788dd783a04262ca` (tree
+`5e7a49d2ce5b7901bf3df06dc40e5da449f8adbf`),
+`15b012cdf7cc518e659d4809fe5da0cd480bd419` (tree
+`3a0e6e959e429f195a2e98bf405420c334d839f1`),
+`fb280c01bd83f2c0ff0d42487396d8e523f257e7` (tree
+`55955db40f2713ab0caf1290059687c805c4e100`), and
+`69a3a4a80e3f107d91fc284990f86393ee06852d` (tree
+`91a05822d9a281cd2abae62c47f208190267e250`). The preliminary polish keeps
+the two approved residual formulas as separate accessible owners with an
+explicit responsive gap and changes Home semantic module order to Linear
+Algebra → ODE → PDE while retaining aligned actions.
+
+The shared, presentation-only `AnalysisSurface` now provides labelled,
+mount-context-safe composition for caller-authored purpose, finding, evidence,
+interpretation, limitation, and advanced-detail nodes. Linear Systems
+Diagnostics and ODE Convergence consume this same grammar while keeping their
+separate domain state, calculations, controllers, result authority, charts,
+tables, lifecycle, and sessions. Diagnostics remains the visible Linear
+Systems stage; Convergence remains inside ODE Output and ODE keeps exactly
+Method/Data/Output workflow. Phase 5 creates no shared analysis state machine,
+controller, numerical DTO, or domain inference.
 
 The design keeps ODE's exploration, presets, Compare, charts, Convergence,
 Tutor, and Glossary strengths; keeps Linear Systems Teaching v2's explicit
@@ -114,23 +144,23 @@ Shared complete-Lab primitives remain Lab-shared lazy; only `ModuleOverview`
 is entry-safe. The platform entry must remain free of complete-Lab, Chart.js,
 Tutor, Glossary, MathLive, and Compute Engine runtime.
 
-Phase 4 browser verification covers Linear Systems desktop at 1440 × 900 in
-Light and Dark, 390 × 844, and 320 × 844. Method, current Output, stale Output,
-the full static walkthrough, residual-led Diagnostics, controlled pivot
-failure, and cancel-only New experiment behavior retain zero page overflow and
-empty warning/error logs. Long mobile row-operation math remains contained in
-its local shared corridor part. ODE separately mounts and runs to successful
-Output with its chart and shared primary result intact. The Production build
-keeps entry, ODE, and Linear Systems as distinct chunks; route-graph tests
-prove the Phase 4 primitives remain behind the complete-Lab boundary. Numerical
-behavior, trace production, session schemas, native MathML ownership, Motion,
-Tutor/Glossary logic, PDE, dependencies, deployment, and Production state are
-unchanged.
+Phase 5 browser verification covers paired Diagnostics and Convergence at
+1440-pixel desktop in Light and Dark, 390 × 844, and 320 × 844. It includes
+eligible not-run and successful Convergence, stale and Custom Diagnostics,
+local table/chart containment, formula wrapping, and regression smoke for the
+Linear Systems walkthrough and ODE Method, Output, Compare, and Tutor
+open/rerender/close. No page-level overflow or browser warning/error was
+observed. Fresh verification passes 97 files / 1,286 tests, boundary checks,
+frontend and API typechecks, and the 110-module Production build. The platform
+entry, deferred Tutor/Glossary, MathLive/Compute Engine, and dormant Motion
+boundaries remain intact. Numerical behavior, Computation Trace, Teaching v2,
+session schemas, ODE Compare/core Output, PDE, dependencies, push, deployment,
+and Production state are unchanged.
 
-The exact next gate is **independent Phase 4 Linear Systems presentation /
-Teaching v2 / trace-equivalence audit**, followed by **Maintainer visual
-review**. Phase 5+ remains unauthorized; do not begin `AnalysisSurface`
-alignment, Motion remount, Linear Algebra Tutor/Glossary, or PDE work.
+The exact next gate is **independent Phase 5 analysis-presentation /
+state-separation audit**, followed by **Maintainer visual review**. Phase 6+
+remains unauthorized; do not begin module-overview migration, Motion remount,
+Linear Algebra Tutor/Glossary, or PDE work.
 
 ## Superseded Teaching v2 execution record
 

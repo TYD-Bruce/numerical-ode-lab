@@ -1,13 +1,13 @@
 # Cross-Lab Presentation System v1 Implementation Plan
 
-**Status:** Phases 0 through 3 Maintainer accepted; Phase 4 Linear Systems migration implemented and locally verified as an audit candidate at `15e04db939938ae01234d67149f832c4efeaad60`; Phase 5+ unauthorized
+**Status:** Phases 0 through 4 Maintainer accepted, with final Phase 4 acceptance at `692551774966bd9774900ecfef3d7fe03de61d7e` (tree `6d7db2ed156a2c6415d1b362ea870fae4ff0c7ef`) and `P0 = P1 = P2 = P3 = 0`; Phase 5 shared Analysis presentation implemented and locally verified as an audit candidate through `69a3a4a80e3f107d91fc284990f86393ee06852d` (tree `91a05822d9a281cd2abae62c47f208190267e250`); Phase 6+ unauthorized
 
 **Design authority:**
 [`2026-08-12-cross-lab-presentation-system-v1-design.md`](../specs/2026-08-12-cross-lab-presentation-system-v1-design.md)
 
 **Starting implementation prerequisite:** Satisfied at design commit `3b77f7133a95bef855c2eb3e3a69db37e16f1e46`
 
-**Current gate:** Stop after Phase 4 for independent Linear Systems presentation / Teaching v2 / trace-equivalence audit, then Maintainer visual review
+**Current gate:** Stop after Phase 5 for independent analysis-presentation / state-separation audit, then Maintainer visual review
 
 ## 1. Objective and boundary
 
@@ -279,12 +279,12 @@ Independent ODE behavior-equivalence and presentation review.
 
 ## 8. Phase 4 — migrate Linear Systems presentation
 
-**Execution status:** Implemented and locally verified as an audit candidate
-in `15e04db939938ae01234d67149f832c4efeaad60` (tree
-`ed6756791fc5c553a1d39d99dd79cd3aabaa155e`). The direct duplicate-primary
-regression closed `PHASE2-P3-04`; all focused and full verification, browser,
-responsive-containment, and lazy-route gates pass. No Phase 5 work is
-included.
+**Execution status:** Maintainer accepted at final HEAD
+`692551774966bd9774900ecfef3d7fe03de61d7e` (tree
+`6d7db2ed156a2c6415d1b362ea870fae4ff0c7ef`) after the final audit and
+Maintainer visual review passed with `P0 = P1 = P2 = P3 = 0`. The original
+implementation is `15e04db939938ae01234d67149f832c4efeaad60` (tree
+`ed6756791fc5c553a1d39d99dd79cd3aabaa155e`).
 
 ### Changes
 
@@ -324,9 +324,18 @@ source status is unchanged.
 
 ### Stop gate
 
-Independent Teaching v2/MathML/trace equivalence and presentation review.
+Satisfied by the final independent audit, bounded P3 closure, and Maintainer
+visual acceptance recorded at final Phase 4 HEAD
+`692551774966bd9774900ecfef3d7fe03de61d7e`.
 
 ## 9. Phase 5 — unify Analysis presentation
+
+**Execution status:** Implemented and locally verified as an audit candidate
+through `69a3a4a80e3f107d91fc284990f86393ee06852d` (tree
+`91a05822d9a281cd2abae62c47f208190267e250`). The production primitive and
+both domain migrations preserve presentation-only ownership; focused/full
+verification, browser comparison, responsive containment, and lazy-route
+gates pass. No Phase 6 work is included.
 
 ### Changes
 
@@ -358,7 +367,8 @@ module contains layout only.
 
 ### Stop gate
 
-Independent cross-Lab Analysis hierarchy review.
+Independent Phase 5 analysis-presentation / state-separation audit, then
+Maintainer visual review.
 
 ## 10. Phase 6 — module overviews and duplicate-style retirement
 
