@@ -108,6 +108,8 @@ describe("public route bundle ownership", () => {
     ];
     const walkthroughModule =
       "components/lab-presentation/computationWalkthroughShell.ts";
+    const analysisSurfaceModule =
+      "components/lab-presentation/analysisSurface.ts";
     const entryGraph = eagerGraph("main.ts");
     const odeGraph = eagerGraph("labs/ode/initialValueProblemsRoute.ts");
     const linearSystemsGraph = eagerGraph(
@@ -129,17 +131,24 @@ describe("public route bundle ownership", () => {
     expect(entryGraph.has(walkthroughModule)).toBe(false);
     expect(odeGraph.has(walkthroughModule)).toBe(false);
     expect(linearSystemsGraph.has(walkthroughModule)).toBe(true);
-    const phaseTwoSource = [
+    expect(entryGraph.has(analysisSurfaceModule)).toBe(false);
+    expect(odeGraph.has(analysisSurfaceModule)).toBe(true);
+    expect(linearSystemsGraph.has(analysisSurfaceModule)).toBe(true);
+    const sharedSource = [
       ...migratedPresentationModules,
       walkthroughModule,
+      analysisSurfaceModule,
     ].map(source).join("\n");
-    expect(phaseTwoSource).not.toMatch(
+    expect(sharedSource).not.toMatch(
       /labs\/(?:ode|linear-algebra)|app\/(?:router|appSessionStore)|@numerical-t-lab|chart\.js|mathlive|compute-engine|Tutor|Glossary|ComputationTrace|computationTrace|computationMotion|convergenceStudy/
     );
     expect(source("labs/ode/odeApp.ts")).not.toMatch(
       /createComputationWalkthroughShell|createAnalysisSurface/
     );
-    expect(source("labs/linear-algebra/linearSystemsApp.ts")).not.toMatch(
+    expect(source("labs/ode/convergenceStudyView.ts")).toMatch(
+      /createAnalysisSurface/
+    );
+    expect(source("labs/linear-algebra/linearSystemsApp.ts")).toMatch(
       /createAnalysisSurface/
     );
   });
