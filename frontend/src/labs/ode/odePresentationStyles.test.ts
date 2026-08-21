@@ -31,4 +31,13 @@ describe("ODE Phase 3 presentation typography", () => {
       /\.ode-values-table[^\{]*(?::last-child|:last-of-type)[^{]*\{/
     );
   });
+
+  it("keeps wide Convergence evidence inside its local scroll frames", () => {
+    expect(styles).toMatch(
+      /\.ode-convergence-analysis\s+:where\([\s\S]*?\.convergence-analysis-evidence[\s\S]*?\)\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0,\s*1fr\);/
+    );
+    expect(styles).toMatch(
+      /\.ode-convergence-analysis\s+:where\([\s\S]*?\.convergence-results-table,[\s\S]*?\.convergence-chart-section,[\s\S]*?\.convergence-teaching[\s\S]*?\)\s*\{[\s\S]*?min-width:\s*0;/
+    );
+  });
 });

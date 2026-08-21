@@ -870,7 +870,16 @@
   .convergence-analysis-details
 ) {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--lab-space-block);
+  min-width: 0;
+}
+
+.ode-convergence-analysis :where(
+  .convergence-results-table,
+  .convergence-chart-section,
+  .convergence-teaching
+) {
   min-width: 0;
 }
 
