@@ -71,9 +71,7 @@
 }
 
 .lab-stage-section > h2,
-.ls-factorization-rail h3,
-.ls-walkthrough-phase h3,
-.ls-computation-step h4 {
+.ls-factorization-rail h3 {
   margin-top: 0;
 }
 
@@ -373,18 +371,16 @@
   gap: var(--space-4);
 }
 
-.ls-output-summary,
+.ls-output-summary {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
 .ls-computation-shell {
   display: grid;
   gap: var(--space-3);
-}
-
-.ls-computation-shell {
   margin-block: var(--space-6);
-}
-
-.ls-output-summary {
-  margin-top: var(--space-3);
 }
 
 .ls-evidence-table {
