@@ -78,12 +78,6 @@ export function createAnalysisSurface(
   if (options.sections) {
     for (const section of options.sections) {
       if (section.nodes.length === 0) continue;
-      if (
-        section.role === "advanced-details" &&
-        section.nodes.some((node) => (node as Element).tagName !== "DETAILS")
-      ) {
-        throw new Error("AnalysisSurface advanced detail must remain native details.");
-      }
       surface.append(createSlot(section.role, section.nodes));
     }
     return surface;

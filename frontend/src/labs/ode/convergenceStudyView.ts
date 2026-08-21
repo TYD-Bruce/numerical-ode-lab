@@ -11,9 +11,14 @@ import type {
 import {
   buildConvergenceConclusion,
   buildConvergenceTeachingSections,
+  CONVERGENCE_ANALYSIS_PURPOSE,
   formatTeachingNumber,
   type TeachingSectionId,
 } from "./convergenceTeaching";
+import {
+  createAnalysisSurface,
+  type AnalysisSurfaceSection,
+} from "../../components/lab-presentation/analysisSurface";
 import {
   renderReadonlyMath,
   type ReadonlyMathContent,
@@ -249,9 +254,12 @@ function appendDefinition(list: HTMLDListElement, term: string, description: str
   list.append(element("dt", undefined, term), element("dd", undefined, description));
 }
 
-function renderConsistency(container: HTMLElement, state: ConvergenceUiState): void {
+function renderConsistency(
+  container: HTMLElement,
+  state: ConvergenceUiState
+): HTMLParagraphElement | undefined {
   const check = state.consistencyCheck;
-  if (!check) return;
+  if (!check) return undefined;
   const section = element("section", "convergence-consistency");
   const headline = check.status === "passed"
     ? "Numerical consistency check passed."
@@ -270,8 +278,8 @@ function renderConsistency(container: HTMLElement, state: ConvergenceUiState): v
     ));
   }
   if (check.primaryBlocker) section.append(element("p", "convergence-error", check.primaryBlocker.message));
-  section.append(element("p", "convergence-proof-note", check.statement));
   container.append(section);
+  return element("p", "convergence-proof-note", check.statement);
 }
 
 function renderPreview(container: HTMLElement, state: ConvergenceUiState): void {
@@ -315,8 +323,11 @@ function renderPreview(container: HTMLElement, state: ConvergenceUiState): void 
   );
 }
 
-function renderConclusion(container: HTMLElement, state: ConvergenceUiState, methodName: string): void {
-  if (!state.result) return;
+function renderConclusion(
+  state: ConvergenceUiState,
+  methodName: string
+): { readonly finding: HTMLElement; readonly interpretation: HTMLElement } | undefined {
+  if (!state.result) return undefined;
   const conclusion = buildConvergenceConclusion(state.result, methodName);
   const card = element("section", "convergence-conclusion");
   if (state.resultStatus === "stale") {
@@ -333,12 +344,17 @@ function renderConclusion(container: HTMLElement, state: ConvergenceUiState, met
     "Primary observed order (maximum global error)",
     conclusion.primaryObservedOrder === undefined ? "No reliable observed order available" : numeric(conclusion.primaryObservedOrder)
   );
-  appendDefinition(list, "Interpretation", conclusion.interpretationTitle);
-  card.append(list, element("p", undefined, conclusion.explanation));
+  card.append(list);
   if (conclusion.evidencePairLabels.length > 0) {
     card.append(element("p", undefined, `Evidence pairs: ${conclusion.evidencePairLabels.join(", ")}.`));
   }
-  container.append(card);
+  const interpretation = element("section", "convergence-interpretation");
+  interpretation.append(
+    element("h3", undefined, "Interpretation"),
+    element("p", "convergence-interpretation-title", conclusion.interpretationTitle),
+    element("p", undefined, conclusion.explanation)
+  );
+  return { finding: card, interpretation };
 }
 
 function renderErrorTable(container: HTMLElement, result: ConvergenceStudyResult): void {
@@ -448,7 +464,9 @@ function renderTeaching(
     details.dataset.teachingId = model.id;
     details.append(element("summary", undefined, model.title));
     const content = element("div", "convergence-teaching-content");
-    content.append(element("p", undefined, model.plainLanguage));
+    if (model.id !== "what_testing") {
+      content.append(element("p", undefined, model.plainLanguage));
+    }
     const formula = element("div", "convergence-teaching-formula");
     renderMath(formula, model.formula, { display: "block" });
     content.append(
@@ -515,16 +533,30 @@ export function mountConvergenceStudyView(
     });
     if (!state.drawerOpen) return;
 
+    const analysisHeading = element("h3", undefined, "Experiment setup");
+    const purpose = element(
+      "p",
+      "convergence-analysis-purpose",
+      CONVERGENCE_ANALYSIS_PURPOSE
+    );
     if (!options.snapshot.exactSolutionEnabled || !options.snapshot.exactSolution) {
-      content.append(element(
+      const setup = element("div", "convergence-analysis-setup");
+      setup.append(element(
         "p",
         "convergence-guidance",
         "Add an exact solution in Step 2 to run error and convergence analysis."
       ));
+      const analysis = createAnalysisSurface({
+        heading: analysisHeading,
+        purpose,
+        setup,
+      });
+      analysis.classList.add("ode-convergence-analysis");
+      content.append(analysis);
       return;
     }
 
-    content.append(element("h3", undefined, "Experiment setup"));
+    const setup = element("div", "convergence-analysis-setup");
     const exactBlock = element("div", "convergence-exact");
     exactBlock.append(element("span", "convergence-label", "Exact solution"));
     const exactMath = element("div");
@@ -534,10 +566,10 @@ export function mountConvergenceStudyView(
       ariaLabel: `Exact solution: y of t equals ${options.snapshot.exactSolution.displayText}`,
     }, { display: "block" });
     exactBlock.append(exactMath);
-    content.append(exactBlock);
+    setup.append(exactBlock);
 
     const runStep = element("p", "convergence-run-step", `Run step size: ${numeric(options.snapshot.runStepSize)}.`);
-    content.append(runStep);
+    setup.append(runStep);
     const controls = element("div", "convergence-controls");
     const baseLabel = element("label", "field");
     baseLabel.append(element("span", undefined, "Study base step size"));
@@ -560,7 +592,7 @@ export function mountConvergenceStudyView(
     levelsInput.setAttribute("aria-label", "Refinement levels, from 3 through 6");
     levelsLabel.append(levelsInput);
     controls.append(baseLabel, levelsLabel);
-    content.append(controls);
+    setup.append(controls);
     baseInput.addEventListener("input", () => send(
       { type: "base_step", value: baseInput.value },
       { focusSelector: "[data-convergence-base-step]" }
@@ -570,12 +602,16 @@ export function mountConvergenceStudyView(
       { focusSelector: "[data-convergence-levels]" }
     ));
 
-    renderPreview(content, state);
-    renderConsistency(content, state);
+    renderPreview(setup, state);
+    const limitation = renderConsistency(setup, state) ?? (
+      state.result
+        ? element("p", "convergence-proof-note", state.result.consistencyCheck.statement)
+        : undefined
+    );
     if (state.lastAttemptError) {
       const failure = element("p", "convergence-error", state.lastAttemptError.message);
       failure.setAttribute("role", "alert");
-      content.append(failure);
+      setup.append(failure);
     }
     const pending = state.pendingWarningConfirmation;
     if (
@@ -593,7 +629,7 @@ export function mountConvergenceStudyView(
       cancel.addEventListener("click", () => send({ type: "cancel_warning" }));
       anyway.addEventListener("click", () => send({ type: "run_anyway" }));
       actions.append(cancel, anyway);
-      content.append(actions);
+      setup.append(actions);
     } else {
       const hasCurrentResult = state.resultStatus === "current" && Boolean(state.result);
       const showRunAction = !hasCurrentResult || Boolean(state.lastAttemptError);
@@ -605,25 +641,54 @@ export function mountConvergenceStudyView(
         if (state.result) run.dataset.rerunConvergence = "";
         run.disabled = !state.preview;
         run.addEventListener("click", () => send({ type: "run" }));
-        content.append(run);
+        setup.append(run);
       }
     }
 
+    const analysisSections: AnalysisSurfaceSection[] = [
+      { role: "purpose", nodes: [purpose] },
+      { role: "setup", nodes: [setup] },
+    ];
+    let evidence: HTMLElement | undefined;
+    let advanced: HTMLElement | undefined;
+    let methodName: string | undefined;
     if (state.result) {
-      const methodName = displayNameFor(
+      methodName = displayNameFor(
         options.snapshot.method.family,
         options.snapshot.method.order
       );
-      renderConclusion(content, state, methodName);
-      renderErrorTable(content, state.result);
-      chart = renderChart(content, state, options.chartFactory);
+      const conclusion = renderConclusion(state, methodName)!;
+      evidence = element("div", "convergence-analysis-evidence");
+      advanced = element("div", "convergence-analysis-details");
+      analysisSections.push(
+        { role: "primary-finding", nodes: [conclusion.finding] },
+        { role: "evidence", nodes: [evidence] },
+        { role: "interpretation", nodes: [conclusion.interpretation] }
+      );
+    }
+    if (limitation) {
+      analysisSections.push({ role: "limitation", nodes: [limitation] });
+    }
+    if (advanced) {
+      analysisSections.push({ role: "advanced-details", nodes: [advanced] });
+    }
+    const analysis = createAnalysisSurface({
+      heading: analysisHeading,
+      sections: analysisSections,
+    });
+    analysis.classList.add("ode-convergence-analysis");
+    content.append(analysis);
+
+    if (state.result && evidence && advanced && methodName) {
+      renderErrorTable(evidence, state.result);
+      chart = renderChart(evidence, state, options.chartFactory);
       content.querySelectorAll<HTMLInputElement>("[data-convergence-metric]").forEach((input) => {
         input.addEventListener("change", () => {
           if (input.checked) send({ type: "metric", metric: input.value as ConvergenceMetric });
         });
       });
       renderTeaching(
-        content,
+        advanced,
         state,
         options.snapshot,
         methodName,

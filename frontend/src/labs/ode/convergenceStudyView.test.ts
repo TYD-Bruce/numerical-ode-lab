@@ -180,6 +180,18 @@ describe("Convergence Study drawer", () => {
     );
     expect(value.host.querySelector("[data-run-convergence]")).toBeNull();
     expect(value.host.querySelector("[data-convergence-base-step]")).toBeNull();
+    const analysis = value.host.querySelector<HTMLElement>("[data-analysis-surface='true']")!;
+    expect(analysis).not.toBeNull();
+    expect(analysis.getAttribute("aria-labelledby")).toBe(
+      analysis.querySelector(":scope > h3")?.id
+    );
+    expect(analysis.querySelector(":scope > h3")?.textContent).toBe("Experiment setup");
+    expect(
+      [...analysis.querySelectorAll<HTMLElement>(":scope > [data-analysis-role]")].map(
+        (slot) => slot.dataset.analysisRole
+      )
+    ).toEqual(["purpose", "setup"]);
+    expect(analysis.querySelector("[data-analysis-role='primary-finding']")).toBeNull();
   });
 
   it("renders exact solution, independent setup labels, preview, and budget explanation", () => {
@@ -192,6 +204,12 @@ describe("Convergence Study drawer", () => {
     expect(value.host.textContent).toContain("Newton-based implicit methods cost more per step");
     expect(value.renderMath).toHaveBeenCalled();
     expect(value.host.querySelector("[aria-label='Study base step size']")).not.toBeNull();
+    expect(value.host.querySelector("[data-analysis-role='purpose']")?.textContent).toContain(
+      "We are checking how quickly numerical error decreases as the step size becomes smaller."
+    );
+    expect(
+      value.host.querySelector("[data-convergence-base-step]")?.closest("[data-analysis-role='setup']")
+    ).not.toBeNull();
   });
 
   it("keeps each readonly formula singly accessible through update and disposal", async () => {
@@ -313,6 +331,20 @@ describe("Convergence Study results", () => {
     state = editConvergenceSetup(state, run, { baseStepSizeDraft: "0.125" });
     state = setConvergenceDrawerOpen(state, true);
     const value = harness(state, run);
+    const analysis = value.host.querySelector<HTMLElement>("[data-analysis-surface='true']")!;
+    expect(
+      [...analysis.querySelectorAll<HTMLElement>(":scope > [data-analysis-role]")].map(
+        (slot) => slot.dataset.analysisRole
+      )
+    ).toEqual([
+      "purpose",
+      "setup",
+      "primary-finding",
+      "evidence",
+      "interpretation",
+      "limitation",
+      "advanced-details",
+    ]);
     expect(value.host.textContent).toContain("What this experiment found");
     expect(value.host.textContent).toContain("Runge-Kutta 4");
     expect(value.host.textContent).toContain("Stale result");
@@ -345,8 +377,38 @@ describe("Convergence Study results", () => {
     expect(value.chartFactory.create).toHaveBeenCalledTimes(1);
     expect(value.host.textContent).toContain("Moving right means using a smaller step size");
     expect(value.host.querySelectorAll("[data-teaching-id]")).toHaveLength(8);
+    expect(
+      [...value.host.querySelectorAll("p")].filter(
+        (paragraph) => paragraph.textContent ===
+          "We are checking how quickly numerical error decreases as the step size becomes smaller."
+      )
+    ).toHaveLength(1);
     expect(value.host.querySelector(".convergence-table-scroll")).not.toBeNull();
     expect(value.host.querySelector(".convergence-chart-scroll")).not.toBeNull();
+    expect(
+      value.host
+        .querySelector(".convergence-conclusion")
+        ?.closest("[data-analysis-role='primary-finding']")
+    ).not.toBeNull();
+    expect(
+      value.host
+        .querySelector(".convergence-results-table")
+        ?.closest("[data-analysis-role='evidence']")
+    ).not.toBeNull();
+    expect(
+      value.host
+        .querySelector(".convergence-chart-section")
+        ?.closest("[data-analysis-role='evidence']")
+    ).not.toBeNull();
+    expect(value.host.querySelector("[data-analysis-role='interpretation']")?.textContent)
+      .toContain("The experiment is not yet in a clear asymptotic regime");
+    expect(value.host.querySelector("[data-analysis-role='limitation']")?.textContent)
+      .toContain("not a formal proof");
+    expect(
+      value.host
+        .querySelector(".convergence-teaching")
+        ?.closest("[data-analysis-role='advanced-details']")
+    ).not.toBeNull();
   });
 
   it("names an unavailable primary quantity as observed order", () => {

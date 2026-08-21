@@ -854,6 +854,44 @@
   overflow-x: auto;
 }
 
+.ode-convergence-analysis .convergence-analysis-purpose,
+.ode-convergence-analysis .convergence-proof-note,
+.ode-convergence-analysis .convergence-conclusion,
+.ode-convergence-analysis .convergence-results-table,
+.ode-convergence-analysis .convergence-chart-section,
+.ode-convergence-analysis .convergence-teaching,
+.ode-convergence-analysis .convergence-interpretation :where(h3, p) {
+  margin: 0;
+}
+
+.ode-convergence-analysis :where(
+  .convergence-analysis-setup,
+  .convergence-analysis-evidence,
+  .convergence-analysis-details
+) {
+  display: grid;
+  gap: var(--lab-space-block);
+  min-width: 0;
+}
+
+.ode-convergence-analysis
+  > .lab-analysis-surface-primary-finding
+  > .convergence-conclusion {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.ode-convergence-analysis .convergence-interpretation {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.ode-convergence-analysis .convergence-interpretation-title {
+  color: var(--text);
+  font-weight: 700;
+}
+
 .convergence-current-example,
 .convergence-why {
   margin: 8px 0 0;

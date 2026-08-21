@@ -98,6 +98,12 @@ describe("AnalysisSurface", () => {
     const finding = paragraph("Largest mismatch.");
     const interpretation = paragraph("Interpret the mismatch.");
     const qualifiedReference = paragraph("Qualified reference evidence.");
+    const detailGroup = document.createElement("div");
+    const detail = document.createElement("details");
+    detail.append(Object.assign(document.createElement("summary"), {
+      textContent: "Advanced detail",
+    }));
+    detailGroup.append(detail);
     const surface = createAnalysisSurface({
       heading: heading(2, "Diagnostics"),
       sections: [
@@ -105,6 +111,7 @@ describe("AnalysisSurface", () => {
         { role: "primary-finding", nodes: [finding] },
         { role: "interpretation", nodes: [interpretation] },
         { role: "evidence", nodes: [qualifiedReference] },
+        { role: "advanced-details", nodes: [detailGroup] },
       ],
     });
 
@@ -112,12 +119,21 @@ describe("AnalysisSurface", () => {
       [...surface.querySelectorAll<HTMLElement>(":scope > [data-analysis-role]")].map(
         (slot) => slot.dataset.analysisRole
       )
-    ).toEqual(["evidence", "primary-finding", "interpretation", "evidence"]);
+    ).toEqual([
+      "evidence",
+      "primary-finding",
+      "interpretation",
+      "evidence",
+      "advanced-details",
+    ]);
     expect(surface.querySelectorAll("[data-analysis-role='evidence']")).toHaveLength(2);
     expect(surface.querySelectorAll("[data-analysis-role='evidence']")[0]?.firstChild)
       .toBe(firstEvidence);
     expect(surface.querySelectorAll("[data-analysis-role='evidence']")[1]?.firstChild)
       .toBe(qualifiedReference);
+    expect(surface.querySelector("[data-analysis-role='advanced-details']")?.firstChild)
+      .toBe(detailGroup);
+    expect(detail.open).toBe(false);
   });
 
   it("keeps generated labels unique and preserves caller-supplied h2 through h6", () => {

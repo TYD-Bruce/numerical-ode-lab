@@ -15,6 +15,9 @@ export type TeachingSectionId =
   | "theory_difference"
   | "warnings";
 
+export const CONVERGENCE_ANALYSIS_PURPOSE =
+  "We are checking how quickly numerical error decreases as the step size becomes smaller.";
+
 export interface TeachingSectionModel {
   readonly id: TeachingSectionId;
   readonly title: string;
@@ -102,7 +105,7 @@ export function buildConvergenceTeachingSections(
     {
       id: "what_testing",
       title: "What are we testing?",
-      plainLanguage: "We are checking how quickly numerical error decreases as the step size becomes smaller.",
+      plainLanguage: CONVERGENCE_ANALYSIS_PURPOSE,
       formula: math("E(h)\\to 0\\quad\\text{as}\\quad h\\to 0", "E of h approaches zero as h approaches zero"),
       currentExample: `${input.methodName} used ${result.levels.length} levels from h = ${formatTeachingNumber(first.stepSize)} to h = ${formatTeachingNumber(last.stepSize)}.`,
       whyThisMatters: "Why this matters: decreasing error is the evidence needed before an observed convergence order is meaningful.",
