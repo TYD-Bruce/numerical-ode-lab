@@ -32,9 +32,10 @@ Browser ownership is organized as:
   `LabHeader`, `WorkflowNavigation`, `StageSection`, outer action-role
   presentation, and the implemented Phase 2 `ProblemContext`, `TeachingBlock`,
   `PrimaryResult`, `EvidenceBlock`, `ComputationWalkthroughShell`, semantic
-  numerical-table, and native advanced-disclosure source. ODE now consumes
-  the compatible context/teaching/result/evidence/table subset; shared source
-  still owns no domain state, math, visualization, or lifecycle;
+  numerical-table, and native advanced-disclosure source. ODE consumes the
+  compatible context/teaching/result/evidence/table subset; Linear Systems
+  consumes the context/teaching/result/evidence/walkthrough/disclosure subset;
+  shared source still owns no domain state, math, visualization, or lifecycle;
 - `frontend/src/labs/ode/`: the mountable Initial Value Problems Lab, ODE
   workflow/session state, successful-result context composition, Method/Data/
   Output/Compare presentation, Chart.js lifecycle, Convergence presentation,
@@ -122,8 +123,9 @@ frontend entry
 frontend entry
   -> dynamic Linear Systems route
   -> shared Lab presentation chunk
-  -> frontend session and static Teaching v2 matrix/workflow presentation
+  -> frontend session and shared Teaching v2 presentation composition
   -> lightweight native MathML atoms plus controlled DOM/CSS composition
+  -> domain-authored static trace interpretation inside the shared walkthrough shell
   -> Linear Systems numerical package and immutable computation trace
 
 first valid Glossary request
@@ -157,11 +159,22 @@ Glossary, and disposal remain ODE-owned.
 
 ODE does not consume `ComputationWalkthroughShell` because no authoritative
 ODE computation trace exists. ODE Convergence remains domain-local and is not
-yet composed through `AnalysisSurface`. Linear Systems inner presentation
-remains unmigrated pending Phase 4; its accepted Teaching v2, native MathML,
-walkthrough, Diagnostics, result identity, and domain styling are unchanged.
-The DEV-only Presentation System fixture remains absent from Production route
-matching and emitted assets.
+yet composed through `AnalysisSurface`.
+
+Linear Systems Method composes its natural large teaching regions through
+`TeachingBlock`. Successful current and stale Output have exactly one shared
+`PrimaryResult` owner containing a successful-result `ProblemContext` and the
+computed answer; both are authored only from immutable `originalA`,
+`originalB`, and `xHat`. Factorization and residual-led supporting evidence use
+`EvidenceBlock`; arithmetic and safeguard details use native closed
+`AdvancedDetails`. The shared `ComputationWalkthroughShell` owns the rendered
+ordered phases, steps, and before/operation/after corridors, while
+`computationWalkthrough.ts` remains the sole trace-kind interpreter and owns
+all captions, formulas, matrices, substitutions, residual evidence, and
+failure boundaries. Diagnostics remains a top-level analysis `StageSection`
+and does not consume `AnalysisSurface` at this gate. The DEV-only Presentation
+System fixture remains absent from Production route matching and emitted
+assets.
 
 The route module registry, Tutor Host, Glossary Host, and editable-math loader
 retain distinct dynamic imports. Package extraction does not create an eager
@@ -170,10 +183,9 @@ numerics root import.
 The Linear Systems walkthrough consumes producer-owned `initialU`, complete
 `uBefore`/`uAfter`, `permutedB`, substitution, residual, and reference evidence
 without rerunning elimination or reconstructing numerical states. Its current
-Phase 2 presentation is intentionally static. The existing motion controller
-remains source-owned by the mounted frontend presentation but is not imported
-or mounted by the Linear Systems route pending the separate motion-remount
-gate.
+Phase 4 presentation is intentionally static. The existing motion controller
+remains dormant source and is not imported or mounted by the Linear Systems
+route pending the separate motion-remount gate.
 
 ## State and lifecycle
 

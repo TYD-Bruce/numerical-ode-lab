@@ -2,9 +2,9 @@
 
 ## Current status
 
-**Active milestone: Cross-Lab Presentation Sync — Phases 0, 1, and 2
-Maintainer accepted; Phase 3 ODE inner presentation is implemented and locally
-verified as an audit candidate.**
+**Active milestone: Cross-Lab Presentation Sync — Phases 0 through 3
+Maintainer accepted; Phase 4 Linear Systems inner presentation is implemented
+and locally verified as an audit candidate.**
 
 Linear Systems Teaching v2 is **MAINTAINER ACCEPTED** at commit
 `484fc9153de33be7949e82b29386c94fe63d19c8` (tree
@@ -72,8 +72,12 @@ WITH P3 CARRY-FORWARD** at HEAD
 `9e49edeae9aff206435dca577933046189a86ddc`); its independent audit reported
 `P0 = 0`, `P1 = 0`, `P2 = 0`, and `P3 = 4`.
 
-Phase 3 closes the two shared Phase 2 CSS/test findings and corrects the live
-fixture handoff count to 33 formula owners. The ODE migration is implemented
+Phase 3 is **MAINTAINER ACCEPTED** at final HEAD
+`1e9080f110385fe635885d28cd4a17e810c8421a` (tree
+`1dc5b52346fadadf2f92d8ffa2169e7f5dc50cd8`) after its final correction
+re-audit passed with `P0 = P1 = P2 = P3 = 0`. It closes the two shared Phase 2
+CSS/test findings and corrects the live fixture handoff count to 33 formula
+owners. The ODE migration is implemented
 at `cc6850b75c6102258101a059856870a57e8657f5`, with final narrow-layout
 correction at `e1eefd98480b2f11eb796ea6117e7a428753c62a` (tree
 `251220912f44ad28dbe85d56a174e9dde7cea7e4`), with final local-label proof at
@@ -84,8 +88,21 @@ use `TeachingBlock`; successful single and Compare Output use result-owned
 semantic `NumericalTable`. Chart.js, ODE state/math, Convergence, Tutor,
 Glossary, lifecycle, and numerical authority remain domain-owned. No ODE
 walkthrough is mounted, and Convergence is not migrated to `AnalysisSurface`.
-Linear Systems inner migration remains Phase 4 pending, including
-`PHASE2-P3-04`.
+
+Phase 4 is implemented and locally verified as an audit candidate in
+`15e04db939938ae01234d67149f832c4efeaad60` (tree
+`ed6756791fc5c553a1d39d99dd79cd3aabaa155e`). Linear Systems Method now
+uses the shared `TeachingBlock` at its natural large-region boundaries.
+Successful current and stale Output use exactly one shared `PrimaryResult`
+owner containing a successful-result `ProblemContext` and computed-solution
+answer; this closes `PHASE2-P3-04`. Factorization and residual-led supporting
+evidence use `EvidenceBlock`, and subordinate arithmetic/safeguard disclosures
+use native closed `AdvancedDetails`. The shared
+`ComputationWalkthroughShell` is the rendered outer owner of ordered phases,
+steps, and before/operation/after corridors, while
+`computationWalkthrough.ts` remains the sole Linear Systems trace interpreter.
+Diagnostics remains a top-level analysis `StageSection`; Phase 4 does not use
+`AnalysisSurface`.
 
 The design keeps ODE's exploration, presets, Compare, charts, Convergence,
 Tutor, and Glossary strengths; keeps Linear Systems Teaching v2's explicit
@@ -97,21 +114,23 @@ Shared complete-Lab primitives remain Lab-shared lazy; only `ModuleOverview`
 is entry-safe. The platform entry must remain free of complete-Lab, Chart.js,
 Tutor, Glossary, MathLive, and Compute Engine runtime.
 
-Browser verification covers paired desktop Method/Data/Output surfaces, Linear
-Systems Diagnostics, Light/Dark, 390 × 844, and 320-pixel stress. Current steps
-remain fully visible inside local rails with no page overflow; New experiment,
-ODE Tutor/Glossary focus return, route/remount, Teaching v2, native MathML,
-walkthrough, stale/failure authority, and representative numerical displays
-remain intact. The Production manifest emits one shared Lab-only dynamic
-presentation asset imported by both complete-Lab chunks and absent from the
-platform entry. Numerical behavior, Computation Trace, session schemas, MathML
-architecture, Motion, Tutor/Glossary feature logic, PDE, dependencies,
-deployment, and Production state are unchanged.
+Phase 4 browser verification covers Linear Systems desktop at 1440 × 900 in
+Light and Dark, 390 × 844, and 320 × 844. Method, current Output, stale Output,
+the full static walkthrough, residual-led Diagnostics, controlled pivot
+failure, and cancel-only New experiment behavior retain zero page overflow and
+empty warning/error logs. Long mobile row-operation math remains contained in
+its local shared corridor part. ODE separately mounts and runs to successful
+Output with its chart and shared primary result intact. The Production build
+keeps entry, ODE, and Linear Systems as distinct chunks; route-graph tests
+prove the Phase 4 primitives remain behind the complete-Lab boundary. Numerical
+behavior, trace production, session schemas, native MathML ownership, Motion,
+Tutor/Glossary logic, PDE, dependencies, deployment, and Production state are
+unchanged.
 
-The exact next gate is **independent Phase 3 ODE presentation /
-behavior-equivalence audit**, followed by **Maintainer visual review**. Phase
-4+ remains unauthorized; do not begin Linear Systems inner migration,
-AnalysisSurface alignment, Motion, or Tutor.
+The exact next gate is **independent Phase 4 Linear Systems presentation /
+Teaching v2 / trace-equivalence audit**, followed by **Maintainer visual
+review**. Phase 5+ remains unauthorized; do not begin `AnalysisSurface`
+alignment, Motion remount, Linear Algebra Tutor/Glossary, or PDE work.
 
 ## Superseded Teaching v2 execution record
 

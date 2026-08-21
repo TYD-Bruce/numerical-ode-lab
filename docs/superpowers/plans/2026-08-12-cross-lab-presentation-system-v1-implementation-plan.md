@@ -1,13 +1,13 @@
 # Cross-Lab Presentation System v1 Implementation Plan
 
-**Status:** Phases 0, 1, and 2 Maintainer accepted; Phase 3 ODE migration implemented as a locally verified audit candidate at `4c9720b811e2001683e25ff733052b77c2dca67a`; Phase 4+ unauthorized
+**Status:** Phases 0 through 3 Maintainer accepted; Phase 4 Linear Systems migration implemented and locally verified as an audit candidate at `15e04db939938ae01234d67149f832c4efeaad60`; Phase 5+ unauthorized
 
 **Design authority:**
 [`2026-08-12-cross-lab-presentation-system-v1-design.md`](../specs/2026-08-12-cross-lab-presentation-system-v1-design.md)
 
 **Starting implementation prerequisite:** Satisfied at design commit `3b77f7133a95bef855c2eb3e3a69db37e16f1e46`
 
-**Current gate:** Stop after Phase 3 for independent ODE presentation / behavior-equivalence audit, then Maintainer visual review
+**Current gate:** Stop after Phase 4 for independent Linear Systems presentation / Teaching v2 / trace-equivalence audit, then Maintainer visual review
 
 ## 1. Objective and boundary
 
@@ -226,7 +226,10 @@ Maintainer approval of the compositional hierarchy before a Lab migration.
 
 ## 7. Phase 3 — migrate ODE presentation
 
-**Execution status:** Implemented and locally verified as an audit candidate.
+**Execution status:** Maintainer accepted at final Phase 3 HEAD
+`1e9080f110385fe635885d28cd4a17e810c8421a` (tree
+`1dc5b52346fadadf2f92d8ffa2169e7f5dc50cd8`) after the final correction
+re-audit passed with `P0 = P1 = P2 = P3 = 0`.
 Shared carry-forward closure is recorded at
 `249225ea6703dbe53da689b28a67e8cfc35ae91a` and
 `033017fa69d9b4b10edcee0e9449ec752d17d7a9`; the ODE migration is
@@ -234,8 +237,7 @@ Shared carry-forward closure is recorded at
 `e1eefd98480b2f11eb796ea6117e7a428753c62a` (tree
 `251220912f44ad28dbe85d56a174e9dde7cea7e4`), followed by explicit local
 ARIA-target proof at `4c9720b811e2001683e25ff733052b77c2dca67a` (tree
-`874b07332625c1f5d2be6fed38c86d5e452b2847`). No Phase 4 or Phase 5 work is
-included.
+`874b07332625c1f5d2be6fed38c86d5e452b2847`).
 
 ### Changes
 
@@ -276,6 +278,13 @@ Convergence code do not enter Home.
 Independent ODE behavior-equivalence and presentation review.
 
 ## 8. Phase 4 — migrate Linear Systems presentation
+
+**Execution status:** Implemented and locally verified as an audit candidate
+in `15e04db939938ae01234d67149f832c4efeaad60` (tree
+`ed6756791fc5c553a1d39d99dd79cd3aabaa155e`). The direct duplicate-primary
+regression closed `PHASE2-P3-04`; all focused and full verification, browser,
+responsive-containment, and lazy-route gates pass. No Phase 5 work is
+included.
 
 ### Changes
 
@@ -454,6 +463,6 @@ Implementation is complete only after Phase 7 acceptance and documentation
 updates accurately label it implemented and locally verified. Production
 remains unchanged until a separately authorized release/deployment task.
 
-Current exact next gate: **independent Phase 3 ODE presentation /
-behavior-equivalence audit**, followed by **Maintainer visual review**. Stop
-before Phase 4 and Phase 5.
+Current exact next gate: **independent Phase 4 Linear Systems presentation /
+Teaching v2 / trace-equivalence audit**, followed by **Maintainer visual
+review**. Stop before Phase 5.

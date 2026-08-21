@@ -2,6 +2,120 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
+## Cross-Lab Presentation Sync Phase 4 — Linear Systems migration candidate — 2026-08-21
+
+Cross-Lab Presentation Sync Phase 4 is implemented and locally verified as an
+audit candidate in implementation commit
+`15e04db939938ae01234d67149f832c4efeaad60` (tree
+`ed6756791fc5c553a1d39d99dd79cd3aabaa155e`). This candidate starts from the
+Maintainer-accepted Phase 3 HEAD
+`1e9080f110385fe635885d28cd4a17e810c8421a` (tree
+`1dc5b52346fadadf2f92d8ffa2169e7f5dc50cd8`), whose final correction re-audit
+passed with `P0 = P1 = P2 = P3 = 0`.
+
+### Implemented presentation composition
+
+Linear Systems keeps its four-stage Method → Data → Output → Diagnostics
+workflow. Method now composes only its natural large teaching regions through
+shared `TeachingBlock` owners: the problem foundation, method landscape,
+selected GEPP teaching, and result-checking boundary. The accepted copy,
+ordering, planned Jacobi/Gauss–Seidel status, GEPP profile, structural MathML,
+and selected-method concept ownership remain domain-authored.
+
+Successful current and stale Output now have exactly one
+`[data-primary-result]` owner, the shared `PrimaryResult`. It contains one
+successful-result `ProblemContext` and one computed-solution answer authored
+only from immutable `originalA`, `originalB`, and `xHat`. The prior domain
+`.ls-primary-result[data-primary-result]` owner is removed. The direct current
+and stale regression closes `PHASE2-P3-04`; stale edits continue to show the
+previous successful system and answer, never current draft data. Factorization
+is secondary `EvidenceBlock` content and retains `P A = L U`, the rounded-entry
+comparison warning, all `P`/`L`/`U` matrices, row-swap summary, and pivot table.
+
+`ComputationWalkthroughShell` is now the real rendered outer owner of ordered
+phases, ordered steps, and shared Before → Operation → After corridors.
+`computationWalkthrough.ts` remains the sole interpreter of Linear Systems
+trace kinds and the sole author of captions, complete matrices, the binding
+row operation `R_i - m_ik R_k → R_i`, `P b`, forward/backward substitution,
+residual evidence, preset qualification, and controlled failure cutoff. The
+shell neither imports trace types nor derives numerical meaning. Before/after
+labels have one shared accessible owner. Motion remains unimported and
+unmounted; no Replay control exists.
+
+Diagnostics remains the top-level analysis `StageSection`; it does not use
+`AnalysisSurface`. Its successful context uses `ProblemContext`, its residual
+meaning uses one large `TeachingBlock`, its three residual-led steps and
+qualified preset comparison use `EvidenceBlock`, and arithmetic/safeguard
+disclosures use native closed `AdvancedDetails`. The sequence remains context
+→ residual meaning → residual-is-not-solution-error boundary → substitute
+`A x̂` → compute `r` → measure `‖r‖∞` → qualified reference comparison
+→ subordinate safeguards. `Number.EPSILON` remains nested under the closed
+implementation detail.
+
+### Behavior, ownership, and non-changes
+
+GEPP algorithms, tolerances, trace production, result/session schemas,
+successful-snapshot identity, failed-run preservation, meaningful-work
+tracking, New experiment semantics, route disposal, and focus restoration are
+unchanged. Native MathML remains the one visual/accessibility owner for
+mathematical atoms. Data editing is unchanged. Linear Systems still exposes no
+Tutor or Glossary binding. ODE, Chart.js, Convergence, Tutor, Glossary,
+MathLive, Compute Engine, PDE, dependencies, API, Vercel configuration, and
+Production state are unchanged.
+
+### Verification and browser evidence
+
+The direct duplicate-owner red gate initially failed exactly two assertions:
+current and stale Output still used the old domain primary-result class. After
+migration, the focused Phase 4 gate passes 5 files / 57 tests across shared
+Phase 2 primitives, Linear Systems Teaching, app, walkthrough, and route-bundle
+ownership. It directly proves one shared current/stale primary owner, immutable
+successful context, natural shared teaching/evidence owners, shared
+walkthrough/corridor ownership, unchanged trace order, controlled failure,
+focus, no Motion/Replay, and the independent lazy route graph.
+
+Fresh `npm.cmd run verify` passes:
+
+- import boundaries: 4 owners plus the Vercel adapter;
+- full suite: 95 files / 1,277 tests;
+- frontend, numerics, contracts, and backend/API typechecks;
+- Production build: 109 transformed modules.
+
+Representative emitted raw/gzip assets are entry JS `57.27 / 17.72 kB`,
+shared Lab workflow/presentation JS `12.84 / 3.21 kB`, Linear Systems route JS
+`75.22 / 22.44 kB`, Linear Systems route CSS `26.45 / 4.97 kB`, ODE route JS
+`296.45 / 95.01 kB`, and ODE route CSS `14.87 / 3.60 kB`. Static route-graph
+tests prove the shared inner primitives remain behind the complete-Lab lazy
+boundaries, `ComputationWalkthroughShell` enters only the Linear Systems graph,
+and the platform entry remains free of complete-Lab presentation and domain
+runtime. No `manualChunks`, dependency, or eager-import change was introduced.
+
+Real-browser verification used the local Vite route at
+1440 × 900 in Light and Dark, 390 × 844, and 320 × 844. Method, current Output,
+stale Output, expanded walkthrough, Diagnostics, controlled pivot failure, and
+cancel-only New experiment behavior had no page-level horizontal overflow.
+The desktop corridor showed complete before/operation/after states without
+overflow; mobile stacked all three states and contained the long operation
+formula locally. Current and stale Output each had exactly one shared primary
+owner; stale Output retained the accepted `b = [6, 9, -2]` after editing the
+current draft. Controlled failure retained the earlier success and rendered no
+forward/backward steps, Motion, or Replay. Diagnostics retained three evidence
+steps, closed safeguards, no `AnalysisSurface`, and result-owned context.
+Canceling New experiment restored focus to its trigger without resetting.
+
+ODE separately mounted and ran its starter experiment to successful Output
+with one shared primary result and one chart. Browser warning/error logs were
+empty throughout. This is local browser evidence only; no Preview or Production
+deployment was authorized or performed.
+
+### Stop gate
+
+Phase 4 stops here. The exact next gate is **independent Phase 4 Linear Systems
+presentation / Teaching v2 / trace-equivalence audit**, followed by
+**Maintainer visual review**. Phase 5 `AnalysisSurface` alignment, Motion
+remount, Linear Algebra Tutor, Linear Algebra Glossary, PDE work, push, and
+deployment remain unauthorized.
+
 ## Cross-Lab Presentation Sync Phase 3 — Maintainer accepted — 2026-08-21
 
 The Maintainer formally accepts **Cross-Lab Presentation Sync Phase 3** at
