@@ -2,6 +2,30 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
+## Cross-Lab Presentation Sync Phase 3 — Maintainer accepted — 2026-08-21
+
+The Maintainer formally accepts **Cross-Lab Presentation Sync Phase 3** at
+final accepted HEAD `1e9080f110385fe635885d28cd4a17e810c8421a` (tree
+`1dc5b52346fadadf2f92d8ffa2169e7f5dc50cd8`). The final independent
+correction re-audit passed with `P0 = 0`, `P1 = 0`, `P2 = 0`, and `P3 = 0`.
+
+This acceptance closes the Phase 3 ODE presentation and behavior-equivalence
+gate, including its Tutor-launcher lifecycle, current-output authority,
+information-hierarchy, visual, peer-alignment, accessibility, lazy-boundary,
+and Production-graph corrections. The historical Phase 3 candidate section
+below remains exact point-in-time implementation evidence.
+
+`PHASE2-P3-04` is not a Phase 3 defect. It remains the sole open cross-Lab
+carry-forward and is owned by the separately authorized Phase 4 Linear Systems
+presentation migration. Phase 4 must replace the existing Linear Systems
+primary-result presentation identity with one shared `PrimaryResult` owner;
+it must not nest or duplicate `[data-primary-result]` ownership.
+
+The exact active gate is **Phase 4 only — Linear Systems inner presentation
+migration**. Phase 5 AnalysisSurface alignment, Motion remount, Linear Algebra
+Tutor, Linear Algebra Glossary, PDE work, push, and deployment remain
+unauthorized.
+
 ## Cross-Lab Presentation Sync Phase 3 — ODE migration candidate — 2026-08-19
 
 ### Phase 3 independent-audit corrections
