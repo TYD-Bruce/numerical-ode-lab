@@ -609,6 +609,105 @@
   outline-offset: var(--lab-focus-ring-offset);
 }
 
+.lab-analysis-surface {
+  display: grid;
+  gap: var(--lab-space-block);
+  min-width: 0;
+  padding-block: var(--space-2);
+  border-inline-start: var(--space-1) solid var(--lab-stage-analysis-accent);
+}
+
+.lab-analysis-surface > .lab-analysis-surface-heading {
+  margin: 0;
+  padding-inline: var(--lab-space-block);
+  font-size: var(--lab-type-stage-title-size);
+  line-height: var(--lab-type-stage-title-line);
+}
+
+.lab-analysis-surface > [data-analysis-role] {
+  min-width: 0;
+  margin-inline: var(--lab-space-block);
+}
+
+.lab-analysis-surface > .lab-analysis-surface-purpose {
+  display: grid;
+  gap: var(--space-3);
+  max-width: var(--lab-readable-measure);
+}
+
+.lab-analysis-surface > .lab-analysis-surface-setup {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--lab-stage-analysis-border);
+  border-radius: var(--lab-radius-section);
+  background: color-mix(
+    in srgb,
+    var(--lab-stage-analysis-surface) 46%,
+    var(--lab-surface-section)
+  );
+}
+
+.lab-analysis-surface > .lab-analysis-surface-status {
+  color: var(--color-text-secondary);
+}
+
+.lab-analysis-surface > .lab-analysis-surface-primary-finding {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--lab-stage-analysis-border);
+  border-inline-start: var(--space-2) solid var(--lab-stage-analysis-accent);
+  border-radius: var(--lab-radius-section);
+  background: color-mix(
+    in srgb,
+    var(--lab-stage-analysis-surface) 64%,
+    var(--lab-surface-section)
+  );
+}
+
+.lab-analysis-surface > .lab-analysis-surface-evidence {
+  display: grid;
+  gap: var(--lab-space-block);
+  min-width: 0;
+}
+
+.lab-analysis-surface > .lab-analysis-surface-interpretation {
+  max-width: var(--lab-readable-measure);
+  padding: var(--space-3) var(--space-4);
+  border-inline-start: var(--space-1) solid var(--lab-stage-analysis-accent);
+  background: var(--lab-stage-analysis-surface);
+}
+
+.lab-analysis-surface > .lab-analysis-surface-limitation {
+  max-width: var(--lab-readable-measure);
+  padding: var(--space-3) var(--space-4);
+  border-inline-start: var(--space-1) solid var(--lab-status-caution-border);
+  background: var(--lab-status-caution-surface);
+}
+
+.lab-analysis-surface > .lab-analysis-surface-advanced-details {
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 44rem) {
+  .lab-analysis-surface > .lab-analysis-surface-heading,
+  .lab-analysis-surface > [data-analysis-role] {
+    margin-inline: 0;
+    padding-inline: var(--space-3);
+  }
+}
+
+@media (forced-colors: active) {
+  .lab-analysis-surface,
+  .lab-analysis-surface > .lab-analysis-surface-setup,
+  .lab-analysis-surface > .lab-analysis-surface-primary-finding,
+  .lab-analysis-surface > .lab-analysis-surface-interpretation,
+  .lab-analysis-surface > .lab-analysis-surface-limitation {
+    border-color: CanvasText;
+  }
+}
+
 .lab-numerical-table-frame {
   max-width: 100%;
   overflow-x: auto;

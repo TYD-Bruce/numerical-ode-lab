@@ -1,4 +1,5 @@
 import type { RouteModule } from "../../app/contracts";
+import { createAnalysisSurface } from "../../components/lab-presentation/analysisSurface";
 import { createComputationWalkthroughShell } from "../../components/lab-presentation/computationWalkthroughShell";
 import { createEvidenceBlock } from "../../components/lab-presentation/evidenceBlock";
 import { createPrimaryResult } from "../../components/lab-presentation/primaryResult";
@@ -1141,6 +1142,64 @@ function createPhaseTwoFixture(): HTMLElement {
   return phase;
 }
 
+function createAnalysisSurfaceFixture(): HTMLElement {
+  const section = document.createElement("section");
+  section.className = "presentation-phase-two-section";
+  section.append(
+    phaseTwoSpecimenHeading(
+      "P5 · Analysis grammar",
+      "Analysis Surface",
+      "Purpose, finding, evidence, interpretation, boundary, and detail share one presentation rhythm."
+    )
+  );
+
+  const evidence = textElement(
+    "div",
+    "presentation-chart-placeholder",
+    "Caller-authored evidence remains in its original owner."
+  );
+  evidence.setAttribute("role", "img");
+  evidence.setAttribute("aria-label", "Static analysis evidence placeholder");
+
+  section.append(
+    createAnalysisSurface({
+      heading: textElement("h4", "", "Refinement analysis"),
+      purpose: textElement(
+        "p",
+        "",
+        "Check how the observed behavior changes as the experiment is refined."
+      ),
+      primaryFinding: textElement(
+        "p",
+        "",
+        "The current run shows the expected qualitative behavior."
+      ),
+      evidence: [evidence],
+      interpretation: textElement(
+        "p",
+        "",
+        "The evidence supports the finding for this experiment."
+      ),
+      limitation: textElement(
+        "p",
+        "",
+        "This finding is local to the displayed evidence."
+      ),
+      advancedDetails: createAdvancedDetails({
+        summary: "Analysis detail",
+        content: [
+          textElement(
+            "p",
+            "",
+            "Advanced content remains available without competing with the finding."
+          ),
+        ],
+      }),
+    })
+  );
+  return section;
+}
+
 function createStatusAndControls(): HTMLElement {
   const section = document.createElement("section");
   section.className = "presentation-fixture-section";
@@ -1233,7 +1292,8 @@ export function createPresentationSystemRoute(): RouteModule {
         createResultSpecimen(),
         createMeaningSurfaces(),
         createStatusAndControls(),
-        createPhaseTwoFixture()
+        createPhaseTwoFixture(),
+        createAnalysisSurfaceFixture()
       );
       target.replaceChildren(page);
 

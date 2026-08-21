@@ -52,6 +52,19 @@ describe("development-only Presentation System fixture", () => {
         .toContain(status);
     }
     expect(target.querySelectorAll("[data-surface-level]")).toHaveLength(4);
+    expect(target.querySelector("[data-analysis-surface='true']")).not.toBeNull();
+    expect(
+      [...target.querySelectorAll<HTMLElement>("[data-analysis-role]")].map(
+        (slot) => slot.dataset.analysisRole
+      )
+    ).toEqual([
+      "purpose",
+      "primary-finding",
+      "evidence",
+      "interpretation",
+      "limitation",
+      "advanced-details",
+    ]);
 
     mounted.dispose();
     expect(target.childElementCount).toBe(0);
@@ -186,7 +199,7 @@ describe("development-only Presentation System fixture", () => {
 
     expect(source).not.toMatch(/mathlive|compute-engine|innerHTML|https?:\/\//i);
     expect(source).toMatch(
-      /createProblemContext|createTeachingBlock|createPrimaryResult|createEvidenceBlock|createComputationWalkthroughShell/
+      /createProblemContext|createTeachingBlock|createPrimaryResult|createEvidenceBlock|createComputationWalkthroughShell|createAnalysisSurface/
     );
     expect(source).not.toMatch(
       /labs\/(?:ode|linear-algebra)|@numerical-t-lab|chart\.js|mathlive|compute-engine|ComputationTrace|computationMotion/
