@@ -75,15 +75,6 @@
   margin-top: 0;
 }
 
-.ls-method-sequence {
-  display: grid;
-  gap: var(--space-3);
-  max-width: 68ch;
-  margin-block: var(--space-6);
-  padding-left: 1.4rem;
-}
-
-.ls-teaching-note,
 .ls-stale-notice,
 .ls-trace-retention {
   margin-block: var(--space-4);
@@ -92,10 +83,6 @@
   border-left: var(--space-1) solid var(--color-accent-secondary);
   border-radius: var(--radius-sm);
   background: var(--color-data-surface);
-}
-
-.ls-teaching-note p {
-  margin: var(--space-2) 0 0;
 }
 
 .ls-stale-notice {
@@ -363,8 +350,7 @@
 }
 
 .ls-factor-grid,
-.ls-row-state-grid,
-.ls-diagnostics-layout {
+.ls-row-state-grid {
   display: grid;
   min-width: 0;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
@@ -414,11 +400,6 @@
 
 .ls-evidence-table tr[data-pivot-selected="true"] > :first-child {
   border-left: var(--space-1) solid var(--color-accent-primary);
-}
-
-.ls-reference-difference {
-  margin: 0;
-  color: var(--color-accent-theory);
 }
 
 .ls-computation-walkthrough {
@@ -592,50 +573,8 @@
   margin-bottom: var(--space-3);
 }
 
-.ls-evidence-ok {
-  color: var(--color-success);
-  font-weight: 700;
-}
-
 .ls-evidence-stop {
   color: var(--color-danger);
-  font-weight: 700;
-}
-
-.ls-diagnostic-card {
-  min-width: 0;
-  padding: var(--space-4);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface-raised);
-}
-
-.ls-diagnostic-card h3 {
-  margin-top: 0;
-}
-
-.ls-metric-grid {
-  display: grid;
-  gap: var(--space-3);
-  margin: 0;
-}
-
-.ls-metric {
-  display: grid;
-  gap: 0.2rem;
-  padding-bottom: var(--space-3);
-  border-bottom: 1px solid var(--color-border);
-}
-
-.ls-metric dt {
-  color: var(--color-text-secondary);
-  font-size: 0.82rem;
-}
-
-.ls-metric dd {
-  margin: 0;
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-variant-numeric: tabular-nums;
   font-weight: 700;
 }
 
