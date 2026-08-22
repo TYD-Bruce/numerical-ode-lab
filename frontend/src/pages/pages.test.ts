@@ -92,7 +92,7 @@ describe("static platform pages", () => {
   it("describes the available ODE Lab and marks its roadmap as planned", () => {
     const target = mount(odeOverviewPage, "/ode");
     const availableDescription = target.querySelector(
-      ".platform-feature-card > p"
+      ".module-overview-primary > p"
     )?.textContent;
     expect(target.textContent).toContain("Initial Value Problems Lab");
     expect(target.textContent).toContain("Open Initial Value Problems Lab");
@@ -124,6 +124,10 @@ describe("static platform pages", () => {
     expect(
       linear.querySelector('a[href="/linear-algebra/linear-systems"]')?.textContent
     ).toBe("Open Linear Systems Lab");
+    expect(linear.textContent).toContain(
+      "One complete Lab is ready for small dense linear systems."
+    );
+    expect(linear.textContent).not.toMatch(/Tutor|Glossary|Motion/);
     for (const item of ["Least Squares", "SVD", "Eigenvalues"]) {
       expect(linear.textContent).toContain(item);
     }
@@ -143,7 +147,79 @@ describe("static platform pages", () => {
     ]) {
       expect(pde.textContent).toContain(item);
     }
+    expect(pde.textContent).toContain(
+      "This overview describes future Labs and has no runnable controls."
+    );
     expect(pde.querySelector("button, input, textarea, canvas")).toBeNull();
+  });
+
+  it("composes all three module routes through one truthful accessible overview grammar", () => {
+    const cases = [
+      {
+        module: odeOverviewPage,
+        path: "/ode",
+        title: "Numerical ODE",
+        item: "Initial Value Problems Lab",
+        status: "Available",
+        action: "/ode/initial-value-problems",
+      },
+      {
+        module: linearAlgebraOverviewPage,
+        path: "/linear-algebra",
+        title: "Numerical Linear Algebra",
+        item: "Linear Systems Lab",
+        status: "Available",
+        action: "/linear-algebra/linear-systems",
+      },
+      {
+        module: pdeOverviewPage,
+        path: "/pde",
+        title: "Numerical PDE",
+        item: "Future PDE Labs",
+        status: "Planned",
+        action: null,
+      },
+    ] as const;
+
+    for (const entry of cases) {
+      const target = mount(entry.module, entry.path);
+      const overview = target.querySelector<HTMLElement>(
+        "[data-module-overview='true']"
+      )!;
+      const primary = overview.querySelector<HTMLElement>(
+        "[data-module-overview-primary='true']"
+      )!;
+      const h1 = overview.querySelectorAll("h1");
+      const ids = [...overview.querySelectorAll<HTMLElement>("[id]")].map(
+        (node) => node.id
+      );
+
+      expect(overview).toBeTruthy();
+      expect(h1).toHaveLength(1);
+      expect(h1[0]?.textContent).toBe(entry.title);
+      expect(overview.getAttribute("aria-labelledby")).toBe(h1[0]?.id);
+      expect(primary.querySelector("h2")?.textContent).toBe(entry.item);
+      expect(primary.getAttribute("aria-labelledby")).toBe(
+        primary.querySelector("h2")?.id
+      );
+      expect(
+        primary.querySelector("[data-module-overview-status]")?.textContent
+      ).toBe(entry.status);
+      expect(new Set(ids).size).toBe(ids.length);
+      expect(overview.querySelector("[role='status'], [aria-live]")).toBeNull();
+      if (entry.action) {
+        expect(primary.querySelector(`a[href="${entry.action}"]`)).toBeTruthy();
+      } else {
+        expect(primary.querySelector("a, button")).toBeNull();
+      }
+    }
+
+    const pde = mount(pdeOverviewPage, "/pde");
+    expect(pde.querySelectorAll(".platform-status")).toHaveLength(1);
+    expect(pde.textContent).not.toContain("Open PDE Lab");
+
+    const home = mount(homePage, "/");
+    expect(home.querySelector("[data-module-overview]")).toBeNull();
   });
 
   it("distinguishes the released ODE product from the future platform on About", () => {

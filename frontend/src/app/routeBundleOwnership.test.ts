@@ -99,6 +99,22 @@ describe("public route bundle ownership", () => {
     );
   });
 
+  it("keeps ModuleOverview entry-safe and separate from complete-Lab presentation", () => {
+    const entryGraph = eagerGraph("main.ts");
+    const moduleOverviewGraph = eagerGraph("pages/moduleOverview.ts");
+
+    expect(entryGraph.has("pages/moduleOverview.ts")).toBe(true);
+    expect([...moduleOverviewGraph]).toEqual(["pages/moduleOverview.ts"]);
+    expect(source("pages/moduleOverview.ts")).not.toMatch(
+      /components\/lab-presentation|labs\/|@numerical-t-lab|Chart|MathLive|compute-engine|Tutor|Glossary|ComputationTrace|computationTrace|Motion|AppSessionStore|Session|Router/
+    );
+    expect(
+      [...entryGraph].filter((path) =>
+        path.startsWith("components/lab-presentation/")
+      )
+    ).toEqual([]);
+  });
+
   it("loads the shared inner-presentation structures only with their migrated Lab routes", () => {
     const migratedPresentationModules = [
       "components/lab-presentation/problemContext.ts",

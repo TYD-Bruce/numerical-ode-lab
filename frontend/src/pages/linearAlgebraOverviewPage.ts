@@ -1,6 +1,6 @@
 import type { RouteModule } from "../app/contracts";
+import { createModuleOverview } from "./moduleOverview";
 import {
-  appendPageHeading,
   createRouteLink,
   createStatus,
   createTextElement,
@@ -10,31 +10,29 @@ import {
 export const linearAlgebraOverviewPage: RouteModule = {
   mount({ target }) {
     return mountStaticPage(target, (page) => {
-      appendPageHeading(
-        page,
-        "Numerical Linear Algebra",
+      const heading = document.createElement("h1");
+      heading.textContent = "Numerical Linear Algebra";
+      const purpose = createTextElement(
+        "p",
         "Numerical Linear Algebra studies reliable and efficient ways to compute with vectors and matrices."
       );
-      const statusLine = document.createElement("p");
-      statusLine.append(
-        createStatus("Available", "available"),
-        document.createTextNode(
-          " — one complete Lab is ready for small dense linear systems."
-        )
+      const labHeading = document.createElement("h2");
+      labHeading.textContent = "Linear Systems Lab";
+      const availability = createTextElement(
+        "p",
+        "One complete Lab is ready for small dense linear systems."
       );
-
-      const available = document.createElement("section");
-      available.className = "platform-card platform-feature-card";
-      available.append(
-        createTextElement("h2", "Linear Systems Lab"),
-        createTextElement(
-          "p",
-          "Solve A x = b with Gaussian elimination and partial pivoting, inspect P A = L U, and check the residual against the original equations."
-        ),
-        createRouteLink("Open Linear Systems Lab", "/linear-algebra/linear-systems", {
+      const labDescription = createTextElement(
+        "p",
+        "Solve A x = b with Gaussian elimination and partial pivoting, inspect P A = L U, and check the residual against the original equations."
+      );
+      const labAction = createRouteLink(
+        "Open Linear Systems Lab",
+        "/linear-algebra/linear-systems",
+        {
           className: "platform-action",
           prefetchRouteId: "linear-algebra-linear-systems",
-        })
+        }
       );
       const roadmap = document.createElement("section");
       roadmap.className = "platform-reading-section";
@@ -46,7 +44,21 @@ export const linearAlgebraOverviewPage: RouteModule = {
         list.append(entry);
       }
       roadmap.append(list);
-      page.append(statusLine, available, roadmap);
+      page.append(
+        createModuleOverview({
+          heading,
+          summary: purpose,
+          primaryItem: {
+            heading: labHeading,
+            status: createStatus("Available", "available"),
+            state: "available",
+            statusDetail: availability,
+            content: [labDescription],
+            action: labAction,
+          },
+          sections: [roadmap],
+        })
+      );
     });
   },
 };

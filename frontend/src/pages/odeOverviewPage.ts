@@ -1,6 +1,6 @@
 import type { RouteModule } from "../app/contracts";
+import { createModuleOverview } from "./moduleOverview";
 import {
-  appendPageHeading,
   createRouteLink,
   createStatus,
   createTextElement,
@@ -10,34 +10,25 @@ import {
 export const odeOverviewPage: RouteModule = {
   mount({ target }) {
     return mountStaticPage(target, (page) => {
-      appendPageHeading(
-        page,
-        "Numerical ODE",
+      const heading = document.createElement("h1");
+      heading.textContent = "Numerical ODE";
+      const purpose = createTextElement(
+        "p",
         "Numerical ordinary differential equations turn a model of change into a sequence of computable approximations."
       );
-
-      const available = document.createElement("section");
-      available.className = "platform-card platform-feature-card";
-      const headingRow = document.createElement("div");
-      headingRow.className = "platform-card-heading-row";
-      headingRow.append(
-        createTextElement("h2", "Initial Value Problems Lab"),
-        createStatus("Available", "available")
+      const labHeading = document.createElement("h2");
+      labHeading.textContent = "Initial Value Problems Lab";
+      const labDescription = createTextElement(
+        "p",
+        "Compare numerical methods, inspect their computed numerical approximations, and study how error changes as the time-step size is refined."
       );
-      available.append(
-        headingRow,
-        createTextElement(
-          "p",
-          "Compare numerical methods, inspect their computed numerical approximations, and study how error changes as the time-step size is refined."
-        ),
-        createRouteLink(
-          "Open Initial Value Problems Lab",
-          "/ode/initial-value-problems",
-          {
-            className: "platform-action",
-            prefetchRouteId: "ode-initial-value-problems",
-          }
-        )
+      const labAction = createRouteLink(
+        "Open Initial Value Problems Lab",
+        "/ode/initial-value-problems",
+        {
+          className: "platform-action",
+          prefetchRouteId: "ode-initial-value-problems",
+        }
       );
 
       const roadmap = document.createElement("section");
@@ -66,7 +57,20 @@ export const odeOverviewPage: RouteModule = {
         )
       );
 
-      page.append(available, roadmap, connections);
+      page.append(
+        createModuleOverview({
+          heading,
+          summary: purpose,
+          primaryItem: {
+            heading: labHeading,
+            status: createStatus("Available", "available"),
+            state: "available",
+            content: [labDescription],
+            action: labAction,
+          },
+          sections: [roadmap, connections],
+        })
+      );
     });
   },
 };
