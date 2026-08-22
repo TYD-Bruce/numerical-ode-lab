@@ -2,9 +2,9 @@
 
 **Date:** 2026-08-22
 
-**Status:** Design accepted with binding addendum; **Phase 0 and Phase 1 are
-implemented and locally verified**. The Phase 1 registry awaits independent
-mathematical/content audit. Phase 2 and later phases remain separately gated.
+**Status:** Design accepted with binding addendum; **Phase 0 is accepted,
+Phase 1 is Maintainer-accepted, and Phase 2 is implemented and locally
+verified as a candidate**. Phase 3 and later phases remain separately gated.
 
 **Milestone:** Cross-Lab Method Teaching Alignment v2
 
@@ -12,9 +12,10 @@ mathematical/content audit. Phase 2 and later phases remain separately gated.
 
 **Current product baseline:** `411e641d8cc6b14240acc408130876781fb1ee84` / tree `92f79cba8bdabafb9a97e3a99d76ddff853fe35c`
 
-**Execution gate:** Phase 0 authority confirmation and the additive Phase 1
-pure teaching model are complete. Stop before Phase 2 pending the independent
-Phase 1 audit and separate Maintainer authorization.
+**Execution gate:** Phase 2's Problem foundation, method landscape,
+selected-method shell, and Data transition are complete. Stop before Phase 3
+pending an independent Phase 2 opening / landscape / selection audit and
+Maintainer visual/cognitive review.
 
 ## 1. Purpose and stop condition
 
@@ -22,11 +23,11 @@ This plan maps the accepted design direction to current repository owners so a l
 
 It is deliberately staged. Each implementation phase must start clean, add focused behavioral evidence before or with its source change, finish with a narrow reviewable commit, and stop at its named review gate. A later task must not infer authority to execute the next phase from this document.
 
-The completed bounded task stopped after Phase 1. It added pure reviewed
-teaching content/selectors/tests and narrowly aligned stale learner-facing
-catalog/result-note wording, but it did not modify browser-visible ODE
-composition, CSS, routes, sessions, numerical behavior, or architecture; it
-did not resume Presentation Phase 7.
+The current bounded task stops after Phase 2. It first separates learner-safe
+runtime content from audit/governance metadata, then implements only the
+browser-visible Problem foundation, shallow landscape, selected-method shell,
+and Continue-to-Data transition. It does not implement complete profiles,
+concepts, diagrams, after-solve teaching, Phase 3, or Presentation Phase 7.
 
 ## 2. Recorded binding authority
 
@@ -178,6 +179,13 @@ mutating it; and formulas use the closed safe readonly math owner. The current
 ODE UI, CSS, session, lifecycle, and numerical behavior remain unchanged by
 Phase 1.
 
+The Maintainer subsequently accepts the complete Phase 1 checkpoint at
+`712fa1d68ced31d1a85b6c13aa4daf93882b8f9b` (tree
+`49f1716f2cc9208068d61f70159396af3b53573b`). Its independent audit returned
+**PASS WITH P3 CARRY-FORWARD** (`P0 = 0`, `P1 = 0`, `P2 = 0`, `P3 = 1`), with
+the sole binding finding `PHASE1-P3-01` requiring separation of governance/
+audit metadata before the real Method renderer consumed teaching content.
+
 ### 8.1 Tests first
 
 Create focused tests beside the chosen owners, likely:
@@ -222,6 +230,27 @@ Stop for independent mathematical/content review of all eight records before pag
 
 **Purpose:** replace the selection-first card wall with the accepted teaching-first opening while preserving existing selection semantics and Data navigation.
 
+**Outcome:** implemented and locally verified as a candidate. The mandatory
+pre-flight closes `PHASE1-P3-01` at
+`0d3b8d6f7aeb9766b2a24e2169640b5d9c3f8d1e` (tree
+`9c5d5a61c5f1012b4cfb4baa926889528d580c04`) by splitting audit metadata into
+its own owner and constructing an explicit allow-listed
+`OdeMethodTeachingLearnerProfile`. The Method renderer consumes that learner
+projection only. The opening/landscape implementation is
+`96362c9635938d6d90274d12a89f4255b17a60b9` (tree
+`d7538ee7c24e8c8ce0c04ef80cdb4b30f1c895b8`).
+Final formula-containment browser polish is
+`7eb2f9c1f9077d42ec3f928276cab1e939640f80` (tree
+`6410989215a2e5864d87aadad2e16b5a9de050fc`).
+
+The former single global order draft could not preserve independent existing
+orders for Adams-Bashforth, Adams-Moulton, and BDF. This proven blocker is
+resolved with one additive pure-session family-order record derived from
+catalog defaults at construction/reset. Data remains the only editable owner;
+method selection reflects the stored order and does not reset it. No solver,
+formula, coefficient, startup, tolerance, grid, result, or Convergence behavior
+changes.
+
 ### 9.1 Tests first
 
 Extend focused ODE app/route tests, likely `frontend/src/labs/ode/initialValueProblemsRoute.test.ts`, `odeLifecycle.test.ts`, `odeSession.test.ts`, and a new narrow Method-view test only if the current harness warrants it.
@@ -255,9 +284,12 @@ Cover:
 
 ### 9.4 Gate
 
-Run focused tests, typecheck, browser states above, `git diff --check`, and a static/dynamic import review. Stop for Maintainer visual/cognitive acceptance of the opening and landscape before adding full teaching depth.
+Run focused tests, typecheck, browser states above, `git diff --check`, and a
+static/dynamic import review. Stop for independent Phase 2 opening / landscape /
+selection audit and then Maintainer visual/cognitive review before adding full
+teaching depth.
 
-**Suggested commit:** `Align the ODE Method opening and landscape`
+**Implemented commit:** `Align the ODE Method opening and landscape`
 
 **Rollback:** revert Method composition/CSS/tests; pure teaching content from Phase 1 remains inert and safe.
 
@@ -566,12 +598,15 @@ An eventual implementation is ready for the independent audit only when all are 
 - [ ] ODE route, Tutor, Glossary, MathLive/Compute Engine, Chart.js, and Convergence lazy boundaries remain intact.
 - [ ] Focused/full tests, typechecks, build, verify, bundle inspection, and `git diff --check` pass at the final phase.
 - [ ] Documentation distinguishes implementation, local verification, independent audit, Maintainer acceptance, preview, production, and release.
-- [ ] No dependency, route, numerical, session-schema, PDE, Motion, or unrelated architecture expansion was introduced.
+- [ ] No dependency, route, numerical, PDE, Motion, or unrelated architecture
+      expansion was introduced; any session-schema change was proved
+      unavoidable, bounded, and explicitly recorded.
 
 ## 20. Exact next gate
 
-After the completed Phase 0 and Phase 1 stop, the next action is an
-**independent mathematical/content audit of the Phase 1 teaching registry**.
-Phase 2 opening/landscape implementation then requires separate Maintainer
-authorization. Do not modify the real ODE Method UI or CSS, resume the paused
-Presentation Phase 7 release audit, push, or deploy under this task.
+After the completed Phase 2 stop, the next action is an **independent Phase 2
+opening / landscape / selection audit**, followed by **Maintainer visual/
+cognitive review**. Phase 3 and later phases remain unauthorized. Do not add
+deep selected-method profiles, concepts, diagrams, or after-solve teaching;
+resume the paused Presentation Phase 7 release audit; push; or deploy under
+this task.

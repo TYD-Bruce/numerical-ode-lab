@@ -1,9 +1,9 @@
 # Cross-Lab Method Teaching Alignment v2 Design
 
-**Status:** **DESIGN ACCEPTED WITH BINDING ADDENDUM.** Phase 0 authority work
-and Phase 1's pure teaching model are implemented and locally verified. The
-Phase 1 registry is ready for independent audit but is not yet independently
-accepted. Phase 2 and all browser-visible redesign work remain unauthorized.
+**Status:** **DESIGN ACCEPTED WITH BINDING ADDENDUM.** Phase 0 is accepted,
+Phase 1 is Maintainer-accepted, and Phase 2's Problem foundation, method
+landscape, selected-method shell, and Data transition are implemented and
+locally verified as a candidate. Phase 3 and later work remain unauthorized.
 
 **Date:** 2026-08-22
 
@@ -19,8 +19,8 @@ accepted. Phase 2 and all browser-visible redesign work remain unauthorized.
 **Acceptance checkpoint:** `bfe5d514c67b1f5c00a1bc71b128f158e4811a5a`
 (tree `29c2a1e19718ce312671c8307dc65240e1c5eab6`)
 
-**Next gate:** independent mathematical/content audit of the Phase 1 teaching
-registry, followed by separate Maintainer authorization before Phase 2.
+**Next gate:** independent Phase 2 opening / landscape / selection audit,
+followed by Maintainer visual/cognitive review.
 
 ## 1. Executive decision
 
@@ -1258,26 +1258,37 @@ rules, Convergence classifications, or solver selection.
 
 ## 35. Implementation gate
 
-This specification authorizes only **Phase 0 and Phase 1** under the bounded
-task recorded in the active plan. Phase 1 is additive pure content/selectors
-and must leave the browser-visible ODE Method UI unchanged.
+Phase 0 is accepted at
+`77047d9d570d8cf9416991e8e0c17d7485acab8b` (tree
+`7ff318fcdf6d08adf716792f509826b27b648520`). The Maintainer accepts Phase 1
+at `712fa1d68ced31d1a85b6c13aa4daf93882b8f9b` (tree
+`49f1716f2cc9208068d61f70159396af3b53573b`) after its independent audit
+returned **PASS WITH P3 CARRY-FORWARD** (`P0 = 0`, `P1 = 0`, `P2 = 0`,
+`P3 = 1`).
 
-That bounded authorization has now been executed and stopped. Phase 0 is
-commit `77047d9d570d8cf9416991e8e0c17d7485acab8b` (tree
-`7ff318fcdf6d08adf716792f509826b27b648520`); Phase 1 is commit
-`48511a2cf4f3c3d7fd35504a0b49102022f00f32` (tree
-`1abfe1d15bd33cfbd215da88ca11be5090962a1c`). Local focused tests,
-typecheck, import-boundary review, content/source safeguards, and documentation
-validation pass. No browser-visible ODE Method composition or CSS was added.
+The separately authorized Phase 2 slice first closes the sole carry-forward,
+`PHASE1-P3-01`: learner content and audit/governance metadata are separate
+owners, and the renderer receives only an explicitly allow-listed learner
+projection. That boundary is implemented at
+`0d3b8d6f7aeb9766b2a24e2169640b5d9c3f8d1e` (tree
+`9c5d5a61c5f1012b4cfb4baa926889528d580c04`). The Problem foundation,
+three-group/eight-method landscape, one selected-method shell, secondary
+Compare entry, and Continue-to-Data transition are implemented at
+`96362c9635938d6d90274d12a89f4255b17a60b9` (tree
+`d7538ee7c24e8c8ce0c04ef80cdb4b30f1c895b8`).
+Final formula-containment browser polish is
+`7eb2f9c1f9077d42ec3f928276cab1e939640f80` (tree
+`6410989215a2e5864d87aadad2e16b5a9de050fc`).
 
-Phase 2 may begin only after:
+Distinct initialized Adams-Bashforth, Adams-Moulton, and BDF orders could not
+be preserved by the former single global order draft. Phase 2 therefore uses
+one bounded additive pure-session family-order record. Data remains the only
+editable order owner; selection reflects rather than chooses order; solver
+inputs and numerical behavior are unchanged.
 
-1. Phase 1 supplies exactly eight source-linked reviewed profiles and pure
-   order-preserving derivation;
-2. focused tests, typecheck, boundary review, and documentation validation pass;
-3. an independent mathematical/content audit accepts the Phase 1 registry; and
-4. the Maintainer separately authorizes the Phase 2 opening/landscape slice.
-
-Cross-Lab Presentation Phase 7 remains paused. This acceptance does not resume
-the release audit, change implemented architecture, authorize push/deployment,
-or authorize any browser-visible Method redesign.
+Phase 2 stops at the shell boundary. It does not add complete selected-method
+profiles, concepts, diagrams, after-solve teaching, Phase 3 work, or any
+release claim. Its exact next gate is an **independent Phase 2 opening /
+landscape / selection audit**, followed by **Maintainer visual/cognitive
+review**. Cross-Lab Presentation Phase 7 remains paused. This checkpoint does
+not authorize Phase 3+, push, Preview, Production deployment, or release.

@@ -2,9 +2,10 @@
 
 ## Current status
 
-**Active milestone: Cross-Lab Method Teaching Alignment v2 — design accepted
-with binding addendum; Phase 0 authority and Phase 1 pure teaching model are
-implemented and locally verified. Stop before browser-visible Phase 2 work.**
+**Active milestone: Cross-Lab Method Teaching Alignment v2 — Phase 0 is
+accepted, Phase 1 is Maintainer-accepted, and Phase 2's Problem foundation,
+method landscape, selection shell, and Data transition are implemented and
+locally verified as a candidate. Stop before Phase 3.**
 
 Cross-Lab Presentation Sync Phases 0 through 6 are implemented. The Phase 6
 entry-safe `ModuleOverview` and proven duplicate-style cleanup passed its
@@ -31,25 +32,42 @@ family-specific order on reselection, makes Read selected method evidence-
 gated, and accepts the bounded formula/diagram/content decisions recorded in
 the design and handoff.
 
-Cross-Lab Presentation Phase 7 is **paused**, not failed or completed. The
-authorized Phase 0 and additive pure Phase 1 work is complete: authority/copy
-alignment is committed at `77047d9d570d8cf9416991e8e0c17d7485acab8b`
-(tree `7ff318fcdf6d08adf716792f509826b27b648520`), and the inert eight-profile
-teaching registry/selectors are committed at
-`48511a2cf4f3c3d7fd35504a0b49102022f00f32` (tree
-`1abfe1d15bd33cfbd215da88ca11be5090962a1c`). No browser-visible Method
-redesign, ODE layout/CSS change, or Phase 2 work has begun. Do not resume the
-release audit. The previous Cross-Lab Presentation record below remains
-historical implementation evidence; any former Phase 6 candidate or next-gate
-wording is superseded by this current status.
+Cross-Lab Presentation Phase 7 is **paused**, not failed or completed. Phase 0
+authority/copy alignment remains accepted at
+`77047d9d570d8cf9416991e8e0c17d7485acab8b` (tree
+`7ff318fcdf6d08adf716792f509826b27b648520`). The Maintainer accepts Phase 1
+at `712fa1d68ced31d1a85b6c13aa4daf93882b8f9b` (tree
+`49f1716f2cc9208068d61f70159396af3b53573b`) after its independent audit
+returned **PASS WITH P3 CARRY-FORWARD** (`P0 = 0`, `P1 = 0`, `P2 = 0`,
+`P3 = 1`).
 
-The authorized Phase 0/1 starting checkpoint is
-`bfe5d514c67b1f5c00a1bc71b128f158e4811a5a` (tree
-`29c2a1e19718ce312671c8307dc65240e1c5eab6`). Phase 1 is now locally verified
-and marked ready—not accepted—for its exact next gate: **independent
-mathematical/content audit of the pure eight-profile teaching registry**,
-followed by separate Maintainer authorization before Phase 2 opening/landscape
-implementation.
+Phase 2 first closes the sole carry-forward, `PHASE1-P3-01`, by separating
+audit/governance records from an explicitly allow-listed learner projection at
+`0d3b8d6f7aeb9766b2a24e2169640b5d9c3f8d1e` (tree
+`9c5d5a61c5f1012b4cfb4baa926889528d580c04`). The opening and landscape are
+implemented at `96362c9635938d6d90274d12a89f4255b17a60b9` (tree
+`d7538ee7c24e8c8ce0c04ef80cdb4b30f1c895b8`). The real ODE Method stage now
+follows Problem → landscape → one learner-safe selected-method shell →
+Continue to Data; Compare remains a compact secondary first-order branch.
+Selection stays on Method, preserves drafts and successful evidence, and
+keeps distinct initialized Adams-Bashforth, Adams-Moulton, and BDF orders.
+Final formula-containment browser polish is
+`7eb2f9c1f9077d42ec3f928276cab1e939640f80` (tree
+`6410989215a2e5864d87aadad2e16b5a9de050fc`).
+
+Preserving those three independent family orders required one bounded additive
+pure-session correction: `OdeSession` now stores a family-keyed order record
+instead of one global second-order-form draft. This was the proven blocker to
+the accepted reselection rule; Data remains the only editable order owner, and
+no solver input meaning or numerical behavior changed. Phase 2 adds no deep
+profiles, concepts, diagrams, after-solve teaching, or Phase 3 work.
+
+The exact next gate is an **independent Phase 2 opening / landscape / selection
+audit**, followed by **Maintainer visual/cognitive review**. Phase 3 and later
+Method teaching phases remain unauthorized. Do not resume Presentation Phase
+7, push, or deploy. The previous Cross-Lab Presentation record below remains
+historical implementation evidence; any former Phase 1 or Phase 2 next-gate
+wording is superseded by this current status.
 
 Linear Systems Teaching v2 is **MAINTAINER ACCEPTED** at commit
 `484fc9153de33be7949e82b29386c94fe63d19c8` (tree

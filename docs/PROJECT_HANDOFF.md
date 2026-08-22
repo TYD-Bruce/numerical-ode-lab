@@ -2,7 +2,266 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
-## Cross-Lab Method Teaching Alignment v2 — accepted authority and Phases 0–1 — 2026-08-22
+## Cross-Lab Method Teaching Alignment v2 — Phase 2 candidate — 2026-08-22
+
+### Acceptance, scope, and current gate
+
+The Maintainer formally accepts **Cross-Lab Method Teaching Alignment v2 —
+Phase 1: TEACHING REGISTRY ACCEPTED WITH ONE BINDING P3 PRE-FLIGHT** at
+`712fa1d68ced31d1a85b6c13aa4daf93882b8f9b` (tree
+`49f1716f2cc9208068d61f70159396af3b53573b`). Its independent audit verdict is
+**PASS WITH P3 CARRY-FORWARD — PHASE 1 TEACHING REGISTRY READY FOR MAINTAINER
+ACCEPTANCE AND PHASE 2 AUTHORIZATION**, with `P0 = 0`, `P1 = 0`, `P2 = 0`,
+and `P3 = 1`.
+
+The sole finding, `PHASE1-P3-01`, was that internal review, claim, authority,
+source-path, and audit metadata lived beside learner content records. Although
+none of it was rendered at the accepted Phase 1 checkpoint, importing those
+records into the real Method renderer would have made governance data part of
+the runtime content boundary and Production ODE chunk.
+
+Phase 2 is now implemented and locally verified as a candidate. It closes that
+pre-flight and implements only:
+
+```text
+Problem
+  -> Method landscape
+  -> Selected method shell
+  -> Continue to Data
+```
+
+It stops before complete selected-method profiles, selected concepts,
+after-solve teaching, diagrams, and Phase 3. Cross-Lab Presentation Phase 7
+remains paused. There is no push, Preview, Production deployment, or release
+claim.
+
+### Learner-safe teaching boundary
+
+Commit `0d3b8d6f7aeb9766b2a24e2169640b5d9c3f8d1e` (tree
+`9c5d5a61c5f1012b4cfb4baa926889528d580c04`), **Separate learner-safe ODE
+teaching content**, establishes this positive boundary:
+
+```text
+product-authored learner content
+  -> explicit OdeMethodTeachingLearnerProfile projection
+  -> ODE Method renderer
+
+separate audit/governance owner
+  -> authority and audit tests only
+```
+
+`odeMethodTeachingContent.ts` contains learner-authored content without review
+status, claim status, authority IDs, repository paths, test paths, severity, or
+agent terminology. `odeMethodTeachingAudit.ts` owns the separated audit and
+authority records. `odeMethodTeaching.ts` constructs the learner projection by
+allow-listing approved fields; it does not spread then delete, serialize-
+filter, or depend on a DOM blacklist. Frozen learner and audit records do not
+mutate one another.
+
+The Production ODE asset contains no raw `sourcePaths`,
+`ready_for_independent_audit`, `source_backed_qualified`, repository source or
+test paths, `PHASE1-P3-01`, Maintainer, Codex, or Cursor markers. The platform
+entry asset contains no ODE teaching-copy markers. `PHASE1-P3-01` is closed.
+
+### Implemented opening and landscape
+
+Commit `96362c9635938d6d90274d12a89f4255b17a60b9` (tree
+`d7538ee7c24e8c8ce0c04ef80cdb4b30f1c895b8`), **Align the ODE Method opening
+and landscape**, implements the real Phase 2 surface.
+
+Commit `7eb2f9c1f9077d42ec3f928276cab1e939640f80` (tree
+`6410989215a2e5864d87aadad2e16b5a9de050fc`), **Verify ODE Method teaching
+opening**, applies the one browser-evidence correction: declaring vertical
+formula overflow hidden while retaining horizontal local containment. The
+prior `overflow-x: auto` computed vertical overflow to `auto`, so one- to
+two-pixel KaTeX rounding exposed unnecessary desktop scrollbars.
+
+The strongest opening object is the mathematical problem. Closed readonly math
+records render the supported first-order IVP
+`y'(t) = f(t,y), y(t0) = y0`, the Exponential Decay starter
+`y' = -y, y(0) = 1`, and the separate Leap-Frog product boundary
+`u'' = a(t,u), u(t0) = u0, u'(t0) = v0`. Concise prose explains `t`, `y(t)`,
+`f(t,y)`, the initial state, stored numerical approximations, and why an
+approximation is not possession of an exact closed-form solution. No editable
+Data field or second-order input moved into Method.
+
+The catalog is now one shallow, complete landscape with exactly three labelled
+groups and eight native method buttons:
+
+| Landscape group | Source-backed methods |
+|---|---|
+| First-order · one-step | Forward Euler; Backward Euler; Taylor Method (Order 2); Runge-Kutta 4 |
+| First-order · uses history | Adams-Bashforth; Adams-Moulton; Backward Differentiation Formula |
+| Second-order · staggered state | Leap-Frog |
+
+Method name and non-color selected geometry lead each compact control;
+explicit/implicit and order/range facts remain secondary. The surface does not
+recreate eight large cards, invent another taxonomy, or treat orthogonal facts
+as mutually exclusive families. Beginner Starter truthfully shows Forward
+Euler selected on first open.
+
+The selected-method shell consumes the learner projection and derives its
+identity, problem profile, one-step/history/staggered structure,
+explicit/implicit status, fixed theoretical order or supported range, concise
+core idea, safe formula reference where suitable for this slice, basic Output/
+Compare/Convergence availability, and current configured order. It explicitly
+marks deeper teaching as a later selected-method-area responsibility; it does
+not dump the Phase 1 profile or expose governance data. Leap-Frog receives no
+first-order Compare, exact-reference, or Convergence claim.
+
+Compare is a compact secondary action attached to the first-order landscape.
+It is not a method control, ninth method, primary editorial section, or peer of
+the selected method and Continue-to-Data action. Its eligible methods continue
+to derive from `FIRST_ORDER_CATALOG`; Leap-Frog remains excluded. Existing
+Compare activation, Data editing, Run comparison, and comparison Output were
+smoked successfully without numerical changes.
+
+One primary **Continue to Data** action follows the selected shell. Its summary
+names first-order IVP/RHS/initial value/interval/step-size/order needs or the
+Leap-Frog acceleration/`u0`/`v0`/interval/step-size needs. It uses the existing
+workflow transition and does not duplicate or redesign the Data form.
+
+### Selection, order, focus, and lifecycle
+
+Method activation updates the existing `session.selectedMethod`, stays on
+Method, and rerenders from that authority. It does not Run, advance, clear
+first- or second-order drafts, clear prior successful output, make mismatching
+Output reachable, or manufacture result evidence. Matching successful Output
+remains reachable under the existing fingerprint/result authority.
+
+The previous session held only one global `secondOrderForm.methodOrderDraft`.
+That scalar could not preserve distinct initialized orders for
+Adams-Bashforth, Adams-Moulton, and BDF and therefore was an unavoidable
+blocker to the accepted family-order rule. Phase 2 replaces it with the
+additive pure `methodOrders` record keyed by existing `MethodFamily`, with
+catalog-derived defaults at initial construction and New experiment/reset.
+`odeMethodOrderFor` reflects current family state and `setOdeMethodOrder`
+returns a frozen replacement. Data remains the only editable order owner;
+selection never chooses or resets order. Focused interaction and browser
+evidence preserve non-default Adams-Moulton order 6 and BDF order 5 across
+Data transitions, family switches, and reselection.
+
+Selection itself never scrolls. After rerender, focus returns with
+`preventScroll` to the activated connected native method button, and exactly
+one concise polite status announces the update. Browser measurement at
+390 × 844 found an approximately 802-pixel landscape-to-shell distance. That
+evidence justifies a mobile-only secondary **Read selected method** action in
+the currently selected group; it is hidden on desktop, does not compete with
+Continue to Data, and focuses the connected selected-shell heading only after
+explicit activation.
+
+Route leave/remount reconstructs one selected state and exactly eight controls
+without duplicate listeners or detached-node focus. New experiment retains its
+existing accessible confirmation and resets through existing starter authority.
+The session snapshot remains pure data with no new runtime handle.
+
+### Visual, accessibility, and regression evidence
+
+The opening uses existing semantic Light/Dark tokens with an editorial,
+technical composition: a strong mathematical foundation, shallow grouping
+rails, restrained selected surface, precise focus, generous rhythm, and one
+primary transition. It uses no neon, glass, decorative gradient, large shadow,
+dashboard KPI treatment, illustration, badge matrix, or card wall.
+
+Browser review passed the required ODE states at 1440 × 900 in Light and Dark,
+390 × 844 in both themes, and approximately 320 pixels. All method names and
+group labels remain readable; selected state is non-color; 390-pixel pages have
+no horizontal overflow; 320-pixel controls become one column; and the longest
+selected formula uses local containment rather than page overflow. Dark mode
+retains the same hierarchy without stronger neon treatment.
+
+The paired ODE/Linear Systems first-open review finds the same mathematical-
+problem-first cognitive and editorial philosophy without cloned composition.
+ODE remains shallow, choice-rich, exploratory, and Compare-capable; Linear
+Systems remains deeper and sequential. Mathematics is stronger than chrome,
+and no card-wall or obvious split-product regression remains. Linear Systems
+source was not modified; its Method → Data → Output smoke passed.
+
+Structural and browser checks confirm one Lab `h1`, monotonic Method headings,
+a labelled landscape, native named method buttons, one selected state, visible
+focus, no nested controls, separately named Compare, one concise status,
+single-owner formulas, native Continue-to-Data control, and no focus on a
+detached node. This is accessibility evidence, not screen-reader certification.
+
+The bounded ODE regression smoke passed Data, single Run, successful Output,
+Stored values, Compare Run/Output, Convergence disclosure, deferred Tutor open/
+close, Glossary definition open, New experiment cancel, and route leave/
+remount. These surfaces were not redesigned. Numerical reference behavior was
+not changed.
+
+### Verification and bundle evidence
+
+The tests-first Phase 2 UI/formula gate initially ran two files with 8 failures
+and 3 existing passes because the required safe formulas, session order model,
+and Method composition did not yet exist. After implementation:
+
+- the focused ODE plus safe-readonly-math run passes 21 files / 169 tests;
+- `npm.cmd run verify:boundaries` passes 4 owners plus the Vercel adapter;
+- frontend, numerics, and contracts typechecks pass;
+- the one complete `npm.cmd run verify` passes 103 files / 1,324 tests,
+  frontend/numerics/contracts/API typechecks, import boundaries, and Production
+  build;
+- after the one-line containment polish, its two focused suites pass 2 files /
+  10 tests and a fresh Production build transforms 113 modules; and
+- `git diff --check` and targeted active-document link validation pass at the
+  checkpoint.
+
+An exact accepted-start archive build at `712fa1d68ced31d1a85b6c13aa4daf93882b8f9b`
+transformed 111 modules. Vite's rounded before/after asset measurements are:
+
+| Production asset | Accepted start | Phase 2 candidate | Delta |
+|---|---:|---:|---:|
+| Platform entry JS | 59.04 / 18.29 kB gzip | 59.04 / 18.29 kB gzip | no rounded change |
+| ODE complete-Lab JS | 297.45 / 95.30 kB gzip | 340.27 / 106.11 kB gzip | +42.82 / +10.81 kB gzip |
+| ODE complete-Lab CSS | 15.65 / 3.69 kB gzip | 24.04 / 5.00 kB gzip | +8.39 / +1.31 kB gzip |
+| Linear Systems JS | 75.80 / 22.63 kB gzip | 75.80 / 22.63 kB gzip | unchanged |
+
+The platform entry and `/ode` overview remain entry-safe. The complete ODE Lab
+dynamic route owns the teaching runtime. Linear Systems does not import ODE
+teaching; Tutor, Glossary, editable MathLive, and Compute Engine remain behind
+their existing deferred boundaries. No dependency was added.
+
+### Exact files and commits
+
+The learner-boundary commit changes:
+
+- `frontend/src/labs/ode/odeMethodTeachingContent.ts` and its focused test;
+- `frontend/src/labs/ode/odeMethodTeaching.ts`; and
+- new `frontend/src/labs/ode/odeMethodTeachingAudit.ts` and its focused test.
+
+The opening/landscape commit changes:
+
+- `frontend/src/labs/ode/odeApp.ts` and `odeApp.css`;
+- `frontend/src/labs/ode/odeSession.ts` and its focused test;
+- new `frontend/src/labs/ode/odeMethodView.test.ts`;
+- `initialValueProblemsRoute.test.ts`, `odeLifecycle.test.ts`,
+  `newExperiment.test.ts`, and `odeGlossary.test.ts`; and
+- `frontend/src/math/ui/methodMathContent.ts` and its focused test.
+
+The final visual-verification commit adds one declaration to
+`frontend/src/labs/ode/odeApp.css`; it adds no new owner or behavior.
+
+This documentation checkpoint updates `PLAN.md`, `docs/INDEX.md`, this one
+canonical handoff, and the active design/implementation-plan status. It does
+not update `README.md` or implemented architecture because there is no release
+or ownership-boundary change.
+
+No numerical algorithm, formula, coefficient, supported/default order,
+nonlinear default/tolerance, startup, grid, Compare numerical behavior, Output,
+Convergence, Linear Systems, Motion, Tutor feature, Glossary feature, PDE,
+dependency, route boundary, push, or deployment changed. Local Phase 2
+self-review has no open finding (`P0 = P1 = P2 = P3 = 0`); this is not a
+substitute for the pending independent audit.
+
+The exact next gate is **independent Phase 2 opening / landscape / selection
+audit**, followed by **Maintainer visual/cognitive review**. Phase 3+ remains
+unauthorized.
+
+## Cross-Lab Method Teaching Alignment v2 — accepted authority and Phases 0–1 historical checkpoint — 2026-08-22
+
+This section preserves the exact Phase 0/1 checkpoint. Its statements that
+Phase 1 awaits acceptance or Phase 2 remains unauthorized are superseded by
+the Phase 2 candidate record above.
 
 ### Presentation Phase 6 and design acceptance
 

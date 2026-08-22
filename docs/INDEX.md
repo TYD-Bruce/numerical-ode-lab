@@ -41,24 +41,38 @@ is **ACCEPTED WITH BINDING ADDENDUM** and selects a teaching-first
 **Landscape to Lens** direction that preserves ODE's
 eight methods, Compare, first-/second-order profiles, and experimentation. Its
 [repository-grounded implementation plan](superpowers/plans/2026-08-22-cross-lab-method-teaching-alignment-v2-implementation-plan.md)
-authorized only Phase 0 authority and Phase 1's additive pure teaching model;
-both are now implemented and locally verified. Phase 0 is commit
+keeps implementation separately gated. Phase 0 is accepted at commit
 `77047d9d570d8cf9416991e8e0c17d7485acab8b` (tree
-`7ff318fcdf6d08adf716792f509826b27b648520`), and Phase 1 is commit
-`48511a2cf4f3c3d7fd35504a0b49102022f00f32` (tree
-`1abfe1d15bd33cfbd215da88ca11be5090962a1c`).
+`7ff318fcdf6d08adf716792f509826b27b648520`). Phase 1 is
+Maintainer-accepted at `712fa1d68ced31d1a85b6c13aa4daf93882b8f9` (tree
+`49f1716f2cc9208068d61f70159396af3b53573b`) after an independent **PASS WITH
+P3 CARRY-FORWARD** verdict (`P0 = 0`, `P1 = 0`, `P2 = 0`, `P3 = 1`).
 Compare remains a secondary landscape branch; Data owns editable order and
 initialized family-specific order survives reselection.
 
-No browser-visible ODE Method implementation was authorized or added in Phase
-0/1.
-Numerical behavior, sessions, routes, implemented architecture, Linear Systems
-Teaching v2, Motion, Tutor, Glossary, PDE, dependencies, push, deployment, and
-Production state remain unchanged. Cross-Lab Presentation Phase 7 is
-**paused**, not failed or completed. The exact next gate is an **independent
-mathematical/content audit of the eight-profile teaching registry**, followed
-by separate authorization before Phase 2. The registry is ready for that audit
-but has not yet been independently accepted.
+Phase 2 is now an implemented candidate. Its mandatory pre-flight closes
+`PHASE1-P3-01` by splitting learner content from audit/governance metadata and
+exposing only an explicit learner-safe projection at
+`0d3b8d6f7aeb9766b2a24e2169640b5d9c3f8d1e` (tree
+`9c5d5a61c5f1012b4cfb4baa926889528d580c04`). The browser-visible Problem
+foundation, three-group/eight-method landscape, real selected-method shell,
+secondary Compare entry, and Continue-to-Data transition are implemented at
+`96362c9635938d6d90274d12a89f4255b17a60b9` (tree
+`d7538ee7c24e8c8ce0c04ef80cdb4b30f1c895b8`). A bounded additive pure-session
+order record was required to preserve distinct initialized Adams-Bashforth,
+Adams-Moulton, and BDF orders; Data remains the only editable owner and
+numerical behavior is unchanged.
+Final formula-containment browser polish is
+`7eb2f9c1f9077d42ec3f928276cab1e939640f80` (tree
+`6410989215a2e5864d87aadad2e16b5a9de050fc`).
+
+Phase 2 adds no deep profiles, concepts, diagrams, after-solve teaching, or
+Phase 3 work. Linear Systems, Motion, Tutor features, Glossary features, PDE,
+dependencies, push, deployment, and Production state remain unchanged.
+Cross-Lab Presentation Phase 7 is **paused**, not failed or completed. The
+exact next gate is an **independent Phase 2 opening / landscape / selection
+audit**, followed by **Maintainer visual/cognitive review**. Phase 3+ remains
+unauthorized.
 
 ## Superseded Teaching v2 milestone record
 
