@@ -16,8 +16,27 @@ const FORMULAS: Record<MethodCatalogEntry["family"], Omit<ReadonlyMathContent, "
   leapfrog: { latex: "u''=a(t,u)", ariaLabel: "u double prime equals a of t and u" },
 };
 
+const LEAPFROG_TEACHING_FORMULA: ReadonlyMathContent = Object.freeze({
+  latex:
+    "\\begin{aligned}v_{-1/2}&=v_0-\\frac{h}{2}a(t_0,u_0),\\\\v_{n+1/2}&=v_{n-1/2}+h a(t_n,u_n),\\\\u_{n+1}&=u_n+h v_{n+1/2},\\\\v_{n+1}&=v_{n+1/2}+\\frac{h}{2}a(t_{n+1},u_{n+1})\\end{aligned}",
+  displayText:
+    "v₋₁⁄₂ = v₀ − (h/2)a(t₀,u₀); vₙ₊₁⁄₂ = vₙ₋₁⁄₂ + h a(tₙ,uₙ); uₙ₊₁ = uₙ + h vₙ₊₁⁄₂; vₙ₊₁ = vₙ₊₁⁄₂ + (h/2)a(tₙ₊₁,uₙ₊₁)",
+  ariaLabel:
+    "Initialize the half-step velocity before the initial time from v zero minus one half h times acceleration at t zero and u zero; update the next half-step velocity from the previous half-step velocity plus h times current acceleration; update the next whole-step position; then reconstruct the next full-step velocity with one half h times acceleration at the new time and position.",
+});
+
 export function methodMathContent(
   entry: Pick<MethodCatalogEntry, "family" | "formulaDisplay">
 ): MethodMathContent {
   return { formula: { ...FORMULAS[entry.family], displayText: entry.formulaDisplay } };
+}
+
+/** Additive safe formula authority for the future teaching lens; current UI callers remain unchanged. */
+export function methodTeachingMathContent(
+  entry: Pick<MethodCatalogEntry, "family" | "formulaDisplay">
+): MethodMathContent {
+  if (entry.family === "leapfrog") {
+    return { formula: { ...LEAPFROG_TEACHING_FORMULA } };
+  }
+  return methodMathContent(entry);
 }

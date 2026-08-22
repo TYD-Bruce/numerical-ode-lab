@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { METHOD_CATALOG } from "@numerical-t-lab/numerics/ode/method-catalog";
-import { methodMathContent } from "./methodMathContent";
+import {
+  methodMathContent,
+  methodTeachingMathContent,
+} from "./methodMathContent";
 
 describe("methodMathContent", () => {
   it("provides trusted LaTeX, English accessibility text, and the current fallback for every method", () => {
@@ -18,5 +21,24 @@ describe("methodMathContent", () => {
     expect(formula.latex).toContain("\\frac{h}{6}");
     expect(formula.displayText).toBe(rk4.formulaDisplay);
     expect(formula.latex).not.toBe(formula.displayText);
+  });
+
+  it("adds a closed Leap-Frog teaching formula without changing the current UI formula", () => {
+    const leapfrog = METHOD_CATALOG.find(
+      (entry) => entry.family === "leapfrog"
+    )!;
+    const currentUiFormula = methodMathContent(leapfrog).formula!;
+    const teachingFormula = methodTeachingMathContent(leapfrog).formula!;
+
+    expect(currentUiFormula.displayText).toBe(leapfrog.formulaDisplay);
+    expect(currentUiFormula.latex).toBe("u''=a(t,u)");
+    expect(teachingFormula.latex).toContain("v_{-1/2}");
+    expect(teachingFormula.latex).toContain("v_{n+1/2}");
+    expect(teachingFormula.latex).toContain("u_{n+1}");
+    expect(teachingFormula.latex).toContain("v_{n+1}");
+    expect(teachingFormula.displayText).toContain("v₋₁⁄₂");
+    expect(teachingFormula.ariaLabel).toContain("half-step velocity");
+    expect(teachingFormula).not.toHaveProperty("html");
+    expect(teachingFormula).not.toHaveProperty("evaluate");
   });
 });
