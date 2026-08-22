@@ -291,6 +291,7 @@
 .ode-selected-method-formula {
   max-width: 100%;
   overflow-x: auto;
+  overflow-y: hidden;
   color: var(--text);
   font-family: var(--lab-font-technical);
 }
