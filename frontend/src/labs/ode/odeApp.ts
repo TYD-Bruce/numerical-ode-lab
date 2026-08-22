@@ -15,7 +15,6 @@ import {
 import type { MethodConfig, SeriesPoint, SolverResult } from "@numerical-t-lab/numerics/ode/solvers";
 import { integrateFirstOrder, integrateSecondOrder } from "@numerical-t-lab/numerics/ode/solvers";
 import {
-  METHOD_CATALOG,
   FIRST_ORDER_CATALOG,
   catalogByFamily,
   displayNameFor,
@@ -23,7 +22,10 @@ import {
 } from "@numerical-t-lab/numerics/ode/method-catalog";
 import { formatCoefficients } from "./mathDisplay";
 import type { ChartInstruction } from "@numerical-t-lab/contracts/tutor";
-import { methodMathContent } from "../../math/ui/methodMathContent";
+import {
+  ODE_METHOD_FOUNDATION_MATH,
+  methodMathContent,
+} from "../../math/ui/methodMathContent";
 import { renderReadonlyMath } from "../../math/ui/readonlyMath";
 import { validateFixedStepGrid } from "@numerical-t-lab/numerics/ode/grid";
 import { serializeMathAst } from "@numerical-t-lab/numerics/expressions/canonical";
@@ -107,7 +109,10 @@ import {
   createReadonlySolverResult,
   getExperimentIdentity,
   getConvergenceState,
+  odeMethodOrderFor,
+  setOdeMethodOrder,
   setConvergenceState,
+  type OdeMethodOrders,
   type OdeProblemInputs,
   type OdeSessionState,
   type OdeSelectedMethod,
@@ -137,6 +142,11 @@ import {
   disposeWorkflowNavigation,
   type LabStageRole,
 } from "../../components/lab-presentation/workflowNavigation";
+import {
+  deriveAllOdeMethodTeachingProfiles,
+  deriveOdeMethodTeachingProfile,
+  type OdeMethodTeachingLearnerProfile,
+} from "./odeMethodTeaching";
 import "./odeApp.css";
 
 runCoefficientValidation();
@@ -172,6 +182,26 @@ interface PersistedForm {
 }
 
 const activeOdeMounts = new WeakMap<HTMLElement, object>();
+
+function hydrateMethodOrders(
+  session: Pick<OdeSessionState, "methodOrders" | "selectedMethod" | "workflow">
+): OdeMethodOrders {
+  let orders = session.methodOrders;
+  const selections: readonly (SelectedMethod | null)[] = [
+    session.selectedMethod,
+    ...(session.workflow.mode === "compare_pick"
+      ? [session.workflow.first]
+      : session.workflow.mode === "compare"
+        ? [session.workflow.a, session.workflow.b]
+        : []),
+  ];
+  for (const selection of selections) {
+    if (selection?.order !== undefined) {
+      orders = setOdeMethodOrder(orders, selection.family, selection.order);
+    }
+  }
+  return orders;
+}
 
 export interface MountOdeAppOptions {
   readonly target: HTMLElement;
@@ -211,6 +241,9 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
   let step = options.initialSession.step;
   let session = options.initialSession.workflow;
   let selected: SelectedMethod | null = options.initialSession.selectedMethod;
+  let methodOrders: OdeMethodOrders = hydrateMethodOrders(
+    options.initialSession
+  );
   let chart: Chart | null = null;
   let primaryChartKind: "single" | "second" | "compare" | null = null;
   let lastResult: ReadonlySolverResult | null =
@@ -223,16 +256,11 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     }
     : null;
   let presetFormState: PresetFormState = options.initialSession.form;
-  let secondOrderForm =
-    options.initialSession.selectedMethod?.order === undefined
-      ? options.initialSession.secondOrderForm
-      : {
-        ...options.initialSession.secondOrderForm,
-        methodOrderDraft: String(options.initialSession.selectedMethod.order),
-      };
+  let secondOrderForm = options.initialSession.secondOrderForm;
   let lastProblemInputs: OdeProblemInputs | null =
     options.initialSession.output.single?.problemInputs ?? null;
   let comparePickError = options.initialSession.comparePickError;
+  let selectionAnnouncement = "";
   let activeExpressionField: EditableMathFieldHandle | null = null;
   let activeExactExpressionField: EditableMathFieldHandle | null = null;
   let activeExpressionSummary: ExpressionErrorSummaryHandle | null = null;
@@ -252,6 +280,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     step = next.step;
     session = next.workflow;
     selected = next.selectedMethod;
+    methodOrders = hydrateMethodOrders(next);
     lastResult = next.output.single?.result ?? null;
     lastResultExpression = next.output.single?.expression ?? null;
     lastCompare = next.output.comparison
@@ -261,6 +290,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     secondOrderForm = next.secondOrderForm;
     lastProblemInputs = next.output.single?.problemInputs ?? null;
     comparePickError = next.comparePickError;
+    selectionAnnouncement = "";
     lastFirstOrderRunSnapshot = next.output.single?.firstOrderRun ?? null;
     convergenceStates = next.convergenceByFingerprint;
     lastMeaningfulInteraction = undefined;
@@ -371,9 +401,17 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       },
     },
     order: {
-      get: () => secondOrderForm.methodOrderDraft,
+      get: () => {
+        if (!selected) return "";
+        return String(odeMethodOrderFor(methodOrders, selected.family) ?? "");
+      },
       set: (value: string) => {
-        secondOrderForm = { ...secondOrderForm, methodOrderDraft: value };
+        if (!selected) return;
+        const order = Number(value);
+        methodOrders = setOdeMethodOrder(methodOrders, selected.family, order);
+        if (catalogByFamily(selected.family).hasOrderSelector) {
+          selected = { ...selected, order };
+        }
       },
     },
   });
@@ -416,6 +454,27 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     });
     persisted.u0 = String(fd.get("u0") ?? "1");
     persisted.v0 = String(fd.get("v0") ?? "0");
+  }
+
+  function persistCompareMethodOrders(
+    fd: FormData,
+    metaA: MethodCatalogEntry,
+    metaB: MethodCatalogEntry
+  ): void {
+    if (metaA.hasOrderSelector) {
+      methodOrders = setOdeMethodOrder(
+        methodOrders,
+        metaA.family,
+        Number(fd.get("orderA"))
+      );
+    }
+    if (metaB.hasOrderSelector) {
+      methodOrders = setOdeMethodOrder(
+        methodOrders,
+        metaB.family,
+        Number(fd.get("orderB"))
+      );
+    }
   }
 
   function trackedFields(): TrackedProblemFields {
@@ -1094,14 +1153,424 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     }
   }
 
+  function renderFoundationMath(
+    content: (typeof ODE_METHOD_FOUNDATION_MATH)[keyof typeof ODE_METHOD_FOUNDATION_MATH],
+    owner: string
+  ): HTMLElement {
+    const target = document.createElement("div");
+    target.dataset.foundationMath = owner;
+    renderReadonlyMath(target, content, { display: "block" });
+    return target;
+  }
+
+  function renderProblemFoundation(): HTMLElement {
+    const section = document.createElement("section");
+    section.className = "ode-problem-foundation";
+    section.dataset.odeProblemFoundation = "true";
+
+    const eyebrow = document.createElement("p");
+    eyebrow.className = "ode-method-eyebrow";
+    eyebrow.textContent = "The problem";
+    const heading = document.createElement("h2");
+    heading.textContent = "Start with the initial value problem";
+    const lead = document.createElement("p");
+    lead.className = "ode-problem-lead";
+    lead.textContent =
+      "A derivative rule and one starting value define the first-order problem this Lab advances on a fixed time grid.";
+
+    const primary = document.createElement("div");
+    primary.className = "ode-problem-primary";
+    primary.append(
+      renderFoundationMath(ODE_METHOD_FOUNDATION_MATH.firstOrderIvp, "first-order-ivp")
+    );
+
+    const roles = document.createElement("dl");
+    roles.className = "ode-problem-roles";
+    for (const [symbol, label, meaning] of [
+      ["t", "Independent variable / time", "Locates each state on the grid."],
+      ["y(t)", "Unknown solution", "The function whose values we approximate."],
+      ["f(t, y)", "Derivative / slope rule", "Supplies the local rate of change."],
+      ["(t₀, y₀)", "Starting state", "Anchors the numerical experiment."],
+    ] as const) {
+      const item = document.createElement("div");
+      const term = document.createElement("dt");
+      const symbolNode = document.createElement("span");
+      symbolNode.className = "ode-problem-role-symbol";
+      symbolNode.textContent = symbol;
+      const labelNode = document.createElement("span");
+      labelNode.textContent = label;
+      term.append(symbolNode, labelNode);
+      const definition = document.createElement("dd");
+      definition.textContent = meaning;
+      item.append(term, definition);
+      roles.append(item);
+    }
+
+    const boundary = document.createElement("p");
+    boundary.className = "ode-approximation-boundary";
+    boundary.textContent =
+      "A numerical approximation is not the same as an exact closed-form solution: the method advances stored values that can later be checked against available evidence.";
+
+    const examples = document.createElement("div");
+    examples.className = "ode-problem-examples";
+    const starter = document.createElement("article");
+    starter.className = "ode-problem-example";
+    const starterLabel = document.createElement("h3");
+    starterLabel.textContent = "Beginner starter · Exponential decay";
+    starter.append(
+      starterLabel,
+      renderFoundationMath(ODE_METHOD_FOUNDATION_MATH.starterExample, "starter-example"),
+      Object.assign(document.createElement("p"), {
+        textContent:
+          "The slope is the negative of the current value, beginning from one.",
+      })
+    );
+
+    const secondOrder = document.createElement("article");
+    secondOrder.className = "ode-second-order-boundary";
+    const secondHeading = document.createElement("h3");
+    secondHeading.textContent = "Leap-Frog uses a separate profile";
+    const secondCopy = document.createElement("p");
+    secondCopy.textContent =
+      "It needs initial position and velocity for scalar acceleration a(t, u). It is single-method only: no first-order Compare, exact-reference input, or Convergence.";
+    secondOrder.append(
+      secondHeading,
+      renderFoundationMath(
+        ODE_METHOD_FOUNDATION_MATH.secondOrderProfile,
+        "second-order-profile"
+      ),
+      secondCopy
+    );
+    examples.append(starter, secondOrder);
+
+    const body = document.createElement("div");
+    body.className = "ode-problem-foundation-body";
+    const explanation = document.createElement("div");
+    explanation.append(primary, roles, boundary);
+    body.append(explanation, examples);
+    section.append(eyebrow, heading, lead, body);
+    return section;
+  }
+
+  function optionOrderLabel(profile: OdeMethodTeachingLearnerProfile): string {
+    if (profile.order.kind === "fixed") {
+      return `Order ${profile.order.theoreticalOrder}`;
+    }
+    return `Orders ${profile.order.supportedMin}–${profile.order.supportedMax}`;
+  }
+
+  function renderMethodOption(
+    profile: OdeMethodTeachingLearnerProfile,
+    onClick: () => void,
+    selectedState: boolean
+  ): HTMLButtonElement {
+    const control = document.createElement("button");
+    control.type = "button";
+    control.className = "card ode-method-option";
+    control.dataset.methodFamily = profile.identity.family;
+    control.setAttribute("aria-pressed", String(selectedState));
+    control.classList.toggle("is-selected", selectedState);
+
+    const name = document.createElement("span");
+    name.className = "ode-method-option-name";
+    name.textContent = profile.identity.displayName;
+    const facts = document.createElement("span");
+    facts.className = "ode-method-option-facts";
+    facts.textContent = `${profile.formation === "explicit" ? "Explicit" : "Implicit"} · ${optionOrderLabel(profile)}`;
+    const state = document.createElement("span");
+    state.className = "ode-method-option-state";
+    state.setAttribute("aria-hidden", "true");
+    state.textContent = selectedState ? "Selected" : "";
+    control.append(name, facts, state);
+    control.addEventListener("click", onClick);
+    return control;
+  }
+
+  function focusSelectedMethodAfterRender(family: SelectedMethod["family"]): void {
+    const focusGeneration = uiGeneration;
+    queueMicrotask(() => {
+      if (!isCurrentGeneration(focusGeneration)) return;
+      app
+        .querySelector<HTMLButtonElement>(`[data-method-family="${family}"]`)
+        ?.focus({ preventScroll: true });
+    });
+  }
+
+  function selectSingleMethod(
+    profile: OdeMethodTeachingLearnerProfile
+  ): void {
+    const currentOrder =
+      profile.order.kind === "configurable"
+        ? odeMethodOrderFor(methodOrders, profile.identity.family)
+        : undefined;
+    if (
+      currentOrder !== undefined &&
+      methodOrders[profile.identity.family] === undefined
+    ) {
+      methodOrders = setOdeMethodOrder(
+        methodOrders,
+        profile.identity.family,
+        currentOrder
+      );
+    }
+    const next: SelectedMethod = {
+      family: profile.identity.family,
+      ...(currentOrder === undefined ? {} : { order: currentOrder }),
+    };
+    session = { mode: "single" };
+    selected = next;
+    selectionAnnouncement = `${profile.identity.displayName} selected. Teaching profile updated.`;
+    markMeaningfulInteraction();
+    render();
+    focusSelectedMethodAfterRender(profile.identity.family);
+  }
+
+  function renderMethodLandscape(
+    glossaryRender: OdeGlossaryRenderTransaction
+  ): HTMLElement {
+    const section = document.createElement("section");
+    section.className = "ode-method-landscape";
+    section.dataset.odeMethodLandscape = "true";
+    const eyebrow = document.createElement("p");
+    eyebrow.className = "ode-method-eyebrow";
+    eyebrow.textContent = "The method landscape";
+    const heading = document.createElement("h2");
+    heading.textContent = "See how the methods relate";
+    const lead = document.createElement("p");
+    lead.className = "ode-method-landscape-lead";
+    lead.textContent =
+      "Choose a runnable family. The selected method stays here while Data owns its editable inputs and order.";
+
+    const profiles = deriveAllOdeMethodTeachingProfiles(methodOrders);
+    const groups = document.createElement("div");
+    groups.className = "grid-methods ode-method-groups";
+    groups.setAttribute("aria-label", "ODE method landscape");
+    for (const group of [
+      {
+        id: "first_order_one_step",
+        title: "First-order · One-step",
+        description: "One stored state begins each update.",
+        matches: (profile: OdeMethodTeachingLearnerProfile) =>
+          profile.problemProfile === "first_order_ivp" &&
+          profile.stepStructure === "one_step",
+      },
+      {
+        id: "first_order_history",
+        title: "First-order · Uses history",
+        description: "Earlier values or slopes remain part of the update.",
+        matches: (profile: OdeMethodTeachingLearnerProfile) =>
+          profile.problemProfile === "first_order_ivp" &&
+          profile.stepStructure === "history",
+      },
+      {
+        id: "second_order_staggered",
+        title: "Second-order · Staggered state",
+        description: "Position and velocity use a separate product profile.",
+        matches: (profile: OdeMethodTeachingLearnerProfile) =>
+          profile.problemProfile === "second_order_acceleration" &&
+          profile.stepStructure === "staggered",
+      },
+    ] as const) {
+      const family = document.createElement("section");
+      family.className = "ode-method-group";
+      family.dataset.methodGroup = group.id;
+      const groupHeading = document.createElement("h3");
+      groupHeading.textContent = group.title;
+      const description = document.createElement("p");
+      description.textContent = group.description;
+      const options = document.createElement("div");
+      options.className = "ode-method-options";
+      const groupProfiles = profiles.filter(group.matches);
+      for (const profile of groupProfiles) {
+        options.append(
+          renderMethodOption(
+            profile,
+            () => selectSingleMethod(profile),
+            selected?.family === profile.identity.family
+          )
+        );
+      }
+      family.append(groupHeading, description, options);
+      if (
+        selected &&
+        groupProfiles.some(
+          (profile) => profile.identity.family === selected?.family
+        )
+      ) {
+        const readSelected = document.createElement("button");
+        readSelected.type = "button";
+        readSelected.className = "btn ghost ode-read-selected-method";
+        readSelected.dataset.readSelectedMethod = "true";
+        readSelected.textContent = "Read selected method";
+        readSelected.addEventListener("click", () => {
+          app
+            .querySelector<HTMLElement>("[data-selected-method-shell-heading]")
+            ?.focus();
+        });
+        family.append(readSelected);
+      }
+      groups.append(family);
+    }
+
+    const compare = document.createElement("div");
+    compare.className = "choose-actions ode-compare-entry";
+    const compareButton = document.createElement("button");
+    compareButton.type = "button";
+    compareButton.className = "btn ghost";
+    compareButton.dataset.compare = "true";
+    compareButton.textContent = "Compare two first-order methods";
+    compareButton.addEventListener("click", () => {
+      session = { mode: "compare_pick", first: null };
+      comparePickError = "";
+      markMeaningfulInteraction();
+      render();
+    });
+    const compareHint = document.createElement("p");
+    compareHint.className = "compare-hint";
+    compareHint.textContent =
+      "Secondary path · one shared y′ = f(t, y) setup; Leap-Frog remains separate.";
+    compare.append(compareButton, compareHint);
+
+    section.append(
+      eyebrow,
+      heading,
+      lead,
+      groups,
+      compare,
+      renderMethodGlossaryHelper(glossaryRender)
+    );
+    return section;
+  }
+
+  function selectedProblemLabel(
+    profile: OdeMethodTeachingLearnerProfile
+  ): string {
+    return profile.problemProfile === "first_order_ivp"
+      ? "First-order IVP"
+      : "Second-order acceleration";
+  }
+
+  function selectedStructureLabel(
+    profile: OdeMethodTeachingLearnerProfile
+  ): string {
+    if (profile.stepStructure === "one_step") return "One-step";
+    if (profile.stepStructure === "history") return "Uses history";
+    return "Staggered state";
+  }
+
+  function renderSelectedMethodShell(
+    selection: SelectedMethod
+  ): HTMLElement {
+    const currentOrder = odeMethodOrderFor(methodOrders, selection.family);
+    const profile = deriveOdeMethodTeachingProfile({
+      family: selection.family,
+      currentOrder,
+    });
+    const shell = document.createElement("section");
+    shell.className = "ode-selected-method-shell";
+    shell.dataset.selectedMethodShell = "true";
+    shell.dataset.selectedMethod = profile.identity.family;
+    const eyebrow = document.createElement("p");
+    eyebrow.className = "ode-method-eyebrow";
+    eyebrow.textContent = "Selected runnable method";
+    const heading = document.createElement("h2");
+    heading.tabIndex = -1;
+    heading.dataset.selectedMethodShellHeading = "true";
+    heading.textContent = profile.identity.displayName;
+    const idea = document.createElement("p");
+    idea.className = "ode-selected-core-idea";
+    idea.textContent = profile.coreIdea;
+
+    const metadata = document.createElement("dl");
+    metadata.className = "ode-selected-method-metadata";
+    const addMetadata = (label: string, value: string, owner?: string) => {
+      const item = document.createElement("div");
+      const term = document.createElement("dt");
+      term.textContent = label;
+      const definition = document.createElement("dd");
+      definition.textContent = value;
+      if (owner) definition.dataset[owner] = "true";
+      item.append(term, definition);
+      metadata.append(item);
+    };
+    addMetadata("Problem profile", selectedProblemLabel(profile));
+    addMetadata("Step structure", selectedStructureLabel(profile));
+    addMetadata(
+      "Formation",
+      profile.formation === "explicit" ? "Explicit" : "Implicit"
+    );
+    if (profile.order.kind === "fixed") {
+      addMetadata("Theoretical order", String(profile.order.theoreticalOrder));
+    } else {
+      addMetadata(
+        "Supported order",
+        `${profile.order.supportedMin}–${profile.order.supportedMax}`
+      );
+      addMetadata("Default order", String(profile.order.defaultOrder));
+      addMetadata(
+        "Current order",
+        String(profile.order.currentConfiguredOrder),
+        "currentMethodOrder"
+      );
+    }
+
+    shell.append(eyebrow, heading, idea, metadata);
+    if (profile.identity.family !== "leapfrog") {
+      const formula = document.createElement("div");
+      formula.className = "ode-selected-method-formula";
+      formula.dataset.selectedMethodFormula = "true";
+      renderReadonlyMath(formula, profile.primaryFormula, { display: "block" });
+      shell.append(formula);
+    }
+
+    const availability = document.createElement("p");
+    availability.className = "ode-selected-availability";
+    availability.textContent = profile.compareEligible
+      ? "Available for single-method runs and first-order Compare. Output follows a run; Convergence requires a valid exact reference."
+      : "Single-method only. This profile has no first-order Compare, exact-reference input, or Convergence entry.";
+    const next = document.createElement("p");
+    next.className = "ode-selected-next";
+    next.textContent =
+      "Deeper teaching follows in this selected-method area: update steps, key concepts, and after-solve guidance.";
+    shell.append(availability, next);
+    return shell;
+  }
+
+  function renderDataTransition(selection: SelectedMethod): HTMLElement {
+    const profile = deriveOdeMethodTeachingProfile({
+      family: selection.family,
+      currentOrder: odeMethodOrderFor(methodOrders, selection.family),
+    });
+    const transition = document.createElement("div");
+    transition.className = "ode-method-data-transition";
+    transition.dataset.methodDataTransition = "true";
+    const summary = document.createElement("p");
+    summary.textContent =
+      profile.problemProfile === "second_order_acceleration"
+        ? "Next: set the acceleration rule, initial position and velocity, interval, and step size."
+        : `Next: set the IVP, interval, initial value, step size, right-hand side${profile.order.kind === "configurable" ? ", and order" : ""}.`;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "btn primary";
+    button.dataset.continueData = "true";
+    button.textContent = "Continue to Data";
+    button.addEventListener("click", () => goToWorkflowStep("data"));
+    transition.append(summary, button);
+    return transition;
+  }
+
   function renderChoosePanel(
     glossaryRender: OdeGlossaryRenderTransaction
   ): HTMLElement {
     if (session.mode === "compare_pick") {
       const bar = document.createElement("div");
       bar.className = "choose-actions";
-      bar.innerHTML = `<button type="button" class="btn ghost" data-cancel-compare>Cancel compare</button>`;
-      bar.querySelector("[data-cancel-compare]")!.addEventListener("click", () => {
+      const cancel = document.createElement("button");
+      cancel.type = "button";
+      cancel.className = "btn ghost";
+      cancel.dataset.cancelCompare = "true";
+      cancel.textContent = "Back to method landscape";
+      cancel.addEventListener("click", () => {
         session = { mode: "single" };
         comparePickError = "";
         markMeaningfulInteraction();
@@ -1114,7 +1583,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
         session.first === null
           ? "Choose the first first-order method, then a second method. You will enter one shared model y′ = f(t, y)."
           : `First method: ${methodLabel(session.first)}. Choose a different second method.`;
-      bar.append(prompt);
+      bar.append(cancel, prompt);
       if (comparePickError) {
         const error = document.createElement("p");
         error.className = "compare-error";
@@ -1123,104 +1592,76 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
         bar.append(error);
       }
       const heading = document.createElement("h2");
-      heading.textContent = "Choose a method";
+      heading.textContent = "Compare two first-order methods";
       const teaching = createTeachingBlock({
         heading,
+        lead: Object.assign(document.createElement("p"), {
+          textContent:
+            "Compare is a secondary path from the first-order landscape. Method order remains editable in Data.",
+        }),
         examples: [
           bar,
           renderCompareMethodGrid(),
           renderMethodGlossaryHelper(glossaryRender),
         ],
       });
-      teaching.classList.add("choose-panel", "ode-method-teaching");
+      teaching.classList.add(
+        "choose-panel",
+        "ode-method-teaching",
+        "ode-compare-picker"
+      );
       return teaching;
     }
 
-    const bar = document.createElement("div");
-    bar.className = "choose-actions";
-    bar.innerHTML = `
-    <button type="button" class="btn secondary" data-compare>Compare two methods</button>
-    <p class="compare-hint">One shared y′ = f(t, y) setup (first-order methods only).</p>
-  `;
-    bar.querySelector("[data-compare]")!.addEventListener("click", () => {
-      session = { mode: "compare_pick", first: null };
-      comparePickError = "";
-      markMeaningfulInteraction();
-      render();
-    });
-    const heading = document.createElement("h2");
-    heading.textContent = "Choose a method";
-    const teaching = createTeachingBlock({
-      heading,
-      examples: [
-        bar,
-        renderSingleMethodGrid(),
-        renderMethodGlossaryHelper(glossaryRender),
-      ],
-    });
-    teaching.classList.add("choose-panel", "ode-method-teaching");
-    return teaching;
-  }
-
-  function renderMethodCard(
-    cat: MethodCatalogEntry,
-    onClick: () => void,
-    selectedState?: boolean
-  ): HTMLButtonElement {
-    const card = document.createElement("button");
-    card.type = "button";
-    card.className = "card";
-    if (selectedState !== undefined) {
-      card.setAttribute("aria-pressed", String(selectedState));
-      card.classList.toggle("is-selected", selectedState);
-    }
-    const tag =
-      cat.mode === "first"
-        ? "First-order y′ = f(t, y)"
-        : "Second-order u″ = a(t, u)";
-    card.innerHTML = `
-    <h3>${cat.displayName}</h3>
-    <p>${cat.blurb}</p>
-    <span class="tag method-scope-tag">${tag}</span>
-  `;
-    card.addEventListener("click", onClick);
-    return card;
-  }
-
-  function renderSingleMethodGrid(): HTMLElement {
-    const grid = document.createElement("div");
-    grid.className = "grid-methods";
-    METHOD_CATALOG.forEach((cat) => {
-      grid.append(
-        renderMethodCard(cat, () => {
-          session = { mode: "single" };
-          selected = {
-            family: cat.family,
-            order: cat.orderDefault,
-          };
-          step = "configure";
-          markMeaningfulInteraction();
-          render();
-        })
+    const opening = document.createElement("div");
+    opening.className = "choose-panel ode-method-opening";
+    const choice = document.createElement("div");
+    choice.className = "ode-method-choice-layout";
+    choice.append(renderMethodLandscape(glossaryRender));
+    if (selected) {
+      const lens = document.createElement("div");
+      lens.className = "ode-method-lens-column";
+      lens.append(
+        renderSelectedMethodShell(selected),
+        renderDataTransition(selected)
       );
-    });
-    return grid;
+      choice.append(lens);
+    }
+    opening.append(renderProblemFoundation(), choice);
+    if (selectionAnnouncement) {
+      const status = document.createElement("p");
+      status.className = "sr-only";
+      status.dataset.methodSelectionStatus = "true";
+      status.setAttribute("role", "status");
+      status.setAttribute("aria-live", "polite");
+      status.setAttribute("aria-atomic", "true");
+      status.textContent = selectionAnnouncement;
+      selectionAnnouncement = "";
+      opening.append(status);
+    }
+    return opening;
   }
 
   function renderCompareMethodGrid(): HTMLElement {
     const grid = document.createElement("div");
-    grid.className = "grid-methods";
-    FIRST_ORDER_CATALOG.forEach((cat) => {
+    grid.className = "grid-methods ode-compare-methods";
+    for (const cat of FIRST_ORDER_CATALOG) {
+      const profile = deriveOdeMethodTeachingProfile({
+        family: cat.family,
+        currentOrder: odeMethodOrderFor(methodOrders, cat.family),
+      });
       const isSelected =
         session.mode === "compare_pick" &&
         session.first?.family === cat.family &&
-        (session.first.order ?? cat.orderDefault) === cat.orderDefault;
+        (session.first.order ?? cat.orderDefault) ===
+          odeMethodOrderFor(methodOrders, cat.family);
       grid.append(
-        renderMethodCard(cat, () => {
+        renderMethodOption(profile, () => {
           if (session.mode !== "compare_pick") return;
+          const currentOrder = odeMethodOrderFor(methodOrders, cat.family);
           const pick: SelectedMethod = {
             family: cat.family,
-            order: cat.orderDefault,
+            ...(currentOrder === undefined ? {} : { order: currentOrder }),
           };
           if (session.first === null) {
             comparePickError = "";
@@ -1232,7 +1673,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
           const sameConfig =
             session.first.family === pick.family &&
             (session.first.order ?? cat.orderDefault) ===
-            (pick.order ?? cat.orderDefault);
+              (pick.order ?? cat.orderDefault);
           if (sameConfig) {
             comparePickError =
               "Pick a different method (or change order p in the next step).";
@@ -1246,7 +1687,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
           render();
         }, isSelected)
       );
-    });
+    }
     return grid;
   }
 
@@ -2016,12 +2457,6 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       const form = wrap.querySelector<HTMLFormElement>("#ode-form");
       if (form) readPersistedFromFormEl(form);
       step = "choose";
-      selected = null;
-      lastResult = null;
-      lastResultExpression = null;
-      lastCompare = null;
-      lastProblemInputs = null;
-      lastFirstOrderRunSnapshot = null;
       session = { mode: "single" };
       markMeaningfulInteraction();
       render();
@@ -2248,6 +2683,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
           wrap.querySelector<HTMLFormElement>("#ode-form")!
         );
         persistFromFirstOrderFd(formData);
+        persistCompareMethodOrders(formData, metaA, metaB);
         if (session.mode === "compare") {
           session = {
             mode: "compare",
@@ -2271,7 +2707,9 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
 
     wrap.querySelector("[data-return-output]")?.addEventListener("click", () => {
       const form = wrap.querySelector<HTMLFormElement>("#ode-form")!;
-      persistFromFirstOrderFd(new FormData(form));
+      const formData = new FormData(form);
+      persistFromFirstOrderFd(formData);
+      persistCompareMethodOrders(formData, metaA, metaB);
       recordTrackedEdit(false);
       step = "results";
       render();
@@ -2280,7 +2718,9 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     wrap.querySelector("[data-back-methods]")!.addEventListener("click", () => {
       const form = wrap.querySelector<HTMLFormElement>("#ode-form");
       if (form) {
-        persistFromFirstOrderFd(new FormData(form));
+        const formData = new FormData(form);
+        persistFromFirstOrderFd(formData);
+        persistCompareMethodOrders(formData, metaA, metaB);
         recordTrackedEdit(false);
       }
       step = "choose";
@@ -2303,6 +2743,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       try {
         const fd = new FormData(form);
         persistFromFirstOrderFd(fd);
+        persistCompareMethodOrders(fd, metaA, metaB);
         recordTrackedEdit(false);
         const t0 = Number(fd.get("t0"));
         const tEnd = Number(fd.get("tEnd"));
@@ -2368,12 +2809,6 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
 
   function goToMethodListKeepInputs(): void {
     step = "choose";
-    selected = null;
-    lastResult = null;
-    lastResultExpression = null;
-    lastCompare = null;
-    lastProblemInputs = null;
-    lastFirstOrderRunSnapshot = null;
     session = { mode: "single" };
     markMeaningfulInteraction();
     render();
@@ -3070,6 +3505,20 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     } else if (session.mode === "compare") {
       const orderA = form.querySelector<HTMLInputElement>('[name="orderA"]');
       const orderB = form.querySelector<HTMLInputElement>('[name="orderB"]');
+      if (orderA) {
+        methodOrders = setOdeMethodOrder(
+          methodOrders,
+          session.a.family,
+          Number(orderA.value)
+        );
+      }
+      if (orderB) {
+        methodOrders = setOdeMethodOrder(
+          methodOrders,
+          session.b.family,
+          Number(orderB.value)
+        );
+      }
       session = {
         mode: "compare",
         a: { ...session.a, ...(orderA ? { order: Number(orderA.value) } : {}) },
@@ -3105,6 +3554,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       step,
       workflow: Object.freeze({ ...session }) as OdeSessionState["workflow"],
       selectedMethod: selected ? Object.freeze({ ...selected }) : null,
+      methodOrders,
       form: presetFormState,
       secondOrderForm,
       comparePickError,

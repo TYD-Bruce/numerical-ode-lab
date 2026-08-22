@@ -6,7 +6,11 @@ import {
   type ConvergenceStateRecord,
   type SuccessfulFirstOrderRunSnapshot,
 } from "./convergenceStudyState";
-import { displayNameFor } from "@numerical-t-lab/numerics/ode/method-catalog";
+import {
+  METHOD_CATALOG,
+  catalogByFamily,
+  displayNameFor,
+} from "@numerical-t-lab/numerics/ode/method-catalog";
 import { serializeMathAst } from "@numerical-t-lab/numerics/expressions/canonical";
 import {
   createEmptyExactExpressionState,
@@ -58,8 +62,11 @@ export interface OdeSecondOrderFormState {
   readonly expression: PersistedMathExpressionState;
   readonly u0: string;
   readonly v0: string;
-  readonly methodOrderDraft: string;
 }
+
+export type OdeMethodOrders = Readonly<
+  Partial<Record<MethodFamily, number>>
+>;
 
 /** Temporary Phase 3 adapter for the private PersistedForm in main.ts. */
 export interface OdePersistedFormState {
@@ -135,6 +142,7 @@ export interface OdeSessionState {
   readonly step: OdeWorkflowStep;
   readonly workflow: OdeWorkflowSession;
   readonly selectedMethod: OdeSelectedMethod | null;
+  readonly methodOrders: OdeMethodOrders;
   readonly form: PresetFormState;
   readonly secondOrderForm: OdeSecondOrderFormState;
   readonly comparePickError: string;
@@ -179,18 +187,48 @@ export function createReadonlySolverResult(
   });
 }
 
+export function createDefaultOdeMethodOrders(): OdeMethodOrders {
+  return Object.freeze(
+    Object.fromEntries(
+      METHOD_CATALOG.filter((entry) => entry.hasOrderSelector).map((entry) => [
+        entry.family,
+        entry.orderDefault,
+      ])
+    ) as Partial<Record<MethodFamily, number>>
+  );
+}
+
+export function odeMethodOrderFor(
+  orders: OdeMethodOrders,
+  family: MethodFamily
+): number | undefined {
+  const entry = catalogByFamily(family);
+  if (!entry.hasOrderSelector) return undefined;
+  return orders[family] ?? entry.orderDefault;
+}
+
+export function setOdeMethodOrder(
+  orders: OdeMethodOrders,
+  family: MethodFamily,
+  order: number
+): OdeMethodOrders {
+  if (!catalogByFamily(family).hasOrderSelector) return orders;
+  if (orders[family] === order) return orders;
+  return Object.freeze({ ...orders, [family]: order });
+}
+
 export function createBeginnerStarterSession(): OdeSessionState {
   return Object.freeze({
     version: 1 as const,
     step: "choose" as const,
     workflow: Object.freeze({ mode: "single" as const }),
     selectedMethod: Object.freeze({ family: "forward_euler" as const }),
+    methodOrders: createDefaultOdeMethodOrders(),
     form: createPresetFormStateFromPreset("exponential_decay"),
     secondOrderForm: Object.freeze({
       expression: createDefaultMathExpressionState("second_order_rhs"),
       u0: "1",
       v0: "0",
-      methodOrderDraft: "2",
     }),
     comparePickError: "",
     output: Object.freeze({}),
@@ -206,6 +244,7 @@ export function createCurrentCompatibilitySession(): OdeSessionState {
     step: "choose" as const,
     workflow: Object.freeze({ mode: "single" as const }),
     selectedMethod: null,
+    methodOrders: createDefaultOdeMethodOrders(),
     form: createPresetFormState({
       rhs,
       exactSolutionEnabled: false,
@@ -219,7 +258,6 @@ export function createCurrentCompatibilitySession(): OdeSessionState {
       expression: createDefaultMathExpressionState("second_order_rhs"),
       u0: "1",
       v0: "0",
-      methodOrderDraft: "2",
     }),
     comparePickError: "",
     output: Object.freeze({}),
@@ -231,6 +269,12 @@ export function selectOdePersistedFormState(
   session: OdeSessionState
 ): OdePersistedFormState {
   const fields = session.form.current;
+  const selectedOrder = session.selectedMethod
+    ? odeMethodOrderFor(session.methodOrders, session.selectedMethod.family)
+    : undefined;
+  const fallbackOrder = METHOD_CATALOG.find(
+    (entry) => entry.hasOrderSelector
+  )?.orderDefault;
   return {
     t0: fields.t0,
     tEnd: fields.tEnd,
@@ -242,7 +286,7 @@ export function selectOdePersistedFormState(
     y0: fields.y0,
     u0: session.secondOrderForm.u0,
     v0: session.secondOrderForm.v0,
-    order: session.secondOrderForm.methodOrderDraft,
+    order: String(selectedOrder ?? fallbackOrder ?? ""),
   };
 }
 
@@ -280,11 +324,23 @@ function workflowCoreEqual(
   );
 }
 
+function methodOrdersEqual(
+  left: OdeMethodOrders,
+  right: OdeMethodOrders
+): boolean {
+  return METHOD_CATALOG.filter((entry) => entry.hasOrderSelector).every(
+    (entry) =>
+      odeMethodOrderFor(left, entry.family) ===
+      odeMethodOrderFor(right, entry.family)
+  );
+}
+
 export function hasCoreStarterChanges(session: OdeSessionState): boolean {
   const starter = createBeginnerStarterSession();
   return !(
     selectedMethodEqual(session.selectedMethod, starter.selectedMethod) &&
     workflowCoreEqual(session.workflow, starter.workflow) &&
+    methodOrdersEqual(session.methodOrders, starter.methodOrders) &&
     trackedProblemFieldsEqual(session.form.current, starter.form.current) &&
     session.form.presetId === starter.form.presetId &&
     session.form.customizationSourcePresetId ===

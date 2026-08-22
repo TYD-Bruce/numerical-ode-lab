@@ -323,10 +323,10 @@ describe("New experiment", () => {
     await vi.waitFor(() =>
       expect(app.shell.outlet.querySelector("[data-new-experiment]")).not.toBeNull()
     );
-    const forwardEuler = [...app.shell.outlet.querySelectorAll<HTMLButtonElement>(
+    const rk4 = [...app.shell.outlet.querySelectorAll<HTMLButtonElement>(
       ".grid-methods .card"
-    )].find((button) => button.textContent?.includes("Forward Euler"))!;
-    forwardEuler.click();
+    )].find((button) => button.textContent?.includes("Runge-Kutta 4"))!;
+    rk4.click();
     await vi.waitFor(() =>
       expect(app.store.getLabMetadata("ode")?.labMeaningful).toBe(true)
     );

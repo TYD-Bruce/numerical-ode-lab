@@ -231,6 +231,366 @@
   margin-top: auto;
 }
 
+.ode-method-opening {
+  gap: clamp(var(--lab-space-section), 5vw, var(--lab-space-stage));
+}
+
+.ode-method-eyebrow {
+  margin: 0;
+  color: var(--lab-stage-method-foreground);
+  font-family: var(--lab-font-technical);
+  font-size: var(--lab-type-eyebrow-size);
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.ode-problem-foundation,
+.ode-method-landscape,
+.ode-selected-method-shell {
+  min-width: 0;
+}
+
+.ode-problem-foundation {
+  display: grid;
+  gap: var(--space-3);
+  padding-bottom: var(--lab-space-section);
+  border-bottom: 1px solid var(--lab-border-standard);
+}
+
+.ode-problem-foundation > h2,
+.ode-method-landscape > h2,
+.ode-selected-method-shell > h2 {
+  margin: 0;
+  font-size: var(--lab-type-stage-title-size);
+  line-height: var(--lab-type-stage-title-line);
+}
+
+.ode-problem-lead,
+.ode-method-landscape-lead {
+  max-width: var(--lab-readable-measure);
+  margin: 0;
+  color: var(--muted);
+}
+
+.ode-problem-foundation-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(18rem, 0.88fr);
+  gap: clamp(var(--lab-space-block), 4vw, var(--lab-space-section));
+  align-items: start;
+  margin-top: var(--space-2);
+}
+
+.ode-problem-primary {
+  padding: clamp(var(--space-4), 3vw, var(--space-6));
+  border-inline-start: var(--space-1) solid var(--lab-stage-method-accent);
+  background: var(--lab-stage-method-surface);
+}
+
+[data-foundation-math],
+.ode-selected-method-formula {
+  max-width: 100%;
+  overflow-x: auto;
+  color: var(--text);
+  font-family: var(--lab-font-technical);
+}
+
+.ode-problem-primary [data-foundation-math] {
+  font-size: clamp(1.05rem, 2.1vw, 1.4rem);
+}
+
+.ode-problem-roles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  margin: var(--space-5) 0 0;
+  border-block: 1px solid var(--lab-border-quiet);
+}
+
+.ode-problem-roles > div {
+  min-width: 0;
+  padding: var(--space-3) var(--space-3) var(--space-3) 0;
+  border-bottom: 1px solid var(--lab-border-quiet);
+}
+
+.ode-problem-roles > div:nth-last-child(-n + 2) {
+  border-bottom: 0;
+}
+
+.ode-problem-roles dt,
+.ode-problem-roles dd {
+  margin: 0;
+}
+
+.ode-problem-roles dt {
+  display: grid;
+  gap: 2px;
+  font-size: var(--lab-type-supporting-size);
+  font-weight: 700;
+}
+
+.ode-problem-role-symbol {
+  color: var(--lab-stage-method-foreground);
+  font-family: var(--lab-font-technical);
+}
+
+.ode-problem-roles dd {
+  margin-top: var(--space-1);
+  color: var(--muted);
+  font-size: var(--lab-type-metadata-size);
+}
+
+.ode-approximation-boundary {
+  max-width: var(--lab-readable-measure);
+  margin: var(--space-4) 0 0;
+  color: var(--muted);
+  font-size: var(--lab-type-supporting-size);
+}
+
+.ode-problem-examples {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.ode-problem-example,
+.ode-second-order-boundary {
+  min-width: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--lab-border-quiet);
+  border-radius: var(--lab-radius-compact);
+  background: var(--lab-surface-inset);
+}
+
+.ode-problem-example h3,
+.ode-second-order-boundary h3 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--lab-type-section-title-size);
+}
+
+.ode-problem-example p,
+.ode-second-order-boundary p {
+  margin: var(--space-2) 0 0;
+  color: var(--muted);
+  font-size: var(--lab-type-supporting-size);
+}
+
+.ode-method-choice-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.14fr) minmax(19rem, 0.86fr);
+  gap: clamp(var(--lab-space-block), 4vw, var(--lab-space-section));
+  align-items: start;
+}
+
+.ode-method-landscape {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.ode-method-groups {
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.ode-method-group {
+  display: grid;
+  grid-template-columns: minmax(9.5rem, 0.4fr) minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  gap: var(--space-1) var(--space-4);
+  min-width: 0;
+  padding: var(--space-4) 0;
+  border-top: 1px solid var(--lab-border-standard);
+}
+
+.ode-method-group > h3 {
+  grid-column: 1;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.ode-method-group > p {
+  grid-column: 1;
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--lab-type-metadata-size);
+}
+
+.ode-method-options {
+  display: grid;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.ode-read-selected-method {
+  display: none;
+}
+
+.ode-method-option {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px var(--space-2);
+  min-width: 0;
+  min-height: 4.5rem;
+  padding: var(--space-3);
+  border-width: 1px;
+  border-radius: var(--lab-radius-compact);
+  background: var(--lab-control-default-background);
+  box-shadow: none;
+}
+
+.ode-method-option:hover {
+  border-color: var(--lab-control-hover-border);
+  background: var(--lab-control-hover-background);
+  transform: none;
+}
+
+.ode-method-option.is-selected,
+.ode-method-option[aria-pressed="true"] {
+  border: 1px solid var(--lab-stage-method-border);
+  border-inline-start: var(--space-1) solid var(--lab-stage-method-accent);
+  background: var(--lab-stage-method-selected);
+  box-shadow: none;
+}
+
+.ode-method-option.is-selected::after,
+.ode-method-option[aria-pressed="true"]::after {
+  display: none;
+  content: none;
+}
+
+.ode-method-option-name {
+  grid-column: 1 / -1;
+  color: var(--text);
+  font-weight: 750;
+  line-height: 1.25;
+}
+
+.ode-method-option-facts,
+.ode-method-option-state {
+  align-self: end;
+  color: var(--muted);
+  font-family: var(--lab-font-technical);
+  font-size: 0.69rem;
+  line-height: 1.25;
+}
+
+.ode-method-option-state {
+  color: var(--lab-stage-method-foreground);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.ode-compare-entry {
+  width: 100%;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--lab-border-quiet);
+}
+
+.ode-method-lens-column {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.ode-selected-method-shell {
+  display: grid;
+  gap: var(--space-3);
+  padding: clamp(var(--space-5), 3vw, var(--lab-space-block));
+  border: 1px solid var(--lab-stage-method-border);
+  border-inline-start: var(--space-2) solid var(--lab-stage-method-accent);
+  border-radius: var(--lab-radius-section);
+  background: var(--lab-stage-method-surface);
+}
+
+.ode-selected-method-shell > h2:focus-visible {
+  outline: var(--lab-focus-ring-width) solid var(--lab-focus-ring-color);
+  outline-offset: var(--lab-focus-ring-offset);
+}
+
+.ode-selected-core-idea,
+.ode-selected-availability,
+.ode-selected-next {
+  margin: 0;
+}
+
+.ode-selected-core-idea {
+  color: var(--text);
+  font-size: 1.02rem;
+}
+
+.ode-selected-method-metadata {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.ode-selected-method-metadata > div {
+  min-width: 0;
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--lab-border-quiet);
+}
+
+.ode-selected-method-metadata dt,
+.ode-selected-method-metadata dd {
+  margin: 0;
+}
+
+.ode-selected-method-metadata dt {
+  color: var(--muted);
+  font-size: var(--lab-type-metadata-size);
+}
+
+.ode-selected-method-metadata dd {
+  font-family: var(--lab-font-technical);
+  font-size: var(--lab-type-supporting-size);
+  font-weight: 700;
+}
+
+.ode-selected-method-formula {
+  padding: var(--space-3);
+  border-block: 1px solid var(--lab-border-quiet);
+  background: var(--lab-surface-inset);
+}
+
+.ode-selected-availability,
+.ode-selected-next {
+  color: var(--muted);
+  font-size: var(--lab-type-supporting-size);
+}
+
+.ode-selected-next {
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--lab-border-quiet);
+}
+
+.ode-method-data-transition {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+  border: 1px solid var(--lab-stage-data-border);
+  border-radius: var(--lab-radius-compact);
+  background: var(--lab-stage-data-surface);
+}
+
+.ode-method-data-transition p {
+  flex: 1 1 16rem;
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--lab-type-supporting-size);
+}
+
+.ode-compare-methods {
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+}
+
 .form-wrap {
   display: flex;
   flex-direction: column;
@@ -909,7 +1269,63 @@
   }
 }
 
+@media (max-width: 60rem) {
+  .ode-problem-foundation-body,
+  .ode-method-choice-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ode-problem-examples {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ode-method-lens-column {
+    max-width: var(--lab-readable-measure);
+  }
+}
+
 @media (max-width: 640px) {
+  .ode-problem-examples,
+  .ode-problem-roles,
+  .ode-selected-method-metadata {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ode-problem-roles > div:nth-last-child(2) {
+    border-bottom: 1px solid var(--lab-border-quiet);
+  }
+
+  .ode-method-group {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+  }
+
+  .ode-method-group > h3,
+  .ode-method-group > p,
+  .ode-method-options {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .ode-method-options {
+    margin-top: var(--space-2);
+  }
+
+  .ode-read-selected-method {
+    display: inline-flex;
+    grid-column: 1;
+    justify-self: start;
+    min-height: 2.5rem;
+    margin-top: var(--space-2);
+    padding-block: var(--space-2);
+    font-size: var(--lab-type-supporting-size);
+  }
+
+  .ode-method-data-transition .btn,
+  .ode-compare-entry .btn {
+    width: 100%;
+  }
+
   .new-experiment-actions {
     align-items: stretch;
     flex-direction: column-reverse;
@@ -932,6 +1348,21 @@
   }
 }
 
+@media (max-width: 22rem) {
+  .ode-method-options,
+  .ode-compare-methods {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ode-problem-primary,
+  .ode-problem-example,
+  .ode-second-order-boundary,
+  .ode-selected-method-shell,
+  .ode-method-data-transition {
+    padding-inline: var(--space-3);
+  }
+}
+
 @media (forced-colors: active) {
   .card,
   .field input,
@@ -944,6 +1375,17 @@
     background: Canvas;
     color: CanvasText;
     box-shadow: none;
+  }
+
+  .ode-problem-primary,
+  .ode-problem-example,
+  .ode-second-order-boundary,
+  .ode-selected-method-shell,
+  .ode-method-data-transition,
+  .ode-selected-method-formula {
+    border-color: CanvasText;
+    background: Canvas;
+    color: CanvasText;
   }
 
   .card.is-selected,

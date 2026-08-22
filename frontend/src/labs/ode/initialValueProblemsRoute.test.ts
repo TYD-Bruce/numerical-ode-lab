@@ -32,6 +32,14 @@ vi.mock("chart.js", () => {
   };
 });
 
+function methodControl(target: ParentNode, name: string): HTMLButtonElement {
+  const control = [
+    ...target.querySelectorAll<HTMLButtonElement>("[data-method-family]"),
+  ].find((candidate) => candidate.textContent?.includes(name));
+  if (!control) throw new Error(`Missing method control: ${name}`);
+  return control;
+}
+
 describe("Initial Value Problems route", () => {
   beforeEach(() => {
     document.body.innerHTML = "";
@@ -89,8 +97,20 @@ describe("Initial Value Problems route", () => {
     const methodCards = [
       ...firstTarget.querySelectorAll<HTMLButtonElement>(".grid-methods .card"),
     ];
+    expect(methodCards.map((card) => card.dataset.methodFamily)).toEqual([
+      "forward_euler",
+      "backward_euler",
+      "taylor",
+      "rk4",
+      "adams_bashforth",
+      "adams_moulton",
+      "bdf",
+      "leapfrog",
+    ]);
     expect(
-      methodCards.map((card) => card.querySelector("h3")?.textContent)
+      methodCards.map(
+        (card) => card.querySelector(".ode-method-option-name")?.textContent
+      )
     ).toEqual([
       "Forward Euler",
       "Backward Euler",
@@ -101,20 +121,15 @@ describe("Initial Value Problems route", () => {
       "Backward Differentiation Formula",
       "Leap-Frog",
     ]);
-    const scopeTags = methodCards.map((card) =>
-      card.querySelector<HTMLElement>(":scope > .method-scope-tag")
-    );
-    expect(scopeTags.every(Boolean)).toBe(true);
-    expect(scopeTags.map((tag) => tag?.textContent)).toEqual([
-      ...Array(7).fill("First-order y′ = f(t, y)"),
-      "Second-order u″ = a(t, u)",
-    ]);
     expect(
-      methodCards.every(
-        (card) =>
-          card.querySelectorAll(":scope > .method-scope-tag").length === 1
+      [...firstTarget.querySelectorAll("[data-method-group]")].map(
+        (group) => group.getAttribute("data-method-group")
       )
-    ).toBe(true);
+    ).toEqual([
+      "first_order_one_step",
+      "first_order_history",
+      "second_order_staggered",
+    ]);
     expect(firstTarget.querySelector("[data-experiment-identity]")?.textContent).toBe(
       "Beginner starter · Forward Euler"
     );
@@ -157,22 +172,23 @@ describe("Initial Value Problems route", () => {
     expect(target.querySelector("[data-lab-header-lede]")?.textContent).toBe(
       "Explore fixed-step methods for a first-order ordinary differential equation posed as an initial value problem, then examine error, convergence, and numerical behavior."
     );
-    const cards = [...target.querySelectorAll<HTMLButtonElement>(".card")];
-    const card = (name: string) =>
-      cards.find((button) => button.querySelector("h3")?.textContent === name)!;
-    expect(card("Forward Euler").textContent).toContain(
-      "Explicit first-order method. Its theoretical order is 1 under the method’s usual smoothness and stability assumptions."
+    expect(target.querySelector("[data-ode-problem-foundation]")?.textContent).toContain(
+      "Start with the initial value problem"
     );
-    expect(card("Backward Euler").textContent).toContain(
-      "Implicit first-order method. A-stable for the scalar test equation; each step solves for the next numerical approximation. Absolute stability does not by itself establish accuracy."
+    expect(methodControl(target, "Forward Euler").textContent).toContain(
+      "Explicit · Order 1"
     );
-    expect(card("Adams-Bashforth").textContent).toContain(
-      "Explicit multistep method; choose the theoretical order p below."
+    expect(methodControl(target, "Backward Euler").textContent).toContain(
+      "Implicit · Order 1"
+    );
+    expect(methodControl(target, "Adams-Bashforth").textContent).toContain(
+      "Explicit · Orders 1–8"
     );
     expect(target.textContent).not.toContain("Very stable");
     expect(target.textContent).not.toContain("order of accuracy p below");
 
-    card("Backward Differentiation Formula").click();
+    methodControl(target, "Backward Differentiation Formula").click();
+    target.querySelector<HTMLButtonElement>("[data-continue-data]")!.click();
     const singleLabels = [
       ...target.querySelectorAll<HTMLElement>(".field > span"),
     ].map((label) => label.textContent);
@@ -187,12 +203,8 @@ describe("Initial Value Problems route", () => {
       .querySelector<HTMLButtonElement>("[data-back-methods]")!
       .click();
     target.querySelector<HTMLButtonElement>("[data-compare]")!.click();
-    [...target.querySelectorAll<HTMLButtonElement>(".card")]
-      .find((button) => button.querySelector("h3")?.textContent === "Forward Euler")!
-      .click();
-    [...target.querySelectorAll<HTMLButtonElement>(".card")]
-      .find((button) => button.querySelector("h3")?.textContent === "Runge-Kutta 4")!
-      .click();
+    methodControl(target, "Forward Euler").click();
+    methodControl(target, "Runge-Kutta 4").click();
     const compareLabels = [
       ...target.querySelectorAll<HTMLElement>(".field > span"),
     ].map((label) => label.textContent);
@@ -277,10 +289,8 @@ describe("Initial Value Problems route", () => {
         ?.disabled
     ).toBe(true);
 
-    const forwardEuler = [...target.querySelectorAll<HTMLButtonElement>(".card")].find(
-      (button) => button.querySelector("h3")?.textContent === "Forward Euler"
-    )!;
-    forwardEuler.click();
+    methodControl(target, "Forward Euler").click();
+    target.querySelector<HTMLButtonElement>("[data-continue-data]")!.click();
     expect(target.querySelector<HTMLInputElement>('[name="h"]')?.value).toBe("0.05");
     expect(
       target.querySelector<HTMLInputElement>("[data-exact-solution-toggle]")?.checked

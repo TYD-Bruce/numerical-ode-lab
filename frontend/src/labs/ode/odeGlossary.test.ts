@@ -131,9 +131,9 @@ function annotationIds(target: ParentNode): string[] {
 }
 
 function methodCard(target: ParentNode, name: string): HTMLButtonElement {
-  const card = [...target.querySelectorAll<HTMLButtonElement>(".card")].find(
-    (candidate) => candidate.querySelector("h3")?.textContent === name
-  );
+  const card = [
+    ...target.querySelectorAll<HTMLButtonElement>("[data-method-family]"),
+  ].find((candidate) => candidate.textContent?.includes(name));
   if (!card) throw new Error(`Missing method card: ${name}`);
   return card;
 }
@@ -345,6 +345,7 @@ describe("ODE Wave 1 Glossary runtime contract", () => {
 
     annotation(target, "ODE-W1-ANN-001")!.click();
     methodCard(target, "Forward Euler").click();
+    target.querySelector<HTMLButtonElement>("[data-continue-data]")!.click();
 
     const forwardHeading = annotation(target, "ODE-W1-ANN-009")!;
     expect(forwardHeading.parentElement?.tagName).toBe("H2");
@@ -398,6 +399,7 @@ describe("ODE Wave 1 Glossary runtime contract", () => {
       .querySelector<HTMLButtonElement>("[data-back-methods]")!
       .click();
     methodCard(target, "Backward Euler").click();
+    target.querySelector<HTMLButtonElement>("[data-continue-data]")!.click();
     expect(annotation(target, "ODE-W1-ANN-009")).toBeNull();
     expect(annotation(target, "ODE-W1-ANN-010")?.parentElement?.tagName).toBe(
       "H2"
@@ -426,6 +428,7 @@ describe("ODE Wave 1 Glossary runtime contract", () => {
     });
 
     methodCard(target, "Leap-Frog").click();
+    target.querySelector<HTMLButtonElement>("[data-continue-data]")!.click();
     expect(annotationIds(target)).toEqual([
       "ODE-W1-ANN-001",
       "ODE-W1-ANN-002",

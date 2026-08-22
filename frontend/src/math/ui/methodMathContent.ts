@@ -5,6 +5,28 @@ export interface MethodMathContent {
   formula?: ReadonlyMathContent;
 }
 
+export const ODE_METHOD_FOUNDATION_MATH = Object.freeze({
+  firstOrderIvp: Object.freeze({
+    latex:
+      "\\begin{aligned}y'(t)&=f(t,y),\\\\y(t_0)&=y_0\\end{aligned}",
+    displayText: "y′(t) = f(t, y); y(t₀) = y₀",
+    ariaLabel:
+      "y prime of t equals f of t and y; y at t zero equals y zero",
+  }),
+  starterExample: Object.freeze({
+    latex: "\\begin{aligned}y'&=-y,\\\\y(0)&=1\\end{aligned}",
+    displayText: "y′ = −y; y(0) = 1",
+    ariaLabel: "y prime equals negative y; y at zero equals one",
+  }),
+  secondOrderProfile: Object.freeze({
+    latex:
+      "\\begin{aligned}u''&=a(t,u),\\\\u(t_0)&=u_0,\\qquad u'(t_0)=v_0\\end{aligned}",
+    displayText: "u″ = a(t, u); u(t₀) = u₀; u′(t₀) = v₀",
+    ariaLabel:
+      "u double prime equals a of t and u; u at t zero equals u zero; u prime at t zero equals v zero",
+  }),
+} satisfies Record<string, ReadonlyMathContent>);
+
 const FORMULAS: Record<MethodCatalogEntry["family"], Omit<ReadonlyMathContent, "displayText">> = {
   forward_euler: { latex: "u_{n+1}=u_n+h f_n", ariaLabel: "u sub n plus 1 equals u sub n plus h times f sub n" },
   backward_euler: { latex: "u_{n+1}=u_n+h f(t_{n+1},u_{n+1})", ariaLabel: "u sub n plus 1 equals u sub n plus h times f of t sub n plus 1 and u sub n plus 1" },

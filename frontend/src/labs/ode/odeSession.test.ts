@@ -15,15 +15,18 @@ import {
 import {
   computeOdeLabMeaningful,
   createBeginnerStarterSession,
+  createDefaultOdeMethodOrders,
   createOdeResumeSummary,
   createReadonlySolverResult,
   getConvergenceState,
   hasSuccessfulConvergenceAnalysis,
   hasSuccessfulOutput,
   hasUnexecutedCoreDraft,
+  odeMethodOrderFor,
   removeConvergenceState,
   selectOdePersistedFormState,
   setConvergenceState,
+  setOdeMethodOrder,
   type OdeSessionState,
 } from "./odeSession";
 
@@ -111,6 +114,36 @@ describe("readonly solver-result ownership", () => {
 });
 
 describe("pure ODE session compatibility and Convergence records", () => {
+  it("derives and immutably preserves one configured order per ordered family", () => {
+    const defaults = createDefaultOdeMethodOrders();
+    expect(defaults).toEqual({
+      adams_bashforth: 2,
+      adams_moulton: 2,
+      bdf: 2,
+    });
+    expect(Object.isFrozen(defaults)).toBe(true);
+
+    const ab = setOdeMethodOrder(defaults, "adams_bashforth", 7);
+    const am = setOdeMethodOrder(ab, "adams_moulton", 6);
+    const bdf = setOdeMethodOrder(am, "bdf", 5);
+    expect(defaults).toEqual({
+      adams_bashforth: 2,
+      adams_moulton: 2,
+      bdf: 2,
+    });
+    expect(bdf).toEqual({
+      adams_bashforth: 7,
+      adams_moulton: 6,
+      bdf: 5,
+    });
+    expect(odeMethodOrderFor(bdf, "adams_bashforth")).toBe(7);
+    expect(odeMethodOrderFor(bdf, "adams_moulton")).toBe(6);
+    expect(odeMethodOrderFor(bdf, "bdf")).toBe(5);
+    expect(odeMethodOrderFor(bdf, "rk4")).toBeUndefined();
+    expect(setOdeMethodOrder(bdf, "rk4", 3)).toBe(bdf);
+    expect(createBeginnerStarterSession().methodOrders).toEqual(defaults);
+  });
+
   it("round-trips a complete successful session through the pure store boundary", () => {
     const store = createAppSessionStore();
     const session = withSuccessfulOutput();

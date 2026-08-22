@@ -211,6 +211,14 @@ function configuredSession() {
   };
 }
 
+function methodControl(target: ParentNode, name: string): HTMLButtonElement {
+  const control = [
+    ...target.querySelectorAll<HTMLButtonElement>("[data-method-family]"),
+  ].find((candidate) => candidate.textContent?.includes(name));
+  if (!control) throw new Error(`Missing method control: ${name}`);
+  return control;
+}
+
 function editableHandle(
   dispose = vi.fn(),
   element = document.createElement("div")
@@ -288,16 +296,16 @@ describe("mounted ODE lifecycle", () => {
       )
     ).toEqual(["method", "data", "output"]);
     expect(target.querySelector("[data-stage-role='method'] h2")?.textContent).toBe(
-      "Choose a method"
+      "Start with the initial value problem"
     );
     expect(
-      [...target.querySelectorAll<HTMLElement>(".grid-methods .card h3")].map(
-        (heading) => heading.textContent
+      [...target.querySelectorAll<HTMLElement>(".ode-method-option-name")].map(
+        (name) => name.textContent
       )
     ).toEqual(METHOD_CATALOG.map((method) => method.displayName));
 
     const compare = target.querySelector<HTMLButtonElement>("[data-compare]")!;
-    expect(compare.textContent).toBe("Compare two methods");
+    expect(compare.textContent).toBe("Compare two first-order methods");
     compare.click();
     expect(mounted.getSession().workflow).toEqual({
       mode: "compare_pick",
@@ -309,13 +317,8 @@ describe("mounted ODE lifecycle", () => {
     expect(target.querySelector("[data-compare-prompt]")?.textContent).toContain(
       "Choose the first first-order method"
     );
-    const forwardEulerCard = [...target.querySelectorAll<HTMLButtonElement>(
-      ".grid-methods .card"
-    )].find((card) => card.querySelector("h3")?.textContent === "Forward Euler")!;
-    forwardEulerCard.click();
-    [...target.querySelectorAll<HTMLButtonElement>(".grid-methods .card")]
-      .find((card) => card.querySelector("h3")?.textContent === "Forward Euler")!
-      .click();
+    methodControl(target, "Forward Euler").click();
+    methodControl(target, "Forward Euler").click();
     expect(
       target.querySelector("[data-stage-role='method'] .compare-error[role='alert']")
         ?.textContent
@@ -536,10 +539,7 @@ describe("mounted ODE lifecycle", () => {
     );
 
     target.querySelector<HTMLButtonElement>("[data-workflow-step='method']")!.click();
-    const rk4 = [...target.querySelectorAll<HTMLButtonElement>(".card")].find(
-      (button) => button.querySelector("h3")?.textContent === "Runge-Kutta 4"
-    )!;
-    rk4.click();
+    methodControl(target, "Runge-Kutta 4").click();
 
     expect(
       target.querySelector<HTMLButtonElement>("[data-workflow-step='output']")
@@ -551,16 +551,16 @@ describe("mounted ODE lifecycle", () => {
     );
 
     target.querySelector<HTMLButtonElement>("[data-workflow-step='method']")!.click();
-    const forwardEuler = [...target.querySelectorAll<HTMLButtonElement>(".card")].find(
-      (button) => button.querySelector("h3")?.textContent === "Forward Euler"
-    )!;
-    forwardEuler.click();
+    methodControl(target, "Forward Euler").click();
 
     expect(
       target.querySelector<HTMLButtonElement>("[data-workflow-step='output']")
         ?.disabled
     ).toBe(false);
-    expect(target.querySelector("[data-return-output]")).not.toBeNull();
+    expect(
+      target.querySelector<HTMLButtonElement>("[data-workflow-step='output']")
+        ?.disabled
+    ).toBe(false);
 
     mounted.dispose();
   });
@@ -575,14 +575,8 @@ describe("mounted ODE lifecycle", () => {
 
     target.querySelector<HTMLButtonElement>("[data-workflow-step='method']")!.click();
     target.querySelector<HTMLButtonElement>("[data-compare]")!.click();
-    const backwardEuler = [...target.querySelectorAll<HTMLButtonElement>(".card")].find(
-      (button) => button.querySelector("h3")?.textContent === "Backward Euler"
-    )!;
-    backwardEuler.click();
-    const rk4 = [...target.querySelectorAll<HTMLButtonElement>(".card")].find(
-      (button) => button.querySelector("h3")?.textContent === "Runge-Kutta 4"
-    )!;
-    rk4.click();
+    methodControl(target, "Backward Euler").click();
+    methodControl(target, "Runge-Kutta 4").click();
 
     expect(
       target.querySelector<HTMLButtonElement>("[data-workflow-step='output']")
@@ -595,14 +589,8 @@ describe("mounted ODE lifecycle", () => {
 
     target.querySelector<HTMLButtonElement>("[data-workflow-step='method']")!.click();
     target.querySelector<HTMLButtonElement>("[data-compare]")!.click();
-    const forwardEuler = [...target.querySelectorAll<HTMLButtonElement>(".card")].find(
-      (button) => button.querySelector("h3")?.textContent === "Forward Euler"
-    )!;
-    forwardEuler.click();
-    const matchingRk4 = [...target.querySelectorAll<HTMLButtonElement>(".card")].find(
-      (button) => button.querySelector("h3")?.textContent === "Runge-Kutta 4"
-    )!;
-    matchingRk4.click();
+    methodControl(target, "Forward Euler").click();
+    methodControl(target, "Runge-Kutta 4").click();
 
     expect(
       target.querySelector<HTMLButtonElement>("[data-workflow-step='output']")
@@ -876,7 +864,7 @@ describe("mounted ODE lifecycle", () => {
     mounted.dispose();
   });
 
-  it("uses one logical h1/h2/h3 Method hierarchy and a TeachingBlock around domain controls", async () => {
+  it("uses one logical h1/h2/h3 Method hierarchy across the opening and landscape", async () => {
     const { mountOdeApp } = await import("./odeApp");
     const target = document.createElement("div");
     document.body.append(target);
@@ -887,11 +875,16 @@ describe("mounted ODE lifecycle", () => {
 
     expect(target.querySelectorAll("h1")).toHaveLength(1);
     expect(
-      target.querySelector("[data-stage-role='method'] > [data-teaching-block] > h2")
-        ?.textContent
-    ).toBe("Choose a method");
+      [...target.querySelectorAll("[data-stage-role='method'] h2")].map(
+        (heading) => heading.textContent
+      )
+    ).toEqual([
+      "Start with the initial value problem",
+      "See how the methods relate",
+      "Forward Euler",
+    ]);
     expect(target.querySelectorAll(".card h2")).toHaveLength(0);
-    expect(target.querySelectorAll(".card h3").length).toBeGreaterThan(1);
+    expect(target.querySelectorAll("[data-method-group] > h3")).toHaveLength(3);
 
     mounted.dispose();
   });
@@ -1057,10 +1050,7 @@ describe("mounted ODE lifecycle", () => {
       lifecycle: { updateSession: updates, recordMeaningfulInteraction },
       now: () => 321,
     });
-    const rk4 = [...target.querySelectorAll<HTMLButtonElement>(".card")].find(
-      (button) => button.querySelector("h3")?.textContent === "Runge-Kutta 4"
-    )!;
-    rk4.click();
+    methodControl(target, "Runge-Kutta 4").click();
 
     expect(updates).toHaveBeenCalled();
     const latest = updates.mock.calls.at(-1)?.[0];
@@ -1071,7 +1061,7 @@ describe("mounted ODE lifecycle", () => {
       labMeaningful: true,
       lastMeaningfulInteraction: 321,
       resumeSummary: {
-        stepLabel: "Data",
+        stepLabel: "Method",
         methodLabel: "Runge-Kutta 4",
       },
     });
@@ -1255,15 +1245,9 @@ describe("mounted ODE lifecycle", () => {
     target.querySelector<HTMLButtonElement>("[data-compare]")!.click();
     await expectLiveLauncher();
 
-    const forwardEuler = [...target.querySelectorAll<HTMLButtonElement>(".card")].find(
-      (button) => button.querySelector("h3")?.textContent === "Forward Euler"
-    )!;
-    forwardEuler.click();
+    methodControl(target, "Forward Euler").click();
     await expectLiveLauncher();
-    const rk4 = [...target.querySelectorAll<HTMLButtonElement>(".card")].find(
-      (button) => button.querySelector("h3")?.textContent === "Runge-Kutta 4"
-    )!;
-    rk4.click();
+    methodControl(target, "Runge-Kutta 4").click();
     await expectLiveLauncher();
 
     target.querySelector<HTMLButtonElement>("[data-new-experiment]")!.click();
