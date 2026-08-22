@@ -62,7 +62,8 @@ export interface OdeMethodTeachingSelection {
   readonly currentOrder?: number;
 }
 
-export interface OdeMethodTeachingProfile extends OdeMethodTeachingContent {
+export interface OdeMethodTeachingLearnerProfile
+  extends OdeMethodTeachingContent {
   readonly identity: {
     readonly family: MethodFamily;
     readonly displayName: string;
@@ -98,6 +99,9 @@ export interface OdeMethodTeachingProfile extends OdeMethodTeachingContent {
   readonly primaryFormula: ReadonlyMathContent;
   readonly selectedConcepts: readonly OdeMethodConcept[];
 }
+
+/** @deprecated Use the explicit learner-safe profile type. */
+export type OdeMethodTeachingProfile = OdeMethodTeachingLearnerProfile;
 
 export type OdeMethodConfiguredOrders = Readonly<
   Partial<Record<MethodFamily, number>>
@@ -217,14 +221,29 @@ function primaryFormula(entry: MethodCatalogEntry): ReadonlyMathContent {
 
 export function deriveOdeMethodTeachingProfile(
   selection: Readonly<OdeMethodTeachingSelection>
-): OdeMethodTeachingProfile {
+): OdeMethodTeachingLearnerProfile {
   const entry = catalogByFamily(selection.family);
   const content = teachingContentFor(entry.family);
   const firstOrder = FIRST_ORDER_CATALOG.some(
     (candidate) => candidate.family === entry.family
   );
-  const profile: OdeMethodTeachingProfile = {
-    ...content,
+  const profile: OdeMethodTeachingLearnerProfile = {
+    coreIdea: content.coreIdea,
+    accessibleVerbalization: content.accessibleVerbalization,
+    formulaAnatomy: content.formulaAnatomy.map((part) => ({ ...part })),
+    orderedProcess: [...content.orderedProcess],
+    requiredState: [...content.requiredState],
+    startupHistoryRequirement: content.startupHistoryRequirement,
+    perStepWork: content.perStepWork,
+    strength: content.strength,
+    watchPoint: content.watchPoint,
+    accuracyStabilityBoundary: content.accuracyStabilityBoundary,
+    whatToObserve: content.whatToObserve,
+    outputEvidenceGuidance: content.outputEvidenceGuidance,
+    convergenceGuidance: content.convergenceGuidance,
+    commonMisconception: { ...content.commonMisconception },
+    advancedDetails: content.advancedDetails.map((detail) => ({ ...detail })),
+    selectedConceptIds: [...content.selectedConceptIds],
     identity: {
       family: entry.family,
       displayName: entry.displayName,
@@ -252,16 +271,16 @@ export function deriveOdeMethodTeachingProfile(
       : { available: false, reason: "second_order_profile" },
     configurableParameters: configurableParameters(entry),
     primaryFormula: primaryFormula(entry),
-    selectedConcepts: content.selectedConceptIds.map(
-      (id) => ODE_METHOD_CONCEPTS[id]
-    ),
+    selectedConcepts: content.selectedConceptIds.map((id) => ({
+      ...ODE_METHOD_CONCEPTS[id],
+    })),
   };
   return deepFreeze(profile);
 }
 
 export function deriveAllOdeMethodTeachingProfiles(
   currentOrders: OdeMethodConfiguredOrders = {}
-): readonly OdeMethodTeachingProfile[] {
+): readonly OdeMethodTeachingLearnerProfile[] {
   return Object.freeze(
     METHOD_CATALOG.map((entry) =>
       deriveOdeMethodTeachingProfile({

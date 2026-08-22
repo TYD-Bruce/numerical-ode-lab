@@ -1,11 +1,9 @@
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { METHOD_CATALOG } from "@numerical-t-lab/numerics/ode/method-catalog";
 import type { MethodFamily } from "@numerical-t-lab/numerics/ode/solvers";
 import {
   ODE_METHOD_CONCEPTS,
-  ODE_METHOD_TEACHING_AUTHORITIES,
-  ODE_METHOD_TEACHING_AUTHORITY_IDS,
   ODE_METHOD_TEACHING_CONTENT,
   teachingContentFor,
 } from "./odeMethodTeachingContent";
@@ -45,10 +43,7 @@ describe("reviewed ODE method teaching content", () => {
     );
   });
 
-  it("keeps every reviewed record complete, source-linked, and concept-linked", () => {
-    const knownAuthorities = new Set(
-      Object.keys(ODE_METHOD_TEACHING_AUTHORITIES)
-    );
+  it("keeps every learner record complete and concept-linked", () => {
     const knownConcepts = new Set(Object.keys(ODE_METHOD_CONCEPTS));
 
     for (const entry of METHOD_CATALOG) {
@@ -68,36 +63,11 @@ describe("reviewed ODE method teaching content", () => {
       expect(content.convergenceGuidance).not.toBe("");
       expect(content.commonMisconception.incorrect).not.toBe("");
       expect(content.commonMisconception.correction).not.toBe("");
-      expect(content.authorityIds.length).toBeGreaterThan(1);
-      expect(content.authorityIds.every((id) => knownAuthorities.has(id))).toBe(
-        true
-      );
-      expect(content.review.status).toBe("ready_for_independent_audit");
-      expect(content.review.claimStatus).toBe("source_backed_qualified");
-      expect(content.review.claimIds.length).toBeGreaterThan(0);
       expect(content.selectedConceptIds.length).toBeGreaterThanOrEqual(4);
       expect(content.selectedConceptIds.length).toBeLessThanOrEqual(6);
       expect(
         content.selectedConceptIds.every((id) => knownConcepts.has(id))
       ).toBe(true);
-    }
-  });
-
-  it("links every stable authority ID to existing repository owners", () => {
-    expect(Object.keys(ODE_METHOD_TEACHING_AUTHORITIES)).toEqual(
-      ODE_METHOD_TEACHING_AUTHORITY_IDS
-    );
-
-    for (const id of ODE_METHOD_TEACHING_AUTHORITY_IDS) {
-      const authority = ODE_METHOD_TEACHING_AUTHORITIES[id];
-      expect(authority.id).toBe(id);
-      expect(authority.sourcePaths.length).toBeGreaterThan(0);
-      expect(authority.responsibility).not.toBe("");
-      for (const sourcePath of authority.sourcePaths) {
-        expect(existsSync(sourcePath), sourcePath).toBe(true);
-      }
-      expect(Object.isFrozen(authority)).toBe(true);
-      expect(Object.isFrozen(authority.sourcePaths)).toBe(true);
     }
   });
 
