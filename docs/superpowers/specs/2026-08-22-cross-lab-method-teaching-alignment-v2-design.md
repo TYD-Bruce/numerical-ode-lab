@@ -1,8 +1,9 @@
 # Cross-Lab Method Teaching Alignment v2 Design
 
 **Status:** **DESIGN ACCEPTED WITH BINDING ADDENDUM.** Phase 0 authority work
-and Phase 1's pure teaching model are authorized. Phase 2 and all browser-
-visible redesign work remain unauthorized.
+and Phase 1's pure teaching model are implemented and locally verified. The
+Phase 1 registry is ready for independent audit but is not yet independently
+accepted. Phase 2 and all browser-visible redesign work remain unauthorized.
 
 **Date:** 2026-08-22
 
@@ -1260,6 +1261,14 @@ rules, Convergence classifications, or solver selection.
 This specification authorizes only **Phase 0 and Phase 1** under the bounded
 task recorded in the active plan. Phase 1 is additive pure content/selectors
 and must leave the browser-visible ODE Method UI unchanged.
+
+That bounded authorization has now been executed and stopped. Phase 0 is
+commit `77047d9d570d8cf9416991e8e0c17d7485acab8b` (tree
+`7ff318fcdf6d08adf716792f509826b27b648520`); Phase 1 is commit
+`48511a2cf4f3c3d7fd35504a0b49102022f00f32` (tree
+`1abfe1d15bd33cfbd215da88ca11be5090962a1c`). Local focused tests,
+typecheck, import-boundary review, content/source safeguards, and documentation
+validation pass. No browser-visible ODE Method composition or CSS was added.
 
 Phase 2 may begin only after:
 

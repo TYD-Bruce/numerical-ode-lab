@@ -2,8 +2,9 @@
 
 **Date:** 2026-08-22
 
-**Status:** Design accepted with binding addendum; **Phase 0 and Phase 1 only
-are authorized**. Phase 2 and later phases remain separately gated.
+**Status:** Design accepted with binding addendum; **Phase 0 and Phase 1 are
+implemented and locally verified**. The Phase 1 registry awaits independent
+mathematical/content audit. Phase 2 and later phases remain separately gated.
 
 **Milestone:** Cross-Lab Method Teaching Alignment v2
 
@@ -11,8 +12,9 @@ are authorized**. Phase 2 and later phases remain separately gated.
 
 **Current product baseline:** `411e641d8cc6b14240acc408130876781fb1ee84` / tree `92f79cba8bdabafb9a97e3a99d76ddff853fe35c`
 
-**Execution gate:** Phase 0 authority confirmation followed by the additive
-Phase 1 pure teaching model. Stop before Phase 2.
+**Execution gate:** Phase 0 authority confirmation and the additive Phase 1
+pure teaching model are complete. Stop before Phase 2 pending the independent
+Phase 1 audit and separate Maintainer authorization.
 
 ## 1. Purpose and stop condition
 
@@ -20,11 +22,11 @@ This plan maps the accepted design direction to current repository owners so a l
 
 It is deliberately staged. Each implementation phase must start clean, add focused behavioral evidence before or with its source change, finish with a narrow reviewable commit, and stop at its named review gate. A later task must not infer authority to execute the next phase from this document.
 
-The current bounded task stops after Phase 1. It may add pure reviewed teaching
-content/selectors/tests and narrowly align stale learner-facing catalog/result-
-note wording, but it does not modify browser-visible ODE composition, CSS,
-routes, sessions, numerical behavior, or architecture; it does not resume
-Presentation Phase 7.
+The completed bounded task stopped after Phase 1. It added pure reviewed
+teaching content/selectors/tests and narrowly aligned stale learner-facing
+catalog/result-note wording, but it did not modify browser-visible ODE
+composition, CSS, routes, sessions, numerical behavior, or architecture; it
+did not resume Presentation Phase 7.
 
 ## 2. Recorded binding authority
 
@@ -102,14 +104,16 @@ coefficient, startup, tolerance, diagnostic, or contract may change here.
 | Route/lifecycle | `frontend/src/labs/ode/initialValueProblemsRoute.ts` | Preserve complete-Lab lazy/disposal boundary |
 | Linear Systems reference | `frontend/src/labs/linear-algebra/linearSystemsTeaching.ts`, `linearSystemsApp.ts` | Read-only cognitive and editorial reference; no redesign |
 
-Likely new focused owners, subject to repository inspection when execution is authorized:
+Phase 1 implemented the following focused owners after repository inspection:
 
 - `frontend/src/labs/ode/odeMethodTeachingContent.ts` — reviewed prose/content records keyed by existing method family and concept IDs;
 - `frontend/src/labs/ode/odeMethodTeaching.ts` — pure composition/selectors that derive a profile from catalog/content/preset authorities;
-- `frontend/src/labs/ode/odeMethodTeachingMath.ts` — only if separating new closed formula models from the existing shared `methodMathContent.ts` improves ownership without duplication;
-- colocated focused tests for each new pure owner.
+- `frontend/src/math/ui/methodMathContent.ts` — one additive closed Leap-Frog teaching formula; the existing current-UI formula function and output remain unchanged;
+- colocated focused tests for each new pure owner and the additive safe-math record.
 
-Names are planned seams, not pre-approved architecture. At Phase 1, inspect actual `odeApp.ts` boundaries and prefer the smallest seam that reduces content sprawl without creating a parallel application layer.
+No separate teaching-math module or parallel application layer was needed.
+The new content/selectors remain unimported by `odeApp.ts` and therefore inert
+until a separately authorized integration phase.
 
 ## 5. Verification ladder
 
@@ -163,6 +167,17 @@ corrections proved by focused tests.
 
 **Purpose:** establish one tested, source-linked teaching model before restructuring the page.
 
+**Outcome:** implemented and locally verified at
+`48511a2cf4f3c3d7fd35504a0b49102022f00f32` (tree
+`1abfe1d15bd33cfbd215da88ca11be5090962a1c`). The registry contains exactly
+eight profiles and fifteen stable concept records. Structural method/order/
+Compare facts derive from `METHOD_CATALOG`/`FIRST_ORDER_CATALOG`; preset
+availability and suggestions derive from `PROBLEM_PRESETS`; the selector
+reflects caller-supplied family order without selecting, replacing, or
+mutating it; and formulas use the closed safe readonly math owner. The current
+ODE UI, CSS, session, lifecycle, and numerical behavior remain unchanged by
+Phase 1.
+
 ### 8.1 Tests first
 
 Create focused tests beside the chosen owners, likely:
@@ -199,7 +214,7 @@ Run focused content/math tests, TypeScript typecheck, and import-graph/source re
 
 Stop for independent mathematical/content review of all eight records before page composition.
 
-**Suggested commit:** `Add reviewed ODE method teaching content`
+**Implemented commit:** `Add reviewed ODE teaching profiles`
 
 **Rollback:** remove the additive registry/selectors/tests; no production composition or state is changed.
 
@@ -555,7 +570,7 @@ An eventual implementation is ready for the independent audit only when all are 
 
 ## 20. Exact next gate
 
-After the authorized Phase 0 and Phase 1 stop, the next action is an
+After the completed Phase 0 and Phase 1 stop, the next action is an
 **independent mathematical/content audit of the Phase 1 teaching registry**.
 Phase 2 opening/landscape implementation then requires separate Maintainer
 authorization. Do not modify the real ODE Method UI or CSS, resume the paused

@@ -2,7 +2,7 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
-## Cross-Lab Method Teaching Alignment v2 — accepted authority and Phase 0 — 2026-08-22
+## Cross-Lab Method Teaching Alignment v2 — accepted authority and Phases 0–1 — 2026-08-22
 
 ### Presentation Phase 6 and design acceptance
 
@@ -22,8 +22,9 @@ repository-grounded plan are:
 - [`docs/superpowers/specs/2026-08-22-cross-lab-method-teaching-alignment-v2-design.md`](superpowers/specs/2026-08-22-cross-lab-method-teaching-alignment-v2-design.md);
 - [`docs/superpowers/plans/2026-08-22-cross-lab-method-teaching-alignment-v2-implementation-plan.md`](superpowers/plans/2026-08-22-cross-lab-method-teaching-alignment-v2-implementation-plan.md).
 
-Only Phase 0 authority work and Phase 1's additive pure teaching model are
-authorized. Browser-visible Phase 2 work is not authorized.
+Phase 0 authority work and Phase 1's additive pure teaching model were the only
+authorized slices and are now implemented and locally verified. Browser-
+visible Phase 2 work remains unauthorized.
 
 ### Binding addendum
 
@@ -118,6 +119,11 @@ still passed), then the focused catalog/solver run passed 2 files / 64 tests
 after the narrow correction. The numerics workspace typecheck, active-document
 relative-link validation, and `git diff --check` pass.
 
+The exact Phase 0 commit is
+`77047d9d570d8cf9416991e8e0c17d7485acab8b` (tree
+`7ff318fcdf6d08adf716792f509826b27b648520`) with message
+`Record ODE teaching authority decisions`.
+
 Phase 0 changes no layout, CSS, session schema, Compare behavior, Output
 structure, Convergence behavior, Tutor behavior, Glossary behavior, Linear
 Systems, Motion, PDE, dependency, route, lazy boundary, or implemented
@@ -125,10 +131,107 @@ architecture. The only current browser-visible product change is the approved
 narrow correction of stale method/result wording; there is no ODE Method UI
 redesign. No push, Preview, Production deployment, or release claim is made.
 
-Cross-Lab Presentation Phase 7 remains **PAUSED**. After Phase 1, the exact
-next gate is **independent mathematical/content audit of the Phase 1 teaching
-registry**, followed by separate Maintainer authorization before Phase 2
-opening/landscape implementation.
+### Phase 1 pure teaching outcome
+
+Phase 1 is implemented at
+`48511a2cf4f3c3d7fd35504a0b49102022f00f32` (tree
+`1abfe1d15bd33cfbd215da88ca11be5090962a1c`) with message
+`Add reviewed ODE teaching profiles`. It adds an inert, product-authored model
+and does not integrate it into the current ODE Method composition.
+
+The exact Phase 1 files are:
+
+- `frontend/src/labs/ode/odeMethodTeachingContent.ts` and its focused test —
+  eight immutable authored profiles, fifteen stable concept records, exact
+  source-authority references, qualified claim IDs, and
+  `ready_for_independent_audit` review status;
+- `frontend/src/labs/ode/odeMethodTeaching.ts` and its focused test — pure
+  profile derivation/selectors; and
+- `frontend/src/math/ui/methodMathContent.ts` and its focused test — one
+  additive closed readonly Leap-Frog staggered teaching formula. The existing
+  `methodMathContent()` result used by the current UI is unchanged.
+
+The selectors derive family identity, labels, first-/second-order problem
+profile, explicit/implicit status, one-step/history/staggered structure,
+supported/default order, and fixed theoretical order from `METHOD_CATALOG`;
+Compare eligibility comes from `FIRST_ORDER_CATALOG`. All six first-order
+preset IDs remain available to all seven first-order profiles, while suggested
+IDs are derived separately from `PROBLEM_PRESETS.suggestedMethods`. Leap-Frog
+receives neither first-order presets nor exact-reference/Compare/Convergence
+availability.
+
+Order derivation accepts the caller's current family order and reflects it as
+`currentConfiguredOrder`. It never chooses, validates into a replacement,
+mutates, resets, or falls back from that supplied value. Supported range and
+default order remain catalog metadata only, so reselection can show a prior
+Adams-Bashforth, Adams-Moulton, or BDF order unchanged.
+
+The eight profile results are:
+
+| Profile | Reviewed Phase 1 boundary |
+|---|---|
+| Forward Euler | current-slope one-step update; one RHS evaluation; order-1 and coarse-step interpretation remain qualified |
+| Backward Euler | implicit endpoint relation; current UI-default Newton; nonlinear convergence, accuracy, and scalar-test-equation A-stability remain separate |
+| Taylor Method (Order 2) | learner supplies only `f`; centered `f_t`/`f_y` estimates and five RHS evaluations are advanced implementation detail |
+| Runge-Kutta 4 | four ordered stage evaluations combine into one accepted update; stages are not stored accepted solution points |
+| Adams-Bashforth | explicit slope history; order 1–8; `N >= p`; RK4 startup for `p > 1`; no copied coefficient table |
+| Adams-Moulton | order 1–8; RK4 startup; Adams-Bashforth predictor is an initial guess distinct from the accepted Newton-corrected result |
+| Backward Differentiation Formula | implicit solution history; order 1–6; UI-default Newton; theoretical BDF6 order remains 6 while current fixed-RK4-startup evidence may approach order 5 |
+| Leap-Frog | current Lab's half-step velocity, whole-step position, and stored full-step velocity reconstruction; no velocity-dependent/general-system, first-order Compare, exact-reference, or Convergence claim |
+
+Every profile supplies identity, problem profile, core idea, a safe primary
+formula and accessible verbalization, formula anatomy, ordered process,
+classification/order/state/startup/work facts, strength, watch point,
+accuracy/stability boundary, observation prompt, source-derived preset links,
+Output/Convergence availability, configurable parameters, misconception,
+authority IDs, claim/review status, and four to six selected concept IDs. The
+formula owner remains the closed `ReadonlyMathContent` model; there is no raw
+HTML, executable expression, unrestricted MathJSON, parser, evaluator, or
+second accessible formula owner.
+
+Content safeguards reject stale fixed-point teaching in the new registry,
+broad or universal stability/accuracy/efficiency rankings, unqualified stiff-
+solver claims, and internal Maintainer/policy language. Genuine dynamic fixed-
+point failure, diagnostic, and Tutor wording remains outside the registry
+because it accurately describes the retained internal override. The only
+published stability property in the registry is Backward Euler's qualified
+A-stability statement for the scalar test equation, plus source-bounded
+observation guidance.
+
+Phase 1 tests were written before the new owners. The initial red gate failed
+both suites during collection because the two intended modules did not yet
+exist (2 failed suites, 0 tests). A later safe-formula red gate failed 2 of 12
+tests because `methodTeachingMathContent` did not yet exist. The final bounded
+run passes 5 files / 83 tests: both teaching suites, safe method math, catalog,
+and solvers. Frontend and numerics workspace typechecks pass; the import-
+boundary verifier passes; direct forbidden-claim/import scans pass; targeted
+active-document link validation and `git diff --check` pass. Full `verify`, a
+broad browser matrix, build, deployment, and bundle measurement were not run
+because no product composition, CSS, route, shared runtime, or numerical
+behavior changed.
+
+Across this bounded task, the exact changed paths are the five active status/
+authority documents (`PLAN.md`, `docs/INDEX.md`, this handoff, the accepted
+design, and its implementation plan); the Phase 0 catalog/solver source and
+focused tests; and the six Phase 1 files listed above. `README.md` and
+implemented architecture remain unchanged because this is not a released
+browser-visible milestone or architecture change.
+
+The current browser-visible ODE Method layout, controls, focus, lifecycle,
+session schema, Compare, Output, and Convergence behavior remain unchanged by
+Phase 1. There is no ODE CSS, Linear Systems, Motion, Tutor, Glossary, PDE,
+dependency, push, Preview, Production deployment, or release change. The
+accepted numerical runtime baseline remains
+`411e641d8cc6b14240acc408130876781fb1ee84` (tree
+`92f79cba8bdabafb9a97e3a99d76ddff853fe35c`); only the approved Phase 0
+learner-facing copy was aligned, with no numerical behavior change. Local
+self-review has no open finding (`P0 = P1 = P2 = P3 = 0`); this is not a
+substitute for the pending independent content verdict.
+
+Cross-Lab Presentation Phase 7 remains **PAUSED**. The exact next gate is
+**independent mathematical/content audit of the Phase 1 teaching registry**,
+followed by separate Maintainer authorization before Phase 2 opening/landscape
+implementation.
 
 ## Cross-Lab Presentation Sync Phase 5 — Maintainer accepted — 2026-08-21
 
