@@ -2,6 +2,223 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
+## Cross-Lab Presentation Sync Phase 5 — Maintainer accepted — 2026-08-21
+
+The Maintainer formally accepts **Cross-Lab Presentation Sync Phase 5** at
+HEAD `371d151568abb426059da638d8b69c8f6af98227` (tree
+`9ccd00bf5693ae3e6d66efc28f4c317423b4d103`). The final independent Phase 5
+audit passed and Maintainer acceptance records `P0 = 0`, `P1 = 0`, `P2 = 0`,
+and `P3 = 0`. The older Phase 5 candidate record below remains exact
+point-in-time implementation evidence; its statements that Phase 5 awaits
+review or that Phase 6 is unauthorized are superseded by this acceptance and
+the Phase 6 authorization recorded next.
+
+## Cross-Lab Presentation Sync Phase 6 — ModuleOverview and proven duplicate-style cleanup candidate — 2026-08-21
+
+Phase 6 is implemented and locally verified as an audit candidate through
+implementation commit `204e35a1cf23e1c4ebcdfd53fe96f578179acb74`
+(tree `f04328fcf9af7c7e663803091f92098e869ddebf`). It starts from the accepted
+Phase 5 HEAD/tree above and stops before Phase 7. The change aligns the three
+static module overview routes and retires only presentation rules whose former
+responsibility, current consumers, shared replacement, and zero-match state
+were proven.
+
+### Starting overview audit and route mapping
+
+Before migration, all three routes were synchronously entry-owned static
+pages, while both complete Labs remained independent dynamic routes:
+
+| Route | Starting hierarchy | Truthful state/action | Phase 6 mapping |
+|---|---|---|---|
+| `/ode` | page header; IVP feature card with its own Available status; ODE roadmap; cross-domain connections | Initial Value Problems Lab available; native link to `/ode/initial-value-problems`; four later ODE topics planned | Available status and action remain attached to the IVP primary item; roadmap and connections remain caller-authored supporting sections |
+| `/linear-algebra` | page header; detached Available status line; Linear Systems feature card; future sequence | one complete small-dense Linear Systems Lab available; native link to `/linear-algebra/linear-systems`; Least Squares/SVD/Eigenvalues planned | status and its small-dense qualification move inside the Linear Systems primary item; claims and route stay unchanged |
+| `/pde` | page header; detached Planned status line; Future PDE Labs card with three repeated Planned pills; concept section | roadmap only; no runnable action or control | one Planned status qualifies the whole Future PDE Labs item; Heat/Wave/Poisson remain planned list items; no action is fabricated |
+
+Home is intentionally not a `ModuleOverview` consumer. Its accepted dedicated
+module cards, routes, copy, status labels, action owners, and semantic order
+remain **Numerical Linear Algebra → Numerical ODE → Numerical PDE**.
+
+### Entry-safe ModuleOverview contract
+
+`frontend/src/pages/moduleOverview.ts` is the implemented entry-safe owner. It
+is vanilla TypeScript/DOM presentation only and accepts caller-authored page
+heading, summary, one current primary item, optional status detail, content,
+optional native action, and supporting sections. It:
+
+- requires a caller-supplied native `h1` plus a native `h2`–`h6` primary-item
+  heading;
+- appends every caller node by identity and never clones, serializes, parses,
+  or interprets content;
+- generates local unique heading IDs only when the caller did not provide one,
+  and associates the overview and primary section with `aria-labelledby`;
+- preserves route-focus ownership on the `h1`;
+- represents `available` and `planned` as written state with no automatic live
+  region; and
+- permits a missing action, so a planned module cannot acquire a fake runnable
+  control.
+
+The helper has no imports from complete-Lab presentation, Labs, sessions,
+numerics, Chart.js, MathLive, Compute Engine, Tutor, Glossary, Computation
+Trace, Motion, Store, or Router. Its small layout/status/action styles remain
+in entry-loaded `platform.css`; the complete-Lab presentation CSS/JS remains
+in the shared lazy Lab chunk.
+
+### Duplicate-style ownership ledger
+
+Counts below were measured against the real static routes and representative
+ODE Method/Output/Compare/Convergence/Tutor plus Linear Systems
+Method/Output/expanded-walkthrough/Diagnostics states. A zero match was never
+treated as sufficient by itself; each removal also has an identified shared
+or current owner and history/source proof.
+
+| Candidate | File | Old responsibility | Current DOM count / consumers | Current owner | Verdict and proof |
+|---|---|---|---|---|---|
+| `.platform-feature-card` | `frontend/src/app/platform.css` | reading-width card used by all three module overviews | 3 overview cards before migration; 0 after; Home never used it | `.module-overview-primary` | **CONSOLIDATE** — all three real consumers migrated together; route tests and desktop/mobile browser output pass |
+| `.ivp-note` | `frontend/src/labs/ode/odeApp.css` | pre-Phase 1 generic IVP note below old header/workflow chrome | 0 in all exercised ODE states; no source owner since Phase 1 | `LabHeader`, `StageSection`, and current domain-authored note classes | **REMOVE** — history traces removal of the markup to Phase 1, `rg` finds no owner, and before/after ODE browser states are equivalent |
+| `.results-layout` plus its media rule | `frontend/src/labs/ode/odeApp.css` | old two-column generic Output wrapper | 0 in single Output, Compare, and Convergence; no source owner | `PrimaryResult`, `EvidenceBlock`, and live `.results-main` | **REMOVE** — no legitimate route owner; Output/Compare/Convergence tests and browser containment remain green |
+| `.ls-method-sequence` | `frontend/src/labs/linear-algebra/linearSystems.css` | old selected-method ordered-list spacing | 0 in Method and all result states; no source owner after Teaching v2/Phase 4 | `TeachingBlock` steps | **REMOVE** — history/source and live Method prove the responsibility moved |
+| `.ls-teaching-note` and `.ls-teaching-note p` | same | old generic teaching/limitation card | 0; no source owner | `TeachingBlock` lead/limitation compositions | **REMOVE** — shared teaching owner is explicit and live teaching output is unchanged |
+| `.ls-diagnostics-layout` | same | old generic Diagnostics card grid | 0 in no-result/current Diagnostics; no source owner after Phase 5 | `AnalysisSurface` and `EvidenceBlock` | **REMOVE** — Phase 5 migration owns the hierarchy and current/stale/Custom tests remain green |
+| `.ls-reference-difference` | same | old standalone preset-reference emphasis | 0; current `data-math="reference-difference"` is not this CSS class | summary `EvidenceBlock` plus live `.ls-reference-comparison` / `.ls-reference-value` | **REMOVE** — current qualified reference composition has explicit replacement owners |
+| `.ls-evidence-ok` | same | old generic successful-evidence tone | 0; no source owner | shared status/evidence roles | **REMOVE** — the live failure-only `.ls-evidence-stop` remains because it still has trace/test consumers |
+| `.ls-diagnostic-card` and heading rule | same | old Diagnostics card shell | 0; no source owner | `AnalysisSurface` / `EvidenceBlock` | **REMOVE** — real Diagnostics uses the shared sections and remains visually equivalent |
+| `.ls-metric-grid`, `.ls-metric`, `dt`, and `dd` | same | old local diagnostic metric stack | 0; no source owner | shared PrimaryResult/EvidenceBlock metric grammar plus current Analysis roles | **REMOVE** — shared metric ownership is explicit and all focused/full tests pass |
+
+The following selectors and owners were explicitly **kept**:
+
+- ODE method-card, preset, editable-equation, Chart.js, Compare, and
+  Convergence control/table/chart styles remain domain-local and live.
+- Linear Systems matrix editor, native MathML sizing, factor matrices,
+  transformation, substitution, pivot, and residual layout remain local.
+- `.ls-numeric-matrix`, `.ls-matrix-visible-label`, `.ls-formula-line`,
+  `.ls-contained-math`, `.ls-row-state-grid`, `.ls-substitution-chain`,
+  `.ls-table-formula-group`, and `.ls-residual-chain` had no match in the
+  exercised current states, but their responsibility is mathematical or
+  otherwise ambiguous. They remain by the primary safety rule.
+- `.ls-evidence-stop`, `.ls-stale-notice`, `.ls-trace-retention`,
+  `.ls-factor-grid`, `.ls-evidence-table`, and `.ls-computation-shell` retain
+  real source/test or rendered owners.
+- all dormant `.ls-motion-*`, `.ls-elimination-motion`, and `.ls-replay-step`
+  rules remain because Motion is a separately gated accepted source owner and
+  was not mounted, redesigned, or deleted.
+
+The DEV Presentation System fixture was not changed: the three real entry-safe
+overview pages exercise `ModuleOverview` without creating a second product
+page, and the existing fixture remains excluded from Production.
+
+### Accessibility, browser, and regression evidence
+
+Focused contracts cover domain-neutral source, node identity, native heading
+and action semantics, available/planned states, optional action, generated and
+caller IDs, semantic DOM order, no automatic live region, entry import graph,
+truthful routes/copy, one `h1`, PDE action absence, and Home non-consumption.
+Browser DOM inspection confirms one `h1`, logical `h2` order, unique IDs,
+status-to-primary association, native links, exact/parent navigation values
+(`page` on overview routes and `location` on complete-Lab subroutes), and no
+fake PDE control.
+
+Task-owned in-app browser verification covered Home, About, `/ode`,
+`/linear-algebra`, and `/pde` at 1440 × 900, 390 × 844, and 320 × 844 in Light
+and Dark. All three overview cards stack their heading/status and actions at
+narrow widths, long headings and buttons wrap, DOM order equals visual order,
+and no page or primary card has horizontal overflow. Home still has its
+dedicated cards, accepted semantic order, and exactly aligned desktop action
+tops. Browser warning/error logs were empty.
+
+Post-cleanup Lab smoke covers Linear Systems Method, successful Output,
+expanded walkthrough, and Diagnostics at desktop plus Output/walkthrough and
+Diagnostics at 390 pixels. ODE Method, successful Output, Compare,
+Convergence, and Tutor open/close were exercised after deletion, with Compare
+and Convergence repeated at 390 pixels. There was no page-level overflow or
+visual regression. Phase 5 Diagnostics/Convergence, Phase 4 Linear Systems,
+and Phase 3 ODE presentation were not redesigned.
+
+### Verification and bundle/lazy boundary
+
+Fresh `npm.cmd run verify` passes import boundaries, 98 test files / 1,292
+tests, frontend/numerics/contracts/backend/API typechecks, and the 111-module
+Production build. Explicit focused tests, `npm.cmd run verify:boundaries`,
+`npm.cmd run typecheck`, the ordinary Production build, and a manifest-enabled
+Production build also pass. `git diff --check` is clean.
+
+Representative raw/gzip sizes are:
+
+| Asset | Accepted Phase 5 | Phase 6 candidate |
+|---|---:|---:|
+| Entry JS | 57.27 / 17.72 kB | 59.04 / 18.29 kB |
+| Platform CSS | 29.66 / 5.40 kB | 30.07 / 5.47 kB |
+| Entry-safe ModuleOverview | folded into entry | folded into entry; no separate asset |
+| Shared Lab JS | 14.43 / 3.57 kB | unchanged |
+| Shared Lab CSS | 21.08 / 3.45 kB | unchanged |
+| ODE route JS | 297.45 / 95.30 kB | unchanged |
+| ODE route CSS | 15.90 / 3.75 kB | 15.65 / 3.69 kB |
+| Linear Systems route JS | 75.80 / 22.63 kB | unchanged |
+| Linear Systems route CSS | 26.94 / 5.05 kB | 26.06 / 4.92 kB |
+| Tutor JS / CSS | 12.14 / 4.61; 6.61 / 1.81 kB | unchanged |
+| Glossary JS / CSS | 10.13 / 3.49; 4.83 / 1.31 kB | 10.13 / 3.50; 4.83 / 1.31 kB |
+| MathLive | 819.11 / 228.04 kB | unchanged |
+| Compute Engine/editable math | 1,143.84 / 308.81 kB | unchanged |
+
+The entry increase is the new helper, three entry-owned compositions, and
+focused association/state code; the small domain-CSS reductions are the
+proven dead rules. The one-hundredth gzip rounding change in the unchanged
+Glossary asset is not an ownership change. No `manualChunks` or dependency
+change was made.
+
+The manifest entry dynamically imports only the two complete Labs, first-open
+Tutor, and first-valid-request Glossary surface. A clean Home browser load
+observed 31 entry assets, including `moduleOverview.ts`, and zero complete-Lab,
+Lab-presentation, Tutor-panel, Glossary-surface, MathLive, Compute Engine, or
+editable-math assets. `/ode` remained equally clean; opening the complete ODE
+Lab added 10 shared Lab-presentation and 14 ODE runtime modules while Tutor,
+Glossary surface, and editable math were still absent. Tutor appeared only
+after first open. MathLive, Compute Engine, and editable math appeared only
+after entering ODE Data. The shared Lab JS/CSS chunk and all deferred
+boundaries therefore remain intact.
+
+### Problems, resolutions, commits, and durable rules
+
+The starting documentation still described Phase 5 as a candidate and Phase
+6 as unauthorized; direct Maintainer acceptance was the higher authority, so
+this checkpoint records the accepted HEAD/tree and supersession explicitly.
+The product mismatch was route-local status placement, not false product copy;
+one entry-safe composition moved status next to the qualified item without
+changing implementation claims. CSS debt survived because prior migrations
+moved DOM ownership without retiring every old selector; history, source,
+focused tests, live DOM counts, browser equivalence, and the bundle graph were
+combined before deletion. An expected native `beforeunload` prompt aborted
+direct browser URL replacement after meaningful Lab work; subsequent QA used
+the app's own SPA links so lifecycle semantics remained under test.
+
+Phase 6 implementation commits and trees are:
+
+| Commit | Tree | Purpose |
+|---|---|---|
+| `024ad16a3c32cf37b065065361225123f04e1dbf` | `a1d2d31db412952da97f0a58d679d0b01e00b7ce` | Add shared module overview presentation |
+| `9e15fc62437d3feef894db278fed00fc0d5f15fc` | `4832a36a9f4ce1cded4148fa33a9a3ea41806255` | Migrate module overview pages and consolidate the old platform overview card owner |
+| `204e35a1cf23e1c4ebcdfd53fe96f578179acb74` | `f04328fcf9af7c7e663803091f92098e869ddebf` | Retire proven duplicate ODE and Linear Systems presentation styles |
+
+Durable rules:
+
+1. Cleanup follows ownership proof. Absence of obvious usage is not sufficient
+   evidence for deletion.
+2. Entry-safe overview presentation and complete-Lab presentation have
+   different loading contracts and must remain architecturally distinct.
+3. Domain-specific mathematical layout is not duplication merely because two
+   Labs use similar CSS properties.
+4. Shared presentation migration is complete only when obsolete presentation
+   ownership is retired or explicitly justified.
+
+Candidate self-review finds `P0 = P1 = P2 = P3 = 0`; this is not an
+independent-audit verdict. There is no numerical, Computation Trace, session-
+schema, Teaching v2, AnalysisSurface, Motion, Linear Algebra Tutor/Glossary,
+PDE implementation, dependency, push, Preview, Production deployment, or
+Production-state change.
+
+Phase 6 stops here. The exact next gate is **independent Phase 6 overview /
+cleanup / lazy-boundary audit**, followed by **Maintainer visual review**.
+Phase 7 and all later feature work remain unauthorized.
+
 ## Cross-Lab Presentation Sync Phase 4 — Maintainer accepted — 2026-08-21
 
 The Maintainer formally accepts **Cross-Lab Presentation Sync Phase 4** at
@@ -14,9 +231,12 @@ point-in-time evidence; statements there that Phase 4 awaits acceptance or
 that Phase 5 is unauthorized are superseded by this acceptance and the Phase
 5 authorization recorded next.
 
-## Cross-Lab Presentation Sync Phase 5 — AnalysisSurface candidate — 2026-08-21
+## Cross-Lab Presentation Sync Phase 5 — historical AnalysisSurface candidate record — 2026-08-21
 
-Phase 5 is implemented and locally verified as an audit candidate. It starts
+This section preserves the pre-acceptance candidate evidence. Its former stop
+gate is superseded by the Phase 5 acceptance and Phase 6 candidate records at
+the top of this handoff. Phase 5 was implemented and locally verified as an
+audit candidate. It starts
 from the accepted Phase 4 HEAD/tree above and stops before Phase 6. Shared
 analysis presentation now unifies explanatory hierarchy, never domain state
 or numerical authority.
@@ -205,9 +425,11 @@ Teaching v2, walkthrough, ODE Compare/core Output, Motion, Linear Algebra
 Tutor/Glossary, PDE, dependency, push, Preview, Production deployment, or
 Production-state change.
 
-Phase 5 stops here. The exact next gate is **independent Phase 5
+At that historical candidate point, Phase 5 stopped here. Its next gate was
+**independent Phase 5
 analysis-presentation / state-separation audit**, followed by **Maintainer
-visual review**. Phase 6 and all later work remain unauthorized.
+visual review**, and Phase 6 and all later work remained unauthorized. That
+wording is superseded by the current records at the top of this handoff.
 
 ## Cross-Lab Presentation Sync Phase 4 — Linear Systems migration candidate — 2026-08-21
 

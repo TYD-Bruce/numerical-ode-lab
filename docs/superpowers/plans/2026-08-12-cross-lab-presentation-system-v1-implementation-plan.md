@@ -1,13 +1,13 @@
 # Cross-Lab Presentation System v1 Implementation Plan
 
-**Status:** Phases 0 through 4 Maintainer accepted, with final Phase 4 acceptance at `692551774966bd9774900ecfef3d7fe03de61d7e` (tree `6d7db2ed156a2c6415d1b362ea870fae4ff0c7ef`) and `P0 = P1 = P2 = P3 = 0`; Phase 5 shared Analysis presentation implemented and locally verified as an audit candidate through `69a3a4a80e3f107d91fc284990f86393ee06852d` (tree `91a05822d9a281cd2abae62c47f208190267e250`); Phase 6+ unauthorized
+**Status:** Phases 0 through 5 Maintainer accepted, with final Phase 5 acceptance at `371d151568abb426059da638d8b69c8f6af98227` (tree `9ccd00bf5693ae3e6d66efc28f4c317423b4d103`) and `P0 = P1 = P2 = P3 = 0`; Phase 6 entry-safe ModuleOverview and proven duplicate-style cleanup implemented and locally verified as an audit candidate through `204e35a1cf23e1c4ebcdfd53fe96f578179acb74` (tree `f04328fcf9af7c7e663803091f92098e869ddebf`); Phase 7+ unauthorized
 
 **Design authority:**
 [`2026-08-12-cross-lab-presentation-system-v1-design.md`](../specs/2026-08-12-cross-lab-presentation-system-v1-design.md)
 
 **Starting implementation prerequisite:** Satisfied at design commit `3b77f7133a95bef855c2eb3e3a69db37e16f1e46`
 
-**Current gate:** Stop after Phase 5 for independent analysis-presentation / state-separation audit, then Maintainer visual review
+**Current gate:** Stop after Phase 6 for independent overview / cleanup / lazy-boundary audit, then Maintainer visual review
 
 ## 1. Objective and boundary
 
@@ -404,7 +404,8 @@ silence a size warning.
 
 ### Stop gate
 
-Maintainer visual review of the complete migrated product before final audit.
+Independent Phase 6 overview / cleanup / lazy-boundary audit, then Maintainer
+visual review. Do not begin Phase 7 inside Phase 6.
 
 ## 11. Phase 7 — independent presentation release audit
 

@@ -180,6 +180,18 @@ design specifications, implementation plans, reviews, and feature handoffs.
 
 ## Changelog
 
+### 2026-08-21 — Module overview presentation consolidated locally
+
+- Unified the ODE, Linear Algebra, and planned PDE overview pages through the
+  entry-safe `ModuleOverview` grammar while preserving truthful routes, copy,
+  availability, and Home's accepted Linear Algebra → ODE → PDE card order.
+- Retired only proven obsolete generic ODE and Linear Systems presentation
+  selectors; mathematical layout and dormant Motion ownership remain local.
+- Passed 98 files / 1,292 tests, workspace/API typechecks, import boundaries,
+  the 111-module Production build, and desktop/390/320 Light/Dark browser QA.
+  No numerical, Trace, session, Tutor, Glossary, PDE implementation,
+  dependency, push, or deployment change is included.
+
 ### 2026-08-19 — ODE presentation hierarchy migrated locally
 
 - Composed the Initial Value Problems Lab's Method, preset guidance, successful

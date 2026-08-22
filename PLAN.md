@@ -2,9 +2,9 @@
 
 ## Current status
 
-**Active milestone: Cross-Lab Presentation Sync — Phases 0 through 4
-Maintainer accepted; Phase 5 shared Analysis presentation is implemented and
-locally verified as an audit candidate.**
+**Active milestone: Cross-Lab Presentation Sync — Phases 0 through 5
+Maintainer accepted; Phase 6 ModuleOverview and proven duplicate-style cleanup
+is implemented and locally verified as an audit candidate.**
 
 Linear Systems Teaching v2 is **MAINTAINER ACCEPTED** at commit
 `484fc9153de33be7949e82b29386c94fe63d19c8` (tree
@@ -107,7 +107,7 @@ steps, and before/operation/after corridors, while
 At the accepted Phase 4 boundary, Diagnostics remained a top-level analysis
 `StageSection` and did not yet use `AnalysisSurface`.
 
-Phase 5 is implemented and locally verified as an audit candidate in six
+Phase 5 was implemented in six
 coherent implementation commits: `d9b7442d8672f3180b011b25c9d8e70fcfb0999c`
 (tree `2eb575d9ee506cdb25cb5bd34941689d1316a5ec`),
 `1c017ff00ccd1c8a778166d17433436a064ff195` (tree
@@ -134,6 +134,11 @@ Systems stage; Convergence remains inside ODE Output and ODE keeps exactly
 Method/Data/Output workflow. Phase 5 creates no shared analysis state machine,
 controller, numerical DTO, or domain inference.
 
+Phase 5 is **MAINTAINER ACCEPTED** at final HEAD
+`371d151568abb426059da638d8b69c8f6af98227` (tree
+`9ccd00bf5693ae3e6d66efc28f4c317423b4d103`) after its final independent
+audit and Maintainer acceptance recorded `P0 = P1 = P2 = P3 = 0`.
+
 The design keeps ODE's exploration, presets, Compare, charts, Convergence,
 Tutor, and Glossary strengths; keeps Linear Systems Teaching v2's explicit
 problem/result context, method-profile teaching, native MathML, trace-owned
@@ -144,7 +149,7 @@ Shared complete-Lab primitives remain Lab-shared lazy; only `ModuleOverview`
 is entry-safe. The platform entry must remain free of complete-Lab, Chart.js,
 Tutor, Glossary, MathLive, and Compute Engine runtime.
 
-Phase 5 browser verification covers paired Diagnostics and Convergence at
+Phase 5 browser verification covered paired Diagnostics and Convergence at
 1440-pixel desktop in Light and Dark, 390 × 844, and 320 × 844. It includes
 eligible not-run and successful Convergence, stale and Custom Diagnostics,
 local table/chart containment, formula wrapping, and regression smoke for the
@@ -157,10 +162,42 @@ boundaries remain intact. Numerical behavior, Computation Trace, Teaching v2,
 session schemas, ODE Compare/core Output, PDE, dependencies, push, deployment,
 and Production state are unchanged.
 
-The exact next gate is **independent Phase 5 analysis-presentation /
-state-separation audit**, followed by **Maintainer visual review**. Phase 6+
-remains unauthorized; do not begin module-overview migration, Motion remount,
-Linear Algebra Tutor/Glossary, or PDE work.
+Phase 6 is implemented and locally verified as an audit candidate through
+`204e35a1cf23e1c4ebcdfd53fe96f578179acb74` (tree
+`f04328fcf9af7c7e663803091f92098e869ddebf`). Entry-safe
+`frontend/src/pages/moduleOverview.ts` now composes `/ode`,
+`/linear-algebra`, and `/pde` through one native-heading/status/action grammar
+while caller-owned copy and nodes remain domain-authored. ODE and Linear
+Algebra retain their exact runnable Lab routes; PDE remains Planned with no
+runnable control. Home remains on its dedicated card composition in accepted
+Linear Algebra → ODE → PDE DOM order.
+
+The cleanup consolidates the former `.platform-feature-card` owner into
+`ModuleOverview` and removes only proven dead generic ODE and Linear Systems
+method/teaching/output/diagnostic presentation selectors. Domain-specific
+method, preset, editor, chart, Compare, Convergence, matrix, MathML, factor,
+transformation, substitution, pivot, residual, and dormant Motion styles
+remain local. Ambiguous mathematical selectors are explicitly retained.
+
+Phase 6 browser verification covers Home, About, and all three overview routes
+at 1440 × 900, 390 × 844, and 320 × 844 in Light/Dark, plus representative
+post-cleanup Lab regression states. No page-level overflow or browser
+warning/error was observed. Fresh verification passes 98 files / 1,292 tests,
+boundary checks, frontend and API typechecks, and the 111-module Production
+build. A clean Home load includes the entry-safe overview helper and excludes
+complete-Lab presentation/runtime, Tutor panel, Glossary surface, MathLive,
+Compute Engine, and editable math. Complete-Lab, first-open Tutor, and
+interaction-deferred math boundaries remain intact.
+
+Numerical behavior, Computation Trace, session schemas, Teaching v2,
+AnalysisSurface, ODE Compare/core Output, Motion, Linear Algebra
+Tutor/Glossary, PDE implementation, dependencies, push, deployment, and
+Production state are unchanged.
+
+The exact next gate is **independent Phase 6 overview / cleanup /
+lazy-boundary audit**, followed by **Maintainer visual review**. Phase 7 and
+later feature work remain unauthorized; do not begin the independent audit,
+Motion remount, Linear Algebra Tutor/Glossary, or PDE work in this phase.
 
 ## Superseded Teaching v2 execution record
 

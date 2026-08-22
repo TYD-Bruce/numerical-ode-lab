@@ -60,16 +60,21 @@ Phase 4 is **MAINTAINER ACCEPTED** at final HEAD
 `6d7db2ed156a2c6415d1b362ea870fae4ff0c7ef`) after the final audit and
 Maintainer visual review passed with `P0 = P1 = P2 = P3 = 0`.
 
-Phase 5 shared Analysis presentation is implemented and locally verified as
-an audit candidate through final implementation commit
-`69a3a4a80e3f107d91fc284990f86393ee06852d` (tree
-`91a05822d9a281cd2abae62c47f208190267e250`). The presentation-only
-`AnalysisSurface` is consumed by Linear Systems Diagnostics and ODE
-Convergence without shared analytical state, controllers, calculations, or
-result types. The preliminary polish separates the two residual formula
-owners responsively and makes Home module DOM order Linear Algebra → ODE →
-PDE. The exact next gate is **independent Phase 5 analysis-presentation /
-state-separation audit**, followed by **Maintainer visual review**. Phase 6+
+Phase 5 shared Analysis presentation is **MAINTAINER ACCEPTED** at final HEAD
+`371d151568abb426059da638d8b69c8f6af98227` (tree
+`9ccd00bf5693ae3e6d66efc28f4c317423b4d103`) with final severity
+`P0 = P1 = P2 = P3 = 0`.
+
+Phase 6 entry-safe `ModuleOverview` and proven duplicate-style cleanup is
+implemented and locally verified as an audit candidate through
+`204e35a1cf23e1c4ebcdfd53fe96f578179acb74` (tree
+`f04328fcf9af7c7e663803091f92098e869ddebf`). `/ode`, `/linear-algebra`, and
+`/pde` now share one truthful native overview grammar; Home remains on its
+accepted dedicated cards in Linear Algebra → ODE → PDE order, and PDE remains
+roadmap-only. Only selectors with proven replacement ownership and zero real
+consumers were retired; mathematical and dormant Motion styles remain local.
+The exact next gate is **independent Phase 6 overview / cleanup /
+lazy-boundary audit**, followed by **Maintainer visual review**. Phase 7+
 remains unauthorized.
 
 ## Superseded Teaching v2 milestone record
@@ -302,7 +307,7 @@ maintainer acceptance of the F2 review commit.
 
 | Document | Status |
 |---|---|
-| [Cross-Lab Presentation System v1 Design](superpowers/specs/2026-08-12-cross-lab-presentation-system-v1-design.md) | Maintainer approved; Phases 0–4 Maintainer accepted; Phase 5 AnalysisSurface migration implemented as a locally verified audit candidate; Phase 6+ unauthorized |
+| [Cross-Lab Presentation System v1 Design](superpowers/specs/2026-08-12-cross-lab-presentation-system-v1-design.md) | Maintainer approved; Phases 0–5 Maintainer accepted; Phase 6 ModuleOverview and proven duplicate-style cleanup implemented as a locally verified audit candidate; Phase 7+ unauthorized |
 | [Linear Systems Teaching v2 Design](superpowers/specs/2026-08-11-linear-systems-teaching-v2-design.md) | Maintainer-accepted at `484fc9153de33be7949e82b29386c94fe63d19c8`; final teaching-copy audit passed P0/P1/P2/P3 = 0; Motion paused; Tutor later; not deployed |
 | [Linear Systems Lab Version 1 Design](superpowers/specs/2026-08-10-linear-systems-lab-v1-design.md) | Maintainer-approved design; Day 1/1.5 numerical evidence and Day 2 route/UI implemented locally; Tutor pending |
 | [Theme-Ready Platform Shell Design](superpowers/specs/2026-07-13-theme-ready-platform-shell-design.md) | Implemented, Vercel Preview-verified, safe to release |
@@ -316,7 +321,7 @@ maintainer acceptance of the F2 review commit.
 
 | Document | Status |
 |---|---|
-| [Cross-Lab Presentation System v1 Implementation Plan](superpowers/plans/2026-08-12-cross-lab-presentation-system-v1-implementation-plan.md) | Phases 0–4 Maintainer accepted; Phase 5 AnalysisSurface migration implemented as a locally verified audit candidate; Phase 6+ unauthorized |
+| [Cross-Lab Presentation System v1 Implementation Plan](superpowers/plans/2026-08-12-cross-lab-presentation-system-v1-implementation-plan.md) | Phases 0–5 Maintainer accepted; Phase 6 ModuleOverview and proven duplicate-style cleanup implemented as a locally verified audit candidate; Phase 7+ unauthorized |
 | [Linear Systems Teaching v2 Implementation Plan](superpowers/plans/2026-08-11-linear-systems-teaching-v2-implementation-plan.md) | Executed and maintainer-accepted; final teaching-copy audit passed; Motion remount and Tutor remain separate later gates |
 | [Linear Systems Lab Version 1 Implementation Plan](superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md) | Repository-grounded; Day 1/1.5 and Day 2 implemented locally; independent product-audit corrections verified, correction re-audit next, Tutor deferred to a later gate |
 | [Theme-Ready Platform Shell Implementation Plan](superpowers/plans/2026-07-13-theme-ready-platform-shell-implementation-plan.md) | Implemented historical plan; check the final review and architecture map for current state |

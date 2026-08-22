@@ -27,7 +27,9 @@ Browser ownership is organized as:
 
 - `frontend/src/app/`: shell, router, route registry, in-memory Store, Tutor
   and Glossary Hosts, modal/focus ownership, theme, scroll, and lifecycle;
-- `frontend/src/pages/`: Home, About, module overviews, and Not Found;
+- `frontend/src/pages/`: Home, About, Not Found, and the entry-safe
+  `ModuleOverview` DOM helper consumed by the ODE, Linear Algebra, and PDE
+  overview/roadmap pages;
 - `frontend/src/components/lab-presentation/`: Lab-shared lazy `LabShell`/
   `LabHeader`, `WorkflowNavigation`, `StageSection`, outer action-role
   presentation, and the implemented Phase 2 `ProblemContext`, `TeachingBlock`,
@@ -114,6 +116,7 @@ Forbidden reverse edges are documented in
 ```text
 frontend entry
   -> shell, router, store, and static pages
+  -> entry-safe ModuleOverview for ODE, Linear Algebra, and PDE overviews
   -> dynamic Initial Value Problems route
   -> shared Lab presentation chunk
   -> ODE UI, numerical package subpaths, Chart.js, and Convergence
@@ -140,13 +143,32 @@ Public routes are `/`, `/about`, `/ode`, `/ode/initial-value-problems`,
 `/linear-algebra`, `/linear-algebra/linear-systems`, and `/pde`; unknown routes
 render the in-shell Not Found page. Both complete Labs have independent dynamic
 route boundaries. The Linear Systems route intentionally exposes neither a
-Tutor binding nor a Glossary binding at this gate.
+Tutor binding nor a Glossary binding at this gate. PDE remains a roadmap-only
+static route and exposes no runnable Lab action.
+
+`frontend/src/pages/moduleOverview.ts` is the only entry-safe top-level
+presentation primitive. It composes caller-authored native headings, written
+Available/Planned state, optional native action, content, and supporting
+sections by node identity. It creates no live region and imports no Lab,
+session, numerical, chart, math-runtime, Tutor, Glossary, Trace, Motion, Store,
+or Router authority. Home intentionally retains its dedicated module-card
+composition and accepted Linear Algebra → ODE → PDE semantic order.
 
 Both complete-Lab route manifests import the same small presentation JS/CSS
 chunk. The platform entry does not import that chunk. Shared presentation owns
 only semantic DOM composition, role styling, and contained workflow reveal;
 each Lab still owns state, availability, callbacks, numerical content, live
 regions, platform bindings, and disposal.
+
+Phase 6 retired only generic presentation selectors with a proven shared
+replacement and no remaining route consumer. Entry-loaded
+`.platform-feature-card` was consolidated into `ModuleOverview`; obsolete ODE
+note/result wrappers and obsolete Linear Systems method/teaching/diagnostic
+card/metric wrappers were removed after source, history, test, live-DOM, and
+browser proof. ODE method/preset/editor/chart/Compare/Convergence styles and
+Linear Systems matrix/MathML/factor/transformation/substitution/pivot/residual
+styles remain domain-local. Ambiguous mathematical selectors and all dormant
+Motion selectors remain in place.
 
 The accepted Phase 2 and implemented Phase 5 primitive TypeScript modules are
 real shared source. The
