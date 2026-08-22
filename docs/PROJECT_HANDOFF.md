@@ -2,7 +2,148 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
-## Cross-Lab Method Teaching Alignment v2 — Phase 2 candidate — 2026-08-22
+## Cross-Lab Method Teaching Alignment v2 — Phase 2 Maintainer visual correction candidate — 2026-08-22
+
+### Review record and scope
+
+The independent Phase 2 audit returned **PASS WITH P3 CARRY-FORWARD — PHASE 2
+READY FOR MAINTAINER VISUAL/COGNITIVE REVIEW AND PHASE 3 AUTHORIZATION**, with
+`P0 = 0`, `P1 = 0`, `P2 = 0`, and `P3 = 1`. Its sole finding,
+`PHASE2-P3-01`, was a truncated accepted Phase 1 SHA in `docs/INDEX.md`:
+`712fa1d68ced31d1a85b6c13aa4daf93882b8f9` instead of
+`712fa1d68ced31d1a85b6c13aa4daf93882b8f9b`. The index now records the exact
+accepted SHA already present in `PLAN.md` and this handoff.
+
+Direct Maintainer visual/cognitive review accepted the overall Phase 2
+problem-first opening, mathematical foundation, three-group landscape,
+first-open Forward Euler selection, selected shell, secondary Compare branch,
+Continue-to-Data transition, and cross-Lab direction in principle. It found one
+additional visual P3, `PHASE2-VIS-01`: the strong blue selected-state rail
+visually touched the selected-method eyebrow and pressed the title and body
+against the shell edge. No broad redesign was authorized or required.
+
+This section records a **Maintainer visual correction candidate**, not Phase 2
+Maintainer acceptance. The implementation is commit
+`313ca3379c954c8caa5db233cfcb8a9b54f23833` (tree
+`92b13c3cc7b08154a4534e9a1a4ce8ed32a6f546`), **Refine ODE selected method
+inset**.
+
+### Root cause and narrow correction
+
+The selected shell attempted to combine rail and content ownership through
+`padding: clamp(var(--space-5), 3vw, var(--lab-space-block))`, but
+`--space-5` is not defined by the current theme authority. The unresolved
+custom property invalidated the complete padding declaration, leaving the
+eight-pixel inline-start border with zero computed shell padding. That made the
+rail the effective content boundary.
+
+The correction preserves the existing shell, selected-state geometry, color,
+radius, background, semantics, and behavior. `.ode-selected-method-shell`
+remains the sole border and rail owner. One direct
+`.ode-selected-method-content` child now owns the complete selected content
+hierarchy and a valid token-based inset. The eyebrow, heading, core idea,
+metadata, optional readonly formula, availability copy, and deeper-teaching
+placeholder all live under that one owner. The shell has exactly one direct
+content child, with no spacer, method-specific branch, per-element offset, or
+nested selected card.
+
+Durable rule: **A selected-state rail is an edge marker, not a content
+boundary. The selected content owns its own inner inset. Eyebrow, title, prose,
+metadata, formulas, and future teaching content must all clear the rail through
+one generalized content layout rule rather than per-element offsets.**
+
+This ownership naturally covers later formula anatomy, ordered steps,
+concepts, diagrams, and after-solve teaching if Phase 3 is separately
+authorized; no such teaching was implemented here.
+
+### Browser and cross-Lab evidence
+
+Real-route browser review passed the required selected states:
+
+- At 1440 × 900 Light, Forward Euler, Backward Differentiation Formula, and
+  Leap-Frog all retain the eight-pixel rail with a 24-pixel content clearance.
+  Eyebrow, wrapped or short title, prose, metadata, formula where present,
+  availability, and placeholder align to one inset. BDF's long title remains
+  readable, Leap-Frog remains balanced, and no nested card or layout jump was
+  introduced.
+- At 1440 × 900 Dark, BDF retains non-color selected geometry, a restrained
+  rail, the same 24-pixel separation, coherent dark inset/background, and no
+  page overflow.
+- At 390 × 844, Forward Euler and BDF retain a 16-pixel content clearance.
+  BDF wraps naturally, readonly formula containment remains local, Read
+  selected method remains useful, and Continue to Data reaches the unchanged
+  Data stage. Returning to Method preserves BDF and its configured order.
+- At approximately 320 pixels, BDF and Leap-Frog retain a 12-pixel content
+  clearance. BDF wraps naturally without smaller text; its formula scrolls
+  locally where needed. Leap-Frog retains its second-order availability
+  boundary. Neither page has horizontal overflow or clipping.
+- Native method buttons retain `aria-pressed`; selection returns focus to the
+  connected selected button without scrolling. Explicit Read selected method
+  focuses the connected selected-shell heading. One shell heading and one
+  coherent content owner remain. The page width equalled the document client
+  width in every checked ODE viewport.
+- A bounded 1440 × 900 Linear Systems Method smoke retained one Lab `h1`, its
+  existing Method teaching flow and current-step semantics, no ODE selected
+  content owner, and equal page client/scroll width. No Linear Systems source
+  changed.
+
+Screenshots are external, uncommitted browser evidence; no evidence asset was
+added to the repository.
+
+### Tests, build, and bundle
+
+Tests were written first. Before the content owner existed, the two focused
+files produced exactly two intended failures while nine existing tests passed.
+After implementation, the final focused run passed 41 tests in four files:
+`odeMethodView.test.ts`, `odePresentationStyles.test.ts`,
+`initialValueProblemsRoute.test.ts`, and `odeLifecycle.test.ts`.
+
+The workspace typecheck passed for frontend, numerics, and contracts. Import
+boundaries passed for four owners plus the Vercel adapter. The Production build
+passed with 113 transformed modules. Relative to the clean starting build:
+
+| Asset | Before raw / gzip | After raw / gzip | Result |
+|---|---:|---:|---|
+| Entry JavaScript | 59.04 / 18.29 kB | 59.04 / 18.29 kB | unchanged |
+| Shared Lab JavaScript | 14.43 / 3.57 kB | 14.43 / 3.57 kB | unchanged |
+| ODE JavaScript | 340.27 / 106.11 kB | 340.41 / 106.14 kB | tiny wrapper-only delta |
+| ODE CSS | 24.04 / 5.00 kB | 24.09 / 5.01 kB | tiny inset-rule delta |
+| Linear Systems JavaScript | 75.80 / 22.63 kB | 75.80 / 22.63 kB | unchanged |
+| Linear Systems CSS | 26.06 / 4.92 kB | 26.06 / 4.92 kB | unchanged |
+
+The selected-content marker appears only in the ODE route assets. Entry,
+shared Lab, and Linear Systems ownership remain unchanged. The existing large
+MathLive/Compute Engine chunk warning remains; no dependency or lazy boundary
+changed. Full `npm.cmd run verify` was not run because this remained the
+authorized narrow selected-shell presentation and documentation correction.
+
+### Exact files and non-changes
+
+The exact files in this correction and its canonical status checkpoint are:
+
+- `frontend/src/labs/ode/odeApp.ts`
+- `frontend/src/labs/ode/odeApp.css`
+- `frontend/src/labs/ode/odeMethodView.test.ts`
+- `frontend/src/labs/ode/odePresentationStyles.test.ts`
+- `PLAN.md`
+- `docs/INDEX.md`
+- `docs/PROJECT_HANDOFF.md`
+
+There is no numerical, session schema, family-order, Compare, Data, Output,
+Convergence, result-matching, Tutor, Glossary, Linear Systems, Motion, PDE,
+dependency, route/lifecycle, lazy-loading, or deployment change. There are no
+deep profiles, formula anatomy, ordered method steps, concepts, diagrams, or
+after-solve teaching. Phase 3 is unauthorized. Cross-Lab Presentation Phase 7
+remains paused. Nothing was pushed or deployed.
+
+### Exact next gate
+
+The exact next gate is **Maintainer final visual confirmation of the corrected
+Phase 2 selected-method shell**. If accepted, Phase 2 may then be recorded as
+**MAINTAINER ACCEPTED**, and Phase 3 may be separately authorized. Do not
+self-declare acceptance, begin Phase 3, or resume Presentation Phase 7.
+
+## Cross-Lab Method Teaching Alignment v2 — Phase 2 pre-audit candidate (historical checkpoint) — 2026-08-22
 
 ### Acceptance, scope, and current gate
 
@@ -253,8 +394,10 @@ dependency, route boundary, push, or deployment changed. Local Phase 2
 self-review has no open finding (`P0 = P1 = P2 = P3 = 0`); this is not a
 substitute for the pending independent audit.
 
-The exact next gate is **independent Phase 2 opening / landscape / selection
-audit**, followed by **Maintainer visual/cognitive review**. Phase 3+ remains
+At this historical checkpoint, the next gate was an **independent Phase 2
+opening / landscape / selection audit**, followed by **Maintainer
+visual/cognitive review**. That audit and review have occurred; the current
+gate is recorded in the correction-candidate section above. Phase 3+ remains
 unauthorized.
 
 ## Cross-Lab Method Teaching Alignment v2 — accepted authority and Phases 0–1 historical checkpoint — 2026-08-22

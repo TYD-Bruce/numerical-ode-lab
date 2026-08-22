@@ -3,9 +3,9 @@
 ## Current status
 
 **Active milestone: Cross-Lab Method Teaching Alignment v2 — Phase 0 is
-accepted, Phase 1 is Maintainer-accepted, and Phase 2's Problem foundation,
-method landscape, selection shell, and Data transition are implemented and
-locally verified as a candidate. Stop before Phase 3.**
+accepted, Phase 1 is Maintainer-accepted, and Phase 2 is independently audited.
+The selected-method inset correction is a Maintainer visual correction
+candidate. Stop before Phase 3.**
 
 Cross-Lab Presentation Sync Phases 0 through 6 are implemented. The Phase 6
 entry-safe `ModuleOverview` and proven duplicate-style cleanup passed its
@@ -55,6 +55,18 @@ Final formula-containment browser polish is
 `7eb2f9c1f9077d42ec3f928276cab1e939640f80` (tree
 `6410989215a2e5864d87aadad2e16b5a9de050fc`).
 
+The independent Phase 2 audit returned **PASS WITH P3 CARRY-FORWARD — PHASE 2
+READY FOR MAINTAINER VISUAL/COGNITIVE REVIEW AND PHASE 3 AUTHORIZATION**, with
+`P0 = 0`, `P1 = 0`, `P2 = 0`, and `P3 = 1`. `PHASE2-P3-01` was a truncated
+accepted Phase 1 SHA in `docs/INDEX.md`. Direct Maintainer visual review then
+accepted the overall Phase 2 direction in principle and identified
+`PHASE2-VIS-01`: the selected-state rail collided with content because an
+undefined spacing token invalidated the shell's complete padding declaration.
+The narrow correction at `313ca3379c954c8caa5db233cfcb8a9b54f23833`
+(tree `92b13c3cc7b08154a4534e9a1a4ce8ed32a6f546`) keeps the rail on the shell and
+gives one generalized selected-content owner a valid independent inset. It is
+a correction candidate, not Phase 2 Maintainer acceptance.
+
 Preserving those three independent family orders required one bounded additive
 pure-session correction: `OdeSession` now stores a family-keyed order record
 instead of one global second-order-form draft. This was the proven blocker to
@@ -62,12 +74,13 @@ the accepted reselection rule; Data remains the only editable order owner, and
 no solver input meaning or numerical behavior changed. Phase 2 adds no deep
 profiles, concepts, diagrams, after-solve teaching, or Phase 3 work.
 
-The exact next gate is an **independent Phase 2 opening / landscape / selection
-audit**, followed by **Maintainer visual/cognitive review**. Phase 3 and later
-Method teaching phases remain unauthorized. Do not resume Presentation Phase
-7, push, or deploy. The previous Cross-Lab Presentation record below remains
-historical implementation evidence; any former Phase 1 or Phase 2 next-gate
-wording is superseded by this current status.
+The exact next gate is **Maintainer final visual confirmation of the corrected
+Phase 2 selected-method shell**. If accepted, Phase 2 may then be recorded as
+Maintainer accepted and Phase 3 may be separately authorized. Phase 3 and
+later Method teaching phases remain unauthorized. Do not resume Presentation
+Phase 7, push, or deploy. The previous Cross-Lab Presentation record below
+remains historical implementation evidence; any former Phase 1 or Phase 2
+next-gate wording is superseded by this current status.
 
 Linear Systems Teaching v2 is **MAINTAINER ACCEPTED** at commit
 `484fc9153de33be7949e82b29386c94fe63d19c8` (tree
