@@ -1,8 +1,8 @@
 # Cross-Lab Method Teaching Alignment v2 Design
 
-**Status:** Design complete; awaiting Maintainer review and acceptance. Product
-implementation has not started, and the linked implementation plan is
-unauthorized for execution.
+**Status:** **DESIGN ACCEPTED WITH BINDING ADDENDUM.** Phase 0 authority work
+and Phase 1's pure teaching model are authorized. Phase 2 and all browser-
+visible redesign work remain unauthorized.
 
 **Date:** 2026-08-22
 
@@ -15,8 +15,11 @@ unauthorized for execution.
 
 **Implementation plan:** [Cross-Lab Method Teaching Alignment v2 implementation plan](../plans/2026-08-22-cross-lab-method-teaching-alignment-v2-implementation-plan.md)
 
-**Next gate:** Maintainer review and acceptance of this design, including the
-explicit numerical-authority questions in Section 34.
+**Acceptance checkpoint:** `bfe5d514c67b1f5c00a1bc71b128f158e4811a5a`
+(tree `29c2a1e19718ce312671c8307dc65240e1c5eab6`)
+
+**Next gate:** independent mathematical/content audit of the Phase 1 teaching
+registry, followed by separate Maintainer authorization before Phase 2.
 
 ## 1. Executive decision
 
@@ -54,6 +57,42 @@ Selection remains a product action. Selecting a method changes the runnable
 method, keeps the learner in Method, updates the selected teaching lens, and
 prepares the existing Data stage. It does not run a solver, manufacture result
 evidence, or create a second preview-method state.
+
+### 1.1 Binding addendum
+
+The Maintainer accepts **Landscape to Lens** with this binding cognitive order:
+
+```text
+Problem
+  -> Landscape
+  -> Selected method lens
+  -> Selected concepts
+  -> After-solve guidance
+  -> Continue to Data
+```
+
+Compare is a secondary branch attached to the landscape. A compact entry may
+sit within or immediately after the landscape, but Compare is not a full
+primary teaching section between Landscape and the selected method lens.
+Detailed comparison teaching appears only after the learner enters Compare.
+
+Method selection chooses the family; Data owns editable order. Selecting an
+ordered family preserves that family's existing stored order. Default order is
+used only during initial session construction, the existing New experiment /
+reset contract, or when no family-specific order has ever been initialized
+under current product authority. Reselecting Adams-Bashforth, Adams-Moulton,
+or BDF must not replace its stored order with catalog default metadata.
+
+Selection does not auto-scroll. **Read selected method** is not a mandatory
+always-visible control; Phase 2 may introduce it only if browser evidence shows
+a meaningful orientation problem, especially on mobile.
+
+The accepted future static-diagram responsibilities are: one-step update /
+endpoint relation for Forward and Backward Euler; stage-sampling path for RK4;
+history rail, with a predictor/corrector variant, for Adams-Bashforth,
+Adams-Moulton, and BDF; and staggered-state rail for Leap-Frog. Taylor 2 starts
+with formula anatomy and an ordered process unless later visual evidence shows
+a derivative-chain diagram is clearer. No diagram belongs to Phase 0 or 1.
 
 ## 2. Current problem
 
@@ -302,9 +341,10 @@ to Data.
 first, one update sequence second, and method-specific concepts and advanced
 details third.
 
-**Compare placement:** A secondary “Compare two first-order methods” learning
-lane follows the landscape and states why to compare and what current Output
-can reveal.
+**Compare placement:** A compact secondary “Compare two first-order methods”
+entry is attached to the landscape. Detailed comparison teaching appears only
+after the learner enters Compare, so the principal reading flow remains
+Landscape → Selected method lens.
 
 **Density management:** All eight methods appear in a compact grouped index;
 only the selected method receives full depth. Deeper coefficient or stage
@@ -315,9 +355,9 @@ selected profile uses a wide editorial reading surface with formula and process
 allowed to share a row when that improves comprehension.
 
 **Mobile:** The landscape becomes short grouped rows in authored order, not a
-stack of desktop cards. The selected lens follows immediately. A deliberate
-“Read selected method” action can move to the profile; selection itself does
-not force scroll.
+stack of desktop cards. The selected lens follows immediately. Selection does
+not force scroll. A deliberate “Read selected method” action may be introduced
+later only if Phase 2 browser evidence shows a meaningful orientation problem.
 
 **Strengths:** Closely matches the Linear Systems cognitive sequence, preserves
 ODE exploration, keeps relationships visible during selection, and can reuse
@@ -407,11 +447,8 @@ Method stage
     first-order history-based methods
     second-order staggered method
     one selected runnable method
-
-  Compare lane
-    shared first-order problem
-    two methods
-    reason and observation questions
+    compact secondary Compare entry
+      detailed comparison teaching only after entry
 
   Selected method lens
     core idea
@@ -440,8 +477,10 @@ not each need a separate elevated card.
 - The Beginner Starter renders Forward Euler as visibly selected on first open.
 - All eight methods remain available from the landscape.
 - Activating a method commits that family as the existing runnable
-  `selectedMethod`, applies its existing default order when it has an order
-  selector, stays in Method, and updates the selected teaching lens.
+  `selectedMethod`, preserves that family's initialized stored order, stays in
+  Method, and updates the selected teaching lens. Catalog default order is
+  metadata and applies only during initial construction, New experiment/reset,
+  or first initialization of that family under current product authority.
 - Selection does not run the solver, clear Data drafts, alter numerical
   results, or imply that the method is suitable for the current unrun problem.
 - The selected method name and problem profile are repeated at the top of the
@@ -459,8 +498,9 @@ not each need a separate elevated card.
   method control in the landscape.
 - A concise polite status announces “{method} selected. Teaching profile
   updated.” It does not announce the entire profile.
-- A nearby explicit “Read selected method” action may focus the selected
-  profile heading. Focus moves only when that action is invoked.
+- A nearby explicit “Read selected method” action is not required. Phase 2 may
+  add it only if browser evidence shows meaningful landscape-to-profile
+  distance; if present, focus moves only when that action is invoked.
 - The selected state uses written text or an accessible state plus shape/border
   treatment; color is supplementary.
 - Switching methods preserves the learner’s position in the landscape. Native
@@ -544,8 +584,12 @@ controls remain in Data.
 
 ## 15. Compare placement and meaning
 
-Compare is a secondary learning lane immediately after the landscape and
-before the selected-method deep dive. Its lead is:
+Compare is a secondary branch attached to the method landscape. A compact
+entry may appear within or immediately after the landscape, but it must not
+become a full primary teaching section between Landscape and the selected-
+method lens. The principal reading flow remains Landscape → Selected method
+lens. Detailed comparison teaching is rendered only after the learner enters
+Compare. Its entered-flow lead is:
 
 > Use one first-order initial value problem with two methods, then inspect where
 > their trajectories and final approximations agree or separate on the same
@@ -693,7 +737,7 @@ contract.
 | Configurable parameters and availability | No method-specific order or `ε` control. Uses shared first-order fields and is available in single and Compare. |
 | Common misconception | **Incorrect:** “I must enter `fₜ` and `fᵧ`.” **Correction:** the current product estimates both internally from the entered RHS. |
 | Authority | Formula/order/blurb: `methodCatalog.ts` and `methodMathContent.ts`; exact derivative estimation and `ε`: `solvers.ts`; Data fields: `odeApp.ts`. |
-| Review gate | Numerical authority must approve learner wording for the centered derivative estimates and decide whether fixed `ε` belongs in the default view or advanced details. The current catalog phrase “uses partial derivatives” is incomplete by itself. |
+| Accepted boundary | Beginner copy says that the Lab estimates the needed derivative information internally from the entered RHS. Centered `f_t`/`f_y` approximations and the five-RHS-evaluation count are advanced detail. The fixed difference scale may be named only as an implementation detail, never an editable control or new public numerical contract. |
 
 ### 17.5 Runge-Kutta 4
 
@@ -759,7 +803,7 @@ contract.
 | Configurable parameters and availability | Data and Compare expose integer `p` from 1 through 8. The nonlinear method/tolerances are not UI controls. Available in single and Compare. |
 | Common misconception | **Incorrect:** “The Adams-Bashforth predictor is the final Adams-Moulton value.” **Correction:** it seeds the implicit corrector solve; the accepted value satisfies the corrected relation within solver tolerance. |
 | Authority | Catalog/range/formula: `methodCatalog.ts` and `methodMathContent.ts`; coefficients: `polynomial.ts`; predictor, corrector residual, Newton default, history: `solvers.ts`; diagnostics: `nonlinearSolver.ts` and `odeApp.ts`. |
-| Review gate | **Conflict:** catalog and solver note copy say “fixed-point correction,” while the UI-default path solves the corrector residual with Newton. Learner copy must use the actual default behavior unless numerical authority explicitly changes the product contract. |
+| Accepted boundary | Learner teaching describes the current UI-default Newton solve, keeps the AB predictor distinct from the accepted corrected value, and separates Newton convergence from accuracy and method stability. Fixed-point remains a genuine internal kernel override. |
 
 ### 17.8 Backward Differentiation Formula
 
@@ -781,7 +825,7 @@ contract.
 | Configurable parameters and availability | Data and Compare expose integer `p` from 1 through 6. Nonlinear settings are not UI controls. Available in single and Compare. |
 | Common misconception | **Incorrect:** “BDF6 must show observed order 6 in this product.” **Correction:** 6 is the method metadata’s theoretical order; current fixed RK4 startup can limit the measured end-to-end behavior. |
 | Authority | Range/formula: `methodCatalog.ts` and `methodMathContent.ts`; coefficients: `polynomial.ts`; derivative-history residual, startup, Newton default: `solvers.ts`; BDF6 evidence: `solvers.test.ts` and `convergenceStudyOrder.test.ts`. |
-| Review gate | **Conflicts:** solver note copy says scalar fixed-point iteration although UI runs use Newton; theoretical `O(hᵖ)` metadata copy does not explain the tested BDF6 startup ceiling. Numerical authority must approve both learner-facing resolutions. |
+| Accepted boundary | Learner teaching describes the current UI-default Newton solve. BDF metadata retains theoretical order 6, while advanced limitation copy identifies the current fixed-RK4-startup evidence approaching order 5 without redefining BDF6 theory. |
 
 ### 17.9 Leap-Frog
 
@@ -803,7 +847,7 @@ contract.
 | Configurable parameters and availability | Shared fixed interval/step plus `u₀`, `v₀`, and `a(t,u)`. Single mode only. |
 | Common misconception | **Incorrect:** “Leap-Frog is just another card for the same first-order IVP.” **Correction:** this product routes it through a distinct second-order acceleration profile with two initial state values. |
 | Authority | Profile/order/fallback: `methodCatalog.ts`; actual staggered update and stored `v`: `solvers.ts`; variables and fields: `problemExpressions.ts` and `odeApp.ts`; exclusion from Compare/Convergence: `FIRST_ORDER_CATALOG` and `convergenceStudy.ts`. |
-| Review gate | The current trusted formula owner displays only `u''=a(t,u)`, not the staggered update. Numerical and mathematical-presentation authorities must approve the exact learner-facing update notation and accessible wording before implementation. |
+| Accepted boundary | The implementation-grounded staggered initialization, half-step velocity update, whole-step position update, and stored full-step velocity reconstruction are approved with an accessible verbalization that says this is the update used by the current Lab. No velocity-dependent acceleration, general system, Compare, exact-reference, or Convergence support may be implied. |
 
 ## 18. Method-authority ledger
 
@@ -813,8 +857,8 @@ This ledger is a publication boundary, not merely an implementation inventory. A
 
 | Repository owner | Current responsibility | Teaching-design consequence |
 |---|---|---|
-| `packages/numerics/src/ode/methodCatalog.ts` | Method identities, families, display labels, first-/second-order profile, explicit/implicit and one-/multistep metadata, supported/default order, compact formula/copy, and `FIRST_ORDER_CATALOG`. | Primary structural catalog, but its Adams-Moulton and BDF iteration copy conflicts with the UI-default Newton path and cannot be republished unchanged. |
-| `packages/numerics/src/ode/solvers.ts` | Actual first- and second-order updates, RK4 startup, minimum-grid checks, coefficient use, default nonlinear-solver path, result metadata, and Leap-Frog state reconstruction. | Exact implemented process owner. Teaching steps must follow its evaluation and startup sequence. |
+| `packages/numerics/src/ode/methodCatalog.ts` | Method identities, families, display labels, first-/second-order profile, explicit/implicit and one-/multistep metadata, supported/default order, compact formula/copy, and `FIRST_ORDER_CATALOG`. | Primary structural catalog. Phase 0 narrowly aligns the product-visible Adams-Moulton blurb with the UI-default Newton path; IDs, ranges, formulas, and behavior remain unchanged. |
+| `packages/numerics/src/ode/solvers.ts` | Actual first- and second-order updates, RK4 startup, minimum-grid checks, coefficient use, default nonlinear-solver path, result metadata, and Leap-Frog state reconstruction. | Exact implemented process owner. Phase 0 makes AM/BDF result notes report the actual Newton or fixed-point diagnostic method; teaching steps must follow the unchanged evaluation and startup sequence. |
 | `packages/numerics/src/ode/polynomial.ts` | Generated Adams-Bashforth, Adams-Moulton, and BDF coefficients. | Advanced coefficient displays must consume generated coefficients rather than duplicate tables in teaching content. |
 | `packages/numerics/src/ode/nonlinearSolver.ts` | Newton and fixed-point implementations, defaults, tolerances, stopping behavior, and diagnostics. | UI-default implicit-method copy must say Newton; fixed-point is an internal override unless separately surfaced by an approved feature. |
 | `packages/numerics/src/ode/grid.ts` | Fixed-grid construction, alignment, step-count and budget rules. | Method teaching may explain fixed stepping, while Data remains the owner of concrete interval and step-size input. |
@@ -859,8 +903,8 @@ In the table below, “all six” means Exponential Decay, Exponential Growth, L
 | Taylor 2 | Same first-order exact-reference contract | All six; suggested: Exponential Decay, Exponential Growth, Linear Forced Equation, Oscillatory Forcing | `methodCatalog.ts`, `methodMathContent.ts`, `solvers.ts` | Implemented second-order update, internal centered approximations of `f_t,f_y`, five RHS evaluations per step, learner supplies only `f` | Any implication that the learner enters analytic partial derivatives; numerical-authority approval of how much internal-difference detail belongs in beginner copy |
 | RK4 | Same first-order exact-reference contract | All six; suggested: Exponential Decay, Exponential Growth, Linear Forced Equation, Logistic Growth, Oscillatory Forcing | `methodCatalog.ts`, `methodMathContent.ts`, `solvers.ts` | Implemented four stages, weighted update, explicit/one-step/order-4 metadata, four RHS evaluations per step | Universal accuracy/efficiency superiority or broad stability claims |
 | Adams-Bashforth | Same first-order exact-reference contract | All six; suggested: Linear Forced Equation, Oscillatory Forcing | `methodCatalog.ts`, `methodMathContent.ts`, `polynomial.ts`, `solvers.ts` | Supported order range/default, generated coefficient use, explicit slope-history update, `N≥p`, RK4 startup, one new post-startup RHS evaluation | General stability hierarchy, claims that theoretical order must appear in every finite run, or treating startup as exact history |
-| Adams-Moulton | Same first-order exact-reference contract | All six; suggested: Linear Forced Equation, Oscillatory Forcing, Stiff Relaxation | Same Adams owners plus `nonlinearSolver.ts` and diagnostics in `odeApp.ts` | Supported order range/default, endpoint-slope corrector, AB predictor, RK4 startup, default Newton solve, reported diagnostics | Existing “fixed-point correction” catalog/solver-note wording conflicts with the UI default and must be corrected by numerical/content authority before publication; no broad stability ranking |
-| BDF | Same first-order exact-reference contract | All six; suggested: Stiff Relaxation | `methodCatalog.ts`, `methodMathContent.ts`, `polynomial.ts`, `solvers.ts`, focused numerical tests | Supported order range/default, solution-history residual, RK4 startup, default Newton solve, theoretical metadata order | Existing fixed-point wording conflicts with UI default; BDF6 theoretical-order copy must disclose or avoid overstating current RK4-startup-limited observed behavior; no broad stability claim |
+| Adams-Moulton | Same first-order exact-reference contract | All six; suggested: Linear Forced Equation, Oscillatory Forcing, Stiff Relaxation | Same Adams owners plus `nonlinearSolver.ts` and diagnostics in `odeApp.ts` | Supported order range/default, endpoint-slope corrector, AB predictor, RK4 startup, default Newton solve, reported diagnostics | Phase 0 aligns stale product/result wording while retaining the internal fixed-point override; no broad stability ranking |
+| BDF | Same first-order exact-reference contract | All six; suggested: Stiff Relaxation | `methodCatalog.ts`, `methodMathContent.ts`, `polynomial.ts`, `solvers.ts`, focused numerical tests | Supported order range/default, solution-history residual, RK4 startup, default Newton solve, theoretical metadata order | Phase 0 aligns stale result wording; BDF6 teaching must distinguish theoretical order 6 from current startup-limited evidence; no broad stability claim |
 | Leap-Frog | No exact input or Convergence in the current second-order profile | No preset selector; defaults/examples are authored in `odeApp.ts` | `methodCatalog.ts`, `methodMathContent.ts`, `problemExpressions.ts`, `solvers.ts`, `odeApp.ts` | Current `u''=a(t,u)` profile, `u₀/v₀` initial data, staggered implemented update, stored `u/u'`, single mode only, order-2 metadata | Exact learner-facing staggered notation and any conservation, symplectic, long-time, or stability claim; no velocity-dependent/general-system implication |
 
 ## 19. Formula-teaching strategy
@@ -921,10 +965,9 @@ Diagrams are optional profile-owned teaching views, not decoration and not numer
 
 | Diagram pattern | Profiles | Required mathematical message |
 |---|---|---|
-| One-step slope/update | Forward Euler and Backward Euler | Current-state slope versus unknown endpoint relation. |
+| One-step update / endpoint relation | Forward Euler and Backward Euler | Current-state slope versus unknown endpoint relation. |
 | Stage path | RK4 | Four evaluations at current, midpoint, midpoint, endpoint positions, labeled as stages rather than accepted solution values. |
-| History rail | Adams-Bashforth and BDF | A finite ordered window feeding one new value, with slope-history versus solution-history labels. |
-| Predict/correct fork-and-rejoin | Adams-Moulton | AB prediction seeds but does not replace the endpoint corrector solve. |
+| History rail with predictor/corrector variant | Adams-Bashforth, Adams-Moulton, and BDF | A finite ordered window feeds one new value; the variant shows that the AB prediction seeds but does not replace the Adams-Moulton corrector solve. Slope-history and solution-history labels remain distinct. |
 | Staggered state rail | Leap-Frog | Position at whole steps, velocity at half steps, and full-step reconstruction. |
 
 Taylor 2 defaults to formula anatomy rather than a diagram; an approved derivative-chain diagram may be added only if it is clearer than the equation and does not imply analytic derivative input.
@@ -1040,7 +1083,11 @@ Disclosures are one level deep, independently named, and never the only place th
 ### 27.3 Orientation and persistence
 
 - Switching methods changes only the selected profile and its relevant concepts; problem foundation, landscape position, and after-solve framework remain stable.
-- Existing `selectedFamily` and per-family order state are the sole product selection authority. Browsing another method is a real method selection and therefore determines the method presented in Data.
+- Existing selected-family authority and family-specific stored order are the
+  sole product selection authority. Browsing another method is a real method
+  selection and therefore determines the family presented in Data; it does
+  not replace an initialized Adams-Bashforth, Adams-Moulton, or BDF order with
+  default metadata.
 - Returning from Data/Output to Method reconstructs the same profile from the pure session selection. There is no separate “teaching method,” profile tab index, or long-lived scroll target in session state.
 - Native disclosure state may remain component-local while mounted and may reset on route disposal. Persistence is optional presentation behavior, not meaningful experiment state.
 - An in-page **Choose another method** affordance returns to the landscape with deliberate focus/scroll behavior; browser Back and Lab-step navigation keep their existing ownership.
@@ -1099,7 +1146,9 @@ The intended “wow” quality is accepted through observable craft, not a claim
 - The existing selected family is announced and its matching profile, formula, concepts, availability, and Data summary render; no second selection state exists.
 - Activating each method by mouse and keyboard changes the session-selected family and profile but does not advance to Data, Run, clear prior successful output, or create meaningful activity beyond the established selection semantics.
 - Selection keeps focus on the activated control, updates a polite status once, and does not call scroll/focus on detached content. The explicit read-profile affordance focuses only a connected heading.
-- Order selectors remain in Data/Compare. The profile truthfully reflects the stored/default order and supported range without adding an order control to the landscape.
+- Order selectors remain in Data/Compare. The profile truthfully reflects the
+  caller-supplied current family order and the source-owned supported/default
+  metadata without choosing, mutating, or resetting order in Method.
 - Adams-Moulton/BDF learner copy says Newton only after the authority conflict is resolved; no stale fixed-point wording remains in the rendered teaching path.
 - Leap-Frog renders its second-order profile and `u₀/v₀/a(t,u)` transition, remains absent from Compare and Convergence, and never receives first-order presets/exact claims.
 - Compare is available from Method as a secondary, explicitly first-order path and preserves existing Compare selection and successful-result behavior.
@@ -1154,35 +1203,72 @@ This design aligns the ODE Method-stage cognitive model and specifies future rev
 | New teaching content affects lazy bundles | Home/static routes regress | Keep all content inside the ODE dynamic route; inspect manifest/import graph and route network sequence during implementation. |
 | Large rerender disrupts focus/scroll or retains math handles | Navigation and accessibility regress | Use current lifecycle seams, connected-node/generation checks, idempotent disposal, and browser navigation stress tests. |
 
-## 34. Open questions requiring review
+## 34. Accepted authority decisions
 
-These questions do not block completing this design; they block particular implementation copy or visual decisions.
+The Maintainer resolved the former open questions with a binding addendum at
+documentation checkpoint `bfe5d514c67b1f5c00a1bc71b128f158e4811a5a`.
+These are teaching/content decisions only and authorize no change to numerical
+algorithms, formulas, coefficients, startup, tolerances, diagnostics, grid
+rules, Convergence classifications, or solver selection.
 
-### 34.1 Numerical-authority decisions
+### 34.1 Numerical and content authority
 
-1. **Adams-Moulton and BDF nonlinear wording:** approve learner copy that describes the actual UI-default Newton solve and correct or supersede stale “fixed-point” catalog/result-note wording, while retaining fixed-point as an internal kernel override.
-2. **BDF6 teaching boundary:** approve concise copy distinguishing theoretical order-6 metadata from the current end-to-end RK4-startup behavior that approaches order 5 in focused tests.
-3. **Taylor 2 derivative detail:** confirm that beginner copy may state that the implementation estimates `f_t` and `f_y` internally with centered differences and that the advanced detail may name the current evaluation count/scale without making those internals a new public numerical contract.
-4. **Leap-Frog notation:** approve the exact staggered learner-facing equations and accessible verbalization, since the current trusted display owner shows only the second-order problem profile.
-5. **Stability claims:** confirm that the redesign will publish only the existing Backward Euler scalar-test-equation qualifier and preset-specific guidance unless a separate reviewed teaching authority is created.
+1. **Adams-Moulton and BDF:** learner teaching describes the current UI-default
+   Newton solve. Adams-Moulton's Adams-Bashforth predictor seeds the implicit
+   corrector and is not the accepted corrected value. Newton convergence is
+   neither an accuracy certificate nor a method-stability certificate.
+   Fixed-point remains a genuine internal kernel override. Direct product and
+   result-metadata wording may be narrowly aligned with the method actually
+   used; implementation behavior remains untouched.
+2. **BDF6:** method metadata retains theoretical order 6. The landscape shows
+   only supported range 1–6; the selected profile shows theoretical order;
+   advanced limitation copy may state that current fixed RK4 startup can limit
+   end-to-end observed refinement behavior toward approximately order 5 in the
+   existing focused evidence. This does not redefine BDF6 theory.
+3. **Taylor 2:** beginner copy says the Lab estimates the derivative
+   information required by the method internally from the entered right-hand
+   side. Advanced detail may identify centered approximations of `f_t` and
+   `f_y` and the current five-RHS-evaluation work count. The finite-difference
+   scale is implementation detail only, never an editable control or new
+   public contract. Learners do not supply analytic partial derivatives.
+4. **Leap-Frog:** the implementation-grounded staggered equations and their
+   accessible verbalization are approved. Teaching distinguishes the half-step
+   velocity update, whole-step position update, and full-step velocity
+   reconstruction stored for output, and says this is the update used by the
+   current Lab. It does not imply velocity-dependent acceleration, general
+   second-order systems, first-order Compare, exact-reference input, or
+   Convergence.
+5. **Stability:** publish only the existing Backward Euler A-stability
+   qualifier for the scalar test equation, current preset-specific observation
+   guidance, and other explicitly source-backed qualified statements. No
+   global method ranking or unsupported broad stability claim is authorized.
 
-### 34.2 Maintainer design decisions
+### 34.2 Interaction and visual authority
 
-1. Confirm **Landscape to Lens** as the accepted interaction direction rather than the alternate guided chapter model.
-2. Confirm that method selection stays on Method and immediately updates the real selected runnable method, while **Continue to Data** remains the only primary step transition.
-3. Confirm the three beginner-facing landscape groups and Compare’s secondary placement after the first-order landscape.
-4. Confirm which of the five proposed static diagram patterns should ship in the first implementation slice; the design remains coherent if some profiles use formula anatomy only.
-5. Confirm whether **Read selected method** is always visible or introduced only when browser testing shows a meaningful distance between landscape and profile.
+1. **Landscape to Lens** and the cognitive order in Section 1.1 are accepted.
+2. Compare is a secondary branch attached to the landscape, never a full
+   primary teaching section between Landscape and the selected lens.
+3. Method selection chooses family, Data owns editable order, and initialized
+   family-specific order is preserved as defined in Section 1.1.
+4. **Read selected method** is optional and evidence-gated; selection does not
+   auto-scroll.
+5. The initial future diagram responsibilities are exactly those recorded in
+   Section 1.1 and Section 21. No diagram is authorized in Phase 0 or 1.
 
 ## 35. Implementation gate
 
-This specification is complete for Maintainer review but is **not authorization to implement**. The companion plan is likewise gated.
+This specification authorizes only **Phase 0 and Phase 1** under the bounded
+task recorded in the active plan. Phase 1 is additive pure content/selectors
+and must leave the browser-visible ODE Method UI unchanged.
 
-Implementation may begin only after:
+Phase 2 may begin only after:
 
-1. the Maintainer accepts this design direction and its cross-Lab cognitive model;
-2. numerical authority resolves the learner-copy conflicts in Section 34.1 before the affected profiles ship;
-3. the task boundary identifies the first bounded implementation phase, tests, commit, and review stop;
-4. the repository again passes its start-of-task branch/HEAD/clean-worktree checks.
+1. Phase 1 supplies exactly eight source-linked reviewed profiles and pure
+   order-preserving derivation;
+2. focused tests, typecheck, boundary review, and documentation validation pass;
+3. an independent mathematical/content audit accepts the Phase 1 registry; and
+4. the Maintainer separately authorizes the Phase 2 opening/landscape slice.
 
-The next gate is Maintainer review and acceptance of the Cross-Lab Method Teaching Alignment v2 design. Until then, Cross-Lab Presentation Phase 7 remains paused; this document changes no implemented architecture or product behavior.
+Cross-Lab Presentation Phase 7 remains paused. This acceptance does not resume
+the release audit, change implemented architecture, authorize push/deployment,
+or authorize any browser-visible Method redesign.

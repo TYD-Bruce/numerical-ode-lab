@@ -2,66 +2,133 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
-## Cross-Lab Method Teaching Alignment v2 — design checkpoint — 2026-08-22
+## Cross-Lab Method Teaching Alignment v2 — accepted authority and Phase 0 — 2026-08-22
 
-Cross-Lab Presentation Sync Phases 0 through 6 are implemented. Phase 6's
-entry-safe `ModuleOverview` and proven duplicate-style cleanup passed its
-independent audit by the current product baseline
-`411e641d8cc6b14240acc408130876781fb1ee84` (tree
-`92f79cba8bdabafb9a97e3a99d76ddff853fe35c`). This checkpoint does **not**
-record Phase 6 Maintainer acceptance.
+### Presentation Phase 6 and design acceptance
 
-Maintainer visual review found a cross-Lab pedagogical-alignment gap before
-Presentation v1 can be frozen. The existing shared presentation components are
-not the problem. The Initial Value Problems and Linear Systems Labs now share
-visual grammar, but their Method stages use different cognitive models:
+The Maintainer formally accepts **Cross-Lab Presentation Sync Phase 6** at
+runtime HEAD `411e641d8cc6b14240acc408130876781fb1ee84` (tree
+`92f79cba8bdabafb9a97e3a99d76ddff853fe35c`). Final severity is
+`P0 = 0`, `P1 = 0`, `P2 = 0`, and `P3 = 0`. The older Phase 6 candidate record
+below remains exact historical implementation evidence, but its pending-
+acceptance and next-gate language is superseded by this acceptance.
+
+The Maintainer also accepts **Cross-Lab Method Teaching Alignment v2 — DESIGN
+ACCEPTED WITH BINDING ADDENDUM** at documentation checkpoint
+`bfe5d514c67b1f5c00a1bc71b128f158e4811a5a` (tree
+`29c2a1e19718ce312671c8307dc65240e1c5eab6`). The authoritative design and
+repository-grounded plan are:
+
+- [`docs/superpowers/specs/2026-08-22-cross-lab-method-teaching-alignment-v2-design.md`](superpowers/specs/2026-08-22-cross-lab-method-teaching-alignment-v2-design.md);
+- [`docs/superpowers/plans/2026-08-22-cross-lab-method-teaching-alignment-v2-implementation-plan.md`](superpowers/plans/2026-08-22-cross-lab-method-teaching-alignment-v2-implementation-plan.md).
+
+Only Phase 0 authority work and Phase 1's additive pure teaching model are
+authorized. Browser-visible Phase 2 work is not authorized.
+
+### Binding addendum
+
+The accepted principal cognitive order is:
 
 ```text
-Linear Systems: problem → landscape → selected runnable method → concepts
-                → after-solve checks → Data
-
-ODE:            choose one of eight isolated method cards → Data
-                → learn more from later output
+Problem
+  -> Landscape
+  -> Selected method lens
+  -> Selected concepts
+  -> After-solve guidance
+  -> Continue to Data
 ```
 
-The Maintainer decision is to align ODE toward the Linear Systems
-teaching-first philosophy while preserving ODE's richer method choice,
-first-/second-order profiles, Compare, presets, editable problem,
-experimentation, charts, exact comparison, Convergence, Tutor, and Glossary.
-The active milestone is **Cross-Lab Method Teaching Alignment v2**.
+Compare is a secondary branch attached to the landscape. A compact entry may
+appear within or immediately after it, but no full Compare teaching section
+may interrupt Landscape → Selected method lens. Detailed comparison teaching
+appears only after the learner enters Compare.
 
-The implementation-ready design is
-[`docs/superpowers/specs/2026-08-22-cross-lab-method-teaching-alignment-v2-design.md`](superpowers/specs/2026-08-22-cross-lab-method-teaching-alignment-v2-design.md).
-It selects a **Landscape to Lens** composition: teach the IVP, survey three
-truthful method families, keep one real selected runnable method as the deep
-teaching focus, prepare the learner to inspect output, and then continue to
-Data. It contains complete profiles and an authority ledger for Forward Euler,
-Backward Euler, Taylor 2, RK4, Adams-Bashforth, Adams-Moulton, BDF, and
-Leap-Frog. It explicitly gates conflicting or incomplete source claims about
-the Adams-Moulton/BDF default nonlinear solve, BDF6 startup-limited observed
-behavior, Taylor derivative detail, Leap-Frog update notation, and broad
-stability claims.
+Method selection chooses family and Data owns editable order. Selecting an
+ordered family preserves that family's initialized stored order. Default order
+applies only at initial session construction, the existing New experiment /
+reset contract, or when the family has never been initialized under current
+product authority. Reselecting Adams-Bashforth, Adams-Moulton, or BDF must not
+replace its prior order with catalog default metadata.
 
-The separately gated repository plan is
-[`docs/superpowers/plans/2026-08-22-cross-lab-method-teaching-alignment-v2-implementation-plan.md`](superpowers/plans/2026-08-22-cross-lab-method-teaching-alignment-v2-implementation-plan.md).
-It is **unauthorized for execution** until the design is accepted and a bounded
-phase is explicitly assigned. Product implementation has not started.
+Selection does not auto-scroll. **Read selected method** is not mandatory and
+may be introduced later only if Phase 2 browser evidence shows a meaningful
+orientation problem, especially on mobile.
 
-This design checkpoint changes no production product files or implemented
-architecture. Numerical methods, formulas, coefficients, supported orders,
-startup, tolerances, budgets, presets, Data, Run, Compare numerics, Output,
-Convergence, session state, routes, lifecycle, lazy boundaries, Motion, Tutor,
-Glossary, Linear Systems, PDE, and dependencies are unchanged. The current
-product remains at starting HEAD
-`411e641d8cc6b14240acc408130876781fb1ee84` / tree
-`92f79cba8bdabafb9a97e3a99d76ddff853fe35c`; the documentation commits after
-that baseline do not change runtime product behavior. No push or deployment
-was performed.
+Future diagrams are bounded to: Forward/Backward Euler update or endpoint
+relation; RK4 stage-sampling path; Adams-Bashforth/Adams-Moulton/BDF history
+rail with predictor/corrector variant; and Leap-Frog staggered-state rail.
+Taylor 2 begins with formula anatomy and ordered process unless later evidence
+supports a derivative-chain diagram. Phase 0/1 implements no diagram.
 
-Cross-Lab Presentation Phase 7 is **paused**, not failed or completed. Do not
-implement this redesign or resume the release audit. The exact next gate is
-**Maintainer review and acceptance of the Cross-Lab Method Teaching Alignment
-v2 design specification**.
+### Numerical and content authority decisions
+
+- **Adams-Moulton/BDF:** current UI-default teaching says Newton. The
+  Adams-Bashforth predictor seeds the Adams-Moulton corrector and is not the
+  accepted corrected value. Newton convergence is not accuracy and is not
+  method stability. Fixed-point remains a genuine internal kernel override.
+- **BDF6:** theoretical metadata order remains 6. The landscape exposes range
+  1–6; selected teaching exposes theoretical order; advanced limitation copy
+  may identify current fixed-RK4-startup evidence approaching order 5 without
+  redefining BDF6 theory.
+- **Taylor 2:** beginner teaching says the Lab internally estimates the needed
+  derivative information from the entered RHS. Centered `f_t`/`f_y`
+  approximations and the current five-RHS-evaluation count are advanced detail.
+  The fixed difference scale is implementation detail only, not an input or
+  new public numerical contract.
+- **Leap-Frog:** approved teaching distinguishes the staggered half-step
+  velocity update, whole-step position update, and full-step velocity
+  reconstruction stored for output, and says that this is the update used by
+  the current Lab. It does not imply velocity-dependent acceleration, general
+  second-order systems, Compare, exact-reference input, or Convergence.
+- **Stability:** only the existing Backward Euler A-stability qualifier for the
+  scalar test equation, preset-specific observation guidance, and other
+  explicitly source-backed qualified statements may publish. No global method
+  ranking or unsupported broad stability claim is accepted.
+
+These decisions authorize copy and teaching authority only. They do not change
+algorithms, coefficients, formulas, startup, tolerances, iteration behavior,
+diagnostics, grids, metadata order, or Convergence classification.
+
+### Phase 0 source outcome
+
+The required source/caller/test inventory found no numerical-behavior conflict:
+
+- `solvers.ts` defaults all current UI implicit runs to Newton while retaining
+  the internal `fixed_point` override and method-specific diagnostics;
+- Adams-Moulton uses an order-matched Adams-Bashforth predictor as the initial
+  guess for the implicit corrector;
+- BDF metadata remains theoretical order 6 and current focused evidence owns
+  the fixed-RK4-startup order-five limitation;
+- Taylor 2 estimates `f_t` and `f_y` with centered evaluations and performs
+  five RHS evaluations per step; and
+- Leap-Frog uses the accepted half-step velocity, whole-step position, and
+  stored full-step velocity reconstruction.
+
+The audit found two stale learner-facing copy owners: the product-visible
+Adams-Moulton catalog blurb and AM/BDF solver-result notes. Phase 0 narrowly
+aligns them with the actual run's nonlinear diagnostic method. Dynamic
+fixed-point failure/diagnostic/Tutor wording is retained because it truthfully
+describes the genuine internal override. No solver selection, tolerance,
+iteration, formula, coefficient, startup, diagnostic value, or arithmetic is
+changed.
+
+Phase 0 used a tests-first copy gate. The new catalog/result-note assertions
+first failed in 2 places against the stale strings (62 existing assertions
+still passed), then the focused catalog/solver run passed 2 files / 64 tests
+after the narrow correction. The numerics workspace typecheck, active-document
+relative-link validation, and `git diff --check` pass.
+
+Phase 0 changes no layout, CSS, session schema, Compare behavior, Output
+structure, Convergence behavior, Tutor behavior, Glossary behavior, Linear
+Systems, Motion, PDE, dependency, route, lazy boundary, or implemented
+architecture. The only current browser-visible product change is the approved
+narrow correction of stale method/result wording; there is no ODE Method UI
+redesign. No push, Preview, Production deployment, or release claim is made.
+
+Cross-Lab Presentation Phase 7 remains **PAUSED**. After Phase 1, the exact
+next gate is **independent mathematical/content audit of the Phase 1 teaching
+registry**, followed by separate Maintainer authorization before Phase 2
+opening/landscape implementation.
 
 ## Cross-Lab Presentation Sync Phase 5 — Maintainer accepted — 2026-08-21
 

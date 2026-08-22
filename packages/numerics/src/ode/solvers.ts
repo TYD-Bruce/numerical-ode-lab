@@ -302,6 +302,10 @@ function buildMetadata(
   const cat = catalogByFamily(config.family);
   const order = validateOrder(config.family, config.order ?? cat.orderDefault);
   const notes: string[] = [];
+  const nonlinearIteration =
+    implicitDiagnostics?.nonlinearMethod === "fixed_point"
+      ? "fixed-point iteration"
+      : "Newton iteration";
 
   if (cat.isImplicit) {
     if (config.family === "backward_euler") {
@@ -310,14 +314,14 @@ function buildMetadata(
       );
     } else if (config.family === "adams_moulton") {
       notes.push(
-        "Adams-Moulton is implicit. The app uses an Adams-Bashforth predictor and fixed-point correction."
+        `Adams-Moulton is implicit. An Adams-Bashforth predictor seeds the corrector; this run solves the implicit relation with ${nonlinearIteration}.`
       );
     } else if (config.family === "bdf") {
       notes.push(
         "BDF methods are usually restricted to orders 1 through 6 in standard practical use."
       );
       notes.push(
-        "Each BDF step solves for uₙ₊₁ with scalar fixed-point iteration."
+        `Each BDF step solves for uₙ₊₁ with scalar ${nonlinearIteration}.`
       );
     }
   }

@@ -2,7 +2,8 @@
 
 **Date:** 2026-08-22
 
-**Status:** Design companion; **unauthorized for execution until Maintainer acceptance**
+**Status:** Design accepted with binding addendum; **Phase 0 and Phase 1 only
+are authorized**. Phase 2 and later phases remain separately gated.
 
 **Milestone:** Cross-Lab Method Teaching Alignment v2
 
@@ -10,7 +11,8 @@
 
 **Current product baseline:** `411e641d8cc6b14240acc408130876781fb1ee84` / tree `92f79cba8bdabafb9a97e3a99d76ddff853fe35c`
 
-**Execution gate:** Maintainer review and acceptance of the design, followed by explicit authorization for the first bounded phase
+**Execution gate:** Phase 0 authority confirmation followed by the additive
+Phase 1 pure teaching model. Stop before Phase 2.
 
 ## 1. Purpose and stop condition
 
@@ -18,19 +20,39 @@ This plan maps the accepted design direction to current repository owners so a l
 
 It is deliberately staged. Each implementation phase must start clean, add focused behavioral evidence before or with its source change, finish with a narrow reviewable commit, and stop at its named review gate. A later task must not infer authority to execute the next phase from this document.
 
-This documentation task stops after authoring and recording the plan. It does not modify product source, CSS, tests, routes, sessions, numerical code, or architecture; it does not resume Presentation Phase 7.
+The current bounded task stops after Phase 1. It may add pure reviewed teaching
+content/selectors/tests and narrowly align stale learner-facing catalog/result-
+note wording, but it does not modify browser-visible ODE composition, CSS,
+routes, sessions, numerical behavior, or architecture; it does not resume
+Presentation Phase 7.
 
-## 2. Required authority before implementation
+## 2. Recorded binding authority
 
-The following decisions must be recorded before affected learner copy ships:
+The Maintainer accepted **Landscape to Lens** and resolved the former authority
+questions at documentation checkpoint
+`bfe5d514c67b1f5c00a1bc71b128f158e4811a5a`:
 
-1. **Maintainer:** accept the design’s **Landscape to Lens** direction, three landscape groups, selected-method interaction, Compare placement, and Method-to-Data transition.
-2. **Numerical authority:** approve Newton-based learner wording for Adams-Moulton and BDF, superseding the stale fixed-point catalog/result notes for UI-default runs while retaining the internal fixed-point override.
-3. **Numerical authority:** approve the BDF6 theoretical-order versus RK4-startup-limited observed-behavior wording.
-4. **Numerical and mathematical-presentation authority:** approve the exact Leap-Frog staggered equations and accessible verbalization.
-5. **Numerical authority:** confirm the publication boundary for Taylor’s internal centered derivative approximations and evaluation-count detail.
+1. principal order is Problem → Landscape → Selected method lens → Selected
+   concepts → After-solve guidance → Continue to Data;
+2. Compare is a secondary branch attached to the landscape, with detailed
+   teaching only after entry;
+3. method selection chooses family, Data owns editable order, and initialized
+   family-specific order survives reselection; default metadata applies only
+   at initial construction, New experiment/reset, or first initialization;
+4. selection does not auto-scroll, and **Read selected method** is optional
+   pending Phase 2 browser evidence;
+5. the initial future diagrams are FE/BE update relation, RK4 stage path,
+   AB/AM/BDF history rail with predictor/corrector variant, and Leap-Frog
+   staggered rail; Taylor begins with formula anatomy/process;
+6. UI-default implicit teaching says Newton while fixed-point remains an
+   internal override; BDF6 theory remains order 6 with a qualified current
+   startup limitation; Taylor's internal centered estimates/five-evaluation
+   count are approved at the stated depth; Leap-Frog's current staggered update
+   is approved; and stability claims remain source-qualified only.
 
-If any decision changes numerical behavior, supported inputs, algorithms, or contracts rather than copy, stop. That is a separate numerical design task; it must not be absorbed into this presentation implementation.
+These are copy and teaching-authority decisions. If implementation inspection
+finds a numerical-behavior conflict, stop. No supported input, algorithm,
+coefficient, startup, tolerance, diagnostic, or contract may change here.
 
 ## 3. Invariants for every phase
 
@@ -53,9 +75,11 @@ If any decision changes numerical behavior, supported inputs, algorithms, or con
 
 ### 3.3 Experience invariants
 
-- Preserve the cognitive order: Problem → Landscape → Selected profile → Concepts → After the solve → Data transition.
+- Preserve the cognitive order: Problem → Landscape → Selected profile → Concepts → After the solve → Data transition. Compare remains a secondary branch rather than an inserted primary section.
 - Keep the complete landscape shallow and only the selected profile deep.
 - Selection stays on Method; **Continue to Data** owns the primary transition.
+- Selection preserves initialized family-specific order. Default-order metadata
+  never replaces a supplied current order; Data remains the editable owner.
 - Keep mathematics visually and semantically stronger than UI chrome.
 - Preserve keyboard operation, visible focus, non-color state, safe formula rendering, meaningful mobile order, Light/Dark parity, and no page-level overflow.
 
@@ -129,7 +153,9 @@ Proposed commit sequence appears with each phase. Exact messages may be adjusted
 - No product behavior change.
 - Stop for numerical-authority/Maintainer review if any owner disagrees with the design ledger.
 
-**Suggested commit:** `Resolve ODE method teaching authority` only if an approved canonical authority document or stale metadata copy must be updated. Otherwise Phase 0 creates no commit.
+**Authorized commit:** `Record ODE teaching authority decisions`. It records
+the accepted addendum and may include only the approved narrow stale-copy
+corrections proved by focused tests.
 
 **Rollback:** documentation-only revert; no numerical/product state is involved.
 
@@ -150,6 +176,8 @@ Test that:
 - exactly one profile exists for every current `METHOD_CATALOG` family and no unknown profile exists;
 - identity, profile, explicit/implicit, one-/multistep, supported/default order, and Compare eligibility are derived from current catalog authority;
 - configurable order truth is sourced, not hand-copied into prose logic;
+- selectors accept the caller-supplied current family order, preserve it on
+  reselection, and never choose, mutate, or reset order from default metadata;
 - suggested presets are resolved from `PROBLEM_PRESETS`, while all first-order presets remain available;
 - every profile supplies core idea, primary formula reference, accessible verbalization, process, concepts, watch point, observation prompt, result/Convergence availability, and review-safe claim IDs;
 - unresolved/forbidden claim text cannot appear in publishable content;
@@ -263,7 +291,9 @@ Verify that:
 - Adams-Moulton distinguishes AB prediction from the accepted Newton-corrected value and never renders stale fixed-point learner copy;
 - BDF distinguishes solution history from Adams slope history, states current order range, and uses the approved BDF6 limitation wording;
 - Leap-Frog teaches `u''=a(t,u)`, `u₀`, `v₀`, the approved staggered initialization/update/reconstruction, and no velocity-dependent/general-system promise;
-- changing an ordered family/profile reflects the existing stored/default order without putting an order control in Method;
+- changing an ordered family/profile reflects its supplied existing stored
+  order without putting an order control in Method or replacing that order
+  with catalog default metadata;
 - preset suggestions are truthful and never filter availability;
 - Leap-Frog has no preset selector, exact-reference promise, Compare entry, or Convergence action;
 - coefficient displays consume current generated/result metadata and are absent when no successful relevant result exists.
@@ -305,7 +335,10 @@ Cover the cross-profile behaviors:
 ### 12.2 Implement integration
 
 - Finish the selected concepts and after-solve sections with reviewed content records and existing Output/Convergence terminology.
-- Place Compare after the first-order landscape decision context or in the selected-profile exploration endcap exactly as accepted; do not turn it into a ninth method.
+- Keep a compact Compare entry within or immediately after the landscape and
+  render detailed comparison teaching only after entry. Do not insert Compare
+  as a primary section between Landscape and the selected profile or turn it
+  into a ninth method.
 - Wire the single primary Continue to Data action through current step navigation and selected session authority.
 - Remove obsolete Method card-wall copy/markup only after tests cover all existing navigation and selection responsibilities. Do not delete reusable shared presentation primitives merely because this composition no longer uses one instance.
 - Keep Tutor and Glossary behavior out of scope. Existing annotations may continue where their accepted owners attach them; do not add new production terms/cards/requests.
@@ -505,7 +538,9 @@ An eventual implementation is ready for the independent audit only when all are 
 - [ ] All eight runnable methods remain present and numerically unchanged.
 - [ ] Problem, landscape, selected method, concepts, after-solve, and Data transition appear in the accepted cognitive order.
 - [ ] The landscape is complete/shallow and the selected profile singular/deep.
-- [ ] Selection uses existing session authority, stays on Method, and preserves result/state/lifecycle contracts.
+- [ ] Selection uses existing session authority, stays on Method, preserves
+      initialized family-specific order, and preserves result/state/lifecycle
+      contracts.
 - [ ] Compare remains a truthful secondary first-order workflow; Leap-Frog remains excluded.
 - [ ] All eight profiles pass authority/content tests and independent mathematical review.
 - [ ] Adams-Moulton/BDF, BDF6, Taylor, and Leap-Frog gated language matches recorded decisions.
@@ -520,4 +555,8 @@ An eventual implementation is ready for the independent audit only when all are 
 
 ## 20. Exact next gate
 
-The next action is **Maintainer review and acceptance of the Cross-Lab Method Teaching Alignment v2 design specification**. Do not execute Phase 0 or any production change, do not resume the Presentation release audit, and do not push or deploy until separately authorized.
+After the authorized Phase 0 and Phase 1 stop, the next action is an
+**independent mathematical/content audit of the Phase 1 teaching registry**.
+Phase 2 opening/landscape implementation then requires separate Maintainer
+authorization. Do not modify the real ODE Method UI or CSS, resume the paused
+Presentation Phase 7 release audit, push, or deploy under this task.

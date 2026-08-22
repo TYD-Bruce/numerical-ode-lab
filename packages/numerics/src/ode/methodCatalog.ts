@@ -86,7 +86,7 @@ export const METHOD_CATALOG: MethodCatalogEntry[] = [
     family: "adams_moulton",
     displayName: "Adams-Moulton",
     shortLabel: "Adams-Moulton",
-    blurb: "Implicit multistep method; Adams-Bashforth predictor and fixed-point correction.",
+    blurb: "Implicit multistep method; an Adams-Bashforth predictor seeds a Newton-solved corrector in current UI runs.",
     mode: "first",
     orderDefault: 2,
     orderMin: 1,

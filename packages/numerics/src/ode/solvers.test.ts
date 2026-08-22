@@ -414,6 +414,37 @@ describe("multistep minimum-grid contract", () => {
 });
 
 describe("implicit Newton diagnostics", () => {
+  it("reports the actual nonlinear method in Adams-Moulton and BDF result notes", () => {
+    const defaultAm = integrateFirstOrder(
+      { family: "adams_moulton", order: 1 },
+      { t0: 0, y0: 1, tEnd: 0.1, h: 0.1, f: (_t, y) => -y }
+    );
+    const defaultBdf = integrateFirstOrder(
+      { family: "bdf", order: 1 },
+      { t0: 0, y0: 1, tEnd: 0.1, h: 0.1, f: (_t, y) => -y }
+    );
+    const fixedPointAm = integrateFirstOrder(
+      { family: "adams_moulton", order: 1 },
+      {
+        t0: 0,
+        y0: 1,
+        tEnd: 0.1,
+        h: 0.1,
+        f: (_t, y) => -y,
+        implicitSolver: { method: "fixed_point" },
+      }
+    );
+
+    expect(defaultAm.metadata.notes.join(" ")).toContain("Newton iteration");
+    expect(defaultBdf.metadata.notes.join(" ")).toContain("Newton iteration");
+    expect(defaultAm.metadata.notes.join(" ").toLowerCase()).not.toContain(
+      "fixed-point correction"
+    );
+    expect(fixedPointAm.metadata.notes.join(" ")).toContain(
+      "fixed-point iteration"
+    );
+  });
+
   it("solves stiff Backward Euler even though its fixed-point map is non-contractive", () => {
     const h = 0.1;
     const result = integrateFirstOrder(
