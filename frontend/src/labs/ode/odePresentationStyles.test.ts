@@ -41,3 +41,17 @@ describe("ODE Phase 3 presentation typography", () => {
     );
   });
 });
+
+describe("ODE selected-method presentation ownership", () => {
+  it("keeps the selected rail on the shell and one generalized inset on its content", () => {
+    const shellRailRule = styles.match(
+      /\.ode-selected-method-shell\s*\{[^}]*border-inline-start:[^}]*\}/
+    )?.[0];
+    const contentRule = rule(".ode-selected-method-content");
+
+    expect(shellRailRule).toContain("border-inline-start");
+    expect(shellRailRule).not.toMatch(/\bpadding(?:\s*:|-inline)/);
+    expect(contentRule).toContain("padding:");
+    expect(contentRule).not.toContain("border-inline-start");
+  });
+});

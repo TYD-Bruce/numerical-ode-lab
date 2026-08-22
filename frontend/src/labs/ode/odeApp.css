@@ -260,7 +260,7 @@
 
 .ode-problem-foundation > h2,
 .ode-method-landscape > h2,
-.ode-selected-method-shell > h2 {
+.ode-selected-method-content > h2 {
   margin: 0;
   font-size: var(--lab-type-stage-title-size);
   line-height: var(--lab-type-stage-title-line);
@@ -498,16 +498,20 @@
 }
 
 .ode-selected-method-shell {
-  display: grid;
-  gap: var(--space-3);
-  padding: clamp(var(--space-5), 3vw, var(--lab-space-block));
   border: 1px solid var(--lab-stage-method-border);
   border-inline-start: var(--space-2) solid var(--lab-stage-method-accent);
   border-radius: var(--lab-radius-section);
   background: var(--lab-stage-method-surface);
 }
 
-.ode-selected-method-shell > h2:focus-visible {
+.ode-selected-method-content {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: clamp(var(--space-4), 3vw, var(--lab-space-block));
+}
+
+.ode-selected-method-content > h2:focus-visible {
   outline: var(--lab-focus-ring-width) solid var(--lab-focus-ring-color);
   outline-offset: var(--lab-focus-ring-offset);
 }
@@ -1358,7 +1362,7 @@
   .ode-problem-primary,
   .ode-problem-example,
   .ode-second-order-boundary,
-  .ode-selected-method-shell,
+  .ode-selected-method-content,
   .ode-method-data-transition {
     padding-inline: var(--space-3);
   }

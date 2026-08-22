@@ -158,9 +158,29 @@ describe("ODE Phase 2 Method opening", () => {
       1
     );
     expect(methodControl(landscape, "Forward Euler").ariaPressed).toBe("true");
-    expect(target.querySelector("[data-selected-method-shell]")?.textContent).toContain(
-      "Forward Euler"
+    const selectedShell = target.querySelector<HTMLElement>(
+      "[data-selected-method-shell]"
+    )!;
+    const selectedContent = selectedShell.querySelector<HTMLElement>(
+      "[data-selected-method-content]"
     );
+    expect(selectedShell.textContent).toContain("Forward Euler");
+    expect(selectedContent).not.toBeNull();
+    expect(selectedContent?.parentElement).toBe(selectedShell);
+    expect(selectedShell.children).toHaveLength(1);
+    expect(selectedContent?.querySelector(".ode-method-eyebrow")).not.toBeNull();
+    expect(
+      selectedContent?.querySelector("[data-selected-method-shell-heading]")
+    ).not.toBeNull();
+    expect(
+      selectedContent?.querySelector(".ode-selected-method-metadata")
+    ).not.toBeNull();
+    expect(
+      selectedContent?.querySelector("[data-selected-method-formula]")
+    ).not.toBeNull();
+    expect(selectedContent?.querySelector(".ode-selected-availability")).not.toBeNull();
+    expect(selectedContent?.querySelector(".ode-selected-next")).not.toBeNull();
+    expect(selectedContent?.querySelector("[data-selected-method-shell]")).toBeNull();
     expect(
       target.querySelector<HTMLButtonElement>("[data-compare]")?.hasAttribute(
         "data-method-family"

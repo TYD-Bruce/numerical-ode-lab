@@ -1470,6 +1470,9 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     shell.className = "ode-selected-method-shell";
     shell.dataset.selectedMethodShell = "true";
     shell.dataset.selectedMethod = profile.identity.family;
+    const content = document.createElement("div");
+    content.className = "ode-selected-method-content";
+    content.dataset.selectedMethodContent = "true";
     const eyebrow = document.createElement("p");
     eyebrow.className = "ode-method-eyebrow";
     eyebrow.textContent = "Selected runnable method";
@@ -1514,13 +1517,13 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       );
     }
 
-    shell.append(eyebrow, heading, idea, metadata);
+    content.append(eyebrow, heading, idea, metadata);
     if (profile.identity.family !== "leapfrog") {
       const formula = document.createElement("div");
       formula.className = "ode-selected-method-formula";
       formula.dataset.selectedMethodFormula = "true";
       renderReadonlyMath(formula, profile.primaryFormula, { display: "block" });
-      shell.append(formula);
+      content.append(formula);
     }
 
     const availability = document.createElement("p");
@@ -1532,7 +1535,8 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     next.className = "ode-selected-next";
     next.textContent =
       "Deeper teaching follows in this selected-method area: update steps, key concepts, and after-solve guidance.";
-    shell.append(availability, next);
+    content.append(availability, next);
+    shell.append(content);
     return shell;
   }
 
