@@ -2,6 +2,67 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
+## Cross-Lab Method Teaching Alignment v2 — design checkpoint — 2026-08-22
+
+Cross-Lab Presentation Sync Phases 0 through 6 are implemented. Phase 6's
+entry-safe `ModuleOverview` and proven duplicate-style cleanup passed its
+independent audit by the current product baseline
+`411e641d8cc6b14240acc408130876781fb1ee84` (tree
+`92f79cba8bdabafb9a97e3a99d76ddff853fe35c`). This checkpoint does **not**
+record Phase 6 Maintainer acceptance.
+
+Maintainer visual review found a cross-Lab pedagogical-alignment gap before
+Presentation v1 can be frozen. The existing shared presentation components are
+not the problem. The Initial Value Problems and Linear Systems Labs now share
+visual grammar, but their Method stages use different cognitive models:
+
+```text
+Linear Systems: problem → landscape → selected runnable method → concepts
+                → after-solve checks → Data
+
+ODE:            choose one of eight isolated method cards → Data
+                → learn more from later output
+```
+
+The Maintainer decision is to align ODE toward the Linear Systems
+teaching-first philosophy while preserving ODE's richer method choice,
+first-/second-order profiles, Compare, presets, editable problem,
+experimentation, charts, exact comparison, Convergence, Tutor, and Glossary.
+The active milestone is **Cross-Lab Method Teaching Alignment v2**.
+
+The implementation-ready design is
+[`docs/superpowers/specs/2026-08-22-cross-lab-method-teaching-alignment-v2-design.md`](superpowers/specs/2026-08-22-cross-lab-method-teaching-alignment-v2-design.md).
+It selects a **Landscape to Lens** composition: teach the IVP, survey three
+truthful method families, keep one real selected runnable method as the deep
+teaching focus, prepare the learner to inspect output, and then continue to
+Data. It contains complete profiles and an authority ledger for Forward Euler,
+Backward Euler, Taylor 2, RK4, Adams-Bashforth, Adams-Moulton, BDF, and
+Leap-Frog. It explicitly gates conflicting or incomplete source claims about
+the Adams-Moulton/BDF default nonlinear solve, BDF6 startup-limited observed
+behavior, Taylor derivative detail, Leap-Frog update notation, and broad
+stability claims.
+
+The separately gated repository plan is
+[`docs/superpowers/plans/2026-08-22-cross-lab-method-teaching-alignment-v2-implementation-plan.md`](superpowers/plans/2026-08-22-cross-lab-method-teaching-alignment-v2-implementation-plan.md).
+It is **unauthorized for execution** until the design is accepted and a bounded
+phase is explicitly assigned. Product implementation has not started.
+
+This design checkpoint changes no production product files or implemented
+architecture. Numerical methods, formulas, coefficients, supported orders,
+startup, tolerances, budgets, presets, Data, Run, Compare numerics, Output,
+Convergence, session state, routes, lifecycle, lazy boundaries, Motion, Tutor,
+Glossary, Linear Systems, PDE, and dependencies are unchanged. The current
+product remains at starting HEAD
+`411e641d8cc6b14240acc408130876781fb1ee84` / tree
+`92f79cba8bdabafb9a97e3a99d76ddff853fe35c`; the documentation commits after
+that baseline do not change runtime product behavior. No push or deployment
+was performed.
+
+Cross-Lab Presentation Phase 7 is **paused**, not failed or completed. Do not
+implement this redesign or resume the release audit. The exact next gate is
+**Maintainer review and acceptance of the Cross-Lab Method Teaching Alignment
+v2 design specification**.
+
 ## Cross-Lab Presentation Sync Phase 5 — Maintainer accepted — 2026-08-21
 
 The Maintainer formally accepts **Cross-Lab Presentation Sync Phase 5** at

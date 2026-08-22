@@ -2,9 +2,35 @@
 
 ## Current status
 
-**Active milestone: Cross-Lab Presentation Sync — Phases 0 through 5
-Maintainer accepted; Phase 6 ModuleOverview and proven duplicate-style cleanup
-is implemented and locally verified as an audit candidate.**
+**Active milestone: Cross-Lab Method Teaching Alignment v2 — design and
+repository-grounded implementation plan authored; product implementation has
+not started; Maintainer design acceptance is the next gate.**
+
+Cross-Lab Presentation Sync Phases 0 through 6 are implemented. The Phase 6
+entry-safe `ModuleOverview` and proven duplicate-style cleanup passed its
+independent audit by the current product baseline
+`411e641d8cc6b14240acc408130876781fb1ee84` (tree
+`92f79cba8bdabafb9a97e3a99d76ddff853fe35c`); Phase 6 Maintainer acceptance
+is **not** recorded. Maintainer visual review then found a design-level gap:
+the Labs share presentation components and visual grammar, but ODE still uses
+a selection-first Method stage while Linear Systems uses a teaching-first
+cognitive sequence. The existing presentation components are not the problem.
+
+The new authoritative proposal is the
+[Cross-Lab Method Teaching Alignment v2 design](docs/superpowers/specs/2026-08-22-cross-lab-method-teaching-alignment-v2-design.md),
+with its separately gated
+[repository-grounded implementation plan](docs/superpowers/plans/2026-08-22-cross-lab-method-teaching-alignment-v2-implementation-plan.md).
+It aligns ODE toward the Linear Systems teaching-first philosophy while
+preserving all eight methods, method selection, Compare, experimentation,
+first-/second-order boundaries, presets, charts, exact comparison,
+Convergence, Tutor, and Glossary. No numerical, session, route, architecture,
+dependency, or production behavior changes in this documentation milestone.
+
+Cross-Lab Presentation Phase 7 is **paused**, not failed or completed. Do not
+implement the redesign or resume the release audit until the Maintainer reviews
+and accepts the new design. The previous Cross-Lab Presentation record below
+remains historical implementation evidence; any former Phase 6 candidate or
+next-gate wording is superseded by this current status.
 
 Linear Systems Teaching v2 is **MAINTAINER ACCEPTED** at commit
 `484fc9153de33be7949e82b29386c94fe63d19c8` (tree
@@ -162,9 +188,13 @@ boundaries remain intact. Numerical behavior, Computation Trace, Teaching v2,
 session schemas, ODE Compare/core Output, PDE, dependencies, push, deployment,
 and Production state are unchanged.
 
-Phase 6 is implemented and locally verified as an audit candidate through
+Phase 6 implementation ends at
 `204e35a1cf23e1c4ebcdfd53fe96f578179acb74` (tree
-`f04328fcf9af7c7e663803091f92098e869ddebf`). Entry-safe
+`f04328fcf9af7c7e663803091f92098e869ddebf`) and subsequently passed its
+independent audit by product baseline
+`411e641d8cc6b14240acc408130876781fb1ee84` (tree
+`92f79cba8bdabafb9a97e3a99d76ddff853fe35c`). Phase 6 Maintainer acceptance
+is not recorded. Entry-safe
 `frontend/src/pages/moduleOverview.ts` now composes `/ode`,
 `/linear-algebra`, and `/pde` through one native-heading/status/action grammar
 while caller-owned copy and nodes remain domain-authored. ODE and Linear
@@ -194,10 +224,12 @@ AnalysisSurface, ODE Compare/core Output, Motion, Linear Algebra
 Tutor/Glossary, PDE implementation, dependencies, push, deployment, and
 Production state are unchanged.
 
-The exact next gate is **independent Phase 6 overview / cleanup /
-lazy-boundary audit**, followed by **Maintainer visual review**. Phase 7 and
-later feature work remain unauthorized; do not begin the independent audit,
-Motion remount, Linear Algebra Tutor/Glossary, or PDE work in this phase.
+The former next gate—independent Phase 6 overview / cleanup / lazy-boundary
+audit—has passed. Maintainer visual review identified the Method-stage
+pedagogical-alignment gap now governed by the new v2 design above. Phase 7 is
+paused; do not implement the redesign, resume the release audit, remount
+Motion, begin Linear Algebra Tutor/Glossary, or begin PDE work without a
+separate authorization.
 
 ## Superseded Teaching v2 execution record
 

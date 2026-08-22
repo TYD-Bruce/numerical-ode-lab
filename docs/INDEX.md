@@ -25,57 +25,29 @@
 
 ## Current active milestone
 
-`PLAN.md` points to **Cross-Lab Presentation Sync**. Linear Systems Teaching v2
-is **MAINTAINER ACCEPTED** at commit
-`484fc9153de33be7949e82b29386c94fe63d19c8` (tree
-`509d245adb745d272e2a5c8185fb678b6e15009d`), and its final teaching-copy audit
-passed with `P0 = P1 = P2 = P3 = 0`. Motion remains paused and unmounted;
-Linear Algebra Tutor remains later; no Preview or Production deployment has
-occurred.
+`PLAN.md` points to **Cross-Lab Method Teaching Alignment v2**. Cross-Lab
+Presentation Sync Phases 0 through 6 are implemented. Phase 6 entry-safe
+`ModuleOverview` and proven duplicate-style cleanup passed its independent
+audit by product baseline `411e641d8cc6b14240acc408130876781fb1ee84`
+(tree `92f79cba8bdabafb9a97e3a99d76ddff853fe35c`); Phase 6 Maintainer acceptance
+is not recorded.
 
-The maintainer-approved
-[Cross-Lab Presentation System v1 design](superpowers/specs/2026-08-12-cross-lab-presentation-system-v1-design.md)
-and
-[repository-grounded implementation plan](superpowers/plans/2026-08-12-cross-lab-presentation-system-v1-implementation-plan.md)
-govern the active milestone. Phase 0 is **MAINTAINER ACCEPTED** at final HEAD
-`0c392e218dd7006d43811ddc4d7401a0ccb7c495` (tree
-`3d0bc052f9a2e58b50aeb67b52ddb36f10dcd994`). Phase 1 is **MAINTAINER
-ACCEPTED** at final HEAD `881795715799cde4d41f7bd933303bea4db1f8a8`
-(tree `5a64a6973ecddf710cad51c01220f7cacd646bdb`). Phase 2 was implemented as a
-locally verified review candidate at
-`6add7174fb160cf4e377664d486905152583e4c2` (tree
-`3f7dd9c49106c2e4631c6e01dde789cb051a4178`) and is **MAINTAINER ACCEPTED
-WITH P3 CARRY-FORWARD** at HEAD
-`331bea3e695fb59620e7c316a27480549643c6f4` (tree
-`9e49edeae9aff206435dca577933046189a86ddc`). Its independent audit reported
-`P0 = 0`, `P1 = 0`, `P2 = 0`, and `P3 = 4`.
+Maintainer visual review found that shared components and visual grammar did
+not yet align the Labs' Method-stage cognitive models. Linear Systems teaches
+the problem, landscape, selected runnable method, concepts, after-solve checks,
+and then Data; ODE still begins with eight isolated selections. The new
+[Cross-Lab Method Teaching Alignment v2 design](superpowers/specs/2026-08-22-cross-lab-method-teaching-alignment-v2-design.md)
+selects a teaching-first **Landscape to Lens** direction that preserves ODE's
+eight methods, Compare, first-/second-order profiles, and experimentation. Its
+[repository-grounded implementation plan](superpowers/plans/2026-08-22-cross-lab-method-teaching-alignment-v2-implementation-plan.md)
+is separately gated and unauthorized for execution.
 
-Phase 3 is **MAINTAINER ACCEPTED** at final HEAD
-`1e9080f110385fe635885d28cd4a17e810c8421a` (tree
-`1dc5b52346fadadf2f92d8ffa2169e7f5dc50cd8`) after its final correction
-re-audit passed with `P0 = P1 = P2 = P3 = 0`.
-
-Phase 4 is **MAINTAINER ACCEPTED** at final HEAD
-`692551774966bd9774900ecfef3d7fe03de61d7e` (tree
-`6d7db2ed156a2c6415d1b362ea870fae4ff0c7ef`) after the final audit and
-Maintainer visual review passed with `P0 = P1 = P2 = P3 = 0`.
-
-Phase 5 shared Analysis presentation is **MAINTAINER ACCEPTED** at final HEAD
-`371d151568abb426059da638d8b69c8f6af98227` (tree
-`9ccd00bf5693ae3e6d66efc28f4c317423b4d103`) with final severity
-`P0 = P1 = P2 = P3 = 0`.
-
-Phase 6 entry-safe `ModuleOverview` and proven duplicate-style cleanup is
-implemented and locally verified as an audit candidate through
-`204e35a1cf23e1c4ebcdfd53fe96f578179acb74` (tree
-`f04328fcf9af7c7e663803091f92098e869ddebf`). `/ode`, `/linear-algebra`, and
-`/pde` now share one truthful native overview grammar; Home remains on its
-accepted dedicated cards in Linear Algebra → ODE → PDE order, and PDE remains
-roadmap-only. Only selectors with proven replacement ownership and zero real
-consumers were retired; mathematical and dormant Motion styles remain local.
-The exact next gate is **independent Phase 6 overview / cleanup /
-lazy-boundary audit**, followed by **Maintainer visual review**. Phase 7+
-remains unauthorized.
+Product implementation has not started. Numerical behavior, sessions, routes,
+implemented architecture, Linear Systems Teaching v2, Motion, Tutor, Glossary,
+PDE, dependencies, push, deployment, and Production state are unchanged.
+Cross-Lab Presentation Phase 7 is **paused**, not failed or completed. The
+exact next gate is **Maintainer review and acceptance of the Cross-Lab Method
+Teaching Alignment v2 design**.
 
 ## Superseded Teaching v2 milestone record
 
@@ -307,7 +279,8 @@ maintainer acceptance of the F2 review commit.
 
 | Document | Status |
 |---|---|
-| [Cross-Lab Presentation System v1 Design](superpowers/specs/2026-08-12-cross-lab-presentation-system-v1-design.md) | Maintainer approved; Phases 0–5 Maintainer accepted; Phase 6 ModuleOverview and proven duplicate-style cleanup implemented as a locally verified audit candidate; Phase 7+ unauthorized |
+| [Cross-Lab Method Teaching Alignment v2 Design](superpowers/specs/2026-08-22-cross-lab-method-teaching-alignment-v2-design.md) | Active design milestone; complete for Maintainer review; implementation not started; Presentation Phase 7 paused |
+| [Cross-Lab Presentation System v1 Design](superpowers/specs/2026-08-12-cross-lab-presentation-system-v1-design.md) | Maintainer approved; Phases 0–5 Maintainer accepted; Phase 6 implementation passed independent audit but has no recorded Maintainer acceptance; Phase 7 paused for Method teaching alignment |
 | [Linear Systems Teaching v2 Design](superpowers/specs/2026-08-11-linear-systems-teaching-v2-design.md) | Maintainer-accepted at `484fc9153de33be7949e82b29386c94fe63d19c8`; final teaching-copy audit passed P0/P1/P2/P3 = 0; Motion paused; Tutor later; not deployed |
 | [Linear Systems Lab Version 1 Design](superpowers/specs/2026-08-10-linear-systems-lab-v1-design.md) | Maintainer-approved design; Day 1/1.5 numerical evidence and Day 2 route/UI implemented locally; Tutor pending |
 | [Theme-Ready Platform Shell Design](superpowers/specs/2026-07-13-theme-ready-platform-shell-design.md) | Implemented, Vercel Preview-verified, safe to release |
@@ -321,7 +294,8 @@ maintainer acceptance of the F2 review commit.
 
 | Document | Status |
 |---|---|
-| [Cross-Lab Presentation System v1 Implementation Plan](superpowers/plans/2026-08-12-cross-lab-presentation-system-v1-implementation-plan.md) | Phases 0–5 Maintainer accepted; Phase 6 ModuleOverview and proven duplicate-style cleanup implemented as a locally verified audit candidate; Phase 7+ unauthorized |
+| [Cross-Lab Method Teaching Alignment v2 Implementation Plan](superpowers/plans/2026-08-22-cross-lab-method-teaching-alignment-v2-implementation-plan.md) | Repository-grounded and unauthorized for execution until Maintainer accepts the companion design |
+| [Cross-Lab Presentation System v1 Implementation Plan](superpowers/plans/2026-08-12-cross-lab-presentation-system-v1-implementation-plan.md) | Phases 0–5 Maintainer accepted; Phase 6 implementation passed independent audit but has no recorded Maintainer acceptance; Phase 7 paused for Method teaching alignment |
 | [Linear Systems Teaching v2 Implementation Plan](superpowers/plans/2026-08-11-linear-systems-teaching-v2-implementation-plan.md) | Executed and maintainer-accepted; final teaching-copy audit passed; Motion remount and Tutor remain separate later gates |
 | [Linear Systems Lab Version 1 Implementation Plan](superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md) | Repository-grounded; Day 1/1.5 and Day 2 implemented locally; independent product-audit corrections verified, correction re-audit next, Tutor deferred to a later gate |
 | [Theme-Ready Platform Shell Implementation Plan](superpowers/plans/2026-07-13-theme-ready-platform-shell-implementation-plan.md) | Implemented historical plan; check the final review and architecture map for current state |
