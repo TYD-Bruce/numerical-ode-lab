@@ -115,7 +115,11 @@ export interface OdeMethodAdvancedDetail {
 export type OdeMethodTeachingDiagramKind =
   | "one_step"
   | "endpoint_relation"
-  | "stage_path";
+  | "stage_path"
+  | "slope_history"
+  | "predictor_corrector"
+  | "solution_history"
+  | "staggered_state";
 
 export interface OdeMethodTeachingDiagramStep {
   readonly id: string;
@@ -563,6 +567,14 @@ const REVIEWED_CONTENT: Record<MethodFamily, OdeMethodTeachingContent> = {
       "Add the fixed step size times an order-dependent weighted sum of the current and previous stored slopes to the current approximation.",
     formulaAnatomy: [
       {
+        label: "Current solution value",
+        meaning: "The already accepted approximation u_n anchors the next update.",
+      },
+      {
+        label: "Fixed step size",
+        meaning: "The factor h scales the complete history contribution.",
+      },
+      {
         label: "Slope history",
         meaning: "An ordered window of right-hand-side values already evaluated at stored solution points.",
       },
@@ -576,11 +588,12 @@ const REVIEWED_CONTENT: Record<MethodFamily, OdeMethodTeachingContent> = {
       },
     ],
     orderedProcess: [
-      "Ensure the selected order has enough stored slope and solution history.",
-      "Form the generated weighted sum of the current and previous slopes.",
-      "Add the step-size-scaled sum to the current approximation.",
-      "Evaluate the right-hand side at the new stored value.",
-      "Shift the slope and solution history windows.",
+      "Establish enough history for the configured order p, using RK4 startup approximations when p is greater than 1.",
+      "Read the p stored slopes required by the current update.",
+      "Form the generated weighted slope-history contribution.",
+      "Advance directly from the current approximation to the new solution value.",
+      "Evaluate one new right-hand-side slope at the accepted new value.",
+      "Shift the slope and solution history windows for the next step.",
     ],
     requiredState: [
       "p stored slope entries",
@@ -588,9 +601,9 @@ const REVIEWED_CONTENT: Record<MethodFamily, OdeMethodTeachingContent> = {
       "generated Adams-Bashforth coefficients for the supplied order",
     ],
     startupHistoryRequirement:
-      "The fixed grid must satisfy N >= p. For p greater than 1, RK4 computes p minus 1 startup values; p equal to 1 needs no preliminary startup value.",
+      "The fixed grid must satisfy N >= p. For p greater than 1, RK4 computes p minus 1 startup approximations to fill history; they are part of the produced trajectory and can affect finite-run evidence. Order p equal to 1 needs no preliminary startup value.",
     perStepWork:
-      "After startup, the current kernel performs one new right-hand-side evaluation plus a weighted sum over p stored slopes.",
+      "After startup, the current kernel performs one new right-hand-side evaluation plus a weighted sum over p stored slopes, with no nonlinear solve.",
     strength:
       "It makes slope-history reuse concrete and supplies the explicit predictor used by Adams-Moulton.",
     watchPoint:
@@ -612,9 +625,41 @@ const REVIEWED_CONTENT: Record<MethodFamily, OdeMethodTeachingContent> = {
       {
         id: "adams_bashforth_history",
         title: "History and startup",
-        text: "The implementation retains slope history and consumes generated coefficients; the teaching registry does not copy a coefficient table.",
+        text: "The implementation retains slope history and consumes coefficients generated for the configured order; the teaching registry does not copy a coefficient table. RK4 startup values are computed approximations, not exact history.",
       },
     ],
+    staticDiagram: {
+      kind: "slope_history",
+      title: "Known slopes feed one explicit history update",
+      caption:
+        "Several previously known slopes form a weighted history contribution, which creates one new solution value; its newly evaluated slope then enters the history window.",
+      steps: [
+        {
+          id: "stored_slopes",
+          label: "Known history",
+          title: "Stored slopes",
+          detail: "Use the current and previous right-hand-side evaluations.",
+        },
+        {
+          id: "weighted_history",
+          label: "Order-dependent relation",
+          title: "Weight the slope history",
+          detail: "Generated beta weights depend on the configured order.",
+        },
+        {
+          id: "new_solution",
+          label: "Explicit update",
+          title: "Form the new solution value",
+          detail: "No unknown endpoint slope appears inside the update.",
+        },
+        {
+          id: "new_slope",
+          label: "Refresh history",
+          title: "Evaluate one new slope",
+          detail: "The accepted new state supplies the next stored slope.",
+        },
+      ],
+    },
     selectedConceptIds: [
       "slope_history",
       "rk4_startup",
@@ -628,7 +673,7 @@ const REVIEWED_CONTENT: Record<MethodFamily, OdeMethodTeachingContent> = {
     coreIdea:
       "Combine stored slopes with the slope at the unknown next value, using an Adams-Bashforth predictor as the initial guess for the implicit corrector.",
     accessibleVerbalization:
-      "First predict a next value from known slope history, then use the current UI-default Newton solve to satisfy the implicit corrector containing the endpoint slope.",
+      "First predict a next value from known slope history with Adams-Bashforth at the same configured order, then use the current UI-default Newton solve to satisfy the implicit corrector containing the endpoint slope. The predictor is not the accepted corrected value.",
     formulaAnatomy: [
       {
         label: "Stored slope history",
@@ -644,11 +689,13 @@ const REVIEWED_CONTENT: Record<MethodFamily, OdeMethodTeachingContent> = {
       },
     ],
     orderedProcess: [
-      "Ensure the selected order has enough stored slope and solution history.",
-      "Form an order-matched Adams-Bashforth predictor from known slopes.",
-      "Build the Adams-Moulton corrector relation containing the unknown endpoint slope.",
-      "Use the predictor as the initial guess for the current UI-default Newton solve.",
-      "Store the accepted corrected value and its new slope, then shift history.",
+      "Establish p-step slope history for the configured order.",
+      "When p is greater than 1, compute p minus 1 RK4 startup approximations to fill that history.",
+      "Form the same-order Adams-Bashforth predictor from known slopes.",
+      "Construct the Adams-Moulton endpoint relation containing the unknown next slope.",
+      "Use the predictor as the initial guess for the current UI-default Newton residual solve.",
+      "Accept the corrected value only after controlled nonlinear convergence.",
+      "Evaluate and store the new slope, then advance the history window.",
     ],
     requiredState: [
       "p stored history entries",
@@ -656,7 +703,7 @@ const REVIEWED_CONTENT: Record<MethodFamily, OdeMethodTeachingContent> = {
       "one endpoint residual solve",
     ],
     startupHistoryRequirement:
-      "The fixed grid must satisfy N >= p. For p greater than 1, RK4 computes p minus 1 startup values; p equal to 1 needs no preliminary startup value.",
+      "The fixed grid must satisfy N >= p. For p greater than 1, RK4 computes p minus 1 startup approximations to fill slope history; they remain part of the produced trajectory and can affect finite-run evidence. Order p equal to 1 needs no preliminary startup value.",
     perStepWork:
       "After startup, each step performs a history-weighted prediction and a scalar UI-default Newton solve for the corrector.",
     strength:
@@ -683,12 +730,50 @@ const REVIEWED_CONTENT: Record<MethodFamily, OdeMethodTeachingContent> = {
         text: "Current UI runs use Newton for the corrector and report its diagnostics. Predictor quality, Newton convergence, approximation accuracy, and method stability remain distinct.",
       },
     ],
+    staticDiagram: {
+      kind: "predictor_corrector",
+      title: "A prediction starts—but does not replace—the correction",
+      caption:
+        "Known slope history forms an Adams-Bashforth starting guess while the endpoint relation defines the required correction; Newton brings those paths together at the accepted corrected value.",
+      steps: [
+        {
+          id: "slope_history",
+          label: "Known history",
+          title: "Stored slopes",
+          detail: "The current and previous slopes are already available.",
+        },
+        {
+          id: "ab_predictor",
+          label: "Prediction branch",
+          title: "Same-order AB predictor",
+          detail: "This value is the starting guess, not the accepted result.",
+        },
+        {
+          id: "endpoint_relation",
+          label: "Correction branch",
+          title: "Implicit endpoint relation",
+          detail: "The unknown next value appears inside the endpoint slope.",
+        },
+        {
+          id: "newton_correction",
+          label: "Rejoin",
+          title: "Newton residual solve",
+          detail: "The predictor seeds the controlled implicit correction.",
+        },
+        {
+          id: "accepted_correction",
+          label: "Accepted state",
+          title: "Corrected next value",
+          detail: "Only the converged corrector result enters the trajectory.",
+        },
+      ],
+    },
     selectedConceptIds: [
       "slope_history",
       "rk4_startup",
       "predictor_corrector",
+      "endpoint_relation",
       "nonlinear_residual",
-      "refinement_observed_order",
       "stability_accuracy",
     ],
   },
@@ -712,11 +797,14 @@ const REVIEWED_CONTENT: Record<MethodFamily, OdeMethodTeachingContent> = {
       },
     ],
     orderedProcess: [
-      "Ensure the selected order has enough stored solution history.",
+      "Establish p stored solution-history entries for the configured order.",
+      "When p is greater than 1, compute p minus 1 RK4 startup approximations to fill that history.",
       "Form the known contribution from previous solution values.",
-      "Build the implicit endpoint residual with the generated BDF coefficients.",
-      "Use the current approximation as the initial guess for the UI-default Newton solve.",
-      "Store the converged new approximation and shift the solution history.",
+      "Construct the implicit residual at the new grid time with generated BDF coefficients.",
+      "Use the current approximation—the first entry in the solution-history window—as the initial guess.",
+      "Apply the current UI-default Newton solve to the endpoint residual.",
+      "Accept the converged new solution value.",
+      "Shift the solution-history window for the next step.",
     ],
     requiredState: [
       "p stored solution-history values",
@@ -724,36 +812,69 @@ const REVIEWED_CONTENT: Record<MethodFamily, OdeMethodTeachingContent> = {
       "one endpoint residual solve",
     ],
     startupHistoryRequirement:
-      "The fixed grid must satisfy N >= p. For p greater than 1, RK4 computes p minus 1 startup values; p equal to 1 needs no preliminary startup value.",
+      "The fixed grid must satisfy N >= p. For p greater than 1, RK4 computes p minus 1 startup approximations to fill solution history; they remain part of the produced trajectory and can affect finite-run evidence. Order p equal to 1 needs no preliminary startup value.",
     perStepWork:
       "After startup, each step forms a solution-history sum and performs a scalar UI-default Newton solve.",
     strength:
       "It contrasts derivative approximation from solution history with the slope-history construction used by Adams methods.",
     watchPoint:
-      "Supported order, startup quality, and nonlinear solution are separate constraints; current BDF6 refinement evidence includes a startup limitation.",
+      "Supported order, startup quality, and nonlinear solution are separate constraints; a converged endpoint solve does not certify the time-stepping error.",
     accuracyStabilityBoundary:
-      "BDF6 retains theoretical order 6. Current fixed RK4 startup can limit end-to-end observed refinement behavior toward approximately order 5; that implementation-specific evidence does not redefine the theory, prove stability, or make Newton convergence an accuracy certificate.",
+      "Theoretical order p is conditional and is not an observed-order promise. No broad BDF stability ranking is published, and Newton convergence is not an accuracy certificate.",
     whatToObserve:
-      "Inspect the supplied order, solution-history coefficients, RK4 startup metadata, trajectory, Newton residuals, and qualified high-order refinement evidence.",
+      "Inspect the supplied order, solution-history coefficients, RK4 startup metadata, trajectory, Newton residuals, and eligible exact-reference refinement evidence.",
     outputEvidenceGuidance:
       "Current Output includes configured order, RK4 startup, generated alpha coefficients, and nonlinear iteration/residual diagnostics.",
     convergenceGuidance:
-      "Eligible first-order Convergence retains theoretical metadata order while interpretation of BDF6 must disclose the current startup-limited evidence.",
+      "Eligible first-order Convergence compares measured error under refinement with the supplied theoretical order; startup and nonlinear diagnostics remain separate evidence.",
     commonMisconception: {
-      incorrect: "BDF6 must display observed order 6 in every current refinement study.",
+      incorrect: "A converged BDF Newton solve proves that the time-stepping result is accurate.",
       correction:
-        "Six is the method metadata's theoretical order; the current fixed RK4 startup can limit measured end-to-end behavior without redefining the method's theory as order five.",
+        "Newton convergence establishes only that the implicit algebraic relation met its solve tolerance; approximation accuracy requires separate evidence.",
     },
     advancedDetails: [
       {
-        id: "bdf6_startup_limitation",
-        title: "Current BDF6 startup limitation",
-        text: "Existing focused evidence measures BDF6 near approximately order 5 because a fixed number of RK4 startup values introduces order-five startup error. The method metadata remains theoretical order 6.",
+        id: "bdf_coefficients_and_solve",
+        title: "Generated coefficients and endpoint solve",
+        text: "The numerical owner generates alpha coefficients for the configured order and applies them in the endpoint residual. Method teaching does not copy a coefficient table or expose nonlinear settings as controls.",
       },
     ],
+    staticDiagram: {
+      kind: "solution_history",
+      title: "Solution values define a new-time derivative relation",
+      caption:
+        "Stored solution-value history feeds a derivative approximation at the new time, where the unknown endpoint must satisfy the ODE before the new solution value is accepted.",
+      steps: [
+        {
+          id: "stored_solutions",
+          label: "Solution history",
+          title: "Previous solution values",
+          detail: "The history rail contains approximations, not stored slopes.",
+        },
+        {
+          id: "derivative_relation",
+          label: "Generated relation",
+          title: "Approximate the new-time derivative",
+          detail: "Alpha weights combine the unknown new value with prior values.",
+        },
+        {
+          id: "endpoint_condition",
+          label: "Implicit condition",
+          title: "Match the endpoint right-hand side",
+          detail: "The unknown new value also appears inside f at the new time.",
+        },
+        {
+          id: "accepted_solution",
+          label: "Accepted state",
+          title: "Store the converged solution value",
+          detail: "Newton convergence is checked before history advances.",
+        },
+      ],
+    },
     selectedConceptIds: [
       "solution_history",
       "rk4_startup",
+      "derivative_estimation",
       "nonlinear_residual",
       "refinement_observed_order",
       "stability_accuracy",
@@ -783,7 +904,8 @@ const REVIEWED_CONTENT: Record<MethodFamily, OdeMethodTeachingContent> = {
       },
     ],
     orderedProcess: [
-      "Initialize the half-step velocity from u0, v0, and the acceleration at the initial state.",
+      "Begin from the initial position u0 and initial velocity v0.",
+      "Initialize the half-step velocity from those initial values and the acceleration at the initial state.",
       "Update the half-step velocity using acceleration at the current whole-step time and position.",
       "Use that half-step velocity to update position to the next whole-step time.",
       "Evaluate acceleration at the new time and position.",
@@ -820,9 +942,41 @@ const REVIEWED_CONTENT: Record<MethodFamily, OdeMethodTeachingContent> = {
       {
         id: "leapfrog_stored_velocity",
         title: "Stored velocity reconstruction",
-        text: "The current Lab updates half-step velocity, advances whole-step position, and then reconstructs full-step velocity for stored/output evidence.",
+        text: "The current Lab updates half-step velocity, advances whole-step position, and then reconstructs full-step velocity for stored/output evidence. That reconstruction is subordinate to the central staggered update and is not a second same-level integration rule.",
       },
     ],
+    staticDiagram: {
+      kind: "staggered_state",
+      title: "Position and velocity occupy offset points on the step",
+      caption:
+        "The whole-step position advances from the current grid time to the next while the updated half-step velocity sits between them; a separate new-time reconstruction supplies the full-step velocity stored for output.",
+      steps: [
+        {
+          id: "whole_position_current",
+          label: "Whole step",
+          title: "Current position uₙ",
+          detail: "Position is stored at the current grid time.",
+        },
+        {
+          id: "half_velocity_next",
+          label: "Half step",
+          title: "Updated velocity vₙ₊₁⁄₂",
+          detail: "Current acceleration advances the staggered velocity.",
+        },
+        {
+          id: "whole_position_next",
+          label: "Whole step",
+          title: "Next position uₙ₊₁",
+          detail: "The half-step velocity advances position to the new time.",
+        },
+        {
+          id: "stored_velocity_next",
+          label: "Output reconstruction",
+          title: "Stored velocity vₙ₊₁",
+          detail: "New-state acceleration reconstructs the reported full-step velocity.",
+        },
+      ],
+    },
     selectedConceptIds: [
       "numerical_approximation",
       "staggered_state",
@@ -831,6 +985,38 @@ const REVIEWED_CONTENT: Record<MethodFamily, OdeMethodTeachingContent> = {
     ],
   },
 };
+
+interface ConfiguredOrderAdvancedDetail {
+  readonly order: number;
+  readonly detail: OdeMethodAdvancedDetail;
+}
+
+const CONFIGURED_ORDER_ADVANCED_DETAILS: Readonly<
+  Partial<Record<MethodFamily, readonly ConfiguredOrderAdvancedDetail[]>>
+> = deepFreeze({
+  bdf: [
+    {
+      order: 6,
+      detail: {
+        id: "bdf6_startup_limitation",
+        title: "Current BDF6 startup limitation",
+        text: "BDF6 retains theoretical order 6. Existing focused current-product evidence approaches approximately order 5 because the fixed RK4 startup introduces order-five error into the end-to-end trajectory. This implementation-specific limitation does not redefine BDF6 theory or establish a stability conclusion.",
+      },
+    },
+  ],
+});
+
+export function configuredOrderAdvancedDetailsFor(
+  family: MethodFamily,
+  currentOrder: number | undefined
+): readonly OdeMethodAdvancedDetail[] {
+  if (currentOrder === undefined) return Object.freeze([]);
+  return Object.freeze(
+    (CONFIGURED_ORDER_ADVANCED_DETAILS[family] ?? [])
+      .filter((record) => record.order === currentOrder)
+      .map((record) => record.detail)
+  );
+}
 
 export const ODE_METHOD_TEACHING_CONTENT: Readonly<
   Record<MethodFamily, OdeMethodTeachingContent>

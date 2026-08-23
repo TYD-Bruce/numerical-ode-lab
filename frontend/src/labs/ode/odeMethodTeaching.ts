@@ -13,6 +13,7 @@ import {
 } from "../../math/ui/methodMathContent";
 import {
   ODE_METHOD_CONCEPTS,
+  configuredOrderAdvancedDetailsFor,
   teachingContentFor,
   type OdeMethodConcept,
   type OdeMethodTeachingContent,
@@ -247,7 +248,13 @@ export function deriveOdeMethodTeachingProfile(
     outputEvidenceGuidance: content.outputEvidenceGuidance,
     convergenceGuidance: content.convergenceGuidance,
     commonMisconception: { ...content.commonMisconception },
-    advancedDetails: content.advancedDetails.map((detail) => ({ ...detail })),
+    advancedDetails: [
+      ...content.advancedDetails,
+      ...configuredOrderAdvancedDetailsFor(
+        entry.family,
+        selection.currentOrder
+      ),
+    ].map((detail) => ({ ...detail })),
     selectedConceptIds: [...content.selectedConceptIds],
     ...(content.staticDiagram
       ? {

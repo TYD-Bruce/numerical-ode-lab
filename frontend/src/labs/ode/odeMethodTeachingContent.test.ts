@@ -5,6 +5,7 @@ import type { MethodFamily } from "@numerical-t-lab/numerics/ode/solvers";
 import {
   ODE_METHOD_CONCEPTS,
   ODE_METHOD_TEACHING_CONTENT,
+  configuredOrderAdvancedDetailsFor,
   teachingContentFor,
 } from "./odeMethodTeachingContent";
 
@@ -86,7 +87,7 @@ describe("reviewed ODE method teaching content", () => {
     }
   });
 
-  it("owns only the approved Phase 3 static teaching diagrams", () => {
+  it("owns exactly the approved Phase 3 and Phase 4 static teaching diagrams", () => {
     const forwardEuler = teachingContentFor("forward_euler").staticDiagram;
     expect(forwardEuler?.kind).toBe("one_step");
     expect(forwardEuler?.caption).toContain("current slope");
@@ -116,14 +117,37 @@ describe("reviewed ODE method teaching content", () => {
     expect(rk4?.steps.slice(0, 4).every((step) => step.title.includes("Temporary slope"))).toBe(true);
     expect(rk4?.steps.at(-1)?.title).toContain("accepted next approximation");
 
-    for (const family of [
-      "adams_bashforth",
-      "adams_moulton",
-      "bdf",
-      "leapfrog",
-    ] as const) {
-      expect(teachingContentFor(family).staticDiagram).toBeUndefined();
-    }
+    const adamsBashforth = teachingContentFor("adams_bashforth").staticDiagram;
+    expect(adamsBashforth?.kind).toBe("slope_history");
+    expect(adamsBashforth?.caption).toContain("known slopes");
+    expect(adamsBashforth?.steps.map((step) => step.id)).toEqual([
+      "stored_slopes",
+      "weighted_history",
+      "new_solution",
+      "new_slope",
+    ]);
+
+    const adamsMoulton = teachingContentFor("adams_moulton").staticDiagram;
+    expect(adamsMoulton?.kind).toBe("predictor_corrector");
+    expect(adamsMoulton?.caption).toContain("starting guess");
+    expect(adamsMoulton?.caption).toContain("accepted corrected value");
+    expect(adamsMoulton?.steps.map((step) => step.id)).toEqual([
+      "slope_history",
+      "ab_predictor",
+      "endpoint_relation",
+      "newton_correction",
+      "accepted_correction",
+    ]);
+
+    const bdf = teachingContentFor("bdf").staticDiagram;
+    expect(bdf?.kind).toBe("solution_history");
+    expect(bdf?.caption).toContain("solution-value history");
+    expect(bdf?.caption).not.toContain("stored slopes");
+
+    const leapfrog = teachingContentFor("leapfrog").staticDiagram;
+    expect(leapfrog?.kind).toBe("staggered_state");
+    expect(leapfrog?.caption).toContain("whole-step position");
+    expect(leapfrog?.caption).toContain("half-step velocity");
   });
 
   it("records the accepted implicit, BDF6, Taylor, RK4, and Leap-Frog boundaries", () => {
@@ -140,10 +164,15 @@ describe("reviewed ODE method teaching content", () => {
     expect(adamsMoulton).toContain("UI-default Newton");
 
     const bdf = learnerText("bdf");
+    const bdf6Detail = configuredOrderAdvancedDetailsFor("bdf", 6)
+      .map((detail) => detail.text)
+      .join(" ");
     expect(bdf).toContain("solution history");
-    expect(bdf).toContain("theoretical order 6");
-    expect(bdf).toContain("approximately order 5");
-    expect(bdf).not.toContain("theoretical order 5");
+    expect(bdf).not.toContain("approximately order 5");
+    expect(configuredOrderAdvancedDetailsFor("bdf", 5)).toEqual([]);
+    expect(bdf6Detail).toContain("theoretical order 6");
+    expect(bdf6Detail).toContain("approximately order 5");
+    expect(bdf6Detail).not.toContain("theoretical order 5");
 
     const taylor = learnerText("taylor");
     expect(taylor).toContain("entered right-hand side");

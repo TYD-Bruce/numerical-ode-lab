@@ -12,7 +12,10 @@ export type MethodTeachingSupportingFormulaId =
   | "rk4_k1"
   | "rk4_k2"
   | "rk4_k3"
-  | "rk4_k4";
+  | "rk4_k4"
+  | "adams_moulton_predictor"
+  | "leapfrog_initialization"
+  | "leapfrog_reconstruction";
 
 export interface MethodTeachingSupportingFormula {
   readonly id: MethodTeachingSupportingFormulaId;
@@ -65,7 +68,7 @@ function supportingFormula(
   });
 }
 
-const ONE_STEP_SUPPORTING_MATH: Readonly<
+const TEACHING_SUPPORTING_MATH: Readonly<
   Partial<
     Record<
       MethodCatalogEntry["family"],
@@ -132,15 +135,53 @@ const ONE_STEP_SUPPORTING_MATH: Readonly<
         "k 4 equals f at t sub n plus h and u sub n plus h times k 3",
     }),
   ]),
+  adams_moulton: Object.freeze([
+    supportingFormula(
+      "adams_moulton_predictor",
+      "Same-order Adams-Bashforth predictor — starting guess only",
+      {
+        latex:
+          "u_{n+1}^{(0)}=u_n+h\\sum_{j=0}^{p-1}\\beta_j^{\\mathrm{AB}}f_{n-j}",
+        displayText:
+          "uₙ₊₁⁽⁰⁾ = uₙ + h Σⱼ₌₀ᵖ⁻¹ βⱼᴬᴮ fₙ₋ⱼ",
+        ariaLabel:
+          "the starting guess u sub n plus 1 superscript zero equals u sub n plus h times the sum from j equals zero to p minus one of the same-order Adams Bashforth beta sub j times the stored slope f sub n minus j",
+      }
+    ),
+  ]),
+  leapfrog: Object.freeze([
+    supportingFormula(
+      "leapfrog_initialization",
+      "Initialize the staggered half-step velocity",
+      {
+        latex: "v_{-1/2}=v_0-\\frac{h}{2}a(t_0,u_0)",
+        displayText: "v₋₁⁄₂ = v₀ − (h/2)a(t₀, u₀)",
+        ariaLabel:
+          "the half-step velocity before the initial time equals v zero minus one half h times acceleration at t zero and u zero",
+      }
+    ),
+    supportingFormula(
+      "leapfrog_reconstruction",
+      "Reconstruction used for stored/output full-step velocity",
+      {
+        latex:
+          "v_{n+1}=v_{n+1/2}+\\frac{h}{2}a(t_{n+1},u_{n+1})",
+        displayText:
+          "vₙ₊₁ = vₙ₊₁⁄₂ + (h/2)a(tₙ₊₁, uₙ₊₁)",
+        ariaLabel:
+          "the stored full-step velocity at n plus 1 equals the half-step velocity at n plus one half plus one half h times acceleration at the new time and position",
+      }
+    ),
+  ]),
 });
 
 const LEAPFROG_TEACHING_FORMULA: ReadonlyMathContent = Object.freeze({
   latex:
-    "\\begin{aligned}v_{-1/2}&=v_0-\\frac{h}{2}a(t_0,u_0),\\\\v_{n+1/2}&=v_{n-1/2}+h a(t_n,u_n),\\\\u_{n+1}&=u_n+h v_{n+1/2},\\\\v_{n+1}&=v_{n+1/2}+\\frac{h}{2}a(t_{n+1},u_{n+1})\\end{aligned}",
+    "\\begin{aligned}v_{n+1/2}&=v_{n-1/2}+h a(t_n,u_n),\\\\u_{n+1}&=u_n+h v_{n+1/2}\\end{aligned}",
   displayText:
-    "v₋₁⁄₂ = v₀ − (h/2)a(t₀,u₀); vₙ₊₁⁄₂ = vₙ₋₁⁄₂ + h a(tₙ,uₙ); uₙ₊₁ = uₙ + h vₙ₊₁⁄₂; vₙ₊₁ = vₙ₊₁⁄₂ + (h/2)a(tₙ₊₁,uₙ₊₁)",
+    "vₙ₊₁⁄₂ = vₙ₋₁⁄₂ + h a(tₙ, uₙ); uₙ₊₁ = uₙ + h vₙ₊₁⁄₂",
   ariaLabel:
-    "Initialize the half-step velocity before the initial time from v zero minus one half h times acceleration at t zero and u zero; update the next half-step velocity from the previous half-step velocity plus h times current acceleration; update the next whole-step position; then reconstruct the next full-step velocity with one half h times acceleration at the new time and position.",
+    "Update the next half-step velocity from the previous half-step velocity plus h times current acceleration; then update the next whole-step position using that half-step velocity.",
 });
 
 export function methodMathContent(
@@ -162,5 +203,5 @@ export function methodTeachingMathContent(
 export function methodTeachingSupportingMathContent(
   family: MethodCatalogEntry["family"]
 ): readonly MethodTeachingSupportingFormula[] {
-  return ONE_STEP_SUPPORTING_MATH[family] ?? Object.freeze([]);
+  return TEACHING_SUPPORTING_MATH[family] ?? Object.freeze([]);
 }

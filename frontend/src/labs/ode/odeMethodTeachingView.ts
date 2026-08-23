@@ -1,12 +1,15 @@
 import { renderReadonlyMath } from "../../math/ui/readonlyMath";
 import type { OdeMethodTeachingLearnerProfile } from "./odeMethodTeaching";
 
-export function hasCompleteOneStepTeachingLens(
+export function hasCompleteMethodTeachingLens(
   profile: OdeMethodTeachingLearnerProfile
 ): boolean {
   return (
-    profile.problemProfile === "first_order_ivp" &&
-    profile.stepStructure === "one_step"
+    (profile.problemProfile === "first_order_ivp" &&
+      (profile.stepStructure === "one_step" ||
+        profile.stepStructure === "history")) ||
+    (profile.problemProfile === "second_order_acceleration" &&
+      profile.stepStructure === "staggered")
   );
 }
 
@@ -32,7 +35,13 @@ function renderPrimaryMathematics(
   const label = document.createElement("p");
   label.className = "ode-method-teaching-label";
   label.textContent = "Defining mathematics";
-  const heading = sectionHeading("The rule for one step");
+  const heading = sectionHeading(
+    profile.stepStructure === "history"
+      ? "The defining history relation"
+      : profile.stepStructure === "staggered"
+        ? "The central staggered update"
+        : "The rule for one step"
+  );
   const formula = document.createElement("div");
   formula.className = "ode-selected-method-formula ode-method-primary-formula";
   formula.dataset.selectedMethodFormula = "true";
@@ -55,23 +64,26 @@ function renderStaticDiagram(
   const figure = document.createElement("figure");
   figure.className = `ode-method-diagram ode-method-diagram-${diagram.kind}`;
   figure.dataset.methodTeachingDiagram = diagram.kind;
+  const diagramId = `${profile.identity.family}-${diagram.kind}`;
 
   const title = document.createElement("p");
   title.className = "ode-method-diagram-title";
   title.textContent = diagram.title;
+  title.id = `ode-method-diagram-${diagramId}-title`;
   const caption = document.createElement("figcaption");
   caption.textContent = diagram.caption;
+  caption.id = `ode-method-diagram-${diagramId}-description`;
+  figure.setAttribute("aria-labelledby", title.id);
+  figure.setAttribute("aria-describedby", caption.id);
 
   const track = document.createElement("div");
   track.className = "ode-method-diagram-track";
-  for (const [index, step] of diagram.steps.entries()) {
-    if (index > 0) {
-      const connector = document.createElement("span");
-      connector.className = "ode-method-diagram-connector";
-      connector.setAttribute("aria-hidden", "true");
-      connector.textContent = "→";
-      track.append(connector);
-    }
+  track.dataset.diagramTrack = "true";
+  track.setAttribute("aria-hidden", "true");
+
+  const renderStep = (
+    step: (typeof diagram.steps)[number]
+  ): HTMLElement => {
     const node = document.createElement("div");
     node.className = "ode-method-diagram-step";
     node.dataset.diagramStep = step.id;
@@ -84,7 +96,36 @@ function renderStaticDiagram(
     detail.className = "ode-method-diagram-step-detail";
     detail.textContent = step.detail;
     node.append(stepLabel, stepTitle, detail);
-    track.append(node);
+    return node;
+  };
+
+  const renderConnector = (label = "→"): HTMLElement => {
+    const connector = document.createElement("span");
+    connector.className = "ode-method-diagram-connector";
+    connector.textContent = label;
+    return connector;
+  };
+
+  if (diagram.kind === "predictor_corrector" && diagram.steps.length === 5) {
+    const [history, predictor, relation, correction, accepted] = diagram.steps;
+    const branches = document.createElement("div");
+    branches.className = "ode-method-diagram-branches";
+    branches.dataset.diagramBranches = "true";
+    branches.append(renderStep(predictor!), renderStep(relation!));
+    track.append(
+      renderStep(history!),
+      renderConnector("⇉"),
+      branches,
+      renderConnector("⇢"),
+      renderStep(correction!),
+      renderConnector(),
+      renderStep(accepted!)
+    );
+  } else {
+    for (const [index, step] of diagram.steps.entries()) {
+      if (index > 0) track.append(renderConnector());
+      track.append(renderStep(step));
+    }
   }
 
   figure.append(title, caption, track);
@@ -175,6 +216,28 @@ function orderLabel(profile: OdeMethodTeachingLearnerProfile): string {
   return `Supported theoretical orders ${profile.order.supportedMin}–${profile.order.supportedMax}; current order ${profile.order.currentConfiguredOrder}`;
 }
 
+function currentOrderStartupGuidance(
+  profile: OdeMethodTeachingLearnerProfile
+): string | undefined {
+  if (
+    profile.stepStructure !== "history" ||
+    profile.order.kind !== "configurable" ||
+    profile.order.currentConfiguredOrder === undefined
+  ) {
+    return undefined;
+  }
+  const currentOrder = profile.order.currentConfiguredOrder;
+  if (currentOrder === 1) {
+    return "For current order 1, no preliminary RK4 startup approximation is required.";
+  }
+  const startupCount = currentOrder - 1;
+  const startupLabel =
+    startupCount === 1
+      ? "1 RK4 startup approximation fills"
+      : `${startupCount} RK4 startup approximations fill`;
+  return `For current order ${currentOrder}, ${startupLabel} the history before the first history-based update.`;
+}
+
 function renderPracticalFacts(
   profile: OdeMethodTeachingLearnerProfile
 ): HTMLElement {
@@ -210,6 +273,13 @@ function renderPracticalFacts(
 
   const startup = document.createElement("div");
   startup.append(subsectionHeading("History and startup"));
+  const currentStartup = currentOrderStartupGuidance(profile);
+  if (currentStartup) {
+    const currentStartupText = document.createElement("p");
+    currentStartupText.dataset.currentOrderStartup = "true";
+    currentStartupText.textContent = currentStartup;
+    startup.append(currentStartupText);
+  }
   const startupText = document.createElement("p");
   startupText.textContent = profile.startupHistoryRequirement;
   startup.append(startupText);
@@ -337,12 +407,12 @@ function renderAfterSolve(
   return section;
 }
 
-export function renderOdeOneStepTeachingLens(
+export function renderOdeMethodTeachingLens(
   profile: OdeMethodTeachingLearnerProfile
 ): HTMLElement {
-  if (!hasCompleteOneStepTeachingLens(profile)) {
+  if (!hasCompleteMethodTeachingLens(profile)) {
     throw new Error(
-      `Complete one-step teaching is unavailable for ${profile.identity.family}.`
+      `Complete method teaching is unavailable for ${profile.identity.family}.`
     );
   }
 

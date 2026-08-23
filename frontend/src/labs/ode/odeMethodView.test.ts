@@ -359,6 +359,10 @@ describe("ODE Phase 2 Method opening", () => {
       order: 4,
     });
     expect(mounted.getSession().methodOrders.bdf).toBe(4);
+    expect(selectedDeepLens(target).textContent).toContain("current order 4");
+    expect(selectedDeepLens(target).textContent).toContain(
+      "3 RK4 startup approximations"
+    );
     mounted.dispose();
   });
 
@@ -481,7 +485,7 @@ describe("ODE Phase 2 Method opening", () => {
   });
 });
 
-describe("ODE Phase 3 one-step selected teaching lenses", () => {
+describe("ODE selected-method deep teaching lenses", () => {
   beforeEach(() => document.body.replaceChildren());
 
   it("teaches one complete Forward Euler update from current slope to after-solve questions", async () => {
@@ -653,7 +657,222 @@ describe("ODE Phase 3 one-step selected teaching lenses", () => {
     mounted.dispose();
   });
 
-  it("replaces one deep lens on selection while keeping history and Leap-Frog at the shallow Phase 2 boundary", async () => {
+  it("teaches Adams-Bashforth as an explicit slope-history update at the supplied current order", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const starter = createBeginnerStarterSession();
+    const mounted = mountOdeApp({
+      target,
+      initialSession: {
+        ...starter,
+        methodOrders: Object.freeze({
+          ...starter.methodOrders,
+          adams_bashforth: 4,
+        }),
+      },
+    });
+
+    await selectMethod(target, "Adams-Bashforth");
+    const lens = selectedDeepLens(target);
+    expect(lens.dataset.selectedMethodDeepLens).toBe("adams_bashforth");
+    expect(selectedShell(target).textContent).toContain(
+      "weighted history of already known slopes"
+    );
+    expect(lens.textContent).toContain("p stored slopes");
+    expect(lens.textContent).toContain("one new right-hand-side evaluation");
+    expect(lens.textContent).toContain("no nonlinear solve");
+    expect(lens.textContent).toContain("N >= p");
+    expect(lens.textContent).toContain("current order 4");
+    expect(lens.textContent).toContain("3 RK4 startup approximations");
+    expect(lens.querySelectorAll("[data-method-update-process] li")).toHaveLength(6);
+    expect(
+      lens.querySelector("[data-method-teaching-diagram='slope_history']")
+    ).not.toBeNull();
+    expect(lens.querySelector("[data-supporting-method-formula]")).toBeNull();
+    expect(lens.querySelector("input, select, textarea")).toBeNull();
+    mounted.dispose();
+  });
+
+  it("teaches Adams-Moulton with a same-order predictor that rejoins the Newton corrector", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const starter = createBeginnerStarterSession();
+    const mounted = mountOdeApp({
+      target,
+      initialSession: {
+        ...starter,
+        methodOrders: Object.freeze({
+          ...starter.methodOrders,
+          adams_moulton: 2,
+        }),
+      },
+    });
+
+    await selectMethod(target, "Adams-Moulton");
+    const lens = selectedDeepLens(target);
+    expect(lens.dataset.selectedMethodDeepLens).toBe("adams_moulton");
+    expect(lens.textContent).toContain("Unknown endpoint slope");
+    expect(lens.textContent).toContain("same configured order");
+    expect(lens.textContent).toContain("initial guess");
+    expect(lens.textContent).toContain("accepted corrected value");
+    expect(lens.textContent).toContain("UI-default Newton");
+    expect(lens.textContent).toContain(
+      "Predictor quality, Newton convergence, approximation accuracy, and method stability remain distinct"
+    );
+    expect(lens.textContent?.toLowerCase()).not.toContain("fixed-point");
+    expect(
+      lens.querySelector(
+        "[data-supporting-method-formula='adams_moulton_predictor']"
+      )
+    ).not.toBeNull();
+    const diagram = lens.querySelector<HTMLElement>(
+      "[data-method-teaching-diagram='predictor_corrector']"
+    );
+    expect(diagram).not.toBeNull();
+    expect(diagram?.querySelector("[data-diagram-branches]")).not.toBeNull();
+    expect(lens.querySelectorAll("[data-method-update-process] li")).toHaveLength(7);
+    mounted.dispose();
+  });
+
+  it("keeps BDF solution history distinct and reveals the BDF6 limitation only at order 6", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const starter = createBeginnerStarterSession();
+    const orderFive = mountOdeApp({
+      target,
+      initialSession: {
+        ...starter,
+        methodOrders: Object.freeze({ ...starter.methodOrders, bdf: 5 }),
+      },
+    });
+
+    await selectMethod(target, "Backward Differentiation Formula");
+    let lens = selectedDeepLens(target);
+    expect(lens.dataset.selectedMethodDeepLens).toBe("bdf");
+    expect(lens.textContent).toContain("stored solution approximations");
+    expect(lens.textContent).toContain("rather than Adams slope history");
+    expect(lens.textContent).toContain("current approximation");
+    expect(lens.textContent).toContain(
+      "first entry in the solution-history window"
+    );
+    expect(lens.textContent).toContain("initial guess");
+    expect(lens.textContent).toContain("UI-default Newton");
+    expect(lens.textContent).toContain("current order 5");
+    expect(lens.textContent).not.toContain("approximately order 5");
+    expect(
+      lens.querySelector("[data-method-teaching-diagram='solution_history']")
+    ).not.toBeNull();
+    expect(lens.querySelectorAll("[data-method-update-process] li")).toHaveLength(8);
+    orderFive.dispose();
+
+    const orderSix = mountOdeApp({
+      target,
+      initialSession: {
+        ...starter,
+        methodOrders: Object.freeze({ ...starter.methodOrders, bdf: 6 }),
+      },
+    });
+    await selectMethod(target, "Backward Differentiation Formula");
+    lens = selectedDeepLens(target);
+    expect(lens.textContent).toContain("current order 6");
+    const details = lens.querySelector<HTMLDetailsElement>(
+      "[data-method-advanced-details]"
+    );
+    expect(details?.open).toBe(false);
+    expect(details?.textContent).toContain("theoretical order 6");
+    expect(details?.textContent).toContain("approximately order 5");
+    expect(details?.textContent).not.toContain("theoretical order 5");
+    orderSix.dispose();
+  });
+
+  it.each([
+    ["Adams-Bashforth", "adams_bashforth"],
+    ["Adams-Moulton", "adams_moulton"],
+    ["Backward Differentiation Formula", "bdf"],
+  ] as const)(
+    "teaches %s order 1 without inventing zero startup work",
+    async (name, family) => {
+      const { mountOdeApp } = await import("./odeApp");
+      const target = document.createElement("div");
+      document.body.append(target);
+      const starter = createBeginnerStarterSession();
+      const mounted = mountOdeApp({
+        target,
+        initialSession: {
+          ...starter,
+          methodOrders: Object.freeze({
+            ...starter.methodOrders,
+            [family]: 1,
+          }),
+        },
+      });
+
+      await selectMethod(target, name);
+      const lens = selectedDeepLens(target);
+      expect(lens.textContent).toContain("current order 1");
+      expect(lens.textContent).toContain(
+        "no preliminary RK4 startup approximation"
+      );
+      expect(lens.textContent).not.toMatch(/0 RK4 startup/i);
+      mounted.dispose();
+    }
+  );
+
+  it("teaches Leap-Frog with dominant staggered updates and subordinate stored-velocity reconstruction", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const mounted = mountOdeApp({
+      target,
+      initialSession: createBeginnerStarterSession(),
+    });
+
+    await selectMethod(target, "Leap-Frog");
+    const shell = selectedShell(target);
+    const lens = selectedDeepLens(target);
+    expect(lens.dataset.selectedMethodDeepLens).toBe("leapfrog");
+    expect(shell.textContent).toContain("Second-order acceleration");
+    expect(lens.textContent).toContain("scalar acceleration expression a(t, u)");
+    expect(lens.textContent).toContain("initial position u0");
+    expect(lens.textContent).toContain("initial velocity v0");
+    expect(lens.textContent).toContain("no RK4 startup");
+    expect(lens.textContent).toContain("no nonlinear solve");
+    expect(lens.querySelectorAll("[data-primary-method-formula]")).toHaveLength(1);
+    expect(
+      lens.querySelector("[data-primary-method-formula]")?.textContent
+    ).toContain("vₙ₊₁⁄₂");
+    expect(
+      lens.querySelector("[data-primary-method-formula]")?.textContent
+    ).not.toContain("v₋₁⁄₂");
+    expect(
+      [...lens.querySelectorAll<HTMLElement>("[data-supporting-method-formula]")].map(
+        (formula) => formula.dataset.supportingMethodFormula
+      )
+    ).toEqual(["leapfrog_initialization", "leapfrog_reconstruction"]);
+    expect(
+      lens.querySelector(
+        "[data-supporting-method-formula='leapfrog_reconstruction']"
+      )?.textContent
+    ).toContain("stored/output");
+    expect(lens.querySelectorAll("[data-method-update-process] li")).toHaveLength(6);
+    const diagram = lens.querySelector<HTMLElement>(
+      "[data-method-teaching-diagram='staggered_state']"
+    );
+    expect(diagram).not.toBeNull();
+    expect(diagram?.getAttribute("aria-describedby")).not.toBeNull();
+    expect(diagram?.querySelector("[data-diagram-track]")?.getAttribute("aria-hidden")).toBe(
+      "true"
+    );
+    expect(shell.textContent).toContain("no first-order Compare");
+    expect(shell.textContent).toContain("no exact-reference input");
+    expect(shell.textContent).toContain("Convergence entry");
+    mounted.dispose();
+  });
+
+  it("replaces one deep lens on selection across all eight runnable families", async () => {
     const { mountOdeApp } = await import("./odeApp");
     const target = document.createElement("div");
     document.body.append(target);
@@ -667,6 +886,10 @@ describe("ODE Phase 3 one-step selected teaching lenses", () => {
       ["Backward Euler", "backward_euler"],
       ["Taylor Method (Order 2)", "taylor"],
       ["Runge-Kutta 4", "rk4"],
+      ["Adams-Bashforth", "adams_bashforth"],
+      ["Adams-Moulton", "adams_moulton"],
+      ["Backward Differentiation Formula", "bdf"],
+      ["Leap-Frog", "leapfrog"],
     ] as const) {
       await selectMethod(target, name);
       const lenses = target.querySelectorAll<HTMLElement>(
@@ -674,22 +897,6 @@ describe("ODE Phase 3 one-step selected teaching lenses", () => {
       );
       expect(lenses).toHaveLength(1);
       expect(lenses[0]?.dataset.selectedMethodDeepLens).toBe(family);
-    }
-
-    for (const name of [
-      "Adams-Bashforth",
-      "Adams-Moulton",
-      "Backward Differentiation Formula",
-      "Leap-Frog",
-    ]) {
-      await selectMethod(target, name);
-      const shell = selectedShell(target);
-      expect(shell.querySelector("[data-selected-method-deep-lens]")).toBeNull();
-      expect(shell.querySelector("[data-selected-method-concepts]")).toBeNull();
-      expect(shell.querySelector("[data-selected-method-after-solve]")).toBeNull();
-      expect(shell.textContent).toContain(
-        "A deeper guided walkthrough is not included for this method yet"
-      );
     }
 
     const landscape = target.querySelector<HTMLElement>(
@@ -751,6 +958,66 @@ describe("ODE Phase 3 one-step selected teaching lenses", () => {
     }
     expect(shell.textContent).not.toMatch(/final approximation:\s*[-+]?\d/i);
     expect(shell.textContent).not.toMatch(/observed order(?: is|:)\s*\d/i);
+    mounted.dispose();
+  });
+
+  it("keeps each Phase 4 lens closed, accessible, and free of fabricated numerical evidence", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const mounted = mountOdeApp({
+      target,
+      initialSession: createBeginnerStarterSession(),
+    });
+
+    const diagramKinds = new Map<string, string>();
+    for (const [name, family] of [
+      ["Adams-Bashforth", "adams_bashforth"],
+      ["Adams-Moulton", "adams_moulton"],
+      ["Backward Differentiation Formula", "bdf"],
+      ["Leap-Frog", "leapfrog"],
+    ] as const) {
+      await selectMethod(target, name);
+      const lens = selectedDeepLens(target);
+      expect(lens.dataset.selectedMethodDeepLens).toBe(family);
+      expect(lens.querySelectorAll("[data-primary-method-formula]")).toHaveLength(
+        1
+      );
+      const primaryFormula = lens.querySelector<HTMLElement>(
+        "[data-primary-method-formula]"
+      );
+      expect(
+        Number(primaryFormula?.getAttribute("role") === "math") +
+          (primaryFormula?.querySelectorAll("[role='math']").length ?? 0)
+      ).toBe(1);
+
+      const figure = lens.querySelector<HTMLElement>(
+        "[data-method-teaching-diagram]"
+      );
+      expect(figure).not.toBeNull();
+      expect(figure?.querySelectorAll("figcaption")).toHaveLength(1);
+      const descriptionId = figure?.getAttribute("aria-describedby");
+      expect(descriptionId).toBeTruthy();
+      expect(figure?.querySelector(`#${descriptionId}`)).not.toBeNull();
+      expect(figure?.querySelector("[data-diagram-track]")?.getAttribute("aria-hidden"))
+        .toBe("true");
+      diagramKinds.set(
+        family,
+        figure?.dataset.methodTeachingDiagram ?? ""
+      );
+
+      const text = lens.textContent ?? "";
+      expect(text).not.toMatch(/(?:α|β)[₀-₉\w]*\s*=\s*[-+]?\d/);
+      expect(text).not.toMatch(/Newton (?:uses|takes|requires) \d+ iterations/i);
+      expect(text).not.toMatch(/startup (?:value|approximation) (?:is|:)\s*[-+]?\d/i);
+      expect(text).not.toMatch(/observed order(?: is|:)\s*\d/i);
+    }
+
+    expect(diagramKinds.get("adams_bashforth")).toBe("slope_history");
+    expect(diagramKinds.get("bdf")).toBe("solution_history");
+    expect(diagramKinds.get("adams_bashforth")).not.toBe(
+      diagramKinds.get("bdf")
+    );
     mounted.dispose();
   });
 });

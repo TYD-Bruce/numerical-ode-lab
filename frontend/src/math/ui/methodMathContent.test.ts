@@ -25,7 +25,7 @@ describe("methodMathContent", () => {
     expect(formula.latex).not.toBe(formula.displayText);
   });
 
-  it("adds a closed Leap-Frog teaching formula without changing the current UI formula", () => {
+  it("adds a closed Leap-Frog formula hierarchy without changing the current UI formula", () => {
     const leapfrog = METHOD_CATALOG.find(
       (entry) => entry.family === "leapfrog"
     )!;
@@ -34,14 +34,22 @@ describe("methodMathContent", () => {
 
     expect(currentUiFormula.displayText).toBe(leapfrog.formulaDisplay);
     expect(currentUiFormula.latex).toBe("u''=a(t,u)");
-    expect(teachingFormula.latex).toContain("v_{-1/2}");
     expect(teachingFormula.latex).toContain("v_{n+1/2}");
     expect(teachingFormula.latex).toContain("u_{n+1}");
-    expect(teachingFormula.latex).toContain("v_{n+1}");
-    expect(teachingFormula.displayText).toContain("v₋₁⁄₂");
+    expect(teachingFormula.latex).not.toContain("v_{-1/2}");
+    expect(teachingFormula.latex).not.toContain("v_{n+1}=");
     expect(teachingFormula.ariaLabel).toContain("half-step velocity");
     expect(teachingFormula).not.toHaveProperty("html");
     expect(teachingFormula).not.toHaveProperty("evaluate");
+
+    const supporting = methodTeachingSupportingMathContent("leapfrog");
+    expect(supporting.map((formula) => formula.id)).toEqual([
+      "leapfrog_initialization",
+      "leapfrog_reconstruction",
+    ]);
+    expect(supporting[0]?.content.latex).toContain("v_{-1/2}");
+    expect(supporting[1]?.content.latex).toContain("v_{n+1}");
+    expect(supporting[1]?.title).toContain("stored/output");
   });
 
   it("owns the closed Phase 2 problem-foundation formulas", () => {
@@ -72,7 +80,7 @@ describe("methodMathContent", () => {
     }
   });
 
-  it("owns the closed supporting mathematics for the four one-step teaching lenses", () => {
+  it("owns the smallest closed supporting mathematics for all teaching lenses", () => {
     expect(
       methodTeachingSupportingMathContent("forward_euler")
     ).toEqual([]);
@@ -89,6 +97,20 @@ describe("methodMathContent", () => {
     expect(
       methodTeachingSupportingMathContent("rk4").map((formula) => formula.id)
     ).toEqual(["rk4_k1", "rk4_k2", "rk4_k3", "rk4_k4"]);
+    expect(
+      methodTeachingSupportingMathContent("adams_bashforth")
+    ).toEqual([]);
+    expect(
+      methodTeachingSupportingMathContent("adams_moulton").map(
+        (formula) => formula.id
+      )
+    ).toEqual(["adams_moulton_predictor"]);
+    expect(methodTeachingSupportingMathContent("bdf")).toEqual([]);
+    expect(
+      methodTeachingSupportingMathContent("leapfrog").map(
+        (formula) => formula.id
+      )
+    ).toEqual(["leapfrog_initialization", "leapfrog_reconstruction"]);
 
     const rk4 = methodTeachingSupportingMathContent("rk4");
     expect(rk4[0]?.content.displayText).toContain("k₁ = f(tₙ, uₙ)");
@@ -100,6 +122,8 @@ describe("methodMathContent", () => {
       ...methodTeachingSupportingMathContent("backward_euler"),
       ...methodTeachingSupportingMathContent("taylor"),
       ...rk4,
+      ...methodTeachingSupportingMathContent("adams_moulton"),
+      ...methodTeachingSupportingMathContent("leapfrog"),
     ]) {
       expect(Object.keys(formula.content).sort()).toEqual([
         "ariaLabel",

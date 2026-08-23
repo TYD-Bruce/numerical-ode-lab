@@ -148,8 +148,8 @@ import {
   type OdeMethodTeachingLearnerProfile,
 } from "./odeMethodTeaching";
 import {
-  hasCompleteOneStepTeachingLens,
-  renderOdeOneStepTeachingLens,
+  hasCompleteMethodTeachingLens,
+  renderOdeMethodTeachingLens,
 } from "./odeMethodTeachingView";
 import "./odeApp.css";
 
@@ -1522,15 +1522,9 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     }
 
     content.append(eyebrow, heading, idea, metadata);
-    const hasCompleteLens = hasCompleteOneStepTeachingLens(profile);
+    const hasCompleteLens = hasCompleteMethodTeachingLens(profile);
     if (hasCompleteLens) {
-      content.append(renderOdeOneStepTeachingLens(profile));
-    } else if (profile.identity.family !== "leapfrog") {
-      const formula = document.createElement("div");
-      formula.className = "ode-selected-method-formula";
-      formula.dataset.selectedMethodFormula = "true";
-      renderReadonlyMath(formula, profile.primaryFormula, { display: "block" });
-      content.append(formula);
+      content.append(renderOdeMethodTeachingLens(profile));
     }
 
     const availability = document.createElement("p");
@@ -1539,13 +1533,6 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       ? "Available for single-method runs and first-order Compare. Output follows a run; Convergence requires a valid exact reference."
       : "Single-method only. This profile has no first-order Compare, exact-reference input, or Convergence entry.";
     content.append(availability);
-    if (!hasCompleteLens) {
-      const next = document.createElement("p");
-      next.className = "ode-selected-next";
-      next.textContent =
-        "Use this overview to continue to Data. A deeper guided walkthrough is not included for this method yet.";
-      content.append(next);
-    }
     shell.append(content);
     return shell;
   }

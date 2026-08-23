@@ -15,8 +15,8 @@ function profile(family: MethodFamily, currentOrder?: number) {
   return deriveOdeMethodTeachingProfile({ family, currentOrder });
 }
 
-function profileText(family: MethodFamily): string {
-  const selected = profile(family);
+function profileText(family: MethodFamily, currentOrder?: number): string {
+  const selected = profile(family, currentOrder);
   return [
     selected.coreIdea,
     selected.accessibleVerbalization,
@@ -191,9 +191,10 @@ describe("pure ODE method teaching derivation", () => {
     expect(bdf.order).toMatchObject({ supportedMin: 1, supportedMax: 6 });
     expect(profileText("bdf")).toContain("solution history");
     expect(profileText("bdf")).toContain("UI-default Newton");
-    expect(profileText("bdf")).toContain("theoretical order 6");
-    expect(profileText("bdf")).toContain("approximately order 5");
-    expect(profileText("bdf")).not.toContain("theoretical order 5");
+    expect(profileText("bdf", 5)).not.toContain("approximately order 5");
+    expect(profileText("bdf", 6)).toContain("theoretical order 6");
+    expect(profileText("bdf", 6)).toContain("approximately order 5");
+    expect(profileText("bdf", 6)).not.toContain("theoretical order 5");
   });
 
   it("captures Taylor, RK4, and Backward Euler teaching boundaries", () => {
@@ -216,7 +217,7 @@ describe("pure ODE method teaching derivation", () => {
     expect(profileText("backward_euler")).toContain("scalar test equation");
   });
 
-  it("projects only the approved static diagrams and closed supporting formulas", () => {
+  it("projects all approved static diagrams and only closed supporting formulas", () => {
     const forwardEuler = profile("forward_euler");
     expect(forwardEuler.staticDiagram?.kind).toBe("one_step");
     expect(forwardEuler.supportingFormulas).toEqual([]);
@@ -243,15 +244,26 @@ describe("pure ODE method teaching derivation", () => {
       "rk4_k4",
     ]);
 
-    for (const family of [
-      "adams_bashforth",
-      "adams_moulton",
-      "bdf",
-      "leapfrog",
-    ] as const) {
-      expect(profile(family).staticDiagram).toBeUndefined();
-      expect(profile(family).supportingFormulas).toEqual([]);
-    }
+    const adamsBashforth = profile("adams_bashforth", 4);
+    expect(adamsBashforth.staticDiagram?.kind).toBe("slope_history");
+    expect(adamsBashforth.supportingFormulas).toEqual([]);
+
+    const adamsMoulton = profile("adams_moulton", 2);
+    expect(adamsMoulton.staticDiagram?.kind).toBe("predictor_corrector");
+    expect(adamsMoulton.supportingFormulas.map((formula) => formula.id)).toEqual([
+      "adams_moulton_predictor",
+    ]);
+
+    const bdf = profile("bdf", 5);
+    expect(bdf.staticDiagram?.kind).toBe("solution_history");
+    expect(bdf.supportingFormulas).toEqual([]);
+
+    const leapfrog = profile("leapfrog");
+    expect(leapfrog.staticDiagram?.kind).toBe("staggered_state");
+    expect(leapfrog.supportingFormulas.map((formula) => formula.id)).toEqual([
+      "leapfrog_initialization",
+      "leapfrog_reconstruction",
+    ]);
   });
 
   it("uses only the closed safe readonly formula authority", () => {
@@ -273,8 +285,27 @@ describe("pure ODE method teaching derivation", () => {
     }
 
     const leapfrog = profile("leapfrog").primaryFormula;
-    expect(leapfrog.displayText).toContain("v₋₁⁄₂");
+    expect(leapfrog.displayText).toContain("vₙ₊₁⁄₂");
+    expect(leapfrog.displayText).not.toContain("v₋₁⁄₂");
     expect(leapfrog.ariaLabel).toContain("half-step velocity");
+  });
+
+  it("publishes the BDF6 startup limitation only for supplied current order 6", () => {
+    for (const order of [1, 2, 3, 4, 5]) {
+      const selected = profile("bdf", order);
+      expect(selected.advancedDetails.map((detail) => detail.id)).not.toContain(
+        "bdf6_startup_limitation"
+      );
+      expect(JSON.stringify(selected)).not.toContain("approximately order 5");
+    }
+
+    const bdf6 = profile("bdf", 6);
+    expect(bdf6.order).toMatchObject({ currentConfiguredOrder: 6 });
+    expect(bdf6.advancedDetails.map((detail) => detail.id)).toContain(
+      "bdf6_startup_limitation"
+    );
+    expect(JSON.stringify(bdf6)).toContain("approximately order 5");
+    expect(JSON.stringify(bdf6)).not.toContain("theoretical order 5");
   });
 
   it("does not mutate catalogs, presets, selections, supplied order, or derived profiles", () => {

@@ -657,6 +657,13 @@
   min-width: 0;
 }
 
+.ode-method-diagram-branches {
+  display: grid;
+  flex: 1.25 1 0;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
 .ode-method-diagram-step {
   display: grid;
   flex: 1 1 0;
@@ -687,6 +694,35 @@
   color: var(--lab-stage-method-foreground);
   font-family: var(--lab-font-technical);
   font-weight: 800;
+}
+
+.ode-method-diagram-solution_history .ode-method-diagram-step {
+  border-top: 1px solid var(--lab-border-standard);
+  border-inline-start: var(--space-1) solid var(--lab-stage-method-accent);
+}
+
+.ode-method-diagram-predictor_corrector .ode-method-diagram-branches .ode-method-diagram-step {
+  border-top-width: 1px;
+  border-inline-start: var(--space-1) solid var(--lab-stage-method-accent);
+}
+
+.ode-method-diagram-staggered_state .ode-method-diagram-track {
+  padding-block: var(--space-3);
+}
+
+.ode-method-diagram-staggered_state [data-diagram-step="whole_position_current"],
+.ode-method-diagram-staggered_state [data-diagram-step="whole_position_next"] {
+  transform: translateY(calc(-1 * var(--space-2)));
+}
+
+.ode-method-diagram-staggered_state [data-diagram-step="half_velocity_next"] {
+  transform: translateY(var(--space-2));
+  border-top: 0;
+  border-bottom: var(--space-1) solid var(--lab-stage-method-accent);
+}
+
+.ode-method-diagram-staggered_state [data-diagram-step="stored_velocity_next"] {
+  border-top-style: double;
 }
 
 .ode-method-supporting-math,
@@ -1643,8 +1679,18 @@
     flex-direction: column;
   }
 
+  .ode-method-diagram-branches {
+    flex: none;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+  }
+
   .ode-method-diagram-connector {
     transform: rotate(90deg);
+  }
+
+  .ode-method-diagram-staggered_state [data-diagram-step] {
+    transform: none;
   }
 
   .ode-method-misconception {
