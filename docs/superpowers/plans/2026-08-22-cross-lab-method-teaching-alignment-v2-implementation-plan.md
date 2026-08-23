@@ -2,11 +2,11 @@
 
 **Date:** 2026-08-22
 
-**Status:** Design accepted with binding addendum; **Phases 0 through 4 are
-Maintainer-accepted, implementation is complete, and the integration freeze
-passed**. Historical later-phase responsibilities are reconciled below by
-current behavior rather than phase number. The separate final read-only
-release audit is next.
+**Status:** **FULLY EXECUTED AND FROZEN** at
+`5ee063bf5d33d872305c46d495a84f4e95e128c5` (tree
+`1fd08e3d2e9c641f3e6fc148606c33484ea320a2`). The final Method Teaching
+release audit returned **PASS — METHOD TEACHING ALIGNMENT V2 READY TO FREEZE**
+with `P0 = P1 = P2 = P3 = 0`.
 
 **Milestone:** Cross-Lab Method Teaching Alignment v2
 
@@ -14,13 +14,10 @@ release audit is next.
 
 **Current product baseline:** `411e641d8cc6b14240acc408130876781fb1ee84` / tree `92f79cba8bdabafb9a97e3a99d76ddff853fe35c`
 
-**Execution gate:** Phase 4 is Maintainer-accepted at
-`b554d29c7448a394582417de81911cbbb7c56eb0` (tree
-`b8221cf818c91fe75c51490b8a7732b592336831`). Its independent audit returned
-`P0 = 0`, `P1 = 0`, `P2 = 0`, and `P3 = 1`; documentation-only
-`PHASE4-P3-01` is closed. The integration freeze found no P0/P1/P2 product
-blocker and required no product-source fix. Stop before the separate final
-read-only release audit.
+**Execution gate:** Implementation, integration freeze, independent release
+audit, and Maintainer freeze are complete. The current gate is Production
+release closeout and Production verification from the exact reviewed release
+commit.
 
 ## 1. Purpose and stop condition
 
@@ -28,11 +25,11 @@ This plan maps the accepted design direction to current repository owners so a l
 
 It is deliberately staged. Each implementation phase must start clean, add focused behavioral evidence before or with its source change, finish with a narrow reviewable commit, and stop at its named review gate. A later task must not infer authority to execute the next phase from this document.
 
-The implementation now stops after accepted Phase 4 plus a bounded integration
-freeze. It preserves the accepted Phase 2 opening, accepted Phase 3 one-step
-teaching, and accepted Phase 4 history/second-order teaching while keeping the
-complete landscape above the complete selected lens. It does not perform the
-separate final release audit or resume Presentation Phase 7.
+The implementation plan is fully executed. It preserves the accepted Phase 2
+opening, Phase 3 one-step teaching, and Phase 4 history/second-order teaching
+while keeping the complete landscape above the complete selected lens. The
+final Method Teaching audit passed, and Presentation Phase 7 is complete and
+accepted; no teaching implementation gate remains.
 
 ### 1.1 Current reconciliation ledger — 2026-08-23
 
@@ -58,9 +55,9 @@ remains.
 | Bundle and lazy ownership | 7 | **SATISFIED** | Boundaries, route-ownership tests, static/dynamic import inspection, and unchanged 115-module Production chunk split pass. | None. |
 | Cross-Lab regression | 7 | **SATISFIED** | Full verification and representative Linear Systems Method/Data/Output smoke pass without Linear Systems changes. | None. |
 | Integrated release-candidate evidence | 7 | **SATISFIED** | Focused gate, typecheck, boundaries, Production build, exactly one full `verify`, and representative browser smoke pass at the freeze checkpoint. | None. |
-| Final release readiness decision | 7–8 | **PARTIALLY SATISFIED** | Implementation is complete and freeze-ready; the independent final release verdict has not yet been issued. | Run the separate read-only release audit. |
-| Method Teaching v2 final release audit | 8 / current gate | **GENUINELY REMAINING** | No product implementation is missing; this is the final independent release decision only. | **FINAL READ-ONLY METHOD TEACHING ALIGNMENT V2 RELEASE AUDIT.** |
-| Cross-Lab Presentation Phase 7 resumption | 8 / separate milestone | **GENUINELY REMAINING** | It remains paused by Maintainer authority and is outside this implementation freeze. | Consider only after the final Method Teaching audit passes and separate authorization is issued. |
+| Final release readiness decision | 7–8 | **SATISFIED** | Final Method Teaching audit passed with P0/P1/P2/P3 = 0 and the Maintainer froze the milestone. | None. |
+| Method Teaching v2 final release audit | 8 / final gate | **SATISFIED** | **PASS — METHOD TEACHING ALIGNMENT V2 READY TO FREEZE.** | None. |
+| Cross-Lab Presentation Phase 7 resumption | 8 / separate milestone | **SATISFIED** | Phase 7 completed and was accepted at the shared frozen baseline; its two release P3s are closed in release closeout. | None. |
 
 ## 2. Recorded binding authority
 
@@ -595,12 +592,10 @@ Record exact totals, commands, manifest evidence, browser matrix, limitations, a
 
 ## 15. Phase 8 — Independent audit and Presentation release-audit resumption gate
 
-**Current reconciliation:** **PARTIALLY SATISFIED.** Independent mathematical,
-teaching, accessibility, bundle, and regression evidence is complete through
-the accepted Phase 3/4 audits and integration freeze. The only genuinely
-remaining item is the separate **FINAL READ-ONLY METHOD TEACHING ALIGNMENT V2
-RELEASE AUDIT**. Cross-Lab Presentation Phase 7 remains paused pending that
-verdict and separate Maintainer authorization.
+**Current reconciliation:** **SATISFIED.** Independent mathematical, teaching,
+accessibility, bundle, regression, and final release evidence is complete. The
+final Method Teaching audit passed with zero findings, the milestone is
+frozen, and Cross-Lab Presentation Phase 7 is complete and accepted.
 
 **Purpose:** obtain an auditor-independent verdict before the paused Presentation Phase 7 can resume.
 
@@ -709,8 +704,7 @@ The integration-freeze candidate is ready for the final read-only release audit:
 
 ## 20. Exact next gate
 
-The implementation is complete and the integration freeze passed. The exact
-next action is the separate **FINAL READ-ONLY METHOD TEACHING ALIGNMENT V2
-RELEASE AUDIT**. Do not perform that audit automatically, resume the paused
-Cross-Lab Presentation Phase 7 release sequence, modify product source, push,
-or deploy under this task.
+The plan is fully executed and Method Teaching Alignment v2 is frozen. The
+exact next action is **Production release closeout and Production
+verification from the exact reviewed release commit**. Motion, Linear Algebra
+Tutor, and PDE remain separately gated.

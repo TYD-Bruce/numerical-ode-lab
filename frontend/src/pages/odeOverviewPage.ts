@@ -53,7 +53,7 @@ export const odeOverviewPage: RouteModule = {
         createTextElement("h2", "Connections across numerical analysis"),
         createTextElement(
           "p",
-          "ODE methods use ideas from Linear Algebra when systems are coupled, while PDE discretizations often produce large ODE systems. The Linear Algebra and PDE Labs are planned platform directions."
+          "ODE methods use ideas from Linear Algebra when systems are coupled, while PDE discretizations often produce large ODE systems. Numerical Linear Algebra now includes the available Linear Systems Lab, while Numerical PDE remains a planned platform direction."
         )
       );
 

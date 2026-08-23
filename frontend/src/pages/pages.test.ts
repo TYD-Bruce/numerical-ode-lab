@@ -115,6 +115,9 @@ describe("static platform pages", () => {
     expect(target.textContent).toContain("Planned");
     expect(target.textContent).toContain("Linear Algebra");
     expect(target.textContent).toContain("PDE");
+    expect(target.textContent).toContain(
+      "Numerical Linear Algebra now includes the available Linear Systems Lab, while Numerical PDE remains a planned platform direction."
+    );
   });
 
   it("presents the available Linear Systems Lab and keeps remaining roadmaps truthful", () => {

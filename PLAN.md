@@ -2,18 +2,24 @@
 
 ## Current status
 
-**Active milestone: Cross-Lab Method Teaching Alignment v2 — Phases 0 through
-4 are Maintainer-accepted. Implementation is COMPLETE and the integration
-freeze is PASS. The next gate is the separate FINAL READ-ONLY Method Teaching
-Alignment v2 release audit. Cross-Lab Presentation Phase 7 remains paused.**
+**Active milestone: Final Production Release Closeout. Method Teaching
+Alignment v2 and Cross-Lab Presentation System v1 are FROZEN at
+`5ee063bf5d33d872305c46d495a84f4e95e128c5` (tree
+`1fd08e3d2e9c641f3e6fc148606c33484ea320a2`). Cross-Lab Presentation Phase 7
+is COMPLETE / ACCEPTED. The current gate is exact release-candidate validation,
+canonical push, and Production verification.**
 
-Cross-Lab Presentation Sync Phases 0 through 6 are implemented. The Phase 6
+Cross-Lab Presentation Sync Phases 0 through 7 are complete and accepted. The Phase 6
 entry-safe `ModuleOverview` and proven duplicate-style cleanup passed its
 independent audit by the current product baseline
 `411e641d8cc6b14240acc408130876781fb1ee84` (tree
 `92f79cba8bdabafb9a97e3a99d76ddff853fe35c`). Phase 6 is **MAINTAINER
-ACCEPTED** with final severity `P0 = P1 = P2 = P3 = 0`. Maintainer visual
-review then found a design-level gap:
+ACCEPTED** with final severity `P0 = P1 = P2 = P3 = 0`. The final Phase 7
+audit passed with `P0 = 0`, `P1 = 0`, `P2 = 0`, and `P3 = 2`, and the
+Maintainer records **FREEZE_CROSS_LAB_PRESENTATION_V1** at the current frozen
+baseline. The two release P3s are closed in this release task by one narrow
+`/ode` product-truth correction and canonical release bookkeeping. Earlier
+Maintainer visual review had found a design-level gap:
 the Labs share presentation components and visual grammar, but ODE still uses
 a selection-first Method stage while Linear Systems uses a teaching-first
 cognitive sequence. The existing presentation components are not the problem.
@@ -22,7 +28,8 @@ The new accepted authority is the
 [Cross-Lab Method Teaching Alignment v2 design](docs/superpowers/specs/2026-08-22-cross-lab-method-teaching-alignment-v2-design.md),
 with its separately gated
 [repository-grounded implementation plan](docs/superpowers/plans/2026-08-22-cross-lab-method-teaching-alignment-v2-implementation-plan.md).
-The design is **ACCEPTED WITH BINDING ADDENDUM**. It aligns ODE toward the
+The design is **FROZEN** after its final release audit passed with
+`P0 = P1 = P2 = P3 = 0`. It aligns ODE toward the
 Linear Systems teaching-first philosophy while
 preserving all eight methods, method selection, Compare, experimentation,
 first-/second-order boundaries, presets, charts, exact comparison,
@@ -44,7 +51,13 @@ records that the former Phase 5/6 implementation slices are superseded by
 accepted current behavior, Phase 7 evidence is satisfied, and only the final
 read-only release verdict genuinely remains.
 
-Cross-Lab Presentation Phase 7 is **paused**, not failed or completed. Phase 0
+Cross-Lab Presentation Phase 7 is **COMPLETE / ACCEPTED** at frozen baseline
+`5ee063bf5d33d872305c46d495a84f4e95e128c5` (tree
+`1fd08e3d2e9c641f3e6fc148606c33484ea320a2`). Its final audit returned
+**PASS WITH P3 CARRY-FORWARD — CROSS-LAB PRESENTATION SYSTEM V1 READY TO
+FREEZE** with `P0 = 0`, `P1 = 0`, `P2 = 0`, and `P3 = 2`. `PHASE7-P3-01`
+and `PHASE7-P3-02` are closed by the bounded release correction and canonical
+status update. Phase 0
 authority/copy alignment remains accepted at
 `77047d9d570d8cf9416991e8e0c17d7485acab8b` (tree
 `7ff318fcdf6d08adf716792f509826b27b648520`). The Maintainer accepts Phase 1
@@ -123,10 +136,11 @@ preservation, Data/Output/Compare/Convergence boundaries, accessibility,
 responsive Light/Dark behavior, lifecycle, and bundle/lazy ownership. No
 source fix or additional implementation phase is required.
 
-The exact next gate is the **FINAL READ-ONLY METHOD TEACHING ALIGNMENT V2
-RELEASE AUDIT**. Do not perform that audit automatically, resume Cross-Lab
-Presentation Phase 7, change product source, push, or deploy. Historical
-Phase 1/2/3/4 next-gate wording below is superseded by this current status.
+The exact next gate is **Production release closeout and Production
+verification** from the exact reviewed release commit. Historical
+Method Teaching and Presentation phase next-gate wording below is superseded
+by this current status. Motion remains paused; Linear Algebra Tutor and PDE
+remain separately gated future work.
 
 Linear Systems Teaching v2 is **MAINTAINER ACCEPTED** at commit
 `484fc9153de33be7949e82b29386c94fe63d19c8` (tree
@@ -321,12 +335,12 @@ Tutor/Glossary, PDE implementation, dependencies, push, deployment, and
 Production state are unchanged.
 
 The former next gate—independent Phase 6 overview / cleanup / lazy-boundary
-audit—has passed, and the Maintainer accepted Phase 6. Maintainer visual
-review identified the Method-stage
-pedagogical-alignment gap now governed by the new v2 design above. Phase 7 is
-paused; do not implement the redesign, resume the release audit, remount
-Motion, begin Linear Algebra Tutor/Glossary, or begin PDE work without a
-separate authorization.
+audit—passed, and the Maintainer accepted Phase 6. The later Method-stage
+pedagogical-alignment gap was resolved by the now-frozen Method Teaching v2
+work. Presentation Phase 7 is complete and accepted at the frozen baseline;
+this point-in-time Phase 6 history remains unchanged. Do not remount Motion,
+begin Linear Algebra Tutor/Glossary, or begin PDE work without separate
+authorization.
 
 ## Superseded Teaching v2 execution record
 

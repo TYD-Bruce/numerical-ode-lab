@@ -1,12 +1,10 @@
 # Cross-Lab Method Teaching Alignment v2 Design
 
-**Status:** **DESIGN ACCEPTED WITH BINDING ADDENDUM; PHASES 0–4 MAINTAINER
-ACCEPTED; IMPLEMENTATION COMPLETE; INTEGRATION FREEZE PASSED.** Phase 4 is
-accepted at `b554d29c7448a394582417de81911cbbb7c56eb0` (tree
-`b8221cf818c91fe75c51490b8a7732b592336831`). Its independent audit reported
-`P0 = 0`, `P1 = 0`, `P2 = 0`, and `P3 = 1`; the documentation-only
-`PHASE4-P3-01` is closed by the canonical acceptance/freeze record. No later
-teaching implementation phase remains open.
+**Status:** **FROZEN** at `5ee063bf5d33d872305c46d495a84f4e95e128c5`
+(tree `1fd08e3d2e9c641f3e6fc148606c33484ea320a2`). The final Method Teaching
+release audit returned **PASS — METHOD TEACHING ALIGNMENT V2 READY TO FREEZE**
+with `P0 = P1 = P2 = P3 = 0`. The accepted design, binding addendum, Phases
+0–4 implementation, and integration-freeze evidence are complete.
 
 **Date:** 2026-08-22
 
@@ -22,9 +20,7 @@ teaching implementation phase remains open.
 **Acceptance checkpoint:** `bfe5d514c67b1f5c00a1bc71b128f158e4811a5a`
 (tree `29c2a1e19718ce312671c8307dc65240e1c5eab6`)
 
-**Next gate:** **FINAL READ-ONLY METHOD TEACHING ALIGNMENT V2 RELEASE AUDIT.**
-Cross-Lab Presentation Phase 7 remains paused until that separate audit passes
-and the Maintainer separately authorizes release-sequence resumption.
+**Next gate:** Production release closeout and Production verification from the exact reviewed release commit
 
 ## 1. Executive decision
 
@@ -1368,8 +1364,9 @@ satisfied by the accepted Phase 2–4 implementation and verification. No
 product-source correction, new teaching, redesign, or additional
 implementation phase is required.
 
-The implementation is therefore **COMPLETE** and the integration freeze is
-**PASS**. The exact next gate is a **FINAL READ-ONLY METHOD TEACHING ALIGNMENT
-V2 RELEASE AUDIT**. Cross-Lab Presentation Phase 7 remains paused. This status
-does not authorize source changes, push, Preview, Production deployment, or
-release-sequence resumption.
+The implementation is **COMPLETE**, the integration freeze is **PASS**, and the
+final release audit is **PASS**. Method Teaching Alignment v2 is **FROZEN** at
+`5ee063bf5d33d872305c46d495a84f4e95e128c5` (tree
+`1fd08e3d2e9c641f3e6fc148606c33484ea320a2`). Cross-Lab Presentation Phase 7
+is complete and accepted. The exact next gate is Production release closeout
+and Production verification from the exact reviewed release commit.

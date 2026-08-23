@@ -2,6 +2,67 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
+## Final Production Release Closeout — frozen candidate record — 2026-08-23
+
+### Final freeze authority
+
+The Maintainer formally records **Method Teaching Alignment v2 — FROZEN** at
+HEAD `5ee063bf5d33d872305c46d495a84f4e95e128c5` (tree
+`1fd08e3d2e9c641f3e6fc148606c33484ea320a2`). Its final release audit verdict
+is **PASS — METHOD TEACHING ALIGNMENT V2 READY TO FREEZE**, with
+`P0 = P1 = P2 = P3 = 0`.
+
+The Maintainer also formally records **Cross-Lab Presentation System v1 —
+FROZEN** at the same HEAD/tree. Cross-Lab Presentation Phase 7 is **COMPLETE /
+ACCEPTED**. Its final audit verdict is **PASS WITH P3 CARRY-FORWARD —
+CROSS-LAB PRESENTATION SYSTEM V1 READY TO FREEZE**, with `P0 = 0`, `P1 = 0`,
+`P2 = 0`, and `P3 = 2`; the release recommendation is
+`FREEZE_CROSS_LAB_PRESENTATION_V1`.
+
+### Authorized P3 closures
+
+`PHASE7-P3-01 = CLOSED`. The `/ode` cross-domain paragraph keeps its existing
+ODE/Linear Algebra/PDE connection and now states current product truth:
+
+> ODE methods use ideas from Linear Algebra when systems are coupled, while
+> PDE discretizations often produce large ODE systems. Numerical Linear
+> Algebra now includes the available Linear Systems Lab, while Numerical PDE
+> remains a planned platform direction.
+
+The closure changes only that supporting sentence in
+`frontend/src/pages/odeOverviewPage.ts` and adds one exact focused expectation
+to the existing static-page test. Layout, ModuleOverview structure, status,
+route/action ownership, and all other learner copy remain unchanged.
+
+`PHASE7-P3-02 = CLOSED`. `PLAN.md`, `docs/INDEX.md`, this canonical handoff,
+and the status/current-gate clauses in both accepted design/plan pairs now
+record Method Teaching v2 frozen, Cross-Lab Presentation v1 frozen, and
+Presentation Phase 7 complete/accepted. Historical Phase 5/6 evidence remains
+unchanged as point-in-time history.
+
+### Release candidate boundary
+
+This section records the frozen authority and bounded release diff before the
+final local/remote gates. The exact release commit/tree, push identity, Vercel
+deployment identity, canonical-domain result, and Production smoke belong to a
+later Production-verified section after those checks actually pass. Do not
+infer deployment from this candidate record.
+
+The authorized release range from frozen baseline
+`5ee063bf5d33d872305c46d495a84f4e95e128c5` is limited to:
+
+- the one `/ode` product-truth sentence;
+- its focused static-page assertion; and
+- canonical freeze/release status documentation.
+
+There is no layout, CSS, numerical, formula, coefficient, session, order,
+result, Compare, Convergence, Data, Output, routing, history, scroll, lazy-load,
+API, Vercel configuration, dependency, Method Teaching, Linear Systems,
+Tutor/Glossary feature, Motion, Replay, Trace, PDE, or domain change. The exact
+next gate is complete local release validation, one coherent release commit,
+canonical remote preflight/push, and Production verification. Motion remains
+paused; Linear Algebra Tutor and PDE remain future separate gates.
+
 ## Cross-Lab Method Teaching Alignment v2 — Phase 4 acceptance and Integration Freeze — 2026-08-23
 
 ### Phase 4 Maintainer acceptance and P3 closure

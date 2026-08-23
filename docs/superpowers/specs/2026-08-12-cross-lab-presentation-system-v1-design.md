@@ -1,6 +1,11 @@
 # Cross-Lab Presentation System v1 Design
 
-**Status:** Maintainer approved at `3b77f7133a95bef855c2eb3e3a69db37e16f1e46`; Phases 0 through 5 Maintainer accepted, with final Phase 5 acceptance at `371d151568abb426059da638d8b69c8f6af98227` (tree `9ccd00bf5693ae3e6d66efc28f4c317423b4d103`) and `P0 = P1 = P2 = P3 = 0`; Phase 6 entry-safe ModuleOverview and proven duplicate-style cleanup passed independent audit by baseline `411e641d8cc6b14240acc408130876781fb1ee84` (tree `92f79cba8bdabafb9a97e3a99d76ddff853fe35c`) but has no recorded Maintainer acceptance; Phase 7 is paused pending the separately reviewed [Cross-Lab Method Teaching Alignment v2 design](2026-08-22-cross-lab-method-teaching-alignment-v2-design.md)
+**Status:** **FROZEN** at `5ee063bf5d33d872305c46d495a84f4e95e128c5`
+(tree `1fd08e3d2e9c641f3e6fc148606c33484ea320a2`). Phases 0 through 7 are
+complete and Maintainer-accepted. The final Phase 7 audit returned **PASS WITH
+P3 CARRY-FORWARD — CROSS-LAB PRESENTATION SYSTEM V1 READY TO FREEZE** with
+`P0 = 0`, `P1 = 0`, `P2 = 0`, and `P3 = 2`; `PHASE7-P3-01` and
+`PHASE7-P3-02` are closed by the authorized release closeout.
 
 **Date:** 2026-08-12
 
@@ -8,7 +13,7 @@
 
 **Starting authority:** Linear Systems Teaching v2 maintainer-accepted at `484fc9153de33be7949e82b29386c94fe63d19c8` (tree `509d245adb745d272e2a5c8185fb678b6e15009d`)
 
-**Next gate:** Maintainer review and acceptance of the Cross-Lab Method Teaching Alignment v2 design; do not resume Phase 7
+**Next gate:** Production release closeout and Production verification from the exact reviewed release commit
 
 ## 1. Decision summary
 

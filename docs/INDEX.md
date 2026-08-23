@@ -25,16 +25,23 @@
 
 ## Current active milestone
 
-`PLAN.md` points to **Cross-Lab Method Teaching Alignment v2**. Cross-Lab
-Presentation Sync Phase 6 remains **MAINTAINER ACCEPTED** at
+`PLAN.md` points to **Final Production Release Closeout**. Method Teaching
+Alignment v2 and Cross-Lab Presentation System v1 are **FROZEN** at
+`5ee063bf5d33d872305c46d495a84f4e95e128c5` (tree
+`1fd08e3d2e9c641f3e6fc148606c33484ea320a2`). Cross-Lab Presentation Phase 7
+is **COMPLETE / ACCEPTED** after its final audit passed with `P0 = 0`,
+`P1 = 0`, `P2 = 0`, and `P3 = 2`. Its two release carry-forwards are closed
+by the bounded `/ode` product-truth correction and current canonical status.
+
+Cross-Lab Presentation Sync Phase 6 remains **MAINTAINER ACCEPTED** at
 `411e641d8cc6b14240acc408130876781fb1ee84` (tree
 `92f79cba8bdabafb9a97e3a99d76ddff853fe35c`) with
-`P0 = P1 = P2 = P3 = 0`; Presentation Phase 7 remains paused.
+`P0 = P1 = P2 = P3 = 0` as historical point-in-time evidence.
 
 The
 [Cross-Lab Method Teaching Alignment v2 design](superpowers/specs/2026-08-22-cross-lab-method-teaching-alignment-v2-design.md)
-is **ACCEPTED WITH BINDING ADDENDUM; PHASES 0–4 MAINTAINER ACCEPTED;
-IMPLEMENTATION COMPLETE; INTEGRATION FREEZE PASSED**, and its
+is **FROZEN** after the final Method Teaching release audit passed with
+`P0 = P1 = P2 = P3 = 0`, and its
 [repository-grounded implementation plan](superpowers/plans/2026-08-22-cross-lab-method-teaching-alignment-v2-implementation-plan.md)
 now contains the current responsibility-based reconciliation ledger. Phase 0 is accepted at
 `77047d9d570d8cf9416991e8e0c17d7485acab8b` (tree
@@ -98,9 +105,9 @@ numerical algorithm, teaching authority, session schema, family-order
 authority, Compare, Data, Output, Convergence, Tutor, Glossary, Linear Systems,
 Motion, PDE, dependency, push, deployment, or Production state changed.
 
-The exact next gate is the **FINAL READ-ONLY METHOD TEACHING ALIGNMENT V2
-RELEASE AUDIT**. Cross-Lab Presentation Phase 7 remains paused pending that
-verdict and separate Maintainer authorization.
+The exact next gate is **Production release closeout and Production
+verification** from the exact reviewed release commit. Motion remains paused;
+Linear Algebra Tutor and PDE remain separately gated future work.
 
 ## Superseded Teaching v2 milestone record
 
@@ -332,8 +339,8 @@ maintainer acceptance of the F2 review commit.
 
 | Document | Status |
 |---|---|
-| [Cross-Lab Method Teaching Alignment v2 Design](superpowers/specs/2026-08-22-cross-lab-method-teaching-alignment-v2-design.md) | Accepted with binding addendum; Phases 0–4 Maintainer-accepted; Phase 4 P3 status item closed; implementation complete and integration freeze passed; final read-only Method Teaching v2 release audit next; Presentation Phase 7 paused |
-| [Cross-Lab Presentation System v1 Design](superpowers/specs/2026-08-12-cross-lab-presentation-system-v1-design.md) | Maintainer approved; Phases 0–6 Maintainer accepted; Phase 6 final severity P0/P1/P2/P3 = 0; Phase 7 paused for Method teaching alignment |
+| [Cross-Lab Method Teaching Alignment v2 Design](superpowers/specs/2026-08-22-cross-lab-method-teaching-alignment-v2-design.md) | Frozen at `5ee063bf5d33d872305c46d495a84f4e95e128c5`; final release audit passed P0/P1/P2/P3 = 0; Production release closeout next |
+| [Cross-Lab Presentation System v1 Design](superpowers/specs/2026-08-12-cross-lab-presentation-system-v1-design.md) | Frozen at `5ee063bf5d33d872305c46d495a84f4e95e128c5`; Phase 7 complete/accepted after PASS WITH P3 CARRY-FORWARD; both release P3s closed in release closeout |
 | [Linear Systems Teaching v2 Design](superpowers/specs/2026-08-11-linear-systems-teaching-v2-design.md) | Maintainer-accepted at `484fc9153de33be7949e82b29386c94fe63d19c8`; final teaching-copy audit passed P0/P1/P2/P3 = 0; Motion paused; Tutor later; not deployed |
 | [Linear Systems Lab Version 1 Design](superpowers/specs/2026-08-10-linear-systems-lab-v1-design.md) | Maintainer-approved design; Day 1/1.5 numerical evidence and Day 2 route/UI implemented locally; Tutor pending |
 | [Theme-Ready Platform Shell Design](superpowers/specs/2026-07-13-theme-ready-platform-shell-design.md) | Implemented, Vercel Preview-verified, safe to release |
@@ -347,8 +354,8 @@ maintainer acceptance of the F2 review commit.
 
 | Document | Status |
 |---|---|
-| [Cross-Lab Method Teaching Alignment v2 Implementation Plan](superpowers/plans/2026-08-22-cross-lab-method-teaching-alignment-v2-implementation-plan.md) | Repository-grounded and reconciled by responsibility; Phases 0–4 Maintainer-accepted; former Phase 5/6 slices superseded, integrated Phase 7 evidence satisfied, and only the final read-only release audit genuinely remaining |
-| [Cross-Lab Presentation System v1 Implementation Plan](superpowers/plans/2026-08-12-cross-lab-presentation-system-v1-implementation-plan.md) | Phases 0–6 Maintainer accepted; Phase 6 final severity P0/P1/P2/P3 = 0; Phase 7 paused for Method teaching alignment |
+| [Cross-Lab Method Teaching Alignment v2 Implementation Plan](superpowers/plans/2026-08-22-cross-lab-method-teaching-alignment-v2-implementation-plan.md) | Fully executed and frozen; final Method Teaching release audit passed; Production release closeout next |
+| [Cross-Lab Presentation System v1 Implementation Plan](superpowers/plans/2026-08-12-cross-lab-presentation-system-v1-implementation-plan.md) | Fully executed and frozen; Phases 0–7 complete/accepted; Phase 7 release P3s closed in release closeout |
 | [Linear Systems Teaching v2 Implementation Plan](superpowers/plans/2026-08-11-linear-systems-teaching-v2-implementation-plan.md) | Executed and maintainer-accepted; final teaching-copy audit passed; Motion remount and Tutor remain separate later gates |
 | [Linear Systems Lab Version 1 Implementation Plan](superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md) | Repository-grounded; Day 1/1.5 and Day 2 implemented locally; independent product-audit corrections verified, correction re-audit next, Tutor deferred to a later gate |
 | [Theme-Ready Platform Shell Implementation Plan](superpowers/plans/2026-07-13-theme-ready-platform-shell-implementation-plan.md) | Implemented historical plan; check the final review and architecture map for current state |
