@@ -2,7 +2,292 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
-## Cross-Lab Method Teaching Alignment v2 — Phase 2 Maintainer visual correction candidate — 2026-08-22
+## Cross-Lab Method Teaching Alignment v2 — Phase 3 one-step teaching candidate — 2026-08-22
+
+### Phase 2 acceptance and Phase 3 scope
+
+The Maintainer formally accepts **Cross-Lab Method Teaching Alignment v2 —
+Phase 2** at runtime HEAD
+`24b3c6859a7d3e066f853fee05b1acdd5608a5a5` (tree
+`27529fdd88a81b84731374ca999e783800a51183`). Final severity is
+`P0 = 0`, `P1 = 0`, `P2 = 0`, and `P3 = 0`. The prior audit-metadata SHA
+finding and selected-rail/content-inset finding are closed. The accepted
+Problem foundation, method landscape, selected shell, mobile Read selected
+method action, secondary Compare branch, family-specific order preservation,
+and Continue-to-Data transition remain the Phase 3 foundation.
+
+Phase 3 is implemented and locally verified as a candidate at
+`5cd127ef7b57cbc9e01f6dc78150cf9abd7ee6f1` (tree
+`d4b4caa094ad2cfbaeb39dfc05b965cdb1661975`), **Teach ODE one-step
+methods**. Its browser-visible depth is deliberately limited to exactly four
+current catalog families:
+
+1. Forward Euler;
+2. Backward Euler;
+3. Taylor Method (Order 2); and
+4. Runge-Kutta 4.
+
+Adams-Bashforth, Adams-Moulton, Backward Differentiation Formula, and
+Leap-Frog retain their truthful, selectable, runnable Phase 2 shells. Each
+continues to Data and explicitly says that its deeper guided walkthrough is
+not included yet. Phase 4, history-method teaching, and Cross-Lab Presentation
+Phase 7 were not started.
+
+### Source and authority outcome
+
+The required catalog, solver, nonlinear-solver, Taylor, grid, safe-math,
+preset, expression, session, Method composition, caller, test, and
+learner-copy inventory found no conflict between accepted teaching authority
+and current numerical behavior. Current source confirms:
+
+- Forward Euler performs one current-state RHS evaluation for each step;
+- Backward Euler forms a Forward Euler starting guess and uses the current
+  UI-default Newton residual solve for the unknown endpoint;
+- Taylor 2 internally estimates the centered `f_t` and `f_y` information from
+  learner-supplied `f` and currently uses five RHS evaluations per step; and
+- RK4 evaluates start, midpoint, midpoint, and endpoint stage slopes and stores
+  only their weighted conclusion as the next accepted approximation.
+
+No stale learner-facing fixed-point correction wording was introduced or
+found in the new lens. Genuine internal fixed-point override wording remains
+outside the new teaching path. No global method ranking, unqualified stability
+claim, convergence-as-accuracy claim, stage-as-solution claim, learner-entered
+Taylor-partial claim, or predictor-as-accepted-value claim is published.
+
+### Pure teaching projection and presentation ownership
+
+`odeMethodTeachingContent.ts` remains the frozen product-authored learner
+content owner and now additionally owns three closed static diagram records:
+the Forward Euler one-step path, Backward Euler endpoint relation, and RK4
+stage-sampling path. Taylor intentionally owns no diagram in this phase.
+
+`methodMathContent.ts` remains the safe authored mathematics owner. It now
+supplies closed readonly supporting formula records for the Backward Euler
+predictor/residual, Taylor path derivative, and RK4 `k1` through `k4` stages.
+No raw formula string is inserted into product HTML; every display uses the
+existing readonly math renderer and one explicit accessible verbalization.
+
+`odeMethodTeaching.ts` continues to be the pure learner projection. It derives
+identity, catalog structure, availability, order facts, presets, primary math,
+supporting math, diagram content, and selected concepts without importing
+audit/governance records or mutable session state. The audit owner remains
+separate and is not imported by Production composition.
+
+The new `odeMethodTeachingView.ts` is an ODE-only presentational owner. It
+accepts the learner projection and renders a complete lens only when the
+catalog-derived problem profile is first-order and the step structure is
+one-step. It renders, in order:
+
+- one dominant defining formula and accessible verbalization;
+- an approved diagram when the content record owns one;
+- closed supporting equations when required;
+- formula anatomy and an ordered update;
+- theoretical order, required state, work, and startup/history facts;
+- strength, watch point, accuracy/stability boundary, and misconception;
+- one native closed `details`/`summary` implementation disclosure;
+- the selected concept subset; and
+- Output and eligible-Convergence observation guidance.
+
+`odeApp.ts` remains the existing complete-Lab composition and lifecycle owner.
+It chooses between the structurally derived complete lens and the shallow
+deferred shell. It contains no method-specific one-step curriculum strings and
+does not import the audit owner. The selected shell still owns the edge rail;
+the existing selected-content child owns the complete inset and reading
+rhythm. No parallel app layer or new session representation was created.
+
+### Four one-step teaching results
+
+**Forward Euler** leads with the current-slope update, one RHS evaluation, a
+four-part state/slope/change/stored-update path, explicit formation, order 1,
+no startup history, qualified coarse-step watch points, and the distinction
+between one discrete approximation and an exact tangent curve.
+
+**Backward Euler** leads with the unknown endpoint relation. Its diagram and
+supporting equations keep the explicit predictor visibly separate from the
+accepted endpoint, identify the residual Newton solves, subordinate the
+nonlinear implementation detail, and preserve the scalar-test-equation-only
+A-stability boundary and the distinction among Newton convergence, accuracy,
+and stability.
+
+**Taylor Method (Order 2)** leads with the second-order correction and one
+supporting path-derivative identity. Beginner copy says the Lab estimates the
+required derivative information internally from entered `f`; centered partial
+approximations, the internal scale, and the current five-evaluation work count
+remain subordinate implementation detail. No derivative-chain diagram or
+learner partial-derivative input is implied.
+
+**Runge-Kutta 4** leads with the weighted update, followed by a start /
+midpoint / midpoint / endpoint stage path and all four exact stage equations.
+Every stage is labelled as a temporary slope probe, while the weighted
+combination is the sole accepted next approximation. The lens reports exactly
+four RHS evaluations and does not treat stages as Output points.
+
+The concept surface is selected rather than global. Each complete lens receives
+only its reviewed concept IDs, with shared evidence concepts plus the
+method-specific current-slope, endpoint-residual, derivative-chain, or stage
+concepts needed to interpret that update. Audit authority IDs and claim status
+remain absent from the learner projection and rendered bundle.
+
+### Visual, responsive, and accessibility evidence
+
+Real-route browser review covered all four profiles at 1440 × 900 in Light.
+Forward Euler, Backward Euler, and RK4 were also reviewed in desktop Dark.
+All four were reviewed at 390 × 844 in Light, Forward Euler at 390 in Dark,
+and Forward Euler/RK4 at approximately 320 pixels. Results:
+
+- one selected lens and one Lab `h1` exist at a time;
+- the dominant formula, process, and after-solve bridge retain an editorial
+  hierarchy without a dashboard/card-wall treatment;
+- selected rail and all content retain independent inset clearance;
+- the FE/BE/RK4 figures communicate through labels, visible explanation, and
+  captions rather than color or animation;
+- diagrams become vertical reading paths on mobile;
+- anatomy, process, facts, interpretation, and concepts become one column;
+- long Taylor/RK4 formulas remain locally scrollable at narrow widths while
+  document scroll width equals document client width;
+- no tiny type, clipped diagram, nested interactive control, duplicate ID,
+  heading jump, or duplicate accessible math owner was found;
+- method selection retains focus and does not auto-scroll; and
+- the mobile-only Read selected method action deliberately moves focus to the
+  connected lens heading after explicit activation.
+
+Native `details`/`summary` remains the one-level disclosure owner and opens
+without custom modal/focus behavior. The structural and browser evidence is
+not a claim of full screen-reader certification. Light/Dark use the existing
+accent vocabulary; no second palette, animation, or decorative art was added.
+
+Screenshots are external, uncommitted evidence. They cover the four desktop
+profiles, required Dark profiles, 390/320 reflow, RK4 stage/supporting math,
+Backward Euler supporting math, and the Linear Systems comparison. No evidence
+asset was added to the repository.
+
+### Product and cross-Lab regression evidence
+
+Browser smoke passed the complete unchanged product paths:
+
+- Method → Data → Run → Output for Forward Euler, Backward Euler, Taylor 2,
+  and RK4;
+- a successful exact-reference Forward Euler Convergence Study, with recent
+  observed order consistent with the unchanged order-1 numerical evidence;
+- Forward Euler versus RK4 Compare selection, shared Data, Run, and Output;
+- Tutor lazy open/close and its existing comparison-unavailable boundary;
+- Glossary definition open/close through the existing explicit-scheme term;
+- New experiment cancel and confirmed starter reset;
+- ODE route leave/remount with one restored selected lens;
+- all four deferred families remaining shallow, selectable, and Data-capable;
+  and
+- Linear Systems starter GEPP Data → Run → computed solution, followed by its
+  unchanged Method teaching surface.
+
+No browser console warning/error or page-level overflow was observed. ODE and
+Linear Systems retain a shared teaching-first cognitive standard without
+sharing domain curriculum or copying composition.
+
+### Tests-first, verification, and bundle evidence
+
+Tests were written first. Before Production implementation, the focused
+`odeMethodView.test.ts` run produced exactly six intended Phase 3 failures and
+seven existing passes because none of the four complete lenses existed yet.
+
+Final evidence is green:
+
+- six initial Phase 3 content/projection/math/view/style files: 45 tests;
+- final focused safety matrix: 18 files / 165 tests;
+- `npm.cmd run verify:boundaries`: four owners plus the Vercel adapter;
+- frontend, numerics, and contracts typechecks;
+- full `npm.cmd run test:run`: 103 files / 1,335 tests;
+- standalone Production build: 114 transformed modules;
+- exactly one complete `npm.cmd run verify`: boundaries, 1,335 tests,
+  frontend/numerics/contracts/API typechecks, and Production build; and
+- `git diff --check` plus targeted active-document link validation.
+
+Relative to the accepted Phase 2 start, Vite's rounded asset measurements are:
+
+| Production asset | Phase 2 accepted | Phase 3 candidate | Delta |
+|---|---:|---:|---:|
+| Platform entry JS | 59.04 / 18.29 kB gzip | 59.04 / 18.29 kB gzip | unchanged |
+| Shared Lab JS | 14.43 / 3.57 kB gzip | 14.43 / 3.57 kB gzip | unchanged |
+| ODE complete-Lab JS | 340.41 / 106.14 kB gzip | 353.02 / 108.98 kB gzip | +12.61 / +2.84 kB gzip |
+| ODE complete-Lab CSS | 24.09 / 5.01 kB gzip | 31.34 / 5.95 kB gzip | +7.25 / +0.94 kB gzip |
+| Linear Systems JS | 75.80 / 22.63 kB gzip | 75.80 / 22.63 kB gzip | unchanged |
+| Linear Systems CSS | 26.06 / 4.92 kB gzip | 26.06 / 4.92 kB gzip | unchanged |
+
+The build changes from 113 to 114 transformed modules because the new
+presentation owner is a separate source module inside the already lazy ODE
+route. Phase 3 teaching markers occur only in the ODE route JavaScript. The
+entry still dynamically imports the ODE and Linear Systems routes, and Tutor
+and Glossary remain separately dynamically imported. Entry, shared Lab,
+Linear Systems, Tutor, Glossary, MathLive, Compute Engine, Chart.js, and
+Convergence ownership boundaries are unchanged. The pre-existing large
+MathLive/editable-math chunk warning remains; no dependency was added.
+
+### Problems, resolutions, and durable rules
+
+The in-app browser does not support `networkidle`; local QA used the supported
+load state and fresh DOM/screenshot checks. A full-page capture stitched long
+static columns misleadingly, while DOM counts and normal viewport captures
+proved there was one landscape and one lens; user-facing evidence therefore
+uses viewport captures. Playwright's semantic click can scroll a target into
+view before activation, so no-auto-scroll behavior was measured with a visible
+coordinate click; product scroll position remained unchanged. A direct hard
+navigation away from meaningful Linear Systems work was aborted by the
+existing unload protection, so the regression used normal platform navigation.
+These were evidence-tool/navigation effects, not product defects.
+
+Durable rules from this slice:
+
+- derive complete-lens eligibility from catalog-backed profile structure;
+- keep reviewed diagram prose in the frozen learner content owner;
+- keep authored supporting math in the closed readonly-math owner;
+- keep audit/governance metadata outside the learner projection and bundle;
+- keep one dominant formula, one accessible owner per display, and local math
+  containment at narrow widths;
+- preserve the shell-rail/content-inset ownership split;
+- never use teaching to fabricate run evidence or numerical conclusions; and
+- leave unauthorized families shallow rather than publishing partial depth.
+
+### Exact files, non-changes, and next gate
+
+The implementation commit changes exactly:
+
+- `frontend/src/labs/ode/odeApp.ts`
+- `frontend/src/labs/ode/odeApp.css`
+- `frontend/src/labs/ode/odeMethodTeachingView.ts`
+- `frontend/src/labs/ode/odeMethodTeachingContent.ts`
+- `frontend/src/labs/ode/odeMethodTeachingContent.test.ts`
+- `frontend/src/labs/ode/odeMethodTeaching.ts`
+- `frontend/src/labs/ode/odeMethodTeaching.test.ts`
+- `frontend/src/labs/ode/odeMethodView.test.ts`
+- `frontend/src/labs/ode/odePresentationStyles.test.ts`
+- `frontend/src/math/ui/methodMathContent.ts`
+- `frontend/src/math/ui/methodMathContent.test.ts`
+
+The status checkpoint changes only `PLAN.md`, `docs/INDEX.md`, this canonical
+handoff, and the active design/implementation-plan status. `README.md` and
+implemented architecture are unchanged because this is an unreleased phase
+candidate with no architecture-boundary change. The documentation commit is
+the commit containing this section; its exact SHA/tree is reported after
+creation because a commit cannot self-reference its own hash.
+
+There is no numerical algorithm, solver formula, coefficient, supported or
+default order, Newton setting, Taylor epsilon, grid, session schema,
+family-order authority, Compare numerical behavior, Data, Output, Convergence,
+Computation Trace, Replay, Motion, Tutor feature, Glossary feature, Linear
+Systems, PDE, dependency, route, push, deployment, Preview, Production, or
+release change. Local Phase 3 self-review has no open finding:
+`P0 = P1 = P2 = P3 = 0`.
+
+The exact next gate is an **independent Phase 3 one-step mathematical /
+teaching / accessibility audit**, followed by **Maintainer visual / teaching
+review**. Phase 4 and later teaching remain unauthorized. Cross-Lab
+Presentation Phase 7 remains paused. Do not begin history-method teaching,
+push, or deploy.
+
+## Cross-Lab Method Teaching Alignment v2 — Phase 2 Maintainer visual correction candidate (historical checkpoint) — 2026-08-22
+
+*This section preserves the pre-acceptance correction record. Phase 2
+acceptance and the current Phase 3 gate are recorded in the section above and
+supersede this section's candidate and next-gate wording.*
 
 ### Review record and scope
 

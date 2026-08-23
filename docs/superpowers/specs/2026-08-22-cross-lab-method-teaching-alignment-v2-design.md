@@ -1,9 +1,8 @@
 # Cross-Lab Method Teaching Alignment v2 Design
 
-**Status:** **DESIGN ACCEPTED WITH BINDING ADDENDUM.** Phase 0 is accepted,
-Phase 1 is Maintainer-accepted, and Phase 2's Problem foundation, method
-landscape, selected-method shell, and Data transition are implemented and
-locally verified as a candidate. Phase 3 and later work remain unauthorized.
+**Status:** **DESIGN ACCEPTED WITH BINDING ADDENDUM.** Phases 0 through 2 are
+Maintainer-accepted. Phase 3 one-step selected teaching is implemented and
+locally verified as a candidate. Phase 4 and later work remain unauthorized.
 
 **Date:** 2026-08-22
 
@@ -19,8 +18,8 @@ locally verified as a candidate. Phase 3 and later work remain unauthorized.
 **Acceptance checkpoint:** `bfe5d514c67b1f5c00a1bc71b128f158e4811a5a`
 (tree `29c2a1e19718ce312671c8307dc65240e1c5eab6`)
 
-**Next gate:** independent Phase 2 opening / landscape / selection audit,
-followed by Maintainer visual/cognitive review.
+**Next gate:** independent Phase 3 one-step mathematical / teaching /
+accessibility audit, followed by Maintainer visual / teaching review.
 
 ## 1. Executive decision
 
@@ -85,8 +84,9 @@ under current product authority. Reselecting Adams-Bashforth, Adams-Moulton,
 or BDF must not replace its stored order with catalog default metadata.
 
 Selection does not auto-scroll. **Read selected method** is not a mandatory
-always-visible control; Phase 2 may introduce it only if browser evidence shows
-a meaningful orientation problem, especially on mobile.
+always-visible control. Phase 2 browser evidence established meaningful mobile
+distance and introduced it only on mobile; explicit activation moves/focuses
+the connected selected lens while selection itself stays in the landscape.
 
 The accepted future static-diagram responsibilities are: one-step update /
 endpoint relation for Forward and Backward Euler; stage-sampling path for RK4;
@@ -357,8 +357,8 @@ allowed to share a row when that improves comprehension.
 
 **Mobile:** The landscape becomes short grouped rows in authored order, not a
 stack of desktop cards. The selected lens follows immediately. Selection does
-not force scroll. A deliberate “Read selected method” action may be introduced
-later only if Phase 2 browser evidence shows a meaningful orientation problem.
+not force scroll. Phase 2 evidence justified the implemented mobile-only
+“Read selected method” action; it moves only after explicit activation.
 
 **Strengths:** Closely matches the Linear Systems cognitive sequence, preserves
 ODE exploration, keeps relationships visible during selection, and can reuse
@@ -499,9 +499,9 @@ not each need a separate elevated card.
   method control in the landscape.
 - A concise polite status announces “{method} selected. Teaching profile
   updated.” It does not announce the entire profile.
-- A nearby explicit “Read selected method” action is not required. Phase 2 may
-  add it only if browser evidence shows meaningful landscape-to-profile
-  distance; if present, focus moves only when that action is invoked.
+- A nearby explicit “Read selected method” action is not required on desktop.
+  Phase 2 evidence justified it on mobile; focus moves only when that action is
+  invoked.
 - The selected state uses written text or an accessible state plus shape/border
   treatment; color is supplementary.
 - Switching methods preserves the learner’s position in the landscape. Native
@@ -1286,9 +1286,22 @@ one bounded additive pure-session family-order record. Data remains the only
 editable order owner; selection reflects rather than chooses order; solver
 inputs and numerical behavior are unchanged.
 
-Phase 2 stops at the shell boundary. It does not add complete selected-method
-profiles, concepts, diagrams, after-solve teaching, Phase 3 work, or any
-release claim. Its exact next gate is an **independent Phase 2 opening /
-landscape / selection audit**, followed by **Maintainer visual/cognitive
+The Maintainer accepts Phase 2 at
+`24b3c6859a7d3e066f853fee05b1acdd5608a5a5` (tree
+`27529fdd88a81b84731374ca999e783800a51183`) with final severity
+`P0 = P1 = P2 = P3 = 0`. Its former audit/governance and selected-content
+inset findings are closed.
+
+Phase 3 is implemented at
+`5cd127ef7b57cbc9e01f6dc78150cf9abd7ee6f1` (tree
+`d4b4caa094ad2cfbaeb39dfc05b965cdb1661975`). Exactly Forward Euler,
+Backward Euler, Taylor Method (Order 2), and Runge-Kutta 4 now consume the
+learner-safe projection in complete selected teaching lenses. The approved
+Forward/Backward Euler and RK4 diagrams are present; Taylor uses formula
+anatomy and ordered process without a diagram. Adams-Bashforth,
+Adams-Moulton, BDF, and Leap-Frog remain shallow Phase 2 shells.
+
+The exact next gate is an **independent Phase 3 one-step mathematical /
+teaching / accessibility audit**, followed by **Maintainer visual / teaching
 review**. Cross-Lab Presentation Phase 7 remains paused. This checkpoint does
-not authorize Phase 3+, push, Preview, Production deployment, or release.
+not authorize Phase 4+, push, Preview, Production deployment, or release.

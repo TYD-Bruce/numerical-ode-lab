@@ -2,9 +2,9 @@
 
 **Date:** 2026-08-22
 
-**Status:** Design accepted with binding addendum; **Phase 0 is accepted,
-Phase 1 is Maintainer-accepted, and Phase 2 is implemented and locally
-verified as a candidate**. Phase 3 and later phases remain separately gated.
+**Status:** Design accepted with binding addendum; **Phases 0 through 2 are
+Maintainer-accepted, and Phase 3 one-step teaching is implemented and locally
+verified as a candidate**. Phase 4 and later phases remain separately gated.
 
 **Milestone:** Cross-Lab Method Teaching Alignment v2
 
@@ -12,10 +12,10 @@ verified as a candidate**. Phase 3 and later phases remain separately gated.
 
 **Current product baseline:** `411e641d8cc6b14240acc408130876781fb1ee84` / tree `92f79cba8bdabafb9a97e3a99d76ddff853fe35c`
 
-**Execution gate:** Phase 2's Problem foundation, method landscape,
-selected-method shell, and Data transition are complete. Stop before Phase 3
-pending an independent Phase 2 opening / landscape / selection audit and
-Maintainer visual/cognitive review.
+**Execution gate:** Phase 3's Forward Euler, Backward Euler, Taylor 2, and RK4
+selected teaching lenses are complete. Stop before Phase 4 pending an
+independent Phase 3 one-step mathematical / teaching / accessibility audit and
+Maintainer visual / teaching review.
 
 ## 1. Purpose and stop condition
 
@@ -23,11 +23,10 @@ This plan maps the accepted design direction to current repository owners so a l
 
 It is deliberately staged. Each implementation phase must start clean, add focused behavioral evidence before or with its source change, finish with a narrow reviewable commit, and stop at its named review gate. A later task must not infer authority to execute the next phase from this document.
 
-The current bounded task stops after Phase 2. It first separates learner-safe
-runtime content from audit/governance metadata, then implements only the
-browser-visible Problem foundation, shallow landscape, selected-method shell,
-and Continue-to-Data transition. It does not implement complete profiles,
-concepts, diagrams, after-solve teaching, Phase 3, or Presentation Phase 7.
+The current bounded task stops after Phase 3. It preserves the accepted Phase
+2 opening and adds complete selected teaching only for Forward Euler, Backward
+Euler, Taylor 2, and RK4. It does not implement deep Adams-Bashforth,
+Adams-Moulton, BDF, or Leap-Frog teaching, Phase 4, or Presentation Phase 7.
 
 ## 2. Recorded binding authority
 
@@ -42,8 +41,9 @@ questions at documentation checkpoint
 3. method selection chooses family, Data owns editable order, and initialized
    family-specific order survives reselection; default metadata applies only
    at initial construction, New experiment/reset, or first initialization;
-4. selection does not auto-scroll, and **Read selected method** is optional
-   pending Phase 2 browser evidence;
+4. selection does not auto-scroll; Phase 2 browser evidence justified a
+   mobile-only **Read selected method** action that moves only after explicit
+   activation;
 5. the initial future diagrams are FE/BE update relation, RK4 stage path,
    AB/AM/BDF history rail with predictor/corrector variant, and Leap-Frog
    staggered rail; Taylor begins with formula anatomy/process;
@@ -230,8 +230,10 @@ Stop for independent mathematical/content review of all eight records before pag
 
 **Purpose:** replace the selection-first card wall with the accepted teaching-first opening while preserving existing selection semantics and Data navigation.
 
-**Outcome:** implemented and locally verified as a candidate. The mandatory
-pre-flight closes `PHASE1-P3-01` at
+**Outcome:** Maintainer-accepted at
+`24b3c6859a7d3e066f853fee05b1acdd5608a5a5` (tree
+`27529fdd88a81b84731374ca999e783800a51183`) with final severity
+`P0 = P1 = P2 = P3 = 0`. The mandatory pre-flight closed `PHASE1-P3-01` at
 `0d3b8d6f7aeb9766b2a24e2169640b5d9c3f8d1e` (tree
 `9c5d5a61c5f1012b4cfb4baa926889528d580c04`) by splitting audit metadata into
 its own owner and constructing an explicit allow-listed
@@ -284,10 +286,9 @@ Cover:
 
 ### 9.4 Gate
 
-Run focused tests, typecheck, browser states above, `git diff --check`, and a
-static/dynamic import review. Stop for independent Phase 2 opening / landscape /
-selection audit and then Maintainer visual/cognitive review before adding full
-teaching depth.
+The focused tests, typecheck, browser states, `git diff --check`, independent
+audit, and Maintainer visual/cognitive review passed. Phase 2 is closed; its
+former stop-before-Phase-3 gate is historical.
 
 **Implemented commit:** `Align the ODE Method opening and landscape`
 
@@ -296,6 +297,12 @@ teaching depth.
 ## 10. Phase 3 — One-step selected profiles
 
 **Purpose:** complete implementation-ready teaching for Forward Euler, Backward Euler, Taylor 2, and RK4 using the profile schema.
+
+**Outcome:** implemented and locally verified as a candidate at
+`5cd127ef7b57cbc9e01f6dc78150cf9abd7ee6f1` (tree
+`d4b4caa094ad2cfbaeb39dfc05b965cdb1661975`). Phase 2 is Maintainer-accepted
+at `24b3c6859a7d3e066f853fee05b1acdd5608a5a5` (tree
+`27529fdd88a81b84731374ca999e783800a51183`).
 
 ### 10.1 Tests first
 
@@ -322,7 +329,7 @@ Review all four profiles at desktop/mobile in Light/Dark, with keyboard selectio
 
 Run focused tests, typecheck, and route/lifecycle regressions. Stop for independent math/content/accessibility review of the one-step slice.
 
-**Suggested commit:** `Teach ODE one-step method profiles`
+**Implemented commit:** `Teach ODE one-step methods`
 
 **Rollback:** revert profile rendering/content additions for these records without touching the landscape, Data, or numerical source.
 
@@ -604,9 +611,9 @@ An eventual implementation is ready for the independent audit only when all are 
 
 ## 20. Exact next gate
 
-After the completed Phase 2 stop, the next action is an **independent Phase 2
-opening / landscape / selection audit**, followed by **Maintainer visual/
-cognitive review**. Phase 3 and later phases remain unauthorized. Do not add
-deep selected-method profiles, concepts, diagrams, or after-solve teaching;
-resume the paused Presentation Phase 7 release audit; push; or deploy under
-this task.
+After the completed Phase 3 stop, the next action is an **independent Phase 3
+one-step mathematical / teaching / accessibility audit**, followed by
+**Maintainer visual / teaching review**. Phase 4 and later phases remain
+unauthorized. Do not add deep Adams-Bashforth, Adams-Moulton, BDF, or
+Leap-Frog teaching; resume the paused Presentation Phase 7 release audit;
+push; or deploy under this task.

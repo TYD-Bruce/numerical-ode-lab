@@ -2,10 +2,9 @@
 
 ## Current status
 
-**Active milestone: Cross-Lab Method Teaching Alignment v2 — Phase 0 is
-accepted, Phase 1 is Maintainer-accepted, and Phase 2 is independently audited.
-The selected-method inset correction is a Maintainer visual correction
-candidate. Stop before Phase 3.**
+**Active milestone: Cross-Lab Method Teaching Alignment v2 — Phases 0 through
+2 are Maintainer-accepted. Phase 3 one-step teaching is implemented and locally
+verified as a candidate. Stop before Phase 4.**
 
 Cross-Lab Presentation Sync Phases 0 through 6 are implemented. The Phase 6
 entry-safe `ModuleOverview` and proven duplicate-style cleanup passed its
@@ -41,46 +40,39 @@ at `712fa1d68ced31d1a85b6c13aa4daf93882b8f9b` (tree
 returned **PASS WITH P3 CARRY-FORWARD** (`P0 = 0`, `P1 = 0`, `P2 = 0`,
 `P3 = 1`).
 
-Phase 2 first closes the sole carry-forward, `PHASE1-P3-01`, by separating
-audit/governance records from an explicitly allow-listed learner projection at
-`0d3b8d6f7aeb9766b2a24e2169640b5d9c3f8d1e` (tree
-`9c5d5a61c5f1012b4cfb4baa926889528d580c04`). The opening and landscape are
-implemented at `96362c9635938d6d90274d12a89f4255b17a60b9` (tree
-`d7538ee7c24e8c8ce0c04ef80cdb4b30f1c895b8`). The real ODE Method stage now
-follows Problem → landscape → one learner-safe selected-method shell →
-Continue to Data; Compare remains a compact secondary first-order branch.
-Selection stays on Method, preserves drafts and successful evidence, and
-keeps distinct initialized Adams-Bashforth, Adams-Moulton, and BDF orders.
-Final formula-containment browser polish is
-`7eb2f9c1f9077d42ec3f928276cab1e939640f80` (tree
-`6410989215a2e5864d87aadad2e16b5a9de050fc`).
+Phase 2 first closed `PHASE1-P3-01` by separating audit/governance records from
+an explicitly allow-listed learner projection, then implemented the Problem
+foundation, three-group/eight-method landscape, selected shell, mobile Read
+selected method action, secondary Compare branch, family-keyed order
+preservation, and Continue-to-Data transition. The selected-content inset
+correction closed `PHASE2-VIS-01`. The Maintainer now formally accepts Phase 2
+at `24b3c6859a7d3e066f853fee05b1acdd5608a5a5` (tree
+`27529fdd88a81b84731374ca999e783800a51183`) with final severity
+`P0 = P1 = P2 = P3 = 0`.
 
-The independent Phase 2 audit returned **PASS WITH P3 CARRY-FORWARD — PHASE 2
-READY FOR MAINTAINER VISUAL/COGNITIVE REVIEW AND PHASE 3 AUTHORIZATION**, with
-`P0 = 0`, `P1 = 0`, `P2 = 0`, and `P3 = 1`. `PHASE2-P3-01` was a truncated
-accepted Phase 1 SHA in `docs/INDEX.md`. Direct Maintainer visual review then
-accepted the overall Phase 2 direction in principle and identified
-`PHASE2-VIS-01`: the selected-state rail collided with content because an
-undefined spacing token invalidated the shell's complete padding declaration.
-The narrow correction at `313ca3379c954c8caa5db233cfcb8a9b54f23833`
-(tree `92b13c3cc7b08154a4534e9a1a4ce8ed32a6f546`) keeps the rail on the shell and
-gives one generalized selected-content owner a valid independent inset. It is
-a correction candidate, not Phase 2 Maintainer acceptance.
+Phase 3 is implemented at
+`5cd127ef7b57cbc9e01f6dc78150cf9abd7ee6f1` (tree
+`d4b4caa094ad2cfbaeb39dfc05b965cdb1661975`). Exactly Forward Euler,
+Backward Euler, Taylor Method (Order 2), and Runge-Kutta 4 now receive complete
+selected-method teaching lenses derived from the learner-safe Phase 1
+projection. The lenses render one dominant safe readonly formula, approved
+supporting equations, formula anatomy, an ordered update, implementation facts,
+qualified interpretation boundaries, one native advanced disclosure, selected
+concepts, and after-solve guidance. Forward/Backward Euler and RK4 use their
+approved static teaching diagrams; Taylor intentionally uses formula anatomy
+and process without a diagram.
 
-Preserving those three independent family orders required one bounded additive
-pure-session correction: `OdeSession` now stores a family-keyed order record
-instead of one global second-order-form draft. This was the proven blocker to
-the accepted reselection rule; Data remains the only editable order owner, and
-no solver input meaning or numerical behavior changed. Phase 2 adds no deep
-profiles, concepts, diagrams, after-solve teaching, or Phase 3 work.
+Adams-Bashforth, Adams-Moulton, BDF, and Leap-Frog retain truthful shallow
+Phase 2 shells and unchanged Data access. No numerical algorithm, session
+schema, family-order authority, Compare behavior, Data, Output, Convergence,
+Tutor, Glossary, Linear Systems, Motion, PDE, dependency, route boundary, push,
+or deployment changed. Cross-Lab Presentation Phase 7 remains paused.
 
-The exact next gate is **Maintainer final visual confirmation of the corrected
-Phase 2 selected-method shell**. If accepted, Phase 2 may then be recorded as
-Maintainer accepted and Phase 3 may be separately authorized. Phase 3 and
-later Method teaching phases remain unauthorized. Do not resume Presentation
-Phase 7, push, or deploy. The previous Cross-Lab Presentation record below
-remains historical implementation evidence; any former Phase 1 or Phase 2
-next-gate wording is superseded by this current status.
+The exact next gate is an **independent Phase 3 one-step mathematical /
+teaching / accessibility audit**, followed by **Maintainer visual / teaching
+review**. Phase 4 and later Method teaching remain unauthorized. Do not resume
+Presentation Phase 7, push, or deploy. Historical Phase 1/2 next-gate wording
+below is superseded by this current status.
 
 Linear Systems Teaching v2 is **MAINTAINER ACCEPTED** at commit
 `484fc9153de33be7949e82b29386c94fe63d19c8` (tree

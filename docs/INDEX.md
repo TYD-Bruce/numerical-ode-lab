@@ -26,61 +26,47 @@
 ## Current active milestone
 
 `PLAN.md` points to **Cross-Lab Method Teaching Alignment v2**. Cross-Lab
-Presentation Sync Phases 0 through 6 are implemented. Phase 6 entry-safe
-`ModuleOverview` and proven duplicate-style cleanup passed its independent
-audit by product baseline `411e641d8cc6b14240acc408130876781fb1ee84`
-(tree `92f79cba8bdabafb9a97e3a99d76ddff853fe35c`); Phase 6 is **MAINTAINER
-ACCEPTED** with `P0 = P1 = P2 = P3 = 0`.
+Presentation Sync Phase 6 remains **MAINTAINER ACCEPTED** at
+`411e641d8cc6b14240acc408130876781fb1ee84` (tree
+`92f79cba8bdabafb9a97e3a99d76ddff853fe35c`) with
+`P0 = P1 = P2 = P3 = 0`; Presentation Phase 7 remains paused.
 
-Maintainer visual review found that shared components and visual grammar did
-not yet align the Labs' Method-stage cognitive models. Linear Systems teaches
-the problem, landscape, selected runnable method, concepts, after-solve checks,
-and then Data; ODE still begins with eight isolated selections. The new
+The
 [Cross-Lab Method Teaching Alignment v2 design](superpowers/specs/2026-08-22-cross-lab-method-teaching-alignment-v2-design.md)
-is **ACCEPTED WITH BINDING ADDENDUM** and selects a teaching-first
-**Landscape to Lens** direction that preserves ODE's
-eight methods, Compare, first-/second-order profiles, and experimentation. Its
+is **ACCEPTED WITH BINDING ADDENDUM**, and its
 [repository-grounded implementation plan](superpowers/plans/2026-08-22-cross-lab-method-teaching-alignment-v2-implementation-plan.md)
-keeps implementation separately gated. Phase 0 is accepted at commit
+keeps each slice separately gated. Phase 0 is accepted at
 `77047d9d570d8cf9416991e8e0c17d7485acab8b` (tree
-`7ff318fcdf6d08adf716792f509826b27b648520`). Phase 1 is
+`7ff318fcdf6d08adf716792f509826b27b648520`), and Phase 1 is
 Maintainer-accepted at `712fa1d68ced31d1a85b6c13aa4daf93882b8f9b` (tree
-`49f1716f2cc9208068d61f70159396af3b53573b`) after an independent **PASS WITH
-P3 CARRY-FORWARD** verdict (`P0 = 0`, `P1 = 0`, `P2 = 0`, `P3 = 1`).
-Compare remains a secondary landscape branch; Data owns editable order and
-initialized family-specific order survives reselection.
+`49f1716f2cc9208068d61f70159396af3b53573b`).
 
-Phase 2 is now an implemented candidate. Its mandatory pre-flight closes
-`PHASE1-P3-01` by splitting learner content from audit/governance metadata and
-exposing only an explicit learner-safe projection at
-`0d3b8d6f7aeb9766b2a24e2169640b5d9c3f8d1e` (tree
-`9c5d5a61c5f1012b4cfb4baa926889528d580c04`). The browser-visible Problem
-foundation, three-group/eight-method landscape, real selected-method shell,
-secondary Compare entry, and Continue-to-Data transition are implemented at
-`96362c9635938d6d90274d12a89f4255b17a60b9` (tree
-`d7538ee7c24e8c8ce0c04ef80cdb4b30f1c895b8`). A bounded additive pure-session
-order record was required to preserve distinct initialized Adams-Bashforth,
-Adams-Moulton, and BDF orders; Data remains the only editable owner and
-numerical behavior is unchanged.
-Final formula-containment browser polish is
-`7eb2f9c1f9077d42ec3f928276cab1e939640f80` (tree
-`6410989215a2e5864d87aadad2e16b5a9de050fc`).
+Phase 2 is now **MAINTAINER ACCEPTED** at
+`24b3c6859a7d3e066f853fee05b1acdd5608a5a5` (tree
+`27529fdd88a81b84731374ca999e783800a51183`) with final severity
+`P0 = P1 = P2 = P3 = 0`. Its Problem foundation, three-group/eight-method
+landscape, learner-safe selected shell, mobile Read selected method action,
+secondary Compare branch, family-specific order preservation, and
+Continue-to-Data transition remain the accepted opening. The audit metadata
+and selected-content inset findings are closed.
 
-The independent Phase 2 audit returned **PASS WITH P3 CARRY-FORWARD**, with
-`P0 = 0`, `P1 = 0`, `P2 = 0`, and `P3 = 1`. The audit's `PHASE2-P3-01`
-truncated Phase 1 SHA is corrected above. Direct Maintainer review accepted the
-overall direction in principle and identified `PHASE2-VIS-01`, a selected-rail
-and content-inset collision. Its narrow generalized correction is now a
-Maintainer visual correction candidate at
-`313ca3379c954c8caa5db233cfcb8a9b54f23833` (tree
-`92b13c3cc7b08154a4534e9a1a4ce8ed32a6f546`).
+Phase 3 one-step teaching is implemented and locally verified as a candidate
+at `5cd127ef7b57cbc9e01f6dc78150cf9abd7ee6f1` (tree
+`d4b4caa094ad2cfbaeb39dfc05b965cdb1661975`). Exactly Forward Euler,
+Backward Euler, Taylor Method (Order 2), and Runge-Kutta 4 receive complete
+learner-safe selected lenses with dominant readonly mathematics, approved
+supporting equations, formula anatomy, ordered process, implementation facts,
+qualified boundaries, native advanced detail, selected concepts, and
+after-solve guidance. Forward/Backward Euler and RK4 use the accepted static
+diagrams; Taylor intentionally does not.
 
-Phase 2 adds no deep profiles, concepts, diagrams, after-solve teaching, or
-Phase 3 work. Linear Systems, Motion, Tutor features, Glossary features, PDE,
-dependencies, push, deployment, and Production state remain unchanged.
-Cross-Lab Presentation Phase 7 is **paused**, not failed or completed. The
-exact next gate is **Maintainer final visual confirmation of the corrected
-Phase 2 selected-method shell**. Phase 3+ remains unauthorized.
+Adams-Bashforth, Adams-Moulton, BDF, and Leap-Frog remain truthful shallow
+Phase 2 shells. Numerical algorithms, session schema, family-order authority,
+Compare, Data, Output, Convergence, Tutor, Glossary, Linear Systems, Motion,
+PDE, dependencies, push, deployment, and Production state are unchanged. The
+exact next gate is an **independent Phase 3 one-step mathematical / teaching /
+accessibility audit**, followed by **Maintainer visual / teaching review**.
+Phase 4+ remains unauthorized.
 
 ## Superseded Teaching v2 milestone record
 
@@ -312,7 +298,7 @@ maintainer acceptance of the F2 review commit.
 
 | Document | Status |
 |---|---|
-| [Cross-Lab Method Teaching Alignment v2 Design](superpowers/specs/2026-08-22-cross-lab-method-teaching-alignment-v2-design.md) | Accepted with binding addendum; Phase 0 accepted; Phase 1 Maintainer-accepted; Phase 2 independently audited with a Maintainer visual correction candidate; Phase 3 unauthorized; Presentation Phase 7 paused |
+| [Cross-Lab Method Teaching Alignment v2 Design](superpowers/specs/2026-08-22-cross-lab-method-teaching-alignment-v2-design.md) | Accepted with binding addendum; Phases 0–2 Maintainer-accepted; Phase 3 one-step teaching implemented and locally verified as a candidate; independent Phase 3 audit then Maintainer review next; Phase 4 unauthorized; Presentation Phase 7 paused |
 | [Cross-Lab Presentation System v1 Design](superpowers/specs/2026-08-12-cross-lab-presentation-system-v1-design.md) | Maintainer approved; Phases 0–6 Maintainer accepted; Phase 6 final severity P0/P1/P2/P3 = 0; Phase 7 paused for Method teaching alignment |
 | [Linear Systems Teaching v2 Design](superpowers/specs/2026-08-11-linear-systems-teaching-v2-design.md) | Maintainer-accepted at `484fc9153de33be7949e82b29386c94fe63d19c8`; final teaching-copy audit passed P0/P1/P2/P3 = 0; Motion paused; Tutor later; not deployed |
 | [Linear Systems Lab Version 1 Design](superpowers/specs/2026-08-10-linear-systems-lab-v1-design.md) | Maintainer-approved design; Day 1/1.5 numerical evidence and Day 2 route/UI implemented locally; Tutor pending |
@@ -327,7 +313,7 @@ maintainer acceptance of the F2 review commit.
 
 | Document | Status |
 |---|---|
-| [Cross-Lab Method Teaching Alignment v2 Implementation Plan](superpowers/plans/2026-08-22-cross-lab-method-teaching-alignment-v2-implementation-plan.md) | Repository-grounded; Phase 0 accepted; Phase 1 Maintainer-accepted; Phase 2 independently audited with a Maintainer visual correction candidate; next gate is Maintainer final visual confirmation; Phase 3 unauthorized |
+| [Cross-Lab Method Teaching Alignment v2 Implementation Plan](superpowers/plans/2026-08-22-cross-lab-method-teaching-alignment-v2-implementation-plan.md) | Repository-grounded; Phases 0–2 Maintainer-accepted; Phase 3 one-step teaching implemented and locally verified as a candidate; independent Phase 3 audit then Maintainer review next; Phase 4 unauthorized |
 | [Cross-Lab Presentation System v1 Implementation Plan](superpowers/plans/2026-08-12-cross-lab-presentation-system-v1-implementation-plan.md) | Phases 0–6 Maintainer accepted; Phase 6 final severity P0/P1/P2/P3 = 0; Phase 7 paused for Method teaching alignment |
 | [Linear Systems Teaching v2 Implementation Plan](superpowers/plans/2026-08-11-linear-systems-teaching-v2-implementation-plan.md) | Executed and maintainer-accepted; final teaching-copy audit passed; Motion remount and Tutor remain separate later gates |
 | [Linear Systems Lab Version 1 Implementation Plan](superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md) | Repository-grounded; Day 1/1.5 and Day 2 implemented locally; independent product-audit corrections verified, correction re-audit next, Tutor deferred to a later gate |
