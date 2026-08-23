@@ -3,7 +3,8 @@
 **Status:** **DESIGN ACCEPTED WITH BINDING ADDENDUM.** Phases 0 through 2 are
 Maintainer-accepted. Phase 3 one-step selected teaching is Maintainer-accepted
 with both P3 carry-forwards closed. Phase 4 history/second-order selected
-teaching is authorized; later work remains unauthorized.
+teaching is implemented and locally/browser verified as an audit candidate;
+later work remains unauthorized.
 
 **Date:** 2026-08-22
 
@@ -1308,9 +1309,28 @@ The mandatory Phase 4 preflight closes `PHASE3-P3-01` by recording that exact
 acceptance in canonical status documents and closes `PHASE3-P3-02` by adding
 `odeMethodTeachingView.ts` to the existing learner/governance disconnect test.
 Production derivation, view, and app composition remain disconnected from the
-audit-only owner. Phase 4 is authorized only for complete selected lenses for
-Adams-Bashforth, Adams-Moulton, BDF, and Leap-Frog under this design's density,
-authority, and non-change boundaries.
+audit-only owner.
+
+Phase 4 is implemented at teaching commit
+`1fcc053108c0e11988cb20c9d36759e11eab97f6` (tree
+`cafb22f0a17ef49cabc2729e85cb23be8875db68`) with final browser-led refinements
+at `8d657199eb00362e07db30d157ab3925dc4ece60` (tree
+`8d247dede67e531e795f6b0a7161f5c1d571a478`). Adams-Bashforth,
+Adams-Moulton, BDF, and Leap-Frog now consume the learner-safe projection in
+complete selected lenses under this design's density, authority, and
+non-change boundaries. Together with Phase 3, all eight catalog methods now
+have deep teaching. Current family order is supplied context rather than a
+Method control; startup guidance is order-aware; Adams-Moulton separates its
+AB predictor from the accepted Newton-corrected value; BDF6 keeps theoretical
+order 6 while qualifying current startup-limited evidence only at order 6; and
+Leap-Frog makes the staggered half-step/whole-step update primary while keeping
+stored full-step velocity reconstruction subordinate.
+
+The candidate passed focused/full automated verification, Production build
+and bundle/governance inspection, and desktop/mobile Light/Dark browser
+review. No numerical, coefficient, session-schema, family-order, Compare,
+Data, Output, Convergence, Tutor, Glossary, Linear Systems, Motion, PDE,
+dependency, or route-boundary change was introduced.
 
 The exact next gate is an **independent Phase 4 history/second-order
 mathematical / teaching / accessibility audit**, followed by **Maintainer

@@ -2,7 +2,217 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
+## Cross-Lab Method Teaching Alignment v2 — Phase 4 history/second-order teaching candidate — 2026-08-23
+
+### Accepted input and preflight
+
+The Maintainer formally accepts **Phase 3 — one-step selected teaching** at
+HEAD `1703c6898a54150538e1f2e33758b0f01bc45a69` (tree
+`59ba7693c69da6eb4166aa667676bfa835032a79`). Independent acceptance severity
+was `P0 = 0`, `P1 = 0`, `P2 = 0`, and `P3 = 2`.
+
+The mandatory preflight commit
+`f574f16f9eae57e263b638ded11a534d839e8cf7` (tree
+`74e3d0f7307d6486787b469f85663ec8bc35e83f`) closes both carry-forwards:
+
+- `PHASE3-P3-01 = CLOSED`: all canonical status owners record the exact
+  accepted Phase 3 HEAD, tree, severity, and Phase 4 gate.
+- `PHASE3-P3-02 = CLOSED`: the existing governance-disconnect test now covers
+  `odeMethodTeachingView.ts` alongside the learner projection and ODE app. It
+  proves that Production teaching code does not import
+  `odeMethodTeachingAudit.ts`; one focused file / five tests passes.
+
+The source/caller/test/content inventory found no numerical-behavior or
+governance conflict, so implementation continued within the four-method Phase
+4 authority.
+
+### Candidate, scope, and architecture
+
+Phase 4 is implemented in `1fcc053108c0e11988cb20c9d36759e11eab97f6` (tree
+`cafb22f0a17ef49cabc2729e85cb23be8875db68`) and browser-refined in
+`8d657199eb00362e07db30d157ab3925dc4ece60` (tree
+`8d247dede67e531e795f6b0a7161f5c1d571a478`). It adds complete deep selected
+lenses only for Adams-Bashforth, Adams-Moulton, Backward Differentiation
+Formula, and Leap-Frog. Together with the accepted Phase 3 lenses, all eight
+current catalog methods now receive deep teaching through one generalized
+learner-safe renderer. The accepted Problem foundation, shallow landscape,
+secondary Compare branch, and single Continue-to-Data transition are
+unchanged.
+
+The pure selector receives the current family order from the caller and uses
+it only to derive teaching detail. It does not select, mutate, initialize, or
+reset order. Data remains the only editable order owner. Order-aware startup
+guidance says no preliminary RK4 values for `p = 1` and exactly `p - 1` RK4
+startup values for `p > 1`, with singular/plural wording derived from the
+supplied order.
+
+The renderer keeps one dominant safe readonly formula, optional supporting
+formulae, anatomy, ordered process, profile facts, qualified boundaries, one
+native closed advanced disclosure, selected concepts, and after-solve guidance
+in the Phase 3 density hierarchy. It adds four closed static diagram variants:
+stored-slope history, predictor/corrector, solution history, and staggered
+state. Diagrams explain mathematical relationships and introduce no motion,
+replay, computation trace, or runtime numerical authority.
+
+### Method results
+
+- **Adams-Bashforth:** teaches an explicit `p`-step update from stored slope
+  history, generated coefficient structure without copied tables, `N >= p`,
+  exactly `p - 1` RK4 startup values for `p > 1`, and one new post-startup RHS
+  evaluation. Its history rail distinguishes stored slopes from accepted
+  solution points and leads to startup/history concepts plus Output evidence.
+- **Adams-Moulton:** teaches the implicit corrector as the primary relation and
+  presents the Adams-Bashforth predictor as a supporting seed, never as the
+  accepted corrected value. The process makes current UI-default Newton work
+  subordinate to the ODE method. It states that Newton convergence establishes
+  neither accuracy nor method stability and contains no learner-facing stale
+  fixed-point correction wording. The predictor/corrector fork is horizontal
+  on wide screens and a single readable column on narrow screens.
+- **Backward Differentiation Formula:** teaches a derivative relation built
+  from solution history, explicitly distinguishing it from Adams slope
+  history. It reflects orders 1–6 and the same exact startup-count rule. Only a
+  supplied current order of 6 receives the qualified advanced statement that
+  the fixed RK4 startup can limit current end-to-end refinement evidence toward
+  about order 5; theoretical order remains 6. No false order-5 theory claim is
+  present.
+- **Leap-Frog:** teaches the current Lab's second-order boundary
+  `u'' = a(t,u)` with required `u0` and `v0`. Its central formula hierarchy is
+  the staggered half-step velocity update followed by the whole-step position
+  update. Initialization and full-step velocity reconstruction for stored/
+  output evidence are supporting formulae. The diagram uses staggered offsets
+  on desktop and an ordered one-column rail on narrow screens. It claims no
+  velocity-dependent acceleration, general second-order system, nonlinear
+  solve, first-order preset selector, exact-reference input, Compare, or
+  Convergence support.
+
+### Ownership, regression, and browser evidence
+
+All formulae remain in the closed safe readonly mathematics owner with explicit
+accessible verbalizations. Coefficients, tolerances, startup arrays, solver
+closures, preset formulae, numerical results, and method IDs were not copied
+into teaching content. The learner projection remains explicitly allow-listed
+and disconnected from audit/governance metadata. Advanced disclosures are
+native and subordinate; no result-specific value is fabricated before Run.
+
+Desktop Light reviewed all four Phase 4 profiles; desktop Dark reviewed
+Adams-Moulton, BDF6, and Leap-Frog. All four profiles were also reviewed at
+390 pixels and at approximately 320 pixels. Formulae use local containment at
+narrow widths; the document and selected lens had no horizontal overflow.
+Keyboard/native disclosure structure, heading hierarchy, accessible formula
+labels, figure descriptions, focus behavior, and reduced-motion independence
+remain covered by tests and browser inspection. Six final screenshots are
+stored outside the repository under
+`ode-phase4-history-teaching/final` with desktop Light/Dark and 390/320
+evidence; none is tracked.
+
+The eight-method cross-profile pass found exactly one deep selected lens at a
+time and one dominant primary formula per lens. The Phase 3 one-step lenses
+remain unchanged in structure and density; Taylor still has no diagram. A
+cross-Lab browser pass found the same Problem → Landscape → Lens → Concepts →
+After-solve grammar in Linear Systems without changing that Lab.
+
+Session/order regression preserved AB 7, AM 6, and BDF 5 through repeated
+family switches and route remount. Data remained first-order for AB/AM/BDF and
+second-order for Leap-Frog. Successful AB8, AM6, BDF6, and Leap-Frog Output
+retained their existing coefficient/diagnostic/stored-value evidence without
+embedding Method teaching. AM2 Convergence retained current classification and
+evidence. Compare remained first-order, excluded Leap-Frog, and rendered no
+deep selected lens. Tutor remained disabled in Compare and lazy/usable in
+single mode; Glossary open/close remained intact. New experiment reset/default
+contracts pass automated tests; browser inspection cancelled the confirmation
+without invoking a destructive reset. Navigation away and back disposed and
+remounted one Lab/lens without Tutor or Glossary residue. Browser console
+warning/error counts were zero.
+
+### Verification, build, and governance
+
+The intended tests-first red gate produced 13 focused failures and 27 passes
+for the missing Phase 4 formula/diagram/content/derivation/view behavior. After
+implementation:
+
+- core focused teaching/math/view suites: 6 files / 54 tests passed;
+- broader affected suites: 21 files / 219 tests passed;
+- focused BDF6 numerical-source evidence: 27 tests passed;
+- import boundaries: four owner checks plus the Vercel adapter passed;
+- frontend, numerics, contracts, and API typechecks passed;
+- full test suite: 103 files / 1,344 tests passed;
+- Production build: 114 modules transformed;
+- exactly one `npm.cmd run verify`: boundaries, all 1,344 tests, all typechecks,
+  API typecheck, and the 114-module Production build passed.
+
+Against the accepted Phase 3 build, representative raw/gzip assets changed as
+follows:
+
+| Asset | Accepted Phase 3 | Phase 4 candidate | Delta |
+|---|---:|---:|---:|
+| Platform JS | 59.04 / 18.29 kB | 59.04 / 18.29 kB | 0 / 0 |
+| Shared workflow JS | 14.43 / 3.57 kB | 14.43 / 3.57 kB | 0 / 0 |
+| ODE JS | 353.02 / 108.98 kB | 360.42 / 110.77 kB | +7.40 / +1.79 kB |
+| ODE CSS | 31.34 / 5.95 kB | 32.95 / 6.17 kB | +1.61 / +0.22 kB |
+| Linear Systems JS | 75.80 / 22.63 kB | 75.80 / 22.63 kB | 0 / 0 |
+| Linear Systems CSS | 26.06 / 4.92 kB | 26.06 / 4.92 kB | 0 / 0 |
+
+The manifest preserves separate dynamic ODE, Linear Systems, Tutor, and
+Glossary entries. ODE retains deferred editable math/MathLive behavior; Home
+and Linear Systems do not acquire the ODE teaching graph. The emitted ODE
+asset contained zero governance/source marker hits for audit statuses, phase
+IDs, test/source paths, maintainer/tool names, or repository source paths.
+
+### Exact files and non-changes
+
+Phase 4 changed exactly:
+
+- `PLAN.md`;
+- `docs/INDEX.md`;
+- `docs/PROJECT_HANDOFF.md`;
+- `docs/superpowers/specs/2026-08-22-cross-lab-method-teaching-alignment-v2-design.md`;
+- `docs/superpowers/plans/2026-08-22-cross-lab-method-teaching-alignment-v2-implementation-plan.md`;
+- `frontend/src/labs/ode/odeApp.css`;
+- `frontend/src/labs/ode/odeApp.ts`;
+- `frontend/src/labs/ode/odeMethodTeaching.test.ts`;
+- `frontend/src/labs/ode/odeMethodTeaching.ts`;
+- `frontend/src/labs/ode/odeMethodTeachingContent.test.ts`;
+- `frontend/src/labs/ode/odeMethodTeachingContent.ts`;
+- `frontend/src/labs/ode/odeMethodTeachingView.ts`;
+- `frontend/src/labs/ode/odeMethodView.test.ts`;
+- `frontend/src/labs/ode/odeMethodTeachingAudit.test.ts`;
+- `frontend/src/labs/ode/odePresentationStyles.test.ts`;
+- `frontend/src/math/ui/methodMathContent.test.ts`;
+- `frontend/src/math/ui/methodMathContent.ts`.
+
+There was no numerical behavior, formula arithmetic, coefficient generation,
+supported/default order, Newton/fixed-point behavior, tolerance, RK4 startup,
+BDF6 metadata, grid rule, session-schema, family-order-authority, Compare
+numerical, Data redesign, Output redesign, Convergence redesign, Tutor feature,
+Glossary feature, Linear Systems, Motion, Replay, Computation Trace, PDE,
+dependency, push, Preview, Production deployment, or release change. Cross-Lab
+Presentation Phase 7 remains paused. Candidate self-review severity is
+`P0 = P1 = P2 = P3 = 0`; independent audit has not yet occurred.
+
+### Problems, resolutions, and durable rules
+
+The first focused run failed only the 13 intended red assertions. Browser QA
+then exposed one real presentation defect: the Adams-Moulton wide-screen fork
+inherited a generic process-grid rule and collapsed into an over-wide sequence.
+The owning selector was made more specific and the fork was set to a bounded
+two-branch layout, with a deliberate one-column mobile override. Browser QA
+also drove removal of internal registry/owner jargon from learner copy. The
+durable rules are: derive order-conditioned teaching from supplied state; keep
+startup exact and singular/plural aware; keep predictor distinct from accepted
+correction; publish BDF6's implementation limitation only at order 6; keep
+Leap-Frog reconstruction subordinate; and let diagrams encode mathematical
+relationships rather than decoration.
+
+The exact next gate is an **independent Phase 4 history/second-order
+mathematical / teaching / accessibility audit**, followed by **Maintainer
+visual / teaching review**. Later alignment integration/release phases remain
+unauthorized. Do not resume Presentation Phase 7, push, or deploy.
+
 ## Cross-Lab Method Teaching Alignment v2 — Phase 3 acceptance and Phase 4 preflight — 2026-08-23
+
+*Historical pre-implementation checkpoint. The Phase 4 candidate section
+above supersedes this section's authorization and next-gate timing while
+preserving its exact Phase 3 acceptance and preflight evidence.*
 
 The Maintainer formally accepts **Phase 3 — one-step selected teaching** at
 HEAD `1703c6898a54150538e1f2e33758b0f01bc45a69` (tree

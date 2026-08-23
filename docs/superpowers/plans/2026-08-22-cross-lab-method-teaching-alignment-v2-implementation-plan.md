@@ -5,7 +5,8 @@
 **Status:** Design accepted with binding addendum; **Phases 0 through 2 are
 Maintainer-accepted, Phase 3 one-step teaching is Maintainer-accepted with both
 P3 carry-forwards closed, and Phase 4 history/second-order teaching is
-authorized**. Later phases remain separately gated.
+implemented and locally/browser verified as an audit candidate**. Later
+phases remain unauthorized.
 
 **Milestone:** Cross-Lab Method Teaching Alignment v2
 
@@ -15,10 +16,10 @@ authorized**. Later phases remain separately gated.
 
 **Execution gate:** Phase 3's Forward Euler, Backward Euler, Taylor 2, and RK4
 selected teaching lenses are accepted. The mandatory Phase 4 preflight closed
-both Phase 3 P3 carry-forwards. Implement only the Adams-Bashforth,
-Adams-Moulton, BDF, and Leap-Frog selected lenses, then stop for an independent
-Phase 4 history/second-order mathematical / teaching / accessibility audit and
-Maintainer visual / teaching review.
+both Phase 3 P3 carry-forwards. The Adams-Bashforth, Adams-Moulton, BDF, and
+Leap-Frog selected lenses are now the implemented Phase 4 candidate. Stop for
+an independent Phase 4 history/second-order mathematical / teaching /
+accessibility audit and Maintainer visual / teaching review.
 
 ## 1. Purpose and stop condition
 
@@ -345,6 +346,27 @@ Run focused tests, typecheck, and route/lifecycle regressions. Stop for independ
 
 **Purpose:** add complete Adams-Bashforth, Adams-Moulton, BDF, and Leap-Frog teaching while making startup, solve, and profile boundaries unmistakable.
 
+**Outcome:** implemented in `1fcc053108c0e11988cb20c9d36759e11eab97f6`
+(tree `cafb22f0a17ef49cabc2729e85cb23be8875db68`) and browser-refined in
+`8d657199eb00362e07db30d157ab3925dc4ece60` (tree
+`8d247dede67e531e795f6b0a7161f5c1d571a478`). All four profiles now use the
+same learner-safe selected-lens renderer as Phase 3 while adding only their
+approved formula, process, diagram, concepts, qualified boundaries, and
+after-solve guidance. Order-aware selectors reflect the supplied current
+family order without choosing or mutating it. Startup guidance distinguishes
+`p = 1` from exactly `p - 1` RK4 startup values; Adams-Moulton separates the AB
+predictor from the accepted Newton-corrected value; BDF separates solution
+history from Adams slope history and shows the BDF6 startup limitation only
+for supplied order 6; Leap-Frog centers its staggered update and keeps
+full-step output reconstruction subordinate.
+
+Focused and full tests, frontend/numerics/contracts/API typechecks, Production
+build, exactly one full `verify`, manifest/bundle/governance inspection, and
+desktop/mobile Light/Dark browser review pass. The opening, landscape, Phase 3
+lenses, Compare, Data, Output, Convergence, Tutor, Glossary, session schema,
+numerical behavior, lazy route boundaries, Linear Systems, and Presentation
+Phase 7 remain unchanged.
+
 ### 11.1 Tests first
 
 Verify that:
@@ -373,7 +395,8 @@ Review longest/densest profiles at 1440 × 900, 390 × 844, and approximately 32
 
 Run focused content/app/session/lifecycle tests and typecheck. Stop for independent numerical/content review, with explicit verdicts on Newton wording, BDF6, and Leap-Frog.
 
-**Suggested commit:** `Teach ODE history and Leap-Frog profiles`
+**Implemented commits:** `Teach ODE history and Leap-Frog profiles`; `Verify
+history ODE teaching`
 
 **Rollback:** revert the four profile slice and its tests/styles; one-step profiles and landscape remain usable.
 
@@ -619,7 +642,8 @@ An eventual implementation is ready for the independent audit only when all are 
 
 ## 20. Exact next gate
 
-After the authorized Phase 4 implementation stop, the next action is an
+After the implemented and locally/browser-verified Phase 4 candidate, the next
+action is an
 **independent Phase 4 history/second-order mathematical / teaching /
 accessibility audit**, followed by **Maintainer visual / teaching review**.
 Later alignment phases remain unauthorized. Do not resume the paused

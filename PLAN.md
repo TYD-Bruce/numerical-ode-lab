@@ -5,8 +5,9 @@
 **Active milestone: Cross-Lab Method Teaching Alignment v2 — Phases 0 through
 2 are Maintainer-accepted. Phase 3 one-step teaching is MAINTAINER ACCEPTED
 WITH P3 CARRY-FORWARD, and both P3 findings are closed by the mandatory Phase
-4 preflight. Phase 4 history/second-order teaching is authorized and in
-progress. Stop after Phase 4.**
+4 preflight. Phase 4 history/second-order teaching is implemented and locally
+and browser verified as an audit candidate. Stop for independent Phase 4
+audit; later phases remain unauthorized.**
 
 Cross-Lab Presentation Sync Phases 0 through 6 are implemented. The Phase 6
 entry-safe `ModuleOverview` and proven duplicate-style cleanup passed its
@@ -73,12 +74,26 @@ status documents. `PHASE3-P3-02` is closed by extending the existing
 learner/governance disconnect test to cover `odeMethodTeachingView.ts`; the
 renderer, learner projection, and ODE app do not import the audit-only owner.
 
-Phase 4 is authorized only for complete selected teaching lenses for
-Adams-Bashforth, Adams-Moulton, BDF, and Leap-Frog. No numerical algorithm,
-session schema, family-order authority, Compare behavior, Data, Output,
-Convergence, Tutor, Glossary, Linear Systems, Motion, PDE, dependency, route
-boundary, push, or deployment is authorized. Cross-Lab Presentation Phase 7
-remains paused.
+Phase 4 closes its mandatory preflight in commit
+`f574f16f9eae57e263b638ded11a534d839e8cf7` (tree
+`74e3d0f7307d6486787b469f85663ec8bc35e83f`), implements the four authorized
+history/second-order lenses in `1fcc053108c0e11988cb20c9d36759e11eab97f6`
+(tree `cafb22f0a17ef49cabc2729e85cb23be8875db68`), and records final browser-led
+presentation refinements in `8d657199eb00362e07db30d157ab3925dc4ece60`
+(tree `8d247dede67e531e795f6b0a7161f5c1d571a478`). Adams-Bashforth,
+Adams-Moulton, BDF, and Leap-Frog now have complete learner-safe selected
+lenses, so all eight catalog methods have deep teaching. Supplied current
+family order remains read-only Method context, Data remains its editable
+owner, and the new diagrams/formulas/processes preserve the approved startup,
+Newton, BDF6, and staggered-state boundaries.
+
+The Phase 4 candidate passed focused and full tests, all typechecks, the
+Production build, exactly one full `verify`, bundle/lazy and emitted-asset
+governance inspection, and desktop/mobile Light/Dark browser review. No
+numerical algorithm, session schema, family-order authority, Compare behavior,
+Data, Output, Convergence, Tutor, Glossary, Linear Systems, Motion, PDE,
+dependency, or route boundary changed. No later alignment phase, push, or
+deployment is authorized. Cross-Lab Presentation Phase 7 remains paused.
 
 The exact next gate is an **independent Phase 4 history/second-order
 mathematical / teaching / accessibility audit**, followed by **Maintainer
