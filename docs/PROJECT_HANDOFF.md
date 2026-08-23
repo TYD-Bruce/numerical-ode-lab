@@ -2,7 +2,44 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
+## Cross-Lab Method Teaching Alignment v2 — Phase 3 acceptance and Phase 4 preflight — 2026-08-23
+
+The Maintainer formally accepts **Phase 3 — one-step selected teaching** at
+HEAD `1703c6898a54150538e1f2e33758b0f01bc45a69` (tree
+`59ba7693c69da6eb4166aa667676bfa835032a79`) with independent-audit severity
+`P0 = 0`, `P1 = 0`, `P2 = 0`, and `P3 = 2`. This acceptance supersedes the
+candidate status and Phase 3 next-gate wording in the historical section
+below.
+
+The mandatory Phase 4 preflight closes both carry-forwards:
+
+- `PHASE3-P3-01 = CLOSED`: `PLAN.md`, `docs/INDEX.md`, this canonical
+  handoff, and the active design/implementation-plan status now record the
+  exact accepted Phase 3 HEAD, tree, severity, and Phase 4 authorization.
+- `PHASE3-P3-02 = CLOSED`: the existing learner/governance disconnect test
+  now reads `odeMethodTeachingView.ts` alongside `odeMethodTeaching.ts` and
+  `odeApp.ts` and proves that all three Production owners remain disconnected
+  from `odeMethodTeachingAudit.ts`. The focused audit test passes one file / five
+  tests. No second test architecture or runtime import was introduced.
+
+The required source, caller, test, and learner-copy inventory found no
+numerical-behavior or governance-boundary conflict. Phase 4 is therefore
+authorized only for complete deep selected lenses for Adams-Bashforth,
+Adams-Moulton, Backward Differentiation Formula, and Leap-Frog. Phase 3 remains
+the density ceiling; the opening, landscape, one-step lenses, Compare, Data,
+Output, Convergence, session/order authority, numerical kernels, and other
+Labs remain outside the implementation scope.
+
+The exact next gate is an **independent Phase 4 history/second-order
+mathematical / teaching / accessibility audit**, followed by **Maintainer
+visual / teaching review**. Cross-Lab Presentation Phase 7 remains paused. No
+later integration/release phase, push, Preview, Production deployment, or
+release is authorized.
+
 ## Cross-Lab Method Teaching Alignment v2 — Phase 3 one-step teaching candidate — 2026-08-22
+
+*Historical pre-acceptance checkpoint. The acceptance/preflight section above
+supersedes this section's candidate status and next gate.*
 
 ### Phase 2 acceptance and Phase 3 scope
 

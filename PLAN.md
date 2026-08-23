@@ -3,8 +3,10 @@
 ## Current status
 
 **Active milestone: Cross-Lab Method Teaching Alignment v2 — Phases 0 through
-2 are Maintainer-accepted. Phase 3 one-step teaching is implemented and locally
-verified as a candidate. Stop before Phase 4.**
+2 are Maintainer-accepted. Phase 3 one-step teaching is MAINTAINER ACCEPTED
+WITH P3 CARRY-FORWARD, and both P3 findings are closed by the mandatory Phase
+4 preflight. Phase 4 history/second-order teaching is authorized and in
+progress. Stop after Phase 4.**
 
 Cross-Lab Presentation Sync Phases 0 through 6 are implemented. The Phase 6
 entry-safe `ModuleOverview` and proven duplicate-style cleanup passed its
@@ -50,7 +52,7 @@ at `24b3c6859a7d3e066f853fee05b1acdd5608a5a5` (tree
 `27529fdd88a81b84731374ca999e783800a51183`) with final severity
 `P0 = P1 = P2 = P3 = 0`.
 
-Phase 3 is implemented at
+Phase 3 was implemented at
 `5cd127ef7b57cbc9e01f6dc78150cf9abd7ee6f1` (tree
 `d4b4caa094ad2cfbaeb39dfc05b965cdb1661975`). Exactly Forward Euler,
 Backward Euler, Taylor Method (Order 2), and Runge-Kutta 4 now receive complete
@@ -62,17 +64,27 @@ concepts, and after-solve guidance. Forward/Backward Euler and RK4 use their
 approved static teaching diagrams; Taylor intentionally uses formula anatomy
 and process without a diagram.
 
-Adams-Bashforth, Adams-Moulton, BDF, and Leap-Frog retain truthful shallow
-Phase 2 shells and unchanged Data access. No numerical algorithm, session
-schema, family-order authority, Compare behavior, Data, Output, Convergence,
-Tutor, Glossary, Linear Systems, Motion, PDE, dependency, route boundary, push,
-or deployment changed. Cross-Lab Presentation Phase 7 remains paused.
+The Maintainer accepts Phase 3 at
+`1703c6898a54150538e1f2e33758b0f01bc45a69` (tree
+`59ba7693c69da6eb4166aa667676bfa835032a79`) with independent-audit severity
+`P0 = 0`, `P1 = 0`, `P2 = 0`, and `P3 = 2`.
+`PHASE3-P3-01` is closed by recording that exact acceptance in the canonical
+status documents. `PHASE3-P3-02` is closed by extending the existing
+learner/governance disconnect test to cover `odeMethodTeachingView.ts`; the
+renderer, learner projection, and ODE app do not import the audit-only owner.
 
-The exact next gate is an **independent Phase 3 one-step mathematical /
-teaching / accessibility audit**, followed by **Maintainer visual / teaching
-review**. Phase 4 and later Method teaching remain unauthorized. Do not resume
-Presentation Phase 7, push, or deploy. Historical Phase 1/2 next-gate wording
-below is superseded by this current status.
+Phase 4 is authorized only for complete selected teaching lenses for
+Adams-Bashforth, Adams-Moulton, BDF, and Leap-Frog. No numerical algorithm,
+session schema, family-order authority, Compare behavior, Data, Output,
+Convergence, Tutor, Glossary, Linear Systems, Motion, PDE, dependency, route
+boundary, push, or deployment is authorized. Cross-Lab Presentation Phase 7
+remains paused.
+
+The exact next gate is an **independent Phase 4 history/second-order
+mathematical / teaching / accessibility audit**, followed by **Maintainer
+visual / teaching review**. Do not begin later alignment integration/release
+phases, resume Presentation Phase 7, push, or deploy. Historical Phase 1/2/3
+next-gate wording below is superseded by this current status.
 
 Linear Systems Teaching v2 is **MAINTAINER ACCEPTED** at commit
 `484fc9153de33be7949e82b29386c94fe63d19c8` (tree

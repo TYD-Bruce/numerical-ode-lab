@@ -3,8 +3,9 @@
 **Date:** 2026-08-22
 
 **Status:** Design accepted with binding addendum; **Phases 0 through 2 are
-Maintainer-accepted, and Phase 3 one-step teaching is implemented and locally
-verified as a candidate**. Phase 4 and later phases remain separately gated.
+Maintainer-accepted, Phase 3 one-step teaching is Maintainer-accepted with both
+P3 carry-forwards closed, and Phase 4 history/second-order teaching is
+authorized**. Later phases remain separately gated.
 
 **Milestone:** Cross-Lab Method Teaching Alignment v2
 
@@ -13,8 +14,10 @@ verified as a candidate**. Phase 4 and later phases remain separately gated.
 **Current product baseline:** `411e641d8cc6b14240acc408130876781fb1ee84` / tree `92f79cba8bdabafb9a97e3a99d76ddff853fe35c`
 
 **Execution gate:** Phase 3's Forward Euler, Backward Euler, Taylor 2, and RK4
-selected teaching lenses are complete. Stop before Phase 4 pending an
-independent Phase 3 one-step mathematical / teaching / accessibility audit and
+selected teaching lenses are accepted. The mandatory Phase 4 preflight closed
+both Phase 3 P3 carry-forwards. Implement only the Adams-Bashforth,
+Adams-Moulton, BDF, and Leap-Frog selected lenses, then stop for an independent
+Phase 4 history/second-order mathematical / teaching / accessibility audit and
 Maintainer visual / teaching review.
 
 ## 1. Purpose and stop condition
@@ -23,10 +26,10 @@ This plan maps the accepted design direction to current repository owners so a l
 
 It is deliberately staged. Each implementation phase must start clean, add focused behavioral evidence before or with its source change, finish with a narrow reviewable commit, and stop at its named review gate. A later task must not infer authority to execute the next phase from this document.
 
-The current bounded task stops after Phase 3. It preserves the accepted Phase
-2 opening and adds complete selected teaching only for Forward Euler, Backward
-Euler, Taylor 2, and RK4. It does not implement deep Adams-Bashforth,
-Adams-Moulton, BDF, or Leap-Frog teaching, Phase 4, or Presentation Phase 7.
+The current bounded task stops after Phase 4. It preserves the accepted Phase
+2 opening and accepted Phase 3 one-step teaching while adding complete selected
+teaching only for Adams-Bashforth, Adams-Moulton, BDF, and Leap-Frog. It does
+not begin later alignment integration/release phases or Presentation Phase 7.
 
 ## 2. Recorded binding authority
 
@@ -298,9 +301,14 @@ former stop-before-Phase-3 gate is historical.
 
 **Purpose:** complete implementation-ready teaching for Forward Euler, Backward Euler, Taylor 2, and RK4 using the profile schema.
 
-**Outcome:** implemented and locally verified as a candidate at
+**Outcome:** implemented at
 `5cd127ef7b57cbc9e01f6dc78150cf9abd7ee6f1` (tree
-`d4b4caa094ad2cfbaeb39dfc05b965cdb1661975`). Phase 2 is Maintainer-accepted
+`d4b4caa094ad2cfbaeb39dfc05b965cdb1661975`) and Maintainer-accepted with P3
+carry-forward at `1703c6898a54150538e1f2e33758b0f01bc45a69` (tree
+`59ba7693c69da6eb4166aa667676bfa835032a79`) with severity `P0 = 0`, `P1 = 0`,
+`P2 = 0`, and `P3 = 2`. The Phase 4 preflight closes `PHASE3-P3-01` through
+the canonical acceptance record and `PHASE3-P3-02` through explicit selected-
+lens renderer coverage in the learner/governance disconnect test. Phase 2 is Maintainer-accepted
 at `24b3c6859a7d3e066f853fee05b1acdd5608a5a5` (tree
 `27529fdd88a81b84731374ca999e783800a51183`).
 
@@ -611,9 +619,8 @@ An eventual implementation is ready for the independent audit only when all are 
 
 ## 20. Exact next gate
 
-After the completed Phase 3 stop, the next action is an **independent Phase 3
-one-step mathematical / teaching / accessibility audit**, followed by
-**Maintainer visual / teaching review**. Phase 4 and later phases remain
-unauthorized. Do not add deep Adams-Bashforth, Adams-Moulton, BDF, or
-Leap-Frog teaching; resume the paused Presentation Phase 7 release audit;
-push; or deploy under this task.
+After the authorized Phase 4 implementation stop, the next action is an
+**independent Phase 4 history/second-order mathematical / teaching /
+accessibility audit**, followed by **Maintainer visual / teaching review**.
+Later alignment phases remain unauthorized. Do not resume the paused
+Presentation Phase 7 release audit, push, or deploy under this task.

@@ -1,8 +1,9 @@
 # Cross-Lab Method Teaching Alignment v2 Design
 
 **Status:** **DESIGN ACCEPTED WITH BINDING ADDENDUM.** Phases 0 through 2 are
-Maintainer-accepted. Phase 3 one-step selected teaching is implemented and
-locally verified as a candidate. Phase 4 and later work remain unauthorized.
+Maintainer-accepted. Phase 3 one-step selected teaching is Maintainer-accepted
+with both P3 carry-forwards closed. Phase 4 history/second-order selected
+teaching is authorized; later work remains unauthorized.
 
 **Date:** 2026-08-22
 
@@ -18,8 +19,8 @@ locally verified as a candidate. Phase 4 and later work remain unauthorized.
 **Acceptance checkpoint:** `bfe5d514c67b1f5c00a1bc71b128f158e4811a5a`
 (tree `29c2a1e19718ce312671c8307dc65240e1c5eab6`)
 
-**Next gate:** independent Phase 3 one-step mathematical / teaching /
-accessibility audit, followed by Maintainer visual / teaching review.
+**Next gate:** independent Phase 4 history/second-order mathematical / teaching
+/ accessibility audit, followed by Maintainer visual / teaching review.
 
 ## 1. Executive decision
 
@@ -1294,14 +1295,25 @@ inset findings are closed.
 
 Phase 3 is implemented at
 `5cd127ef7b57cbc9e01f6dc78150cf9abd7ee6f1` (tree
-`d4b4caa094ad2cfbaeb39dfc05b965cdb1661975`). Exactly Forward Euler,
-Backward Euler, Taylor Method (Order 2), and Runge-Kutta 4 now consume the
+`d4b4caa094ad2cfbaeb39dfc05b965cdb1661975`) and Maintainer-accepted with P3
+carry-forward at `1703c6898a54150538e1f2e33758b0f01bc45a69` (tree
+`59ba7693c69da6eb4166aa667676bfa835032a79`). Its independent-audit severity
+is `P0 = 0`, `P1 = 0`, `P2 = 0`, and `P3 = 2`. Exactly Forward Euler,
+Backward Euler, Taylor Method (Order 2), and Runge-Kutta 4 consume the
 learner-safe projection in complete selected teaching lenses. The approved
 Forward/Backward Euler and RK4 diagrams are present; Taylor uses formula
-anatomy and ordered process without a diagram. Adams-Bashforth,
-Adams-Moulton, BDF, and Leap-Frog remain shallow Phase 2 shells.
+anatomy and ordered process without a diagram.
 
-The exact next gate is an **independent Phase 3 one-step mathematical /
-teaching / accessibility audit**, followed by **Maintainer visual / teaching
-review**. Cross-Lab Presentation Phase 7 remains paused. This checkpoint does
-not authorize Phase 4+, push, Preview, Production deployment, or release.
+The mandatory Phase 4 preflight closes `PHASE3-P3-01` by recording that exact
+acceptance in canonical status documents and closes `PHASE3-P3-02` by adding
+`odeMethodTeachingView.ts` to the existing learner/governance disconnect test.
+Production derivation, view, and app composition remain disconnected from the
+audit-only owner. Phase 4 is authorized only for complete selected lenses for
+Adams-Bashforth, Adams-Moulton, BDF, and Leap-Frog under this design's density,
+authority, and non-change boundaries.
+
+The exact next gate is an **independent Phase 4 history/second-order
+mathematical / teaching / accessibility audit**, followed by **Maintainer
+visual / teaching review**. Cross-Lab Presentation Phase 7 remains paused.
+This checkpoint does not authorize later alignment phases, push, Preview,
+Production deployment, or release.

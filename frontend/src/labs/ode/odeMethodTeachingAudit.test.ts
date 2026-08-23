@@ -128,9 +128,14 @@ describe("ODE teaching learner/governance boundary", () => {
       new URL("./odeMethodTeaching.ts", import.meta.url),
       "utf8"
     );
+    const teachingViewSource = readFileSync(
+      new URL("./odeMethodTeachingView.ts", import.meta.url),
+      "utf8"
+    );
     const appSource = readFileSync(new URL("./odeApp.ts", import.meta.url), "utf8");
 
     expect(teachingSource).not.toContain("odeMethodTeachingAudit");
+    expect(teachingViewSource).not.toContain("odeMethodTeachingAudit");
     expect(appSource).not.toContain("odeMethodTeachingAudit");
     expect(teachingSource).not.toMatch(
       /const profile[^=]*=\s*\{\s*\.\.\.content,/s
