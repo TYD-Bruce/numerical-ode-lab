@@ -67,6 +67,11 @@ describe("ODE contextual return-to-anchor presentation", () => {
       "Back to method selection"
     );
     expect(mounted.element.getAttribute("aria-controls")).toBe(heading.id);
+    expect(
+      mounted.element.querySelector(
+        ".ode-return-to-method-selection-label"
+      )?.textContent
+    ).toBe("Method selection");
     expect(mounted.element.hidden).toBe(true);
 
     setScrollY(720);

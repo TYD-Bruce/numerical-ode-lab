@@ -26,7 +26,14 @@ export function createOdeReturnToAnchor(
   button.dataset.returnMethodSelection = "true";
   button.setAttribute("aria-label", options.accessibleName);
   button.setAttribute("aria-controls", options.target.id);
-  button.textContent = "↑ Method selection";
+  const icon = document.createElement("span");
+  icon.className = "ode-return-to-method-selection-icon";
+  icon.setAttribute("aria-hidden", "true");
+  icon.textContent = "↑";
+  const label = document.createElement("span");
+  label.className = "ode-return-to-method-selection-label";
+  label.textContent = "Method selection";
+  button.append(icon, label);
   button.hidden = true;
 
   let disposed = false;

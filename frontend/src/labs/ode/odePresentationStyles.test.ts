@@ -58,6 +58,12 @@ describe("ODE selected-method presentation ownership", () => {
     expect(returnControl).toContain("position: fixed");
     expect(returnControl).toContain("box-shadow: none");
     expect(returnControl).not.toMatch(/gradient|animation/);
+    expect(styles).toMatch(
+      /@media \(max-width: 640px\)[\s\S]*?\.ode-return-to-method-selection\s*\{[\s\S]*?inline-size:\s*44px;/
+    );
+    expect(styles).toMatch(
+      /@media \(max-width: 640px\)[\s\S]*?\.ode-return-to-method-selection-label\s*\{[\s\S]*?position:\s*absolute;[\s\S]*?clip:/
+    );
   });
 
   it("keeps the selected rail on the shell and one generalized inset on its content", () => {
