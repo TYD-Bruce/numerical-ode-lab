@@ -625,7 +625,7 @@ const REVIEWED_CONTENT: Record<MethodFamily, OdeMethodTeachingContent> = {
       {
         id: "adams_bashforth_history",
         title: "History and startup",
-        text: "The implementation retains slope history and consumes coefficients generated for the configured order; the teaching registry does not copy a coefficient table. RK4 startup values are computed approximations, not exact history.",
+        text: "The method retains slope history, and the configured order determines the generated beta weights. Method keeps them symbolic; their run-specific values appear in Output after a successful run. RK4 startup values are computed approximations, not exact history.",
       },
     ],
     staticDiagram: {
@@ -836,7 +836,7 @@ const REVIEWED_CONTENT: Record<MethodFamily, OdeMethodTeachingContent> = {
       {
         id: "bdf_coefficients_and_solve",
         title: "Generated coefficients and endpoint solve",
-        text: "The numerical owner generates alpha coefficients for the configured order and applies them in the endpoint residual. Method teaching does not copy a coefficient table or expose nonlinear settings as controls.",
+        text: "The configured order determines the generated alpha coefficients used in the endpoint residual. Method keeps them symbolic; their run-specific values and nonlinear diagnostics appear in Output after a successful run.",
       },
     ],
     staticDiagram: {
@@ -1000,7 +1000,7 @@ const CONFIGURED_ORDER_ADVANCED_DETAILS: Readonly<
       detail: {
         id: "bdf6_startup_limitation",
         title: "Current BDF6 startup limitation",
-        text: "BDF6 retains theoretical order 6. Existing focused current-product evidence approaches approximately order 5 because the fixed RK4 startup introduces order-five error into the end-to-end trajectory. This implementation-specific limitation does not redefine BDF6 theory or establish a stability conclusion.",
+        text: "BDF6 retains theoretical order 6. Existing focused evidence for the current Lab approaches approximately order 5 because the fixed RK4 startup introduces order-five error into the end-to-end trajectory. This implementation-specific limitation does not redefine BDF6 theory or establish a stability conclusion.",
       },
     },
   ],

@@ -206,6 +206,7 @@ describe("reviewed ODE method teaching content", () => {
     expect(allLearnerText).not.toMatch(
       /maintainer|binding addendum|authorization|review gate/i
     );
+    expect(allLearnerText).not.toMatch(/teaching registry|numerical owner/i);
   });
 
   it("keeps the pure teaching owners free of forbidden runtime and execution imports", () => {

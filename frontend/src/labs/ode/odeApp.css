@@ -706,6 +706,19 @@
   border-inline-start: var(--space-1) solid var(--lab-stage-method-accent);
 }
 
+.ode-method-diagram-predictor_corrector .ode-method-diagram-track {
+  flex-direction: column;
+}
+
+.ode-method-diagram-predictor_corrector .ode-method-diagram-branches {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: 100%;
+}
+
+.ode-method-diagram-predictor_corrector .ode-method-diagram-connector {
+  transform: rotate(90deg);
+}
+
 .ode-method-diagram-staggered_state .ode-method-diagram-track {
   padding-block: var(--space-3);
 }
@@ -1683,6 +1696,10 @@
     flex: none;
     grid-template-columns: minmax(0, 1fr);
     width: 100%;
+  }
+
+  .ode-method-diagram-predictor_corrector .ode-method-diagram-branches {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .ode-method-diagram-connector {
