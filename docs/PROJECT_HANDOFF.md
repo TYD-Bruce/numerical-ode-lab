@@ -2,7 +2,236 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
+## Cross-Lab Method Teaching Alignment v2 — Phase 4 Maintainer composition correction candidate — 2026-08-23
+
+### Starting candidate and Maintainer finding
+
+This correction started clean on `main` at Phase 4 candidate
+`050fb7bbf1fac5b164be257898bba4f70bf4001d` (tree
+`66eb4c65de4c90d0a05f473c2f46f4f201e481f8`). The independent Phase 4 audit
+has not started. The Maintainer's pre-audit visual review recorded
+`PHASE4-VIS-01` at P2: once all eight lenses became deep, the desktop
+landscape/lens peer columns constrained long-form teaching, left a large empty
+column below the landscape, and visually implied two peer panes rather than
+Survey → Learn. The mathematical teaching itself was not rejected.
+
+The binding correction is now implemented and browser verified at runtime
+candidate `45cf1326e4686cd1d807e223883541d3b48a51bf` (tree
+`f3df72b0c69b4dc0a71fe1a0b66d1c6021c2e2cd`): Problem foundation → complete
+full-row landscape → complete selected-method lens → Continue to Data. The
+landscape and lens are never wide-screen peer columns. The Problem foundation,
+all reviewed teaching records, safe formula owners, concepts, advanced
+details, after-solve guidance, and Data transition remain unchanged.
+
+### Composition and presentation result
+
+`odeApp.ts` now emits the Problem foundation, landscape, contextual return
+control, and lens column in that source order. The former
+`.ode-method-choice-layout` owner is removed. At 1440 × 900, the landscape is
+1,215 px wide and the centered lens uses a controlled 1,152 px maximum reading
+width; prose retains its readable measure while formulas and diagrams receive
+the wider editorial surface. The landscape remains complete, shallow, and
+scannable: four one-step controls, three history controls, one Leap-Frog
+control, and the secondary Compare entry. It did not become eight teaching
+cards or gain new metadata.
+
+The accepted selected-surface ownership is preserved:
+`.ode-selected-method-shell` owns the edge rail and
+`.ode-selected-method-content` owns the inset and internal rhythm. The rail
+does not collide with content, so `PHASE2-VIS-01` remains closed. Forward
+Euler, Backward Euler, RK4, Adams-Bashforth, BDF, and Leap-Frog diagrams use
+the newly available width without changing their authored meaning. Taylor 2
+still intentionally has no diagram.
+
+Adams-Moulton's relationship is now one vertical sequence on wide and narrow
+screens: known slope history → same-order AB predictor → implicit endpoint
+correction → Newton residual solve → accepted corrected value. Prediction and
+correction remain explicitly distinct, the predictor is still only the
+starting guess, and Newton remains subordinate. This corrects the dense
+desktop mini-panel treatment without rewriting the formula, process, or
+teaching authority.
+
+### Contextual return navigation
+
+The smallest safe owner is the new ODE-local pure presentation helper
+`odeReturnToAnchor.ts`. A shared/entry primitive would add ownership and lazy-
+graph complexity for one proven consumer, so no platform abstraction or mass
+integration was introduced. The helper's small options/result seam can be
+generalized later without moving ODE runtime into entry code.
+
+The helper creates one disposable native button with accessible name **Back
+to method selection** and `aria-controls="ode-method-landscape-heading"`.
+It remains hidden until page scroll is at least 160 px and the complete
+landscape bottom is at or above 96 px in the viewport. Activation hides the
+control, performs an immediate `behavior: "auto"` jump to the connected
+landscape heading, and focuses that `tabindex="-1"` heading with
+`preventScroll`. It does not Run, change stage, select a family, replace an
+order, count as meaningful work, or write session state. Disposal removes the
+scroll, resize, and click listeners; every rerender and route disposal owns
+that cleanup, and remount creates exactly one control.
+
+Desktop shows the quiet text control. Browser review found that its original
+text-width mobile treatment could cover too much of the narrow teaching
+column, so a tests-first follow-up reduces it to a 44 × 44 visible arrow at
+640 px and below while retaining the full `aria-label`; the text label remains
+in the DOM as visually hidden text. It uses existing tokens, has no shadow,
+gradient, animation, Motion integration, or new palette, and remains less
+prominent than Continue to Data.
+
+The existing mobile **Read selected method** action remains. At 390 px the
+landscape measured 1,356 px tall and explicit activation removed about 988 px
+of travel, so it is still materially useful. Selection itself still performs
+no programmatic scroll. Continue to Data remains the sole primary workflow
+transition after the teaching arc.
+
+### Accessibility, responsive, and browser evidence
+
+Browser review covered 1440 × 900 Light/Dark, 390 × 844 Light/Dark, and
+320 × 844 stress. There is one Lab `h1`, one stable landscape destination ID,
+one selected lens, eight native method controls, one native return control,
+logical headings, no duplicate IDs, no nested controls, and no new live
+region. Formula and figure accessible ownership and native details are
+unchanged. The direct jump needs no motion and is therefore complete under
+reduced motion.
+
+At 390 px, the landscape ends before the lens begins, all eight controls and
+the 309 px lens fit the viewport, and no document overflow occurs. At 320 px,
+the 239 px lens and authored one-column history/staggered rails remain inside
+the page. The long BDF relation is contained by its existing local horizontal
+scroller while the document stays overflow-free. The compact return button is
+44 × 44 at both widths and preserves the full accessible name. Light/Dark
+screens show the same hierarchy without a new accent family. Browser consoles
+reported zero warnings/errors; only expected Vite debug and ODE coefficient/
+sanity information appeared.
+
+Screenshots are stored outside the repository at
+`C:/Users/bruce/.codex/attachments/phase4-composition-evidence/`. Key files
+include:
+
+- `ode-desktop-1440x900-light-first-open.png`;
+- `ode-desktop-1440x900-light-landscape-to-lens.png`;
+- `ode-desktop-1440x900-dark-adams-moulton-sequence.png`;
+- `ode-desktop-1440x900-dark-bdf6-lens.png` and
+  `ode-desktop-1440x900-dark-bdf6-limitation.png`;
+- `ode-desktop-1440x900-dark-leapfrog-rail.png`;
+- `ode-mobile-390-light-adams-moulton-compact-return.png`;
+- `ode-mobile-390-dark-leapfrog-rail.png`;
+- `ode-mobile-320-dark-bdf-formula.png`; and
+- `ode-mobile-320-dark-leapfrog-rail-compact-return.png`.
+
+### Regression and lifecycle evidence
+
+All eight method selections rendered exactly one complete lens. Adams-
+Bashforth, Adams-Moulton, BDF, and Leap-Frog retained their Phase 4 teaching;
+the four Phase 3 one-step lenses retained their content and structure.
+Supplying Adams-Moulton order 5 in Data, switching families, and reselecting
+Adams-Moulton preserved current order 5 in both Method and Data. BDF order 6
+continued to show theoretical order 6 and the subordinate implementation-
+specific RK4-startup limitation toward observed order 5.
+
+Browser smoke passed Method → Data → valid Run → Output, an eligible
+three-level Convergence study, Forward Euler versus RK4 Compare, Tutor
+unavailable messaging in Compare and usable composer in single mode, Glossary
+open/close, confirmed New experiment reset, and route leave/remount with RK4
+selection preserved. The return helper is absent from Data/Output and leaves
+no detached callback. The Linear Systems Method → Data → Output smoke passed
+without any Linear Systems source change. ODE and Linear Systems now share the
+stronger Problem → Landscape → Selected method grammar while retaining their
+different domain content.
+
+### Tests, build, lazy graph, and exact files
+
+The initial tests-first gate failed only the missing behavior: 3 files, 4
+failures, and 25 passes. After implementation, the core composition suites
+passed 3 files / 31 tests and the broader affected lifecycle/session/Compare/
+Tutor/Glossary/bundle set passed 11 files / 101 tests. The browser-found mobile
+coverage gate then failed the intended 2 assertions with 6 passes before its
+compact treatment was implemented; the final affected set passed 4 files / 54
+tests.
+
+Exactly one full `npm.cmd run verify` was invoked. Its captured run passed the
+four import-boundary owners plus Vercel adapter, 104 files / 1,349 tests, and
+frontend/numerics/contracts typechecks. The command display yielded at its
+30-second boundary before printing the tail, so the remaining constituents
+were conservatively confirmed without invoking `verify` again: API typecheck
+passed and `npm.cmd run build` passed all workspace typechecks plus the
+115-module Production build.
+
+Against the starting Phase 4 candidate:
+
+| Asset | Before | Corrected candidate | Delta |
+|---|---:|---:|---:|
+| Platform JS | 59.04 / 18.29 kB | 59.04 / 18.29 kB | 0 / 0 |
+| Shared workflow JS | 14.43 / 3.57 kB | 14.43 / 3.57 kB | 0 / 0 |
+| ODE JS | 360.42 / 110.77 kB | 362.11 / 111.25 kB | +1.69 / +0.48 kB |
+| ODE CSS | 32.95 / 6.17 kB | 34.10 / 6.34 kB | +1.15 / +0.17 kB |
+| Linear Systems JS | 75.80 / 22.63 kB | 75.80 / 22.63 kB | 0 / 0 |
+| Linear Systems CSS | 26.06 / 4.92 kB | 26.06 / 4.92 kB | 0 / 0 |
+
+The platform, shared workflow, and Linear Systems chunks are unchanged. ODE
+remains a separate dynamic route; Tutor, Glossary, readonly/editable math, and
+MathLive remain separate deferred chunks. The current Vite configuration did
+not emit a manifest during this build, so no manifest claim is made; source
+dynamic-import inspection, route-bundle tests, import boundaries, and emitted
+chunk separation provide the lazy evidence. No dependency changed.
+
+Runtime files changed:
+
+- `frontend/src/labs/ode/odeApp.ts`;
+- `frontend/src/labs/ode/odeApp.css`;
+- `frontend/src/labs/ode/odeReturnToAnchor.ts` (new);
+- `frontend/src/labs/ode/odeReturnToAnchor.test.ts` (new);
+- `frontend/src/labs/ode/odeMethodView.test.ts`; and
+- `frontend/src/labs/ode/odePresentationStyles.test.ts`.
+
+Canonical status files changed only as required: `PLAN.md`, `docs/INDEX.md`,
+this handoff, and the narrow status/composition clauses in the active design
+and implementation plan. `CURRENT_ARCHITECTURE.md` and `README.md` remain
+unchanged because no new shared runtime owner or public release exists.
+
+Implementation commits are
+`a5127f75dfd1d8ff2e2bf71f4d46106178c861ca` (tree
+`6b7744a64f055beb7852d9e2d14ec309920454aa`), **Stack ODE method teaching
+flow**, and `45cf1326e4686cd1d807e223883541d3b48a51bf` (tree
+`f3df72b0c69b4dc0a71fe1a0b66d1c6021c2e2cd`), **Verify ODE teaching
+composition**.
+
+### Problems, resolutions, non-changes, and next gate
+
+The first attempted root dev-server command exposed npm argument forwarding
+that consumed `--host`/`--port`; it started no server. The workspace-specific
+invocation succeeded. Browser QA exposed the mobile return-button occlusion,
+which the compact accessible treatment closed. An assumed Vite manifest path
+did not exist, so evidence was corrected to the actual source, tests, and
+emitted chunks rather than inventing a manifest result. Every temporary server
+was stopped, port 4317 had zero listeners, and screenshots remain untracked.
+
+Durable rules: landscape and lens are sequential layers at every width; Method
+selection never automatically scrolls; long-form return navigation targets
+the landscape, appears only when useful, owns no session state, and disposes
+with the Method render; mobile navigation must not blanket teaching; and a
+future shared return primitive requires a separate proven-consumer gate.
+
+There is no teaching-authority, formula, concept, numerical, coefficient,
+Newton, BDF6-authority, Leap-Frog-mathematics, session-schema, order-authority,
+meaningful-work, Compare-numerical, Data, Output, Convergence, Tutor-feature,
+Glossary-feature, Linear Systems, Motion, Replay, Computation Trace, PDE,
+dependency, platform-mass-integration, push, deployment, Preview, Production,
+or later-phase change. Cross-Lab Presentation Phase 7 remains paused.
+Candidate self-review is `P0 = 0`, `P1 = 0`, `P2 = 0`, `P3 = 0`; Phase 4 is
+not self-declared accepted.
+
+The exact next gate is **Maintainer visual confirmation of the corrected Phase
+4 composition**, then an **independent Phase 4 mathematical / teaching /
+accessibility audit**. Do not begin that audit automatically, begin a later
+alignment phase, resume Presentation Phase 7, push, or deploy.
+
 ## Cross-Lab Method Teaching Alignment v2 — Phase 4 history/second-order teaching candidate — 2026-08-23
+
+*Historical pre-composition-correction checkpoint. The section above
+supersedes this checkpoint's peer-column/fork presentation evidence and exact
+next gate while preserving its teaching-content and numerical-authority
+record.*
 
 ### Accepted input and preflight
 

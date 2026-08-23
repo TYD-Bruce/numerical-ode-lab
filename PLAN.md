@@ -3,11 +3,11 @@
 ## Current status
 
 **Active milestone: Cross-Lab Method Teaching Alignment v2 — Phases 0 through
-2 are Maintainer-accepted. Phase 3 one-step teaching is MAINTAINER ACCEPTED
-WITH P3 CARRY-FORWARD, and both P3 findings are closed by the mandatory Phase
-4 preflight. Phase 4 history/second-order teaching is implemented and locally
-and browser verified as an audit candidate. Stop for independent Phase 4
-audit; later phases remain unauthorized.**
+3 are Maintainer-accepted, with the Phase 3 P3 findings closed. Phase 4
+history/second-order teaching is implemented, and its Maintainer-requested
+composition correction is implemented and locally/browser verified as a
+candidate. Stop for Maintainer visual confirmation before the independent
+Phase 4 audit; later phases remain unauthorized.**
 
 Cross-Lab Presentation Sync Phases 0 through 6 are implemented. The Phase 6
 entry-safe `ModuleOverview` and proven duplicate-style cleanup passed its
@@ -87,19 +87,34 @@ family order remains read-only Method context, Data remains its editable
 owner, and the new diagrams/formulas/processes preserve the approved startup,
 Newton, BDF6, and staggered-state boundaries.
 
-The Phase 4 candidate passed focused and full tests, all typechecks, the
-Production build, exactly one full `verify`, bundle/lazy and emitted-asset
-governance inspection, and desktop/mobile Light/Dark browser review. No
-numerical algorithm, session schema, family-order authority, Compare behavior,
-Data, Output, Convergence, Tutor, Glossary, Linear Systems, Motion, PDE,
-dependency, or route boundary changed. No later alignment phase, push, or
-deployment is authorized. Cross-Lab Presentation Phase 7 remains paused.
+Before that independent audit, Maintainer visual review recorded
+`PHASE4-VIS-01` (P2): the desktop landscape and deep selected lens had become
+peer columns rather than sequential Survey → Learn layers. The bounded
+correction is implemented at `45cf1326e4686cd1d807e223883541d3b48a51bf`
+(tree `f3df72b0c69b4dc0a71fe1a0b66d1c6021c2e2cd`). Problem, complete landscape,
+complete selected lens, and Continue to Data now form one vertical source and
+reading order at every width. Adams-Moulton uses a vertical predictor /
+correction / Newton / accepted-state sequence. One disposable ODE-local return
+control appears only after the landscape has left view and returns focus to
+its heading without session state; its mobile visual is a compact 44 × 44
+arrow. The evidence-backed mobile Read selected method action remains.
 
-The exact next gate is an **independent Phase 4 history/second-order
-mathematical / teaching / accessibility audit**, followed by **Maintainer
-visual / teaching review**. Do not begin later alignment integration/release
-phases, resume Presentation Phase 7, push, or deploy. Historical Phase 1/2/3
-next-gate wording below is superseded by this current status.
+The corrected Phase 4 candidate passed focused and full tests, all typechecks,
+the 115-module Production build, one full `verify` invocation with its yielded
+tail conservatively reconfirmed by the standalone API typecheck and root
+build, bundle/lazy inspection, and 1440/390/320 Light/Dark browser review. No
+teaching authority, numerical algorithm, session schema, family-order
+authority, Compare behavior, Data, Output, Convergence, Tutor, Glossary,
+Linear Systems, Motion, PDE, dependency, or route boundary changed. No later
+alignment phase, push, or deployment is authorized. Cross-Lab Presentation
+Phase 7 remains paused.
+
+The exact next gate is **Maintainer visual confirmation of the corrected Phase
+4 composition**, then an **independent Phase 4 mathematical / teaching /
+accessibility audit**. Do not begin that audit automatically, begin later
+alignment integration/release phases, resume Presentation Phase 7, push, or
+deploy. Historical Phase 1/2/3 next-gate wording below is superseded by this
+current status.
 
 Linear Systems Teaching v2 is **MAINTAINER ACCEPTED** at commit
 `484fc9153de33be7949e82b29386c94fe63d19c8` (tree

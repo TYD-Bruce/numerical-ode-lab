@@ -3,8 +3,9 @@
 **Status:** **DESIGN ACCEPTED WITH BINDING ADDENDUM.** Phases 0 through 2 are
 Maintainer-accepted. Phase 3 one-step selected teaching is Maintainer-accepted
 with both P3 carry-forwards closed. Phase 4 history/second-order selected
-teaching is implemented and locally/browser verified as an audit candidate;
-later work remains unauthorized.
+teaching is implemented; its Maintainer-requested composition correction is
+implemented and locally/browser verified as a candidate. Later work remains
+unauthorized.
 
 **Date:** 2026-08-22
 
@@ -20,8 +21,9 @@ later work remains unauthorized.
 **Acceptance checkpoint:** `bfe5d514c67b1f5c00a1bc71b128f158e4811a5a`
 (tree `29c2a1e19718ce312671c8307dc65240e1c5eab6`)
 
-**Next gate:** independent Phase 4 history/second-order mathematical / teaching
-/ accessibility audit, followed by Maintainer visual / teaching review.
+**Next gate:** Maintainer visual confirmation of the corrected Phase 4
+composition, then independent Phase 4 mathematical / teaching / accessibility
+audit.
 
 ## 1. Executive decision
 
@@ -353,14 +355,19 @@ Landscape → Selected method lens.
 only the selected method receives full depth. Deeper coefficient or stage
 details use one level of native disclosure.
 
-**Desktop:** Problem and landscape establish the opening composition; the
-selected profile uses a wide editorial reading surface with formula and process
-allowed to share a row when that improves comprehension.
+**Desktop:** Problem, the complete landscape, and the selected profile are
+sequential full-row cognitive layers. The landscape and selected profile must
+not become peer columns. The selected profile uses a controlled wide editorial
+reading surface, with formula and process allowed to share a row when that
+improves comprehension.
 
 **Mobile:** The landscape becomes short grouped rows in authored order, not a
 stack of desktop cards. The selected lens follows immediately. Selection does
 not force scroll. Phase 2 evidence justified the implemented mobile-only
-“Read selected method” action; it moves only after explicit activation.
+“Read selected method” action; Phase 4 stacking evidence still shows material
+travel, so it remains and moves only after explicit activation. A separate
+quiet return-to-landscape control appears only after the complete landscape
+has left view.
 
 **Strengths:** Closely matches the Linear Systems cognitive sequence, preserves
 ODE exploration, keeps relationships visible during selection, and can reuse
@@ -1010,6 +1017,9 @@ Responsive behavior changes composition, not pedagogical order. At every support
 
 - The first viewport establishes the IVP as the primary mathematical object, gives a compact orientation to the method landscape, and makes the current selection legible without competing hero surfaces.
 - The landscape uses the three semantic families as compact, scan-friendly groups. It may use a wide editorial composition, but method controls remain a single keyboard/logical sequence.
+- The complete landscape occupies its own row above the complete selected
+  profile. No wide breakpoint may reintroduce a landscape/lens peer-column
+  composition.
 - The selected profile has a comfortable reading measure. Its primary formula and identity share one teaching focus; secondary anatomy/process content aligns beneath it rather than forming a dashboard grid.
 - Compare is a secondary pathway adjacent to the landscape’s decision context, not a peer to the selected-profile heading or the Data transition.
 - Concepts and after-solve content may use paired editorial columns only when DOM order remains meaningful and neither column becomes a loose collection of cards.
@@ -1018,7 +1028,10 @@ Responsive behavior changes composition, not pedagogical order. At every support
 
 - The IVP and its concise explanation remain first; supporting example/detail follows in normal reading order.
 - Each landscape family becomes a labeled compact list of full-width native controls. Method name, classification cue, and selected state remain visible without abbreviations that erase meaning.
-- Selecting a method updates the profile in place. The landscape remains immediately reachable through a persistent section heading and a **Choose another method** anchor/control; the page does not force a long reverse scroll without orientation.
+- Selecting a method updates the profile in place and does not auto-scroll.
+  After meaningful downward travel, a quiet contextual native control returns
+  to and focuses the connected landscape heading; it stays absent while the
+  landscape is already near and owns no session state.
 - The selected method identity precedes its formula. Metadata wraps as prose or a short definition list rather than a row of tiny badges.
 - Complex formulas receive local containment; the document never gains horizontal overflow. Essential meaning is repeated in prose outside any scroll container.
 - Advanced details use native disclosures with large enough targets. Only genuinely subordinate material is collapsed by default.
@@ -1093,7 +1106,10 @@ Disclosures are one level deep, independently named, and never the only place th
   default metadata.
 - Returning from Data/Output to Method reconstructs the same profile from the pure session selection. There is no separate “teaching method,” profile tab index, or long-lived scroll target in session state.
 - Native disclosure state may remain component-local while mounted and may reset on route disposal. Persistence is optional presentation behavior, not meaningful experiment state.
-- An in-page **Choose another method** affordance returns to the landscape with deliberate focus/scroll behavior; browser Back and Lab-step navigation keep their existing ownership.
+- An in-page contextual return affordance appears only after meaningful scroll
+  and returns to the connected landscape heading with deliberate focus/direct
+  scroll behavior. It is transient presentation state, not session state;
+  browser Back and Lab-step navigation keep their existing ownership.
 
 ## 28. State and lifecycle considerations
 
@@ -1326,14 +1342,19 @@ order 6 while qualifying current startup-limited evidence only at order 6; and
 Leap-Frog makes the staggered half-step/whole-step update primary while keeping
 stored full-step velocity reconstruction subordinate.
 
-The candidate passed focused/full automated verification, Production build
-and bundle/governance inspection, and desktop/mobile Light/Dark browser
-review. No numerical, coefficient, session-schema, family-order, Compare,
-Data, Output, Convergence, Tutor, Glossary, Linear Systems, Motion, PDE,
-dependency, or route-boundary change was introduced.
+The original candidate passed focused/full automated verification, Production
+build and bundle/governance inspection, and desktop/mobile Light/Dark browser
+review. Maintainer pre-audit review then recorded `PHASE4-VIS-01` (P2) for its
+landscape/lens peer-column composition. The correction is implemented at
+`45cf1326e4686cd1d807e223883541d3b48a51bf` (tree
+`f3df72b0c69b4dc0a71fe1a0b66d1c6021c2e2cd`): landscape above lens, vertical
+Adams-Moulton relationship, and one ODE-local contextual return to the
+landscape. No teaching-authority, numerical, coefficient, session-schema,
+family-order, Compare, Data, Output, Convergence, Tutor, Glossary, Linear
+Systems, Motion, PDE, dependency, or route-boundary change was introduced.
 
-The exact next gate is an **independent Phase 4 history/second-order
-mathematical / teaching / accessibility audit**, followed by **Maintainer
-visual / teaching review**. Cross-Lab Presentation Phase 7 remains paused.
-This checkpoint does not authorize later alignment phases, push, Preview,
+The exact next gate is **Maintainer visual confirmation of the corrected Phase
+4 composition**, then an **independent Phase 4 mathematical / teaching /
+accessibility audit**. Cross-Lab Presentation Phase 7 remains paused. This
+checkpoint does not authorize later alignment phases, push, Preview,
 Production deployment, or release.

@@ -5,8 +5,8 @@
 **Status:** Design accepted with binding addendum; **Phases 0 through 2 are
 Maintainer-accepted, Phase 3 one-step teaching is Maintainer-accepted with both
 P3 carry-forwards closed, and Phase 4 history/second-order teaching is
-implemented and locally/browser verified as an audit candidate**. Later
-phases remain unauthorized.
+implemented with its Maintainer-requested composition correction locally/
+browser verified as a candidate**. Later phases remain unauthorized.
 
 **Milestone:** Cross-Lab Method Teaching Alignment v2
 
@@ -18,8 +18,8 @@ phases remain unauthorized.
 selected teaching lenses are accepted. The mandatory Phase 4 preflight closed
 both Phase 3 P3 carry-forwards. The Adams-Bashforth, Adams-Moulton, BDF, and
 Leap-Frog selected lenses are now the implemented Phase 4 candidate. Stop for
-an independent Phase 4 history/second-order mathematical / teaching /
-accessibility audit and Maintainer visual / teaching review.
+Maintainer visual confirmation of the corrected Phase 4 composition, then an
+independent Phase 4 mathematical / teaching / accessibility audit.
 
 ## 1. Purpose and stop condition
 
@@ -27,10 +27,12 @@ This plan maps the accepted design direction to current repository owners so a l
 
 It is deliberately staged. Each implementation phase must start clean, add focused behavioral evidence before or with its source change, finish with a narrow reviewable commit, and stop at its named review gate. A later task must not infer authority to execute the next phase from this document.
 
-The current bounded task stops after Phase 4. It preserves the accepted Phase
-2 opening and accepted Phase 3 one-step teaching while adding complete selected
-teaching only for Adams-Bashforth, Adams-Moulton, BDF, and Leap-Frog. It does
-not begin later alignment integration/release phases or Presentation Phase 7.
+The current bounded task stops after the Phase 4 Maintainer composition
+correction. It preserves the accepted Phase 2 opening, accepted Phase 3
+one-step teaching, and complete Phase 4 history/second-order teaching while
+placing the complete landscape above the complete selected lens. It does not
+begin the independent audit, later alignment integration/release phases, or
+Presentation Phase 7.
 
 ## 2. Recorded binding authority
 
@@ -361,11 +363,22 @@ for supplied order 6; Leap-Frog centers its staggered update and keeps
 full-step output reconstruction subordinate.
 
 Focused and full tests, frontend/numerics/contracts/API typechecks, Production
-build, exactly one full `verify`, manifest/bundle/governance inspection, and
+build, exactly one full `verify`, bundle/lazy/governance inspection, and
 desktop/mobile Light/Dark browser review pass. The opening, landscape, Phase 3
 lenses, Compare, Data, Output, Convergence, Tutor, Glossary, session schema,
 numerical behavior, lazy route boundaries, Linear Systems, and Presentation
 Phase 7 remain unchanged.
+
+Maintainer pre-audit review subsequently recorded `PHASE4-VIS-01` (P2): the
+wide landscape and deep lens behaved as peer columns. The bounded correction
+is implemented at `45cf1326e4686cd1d807e223883541d3b48a51bf` (tree
+`f3df72b0c69b4dc0a71fe1a0b66d1c6021c2e2cd`). Problem → complete landscape
+→ complete lens → Continue to Data is now the DOM and visual order at every
+width; Adams-Moulton uses a vertical predictor/corrector teaching sequence;
+and one disposable ODE-local return helper targets the connected landscape
+heading only after meaningful scroll. The evidence-backed mobile Read selected
+method action remains. No content, numerical, session, order, or cross-Lab
+authority changed.
 
 ### 11.1 Tests first
 
@@ -393,7 +406,10 @@ Verify that:
 
 Review longest/densest profiles at 1440 × 900, 390 × 844, and approximately 320px in both themes. Exercise order variants through Data, return to Method, inspect focus/orientation, select Leap-Frog, and verify Compare/Convergence boundaries.
 
-Run focused content/app/session/lifecycle tests and typecheck. Stop for independent numerical/content review, with explicit verdicts on Newton wording, BDF6, and Leap-Frog.
+Run focused content/app/session/lifecycle tests and typecheck. Stop for
+Maintainer visual confirmation of the corrected composition, then independent
+numerical/content/accessibility review with explicit verdicts on Newton
+wording, BDF6, and Leap-Frog.
 
 **Implemented commits:** `Teach ODE history and Leap-Frog profiles`; `Verify
 history ODE teaching`
@@ -642,9 +658,9 @@ An eventual implementation is ready for the independent audit only when all are 
 
 ## 20. Exact next gate
 
-After the implemented and locally/browser-verified Phase 4 candidate, the next
-action is an
-**independent Phase 4 history/second-order mathematical / teaching /
-accessibility audit**, followed by **Maintainer visual / teaching review**.
-Later alignment phases remain unauthorized. Do not resume the paused
+After the implemented and locally/browser-verified Phase 4 composition
+correction candidate, the next action is **Maintainer visual confirmation of
+the corrected Phase 4 composition**, then an **independent Phase 4
+mathematical / teaching / accessibility audit**. Later alignment phases remain
+unauthorized. Do not begin that audit automatically, resume the paused
 Presentation Phase 7 release audit, push, or deploy under this task.

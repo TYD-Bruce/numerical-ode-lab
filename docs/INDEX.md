@@ -64,21 +64,28 @@ canonical acceptance record. `PHASE3-P3-02` is closed by extending the existing
 learner/governance disconnect test to the selected-lens renderer; Production
 teaching view code remains disconnected from the audit-only owner.
 
-Phase 4 history/second-order teaching is implemented and locally/browser
-verified as an audit candidate. The preflight closes both Phase 3 P3 findings
-in `f574f16f9eae57e263b638ded11a534d839e8cf7` (tree
+Phase 4 history/second-order teaching is implemented. The preflight closes
+both Phase 3 P3 findings in `f574f16f9eae57e263b638ded11a534d839e8cf7` (tree
 `74e3d0f7307d6486787b469f85663ec8bc35e83f`); the four authorized lenses are
 implemented in `1fcc053108c0e11988cb20c9d36759e11eab97f6` (tree
 `cafb22f0a17ef49cabc2729e85cb23be8875db68`) and browser-refined in
 `8d657199eb00362e07db30d157ab3925dc4ece60` (tree
 `8d247dede67e531e795f6b0a7161f5c1d571a478`). Adams-Bashforth,
 Adams-Moulton, BDF, and Leap-Frog now join the four accepted Phase 3 methods in
-complete learner-safe selected lenses. Numerical algorithms, session schema,
-family-order authority, Compare, Data, Output, Convergence, Tutor, Glossary,
-Linear Systems, Motion, PDE, dependencies, push, deployment, and Production
-state remain outside scope. The exact next gate is an
-**independent Phase 4 history/second-order mathematical / teaching /
-accessibility audit**, followed by **Maintainer visual / teaching review**.
+complete learner-safe selected lenses.
+
+Maintainer pre-audit review then recorded `PHASE4-VIS-01` (P2 composition).
+The correction candidate at `45cf1326e4686cd1d807e223883541d3b48a51bf`
+(tree `f3df72b0c69b4dc0a71fe1a0b66d1c6021c2e2cd`) places the full landscape
+above the full selected lens at every width, changes the Adams-Moulton fork to
+a vertical teaching sequence, and adds one disposable ODE-local contextual
+return to the landscape. The existing mobile Read selected method action
+remains based on measured distance. Numerical algorithms, teaching authority,
+session schema, family-order authority, Compare, Data, Output, Convergence,
+Tutor, Glossary, Linear Systems, Motion, PDE, dependencies, push, deployment,
+and Production state remain outside scope. The exact next gate is
+**Maintainer visual confirmation of the corrected Phase 4 composition**, then
+an **independent Phase 4 mathematical / teaching / accessibility audit**.
 Presentation Phase 7 remains paused.
 
 ## Superseded Teaching v2 milestone record
@@ -311,7 +318,7 @@ maintainer acceptance of the F2 review commit.
 
 | Document | Status |
 |---|---|
-| [Cross-Lab Method Teaching Alignment v2 Design](superpowers/specs/2026-08-22-cross-lab-method-teaching-alignment-v2-design.md) | Accepted with binding addendum; Phases 0–2 Maintainer-accepted; Phase 3 Maintainer-accepted with two P3 carry-forwards closed; Phase 4 history/second-order teaching implemented and locally/browser verified as an audit candidate; independent Phase 4 audit then Maintainer review next; later phases unauthorized; Presentation Phase 7 paused |
+| [Cross-Lab Method Teaching Alignment v2 Design](superpowers/specs/2026-08-22-cross-lab-method-teaching-alignment-v2-design.md) | Accepted with binding addendum; Phases 0–3 Maintainer-accepted and Phase 3 carry-forwards closed; Phase 4 teaching plus its Maintainer-requested vertical-composition correction implemented and locally/browser verified as a candidate; Maintainer visual confirmation then independent Phase 4 audit next; later phases unauthorized; Presentation Phase 7 paused |
 | [Cross-Lab Presentation System v1 Design](superpowers/specs/2026-08-12-cross-lab-presentation-system-v1-design.md) | Maintainer approved; Phases 0–6 Maintainer accepted; Phase 6 final severity P0/P1/P2/P3 = 0; Phase 7 paused for Method teaching alignment |
 | [Linear Systems Teaching v2 Design](superpowers/specs/2026-08-11-linear-systems-teaching-v2-design.md) | Maintainer-accepted at `484fc9153de33be7949e82b29386c94fe63d19c8`; final teaching-copy audit passed P0/P1/P2/P3 = 0; Motion paused; Tutor later; not deployed |
 | [Linear Systems Lab Version 1 Design](superpowers/specs/2026-08-10-linear-systems-lab-v1-design.md) | Maintainer-approved design; Day 1/1.5 numerical evidence and Day 2 route/UI implemented locally; Tutor pending |
@@ -326,7 +333,7 @@ maintainer acceptance of the F2 review commit.
 
 | Document | Status |
 |---|---|
-| [Cross-Lab Method Teaching Alignment v2 Implementation Plan](superpowers/plans/2026-08-22-cross-lab-method-teaching-alignment-v2-implementation-plan.md) | Repository-grounded; Phases 0–2 Maintainer-accepted; Phase 3 Maintainer-accepted with both P3 carry-forwards closed in preflight; Phase 4 history/second-order teaching implemented and locally/browser verified as an audit candidate; independent Phase 4 audit then Maintainer review next; later phases unauthorized |
+| [Cross-Lab Method Teaching Alignment v2 Implementation Plan](superpowers/plans/2026-08-22-cross-lab-method-teaching-alignment-v2-implementation-plan.md) | Repository-grounded; Phases 0–3 Maintainer-accepted and Phase 3 carry-forwards closed; Phase 4 teaching plus the vertical landscape-above-lens correction implemented and locally/browser verified as a candidate; Maintainer visual confirmation then independent Phase 4 audit next; later phases unauthorized |
 | [Cross-Lab Presentation System v1 Implementation Plan](superpowers/plans/2026-08-12-cross-lab-presentation-system-v1-implementation-plan.md) | Phases 0–6 Maintainer accepted; Phase 6 final severity P0/P1/P2/P3 = 0; Phase 7 paused for Method teaching alignment |
 | [Linear Systems Teaching v2 Implementation Plan](superpowers/plans/2026-08-11-linear-systems-teaching-v2-implementation-plan.md) | Executed and maintainer-accepted; final teaching-copy audit passed; Motion remount and Tutor remain separate later gates |
 | [Linear Systems Lab Version 1 Implementation Plan](superpowers/plans/2026-08-10-linear-systems-lab-v1-implementation-plan.md) | Repository-grounded; Day 1/1.5 and Day 2 implemented locally; independent product-audit corrections verified, correction re-audit next, Tutor deferred to a later gate |
