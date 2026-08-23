@@ -1,11 +1,12 @@
 # Cross-Lab Method Teaching Alignment v2 Design
 
-**Status:** **DESIGN ACCEPTED WITH BINDING ADDENDUM.** Phases 0 through 2 are
-Maintainer-accepted. Phase 3 one-step selected teaching is Maintainer-accepted
-with both P3 carry-forwards closed. Phase 4 history/second-order selected
-teaching is implemented; its Maintainer-requested composition correction is
-implemented and locally/browser verified as a candidate. Later work remains
-unauthorized.
+**Status:** **DESIGN ACCEPTED WITH BINDING ADDENDUM; PHASES 0–4 MAINTAINER
+ACCEPTED; IMPLEMENTATION COMPLETE; INTEGRATION FREEZE PASSED.** Phase 4 is
+accepted at `b554d29c7448a394582417de81911cbbb7c56eb0` (tree
+`b8221cf818c91fe75c51490b8a7732b592336831`). Its independent audit reported
+`P0 = 0`, `P1 = 0`, `P2 = 0`, and `P3 = 1`; the documentation-only
+`PHASE4-P3-01` is closed by the canonical acceptance/freeze record. No later
+teaching implementation phase remains open.
 
 **Date:** 2026-08-22
 
@@ -21,9 +22,9 @@ unauthorized.
 **Acceptance checkpoint:** `bfe5d514c67b1f5c00a1bc71b128f158e4811a5a`
 (tree `29c2a1e19718ce312671c8307dc65240e1c5eab6`)
 
-**Next gate:** Maintainer visual confirmation of the corrected Phase 4
-composition, then independent Phase 4 mathematical / teaching / accessibility
-audit.
+**Next gate:** **FINAL READ-ONLY METHOD TEACHING ALIGNMENT V2 RELEASE AUDIT.**
+Cross-Lab Presentation Phase 7 remains paused until that separate audit passes
+and the Maintainer separately authorizes release-sequence resumption.
 
 ## 1. Executive decision
 
@@ -1353,8 +1354,22 @@ landscape. No teaching-authority, numerical, coefficient, session-schema,
 family-order, Compare, Data, Output, Convergence, Tutor, Glossary, Linear
 Systems, Motion, PDE, dependency, or route-boundary change was introduced.
 
-The exact next gate is **Maintainer visual confirmation of the corrected Phase
-4 composition**, then an **independent Phase 4 mathematical / teaching /
-accessibility audit**. Cross-Lab Presentation Phase 7 remains paused. This
-checkpoint does not authorize later alignment phases, push, Preview,
-Production deployment, or release.
+The Maintainer accepts Phase 4 at
+`b554d29c7448a394582417de81911cbbb7c56eb0` (tree
+`b8221cf818c91fe75c51490b8a7732b592336831`). Its independent mathematical /
+teaching / accessibility audit returned `P0 = 0`, `P1 = 0`, `P2 = 0`, and
+`P3 = 1`; `PHASE4-P3-01` is closed by the canonical acceptance and current-gate
+record. A bounded integration freeze then reconciled the historical later
+phase numbering against current source and evidence. Concepts, after-solve
+guidance, Compare boundary, Data transition, responsive behavior,
+accessibility, Light/Dark, lifecycle, all-eight completeness, mathematical
+authority, bundle/lazy ownership, and cross-Lab regression are already
+satisfied by the accepted Phase 2–4 implementation and verification. No
+product-source correction, new teaching, redesign, or additional
+implementation phase is required.
+
+The implementation is therefore **COMPLETE** and the integration freeze is
+**PASS**. The exact next gate is a **FINAL READ-ONLY METHOD TEACHING ALIGNMENT
+V2 RELEASE AUDIT**. Cross-Lab Presentation Phase 7 remains paused. This status
+does not authorize source changes, push, Preview, Production deployment, or
+release-sequence resumption.

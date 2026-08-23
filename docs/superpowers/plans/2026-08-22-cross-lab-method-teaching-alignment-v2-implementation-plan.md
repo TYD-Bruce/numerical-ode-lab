@@ -2,11 +2,11 @@
 
 **Date:** 2026-08-22
 
-**Status:** Design accepted with binding addendum; **Phases 0 through 2 are
-Maintainer-accepted, Phase 3 one-step teaching is Maintainer-accepted with both
-P3 carry-forwards closed, and Phase 4 history/second-order teaching is
-implemented with its Maintainer-requested composition correction locally/
-browser verified as a candidate**. Later phases remain unauthorized.
+**Status:** Design accepted with binding addendum; **Phases 0 through 4 are
+Maintainer-accepted, implementation is complete, and the integration freeze
+passed**. Historical later-phase responsibilities are reconciled below by
+current behavior rather than phase number. The separate final read-only
+release audit is next.
 
 **Milestone:** Cross-Lab Method Teaching Alignment v2
 
@@ -14,12 +14,13 @@ browser verified as a candidate**. Later phases remain unauthorized.
 
 **Current product baseline:** `411e641d8cc6b14240acc408130876781fb1ee84` / tree `92f79cba8bdabafb9a97e3a99d76ddff853fe35c`
 
-**Execution gate:** Phase 3's Forward Euler, Backward Euler, Taylor 2, and RK4
-selected teaching lenses are accepted. The mandatory Phase 4 preflight closed
-both Phase 3 P3 carry-forwards. The Adams-Bashforth, Adams-Moulton, BDF, and
-Leap-Frog selected lenses are now the implemented Phase 4 candidate. Stop for
-Maintainer visual confirmation of the corrected Phase 4 composition, then an
-independent Phase 4 mathematical / teaching / accessibility audit.
+**Execution gate:** Phase 4 is Maintainer-accepted at
+`b554d29c7448a394582417de81911cbbb7c56eb0` (tree
+`b8221cf818c91fe75c51490b8a7732b592336831`). Its independent audit returned
+`P0 = 0`, `P1 = 0`, `P2 = 0`, and `P3 = 1`; documentation-only
+`PHASE4-P3-01` is closed. The integration freeze found no P0/P1/P2 product
+blocker and required no product-source fix. Stop before the separate final
+read-only release audit.
 
 ## 1. Purpose and stop condition
 
@@ -27,12 +28,39 @@ This plan maps the accepted design direction to current repository owners so a l
 
 It is deliberately staged. Each implementation phase must start clean, add focused behavioral evidence before or with its source change, finish with a narrow reviewable commit, and stop at its named review gate. A later task must not infer authority to execute the next phase from this document.
 
-The current bounded task stops after the Phase 4 Maintainer composition
-correction. It preserves the accepted Phase 2 opening, accepted Phase 3
-one-step teaching, and complete Phase 4 history/second-order teaching while
-placing the complete landscape above the complete selected lens. It does not
-begin the independent audit, later alignment integration/release phases, or
-Presentation Phase 7.
+The implementation now stops after accepted Phase 4 plus a bounded integration
+freeze. It preserves the accepted Phase 2 opening, accepted Phase 3 one-step
+teaching, and accepted Phase 4 history/second-order teaching while keeping the
+complete landscape above the complete selected lens. It does not perform the
+separate final release audit or resume Presentation Phase 7.
+
+### 1.1 Current reconciliation ledger — 2026-08-23
+
+The original plan predated the way Phases 3 and 4 absorbed later integration
+and hardening responsibilities. Historical phase text remains below as an
+execution record; this ledger is the current authority for whether work
+remains.
+
+| Responsibility | Original phase | Current status | Current owner / evidence | Remaining action |
+|---|---:|---|---|---|
+| Selected concepts | 5 | **SATISFIED** | `odeMethodTeachingContent.ts`, learner projection, and `renderSelectedConcepts` provide reviewed profile-specific subsets for all eight methods. | None. |
+| After-solve teaching | 5 | **SATISFIED** | `renderAfterSolve` consumes reviewed Output/Convergence guidance in every complete lens without fabricating evidence. | None. |
+| Compare integration | 5 | **SATISFIED** | `odeApp.ts` keeps Compare secondary, first-order-only through `FIRST_ORDER_CATALOG`, order-independent, and free of deep lenses; focused and browser regression pass. | None. |
+| Method-to-Data transition | 5 | **SATISFIED** | One selected-aware `Continue to Data` endcap uses existing workflow/session authority for both profiles. | None. |
+| Phase 5 as a separate product slice | 5 | **OBSOLETE / SUPERSEDED** | Its responsibilities were delivered across accepted Phases 2–4. | Do not reimplement. |
+| Responsive/mobile composition | 6 | **SATISFIED** | Accepted vertical composition, mobile Read selected method, contextual return, local formula containment, and 1440/390/320 browser evidence. | None. |
+| Accessibility semantics | 6 | **SATISFIED** | Native controls/details, one selected state, logical headings, single formula/figure ownership, focus/disposal tests, and browser review. | No screen-reader-certification claim. |
+| Light/Dark | 6 | **SATISFIED** | Existing semantic tokens plus accepted Light/Dark Phase 3/4 and freeze smoke. | None. |
+| Lifecycle/disposal | 6–7 | **SATISFIED** | ODE-local `ReturnToAnchor`, method rerender, route disposal, remount, Tutor/Glossary, and New experiment tests pass. | None. |
+| Phase 6 as a separate hardening slice | 6 | **OBSOLETE / SUPERSEDED** | Required hardening shipped with the accepted composition/profile slices. | Do not reopen accepted presentation. |
+| All-eight profile completeness | 7 | **SATISFIED** | Catalog/content/projection/view tests and browser switching prove exactly eight families, one complete lens, and no shallow fallback. | None. |
+| Independent mathematical/content/accessibility review | 8 | **SATISFIED** | Accepted Phase 3 and Phase 4 independent audits cover the eight profiles; Phase 4 has no P0/P1/P2 finding. | None. |
+| Bundle and lazy ownership | 7 | **SATISFIED** | Boundaries, route-ownership tests, static/dynamic import inspection, and unchanged 115-module Production chunk split pass. | None. |
+| Cross-Lab regression | 7 | **SATISFIED** | Full verification and representative Linear Systems Method/Data/Output smoke pass without Linear Systems changes. | None. |
+| Integrated release-candidate evidence | 7 | **SATISFIED** | Focused gate, typecheck, boundaries, Production build, exactly one full `verify`, and representative browser smoke pass at the freeze checkpoint. | None. |
+| Final release readiness decision | 7–8 | **PARTIALLY SATISFIED** | Implementation is complete and freeze-ready; the independent final release verdict has not yet been issued. | Run the separate read-only release audit. |
+| Method Teaching v2 final release audit | 8 / current gate | **GENUINELY REMAINING** | No product implementation is missing; this is the final independent release decision only. | **FINAL READ-ONLY METHOD TEACHING ALIGNMENT V2 RELEASE AUDIT.** |
+| Cross-Lab Presentation Phase 7 resumption | 8 / separate milestone | **GENUINELY REMAINING** | It remains paused by Maintainer authority and is outside this implementation freeze. | Consider only after the final Method Teaching audit passes and separate authorization is issued. |
 
 ## 2. Recorded binding authority
 
@@ -418,6 +446,11 @@ history ODE teaching`
 
 ## 12. Phase 5 — Concepts, after-solve bridge, Compare, and transition integration
 
+**Current reconciliation:** **OBSOLETE / SUPERSEDED AS A SEPARATE PRODUCT
+SLICE.** Its concepts, after-solve, Compare-boundary, and Method-to-Data
+responsibilities are satisfied by the accepted Phases 2–4 implementation.
+Retain the text below as historical planning context; do not reimplement it.
+
 **Purpose:** complete the full teaching arc and make exploration paths coherent without changing their numerical behavior.
 
 ### 12.1 Tests first
@@ -455,6 +488,12 @@ Stop for Maintainer acceptance of the complete desktop teaching arc before respo
 **Rollback:** revert the integration commit; profile/landscape owners remain independently testable.
 
 ## 13. Phase 6 — Responsive, accessibility, and Light/Dark hardening
+
+**Current reconciliation:** **OBSOLETE / SUPERSEDED AS A SEPARATE HARDENING
+SLICE.** Responsive/mobile composition, accessibility semantics, Light/Dark,
+formula/figure containment, and lifecycle behavior are satisfied by the
+accepted Phases 3–4 implementation and evidence. Retain the text below as
+historical planning context; do not reopen accepted presentation.
 
 **Purpose:** make the accepted composition production-quality at all required viewports and input modes.
 
@@ -494,6 +533,11 @@ Run focused accessibility/presentation/lifecycle tests, typecheck, browser matri
 **Rollback:** revert responsive/polish CSS and narrow semantic adjustments without losing the complete teaching flow.
 
 ## 14. Phase 7 — Integrated regression, bundle, and release-candidate evidence
+
+**Current reconciliation:** **SATISFIED.** The integration freeze completed
+focused and full verification, bundle/lazy inspection, representative ODE and
+Linear Systems browser smoke, and lifecycle/regression checks. No separate
+implementation-verification phase remains.
 
 **Purpose:** prove the complete alignment does not regress numerical behavior, other Labs, lazy boundaries, lifecycle, or production build structure.
 
@@ -550,6 +594,13 @@ Record exact totals, commands, manifest evidence, browser matrix, limitations, a
 **Rollback:** no product mutation in the evidence commit. Any failure returns to its owning phase through a separately reviewed fix.
 
 ## 15. Phase 8 — Independent audit and Presentation release-audit resumption gate
+
+**Current reconciliation:** **PARTIALLY SATISFIED.** Independent mathematical,
+teaching, accessibility, bundle, and regression evidence is complete through
+the accepted Phase 3/4 audits and integration freeze. The only genuinely
+remaining item is the separate **FINAL READ-ONLY METHOD TEACHING ALIGNMENT V2
+RELEASE AUDIT**. Cross-Lab Presentation Phase 7 remains paused pending that
+verdict and separate Maintainer authorization.
 
 **Purpose:** obtain an auditor-independent verdict before the paused Presentation Phase 7 can resume.
 
@@ -633,34 +684,33 @@ Every phase report should include:
 
 ## 19. Final implementation acceptance checklist
 
-An eventual implementation is ready for the independent audit only when all are true:
+The integration-freeze candidate is ready for the final read-only release audit:
 
-- [ ] The Maintainer accepted the design and each executed phase was explicitly authorized.
-- [ ] All eight runnable methods remain present and numerically unchanged.
-- [ ] Problem, landscape, selected method, concepts, after-solve, and Data transition appear in the accepted cognitive order.
-- [ ] The landscape is complete/shallow and the selected profile singular/deep.
-- [ ] Selection uses existing session authority, stays on Method, preserves
+- [x] The Maintainer accepted the design and each executed phase was explicitly authorized.
+- [x] All eight runnable methods remain present and numerically unchanged.
+- [x] Problem, landscape, selected method, concepts, after-solve, and Data transition appear in the accepted cognitive order.
+- [x] The landscape is complete/shallow and the selected profile singular/deep.
+- [x] Selection uses existing session authority, stays on Method, preserves
       initialized family-specific order, and preserves result/state/lifecycle
       contracts.
-- [ ] Compare remains a truthful secondary first-order workflow; Leap-Frog remains excluded.
-- [ ] All eight profiles pass authority/content tests and independent mathematical review.
-- [ ] Adams-Moulton/BDF, BDF6, Taylor, and Leap-Frog gated language matches recorded decisions.
-- [ ] Formula and diagram content follows safe/accessibility ownership contracts.
-- [ ] Desktop/mobile/approximately-320px and Light/Dark browser matrices pass.
-- [ ] Keyboard, focus, selected state, disclosure, reduced-motion independence, and no overflow pass.
-- [ ] Linear Systems remains behaviorally and visually unmodified except for shared-regression evidence.
-- [ ] ODE route, Tutor, Glossary, MathLive/Compute Engine, Chart.js, and Convergence lazy boundaries remain intact.
-- [ ] Focused/full tests, typechecks, build, verify, bundle inspection, and `git diff --check` pass at the final phase.
-- [ ] Documentation distinguishes implementation, local verification, independent audit, Maintainer acceptance, preview, production, and release.
-- [ ] No dependency, route, numerical, PDE, Motion, or unrelated architecture
+- [x] Compare remains a truthful secondary first-order workflow; Leap-Frog remains excluded.
+- [x] All eight profiles pass authority/content tests and independent mathematical review.
+- [x] Adams-Moulton/BDF, BDF6, Taylor, and Leap-Frog gated language matches recorded decisions.
+- [x] Formula and diagram content follows safe/accessibility ownership contracts.
+- [x] Desktop/mobile/approximately-320px and Light/Dark browser matrices pass.
+- [x] Keyboard, focus, selected state, disclosure, reduced-motion independence, and no overflow pass.
+- [x] Linear Systems remains behaviorally and visually unmodified except for shared-regression evidence.
+- [x] ODE route, Tutor, Glossary, MathLive/Compute Engine, Chart.js, and Convergence lazy boundaries remain intact.
+- [x] Focused/full tests, typechecks, build, verify, bundle inspection, and `git diff --check` pass at the integration freeze.
+- [x] Documentation distinguishes implementation, local verification, independent audit, Maintainer acceptance, preview, production, and release.
+- [x] No dependency, route, numerical, PDE, Motion, or unrelated architecture
       expansion was introduced; any session-schema change was proved
       unavoidable, bounded, and explicitly recorded.
 
 ## 20. Exact next gate
 
-After the implemented and locally/browser-verified Phase 4 composition
-correction candidate, the next action is **Maintainer visual confirmation of
-the corrected Phase 4 composition**, then an **independent Phase 4
-mathematical / teaching / accessibility audit**. Later alignment phases remain
-unauthorized. Do not begin that audit automatically, resume the paused
-Presentation Phase 7 release audit, push, or deploy under this task.
+The implementation is complete and the integration freeze passed. The exact
+next action is the separate **FINAL READ-ONLY METHOD TEACHING ALIGNMENT V2
+RELEASE AUDIT**. Do not perform that audit automatically, resume the paused
+Cross-Lab Presentation Phase 7 release sequence, modify product source, push,
+or deploy under this task.
