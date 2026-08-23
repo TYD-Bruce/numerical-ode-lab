@@ -2,7 +2,250 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
+## Cross-Lab Method Teaching Alignment v2 — Phase 4 acceptance and Integration Freeze — 2026-08-23
+
+### Phase 4 Maintainer acceptance and P3 closure
+
+The Maintainer formally accepts **Cross-Lab Method Teaching Alignment v2 —
+Phase 4** at HEAD `b554d29c7448a394582417de81911cbbb7c56eb0`
+(tree `b8221cf818c91fe75c51490b8a7732b592336831`). The independent Phase 4
+mathematical / teaching / accessibility audit returned:
+
+- `P0 = 0`;
+- `P1 = 0`;
+- `P2 = 0`; and
+- `P3 = 1`.
+
+The only finding, documentation/status bookkeeping item `PHASE4-P3-01`, is
+**CLOSED** by this acceptance record and the corrected current next gate. The
+accepted composition is Problem → Method landscape → selected method teaching
+lens → Continue to Data. All eight runnable methods have complete deep lenses,
+and the contextual **Back to method selection** behavior is accepted. These
+decisions are not reopened by the integration freeze.
+
+### Integration Freeze verdict
+
+The bounded freeze selected **Outcome A — no product fix required**:
+
+> **METHOD_TEACHING_V2_IMPLEMENTATION_COMPLETE**
+>
+> **READY_FOR_FINAL_RELEASE_AUDIT**
+
+The integration audit found no P0/P1/P2 product, mathematical, accessibility,
+session, lifecycle, bundle/lazy, or cross-Lab blocker. The now-closed status P3
+was the only release-relevant residue. Product source, tests, CSS, and runtime
+configuration remain byte-for-byte unchanged from the accepted Phase 4
+checkpoint. Reconciliation commit
+`a8ff2e12192e533eaa3617ccbca075e6afb7a12d` (tree
+`9db7266955395b92508b2d9d1c113e0231568e72`), **Reconcile ODE teaching
+completion**, updates only the accepted design and repository-grounded plan.
+
+### Implementation-plan reconciliation
+
+The original phase sequence predated the way Phases 3 and 4 absorbed later
+integration and hardening. The detailed historical text remains in the plan,
+but this responsibility ledger is current authority:
+
+| Responsibility | Original phase | Current status | Current owner / evidence | Remaining action |
+|---|---:|---|---|---|
+| Selected concepts | 5 | **SATISFIED** | Reviewed profile records, learner projection, and selected-concepts renderer cover all eight families. | None. |
+| After-solve teaching | 5 | **SATISFIED** | Reviewed Output/Convergence guidance is present in each complete lens and fabricates no evidence. | None. |
+| Compare integration | 5 | **SATISFIED** | `odeApp.ts` keeps Compare secondary and first-order-only; focused/full tests and browser smoke pass. | None. |
+| Method-to-Data transition | 5 | **SATISFIED** | One selected-aware Continue-to-Data endcap uses existing workflow/session authority. | None. |
+| Separate Phase 5 product slice | 5 | **OBSOLETE / SUPERSEDED** | Its responsibilities shipped across accepted Phases 2–4. | Do not reimplement. |
+| Responsive/mobile composition | 6 | **SATISFIED** | Accepted vertical flow, mobile orientation actions, local containment, and 1440/390/320 evidence. | None. |
+| Accessibility semantics | 6 | **SATISFIED** | Native controls/details, logical headings, single selected state, formula/figure ownership, focus and disposal evidence. | No screen-reader-certification claim. |
+| Light/Dark | 6 | **SATISFIED** | Existing semantic tokens and accepted/freeze browser evidence. | None. |
+| Lifecycle/disposal | 6–7 | **SATISFIED** | ODE-local return helper, rerender, route disposal/remount, New experiment, Tutor/Glossary, and restoration tests pass. | None. |
+| Separate Phase 6 hardening slice | 6 | **OBSOLETE / SUPERSEDED** | Required hardening shipped with the accepted profile/composition slices. | Do not reopen accepted presentation. |
+| All-eight completeness | 7 | **SATISFIED** | Catalog/content/projection/view tests and browser switching prove exactly eight complete families and no shallow fallback. | None. |
+| Independent mathematical/content/accessibility review | 8 | **SATISFIED** | Accepted Phase 3 and Phase 4 independent audits cover every profile. | None. |
+| Bundle/lazy verification | 7 | **SATISFIED** | Boundary and route-ownership tests, import inspection, emitted chunks, and Production build pass. | None. |
+| Cross-Lab regression | 7 | **SATISFIED** | Full verification plus representative Linear Systems Method/Data/Output browser smoke pass. | None. |
+| Integrated release-candidate evidence | 7 | **SATISFIED** | Focused tests, boundaries, typechecks, build, exactly one full `verify`, and representative browser smoke pass. | None. |
+| Final release readiness decision | 7–8 | **PARTIALLY SATISFIED** | Implementation and freeze evidence are complete; no independent final release verdict exists yet. | Run the separate read-only release audit. |
+| Method Teaching v2 final release audit | 8/current gate | **GENUINELY REMAINING** | This is a release decision, not missing implementation. | Final read-only audit only. |
+| Cross-Lab Presentation Phase 7 resumption | separate milestone | **GENUINELY REMAINING** | Still paused by Maintainer authority. | Consider only after the Method Teaching audit passes and separate authorization is issued. |
+
+### Integrated implementation evidence
+
+Exactly one reviewed teaching registry covers Forward Euler, Backward Euler,
+Taylor Method (Order 2), Runge-Kutta 4, Adams-Bashforth, Adams-Moulton,
+Backward Differentiation Formula, and Leap-Frog. There is no ninth profile.
+Catalog/content/projection/view evidence and switching all eight methods in a
+browser found exactly one matching complete lens, no shallow fallback, and no
+accumulated hidden lens.
+
+The DOM and visual order is Problem → shallow complete three-group/eight-method
+landscape → singular deep selected lens → Continue to Data at 1440, 390, and
+approximately 320 pixels. There is no landscape/lens peer-column layout and no
+CSS visual reordering against source order. The landscape keeps explicit
+selection, order metadata, and a secondary Compare entry without leaking deep
+teaching into its controls. Every lens retains the shared grammar: core idea,
+defining safe mathematics, process, selected concepts, interpretation
+boundaries, after-solve questions, and Data transition.
+
+Source-based mathematics spot checks agree with the accepted numerical and
+teaching authorities: Forward Euler uses the left-endpoint update; Backward
+Euler uses the implicit endpoint relation and current UI-default Newton;
+Taylor 2 teaches internal centered derivative estimation and the current five
+RHS evaluations; RK4 distinguishes its four stages from accepted solution
+points; Adams-Bashforth uses slope history; Adams-Moulton separates its AB
+predictor from the accepted Newton-corrected value; BDF uses solution history
+and preserves theoretical BDF6 order 6 while qualifying current RK4-startup
+evidence toward approximately 5; Leap-Frog teaches the current staggered
+half-step velocity, whole-step position, and stored full-step reconstruction.
+No numerical source changed.
+
+Production rendering continues to consume only the learner-safe projection.
+The app and view do not import `odeMethodTeachingAudit.ts`; audit status,
+authority/review IDs, internal source/test language, and governance markers are
+absent from learner output. One content registry, one learner projection, one
+view, one audit-only owner, and one ODE-local `ReturnToAnchor` owner remain.
+
+The order smoke set Adams-Bashforth to 7, Adams-Moulton to 6, and BDF to 5,
+switched away and back, and preserved all three family-specific values. A
+separate BDF6 teaching smoke showed theoretical/current order 6 plus the
+qualified startup limitation. Selection and both orientation actions changed
+no order or session state. Confirmed New experiment used existing authority to
+reset to the Beginner starter and Forward Euler, disabled stale Output, and
+returned to Method at scroll 0.
+
+Representative Method → Data → Run → Output checks passed for Forward Euler,
+Adams-Moulton order 6, and Leap-Frog. Data forms and Output evidence stayed
+owned by their existing surfaces; teaching did not enter numerical evidence,
+and successful/current behavior stayed intact. Forward Euler Convergence ran
+three eligible exact-reference levels with the same method and showed observed
+order; Leap-Frog remained excluded. Compare successfully ran independent
+Adams-Bashforth order 7 versus Adams-Moulton order 6, rendered no deep lens,
+kept Leap-Frog excluded, and changed no numerical behavior.
+
+The mobile **Read selected method** action moved focus from landscape to lens
+only when invoked. Selection itself did not auto-scroll. **Back to method
+selection** appeared only after useful distance, returned and focused the
+connected landscape heading, preserved method/order, hid after return, and
+owned no loop or state mutation. `ReturnToAnchor` remains presentation-only,
+ODE-local, singular, and disposable.
+
+Semantic/browser review found one Lab `h1`, logical heading order, eight native
+method controls, one selected state, one formula owner per formula, one
+description per figure, native details, the full return accessible name, no
+duplicate IDs/live regions, and no nested interactive controls. Automated
+focus/lifecycle evidence and visible browser focus passed. This is not a
+screen-reader certification claim.
+
+Representative release-blocking visual smoke passed 1440 Light for Forward
+Euler, Adams-Moulton, BDF, and Leap-Frog; 1440 Dark for BDF and Leap-Frog;
+390 Dark for Adams-Moulton and BDF; and approximately 320 Dark for BDF and
+Leap-Frog. No page overflow, clipping, unreadable primary formula, navigation
+occlusion, broken diagram, or rail collision was found. At 320 pixels, BDF's
+long relation stays in its intentional local horizontal scroller while the
+document remains overflow-free. Browser consoles reported no warning or error.
+
+### Ownership and dead-residue ledger
+
+| Candidate | Decision | Evidence / reason |
+|---|---|---|
+| `hasCompleteMethodTeachingLens` guard | **KEEP** | Defensive catalog/profile completeness guard; no current family reaches its fallback. |
+| Generic `.card`, `.grid-methods`, and related presentation rules | **KEEP** | Still have legitimate Method/Compare consumers; names alone do not prove dead CSS. |
+| Content registry / learner projection / audit owner | **KEEP** | Each has one distinct authored, Production-safe, or audit-only responsibility; no duplicate registry/projection exists. |
+| ODE-local `ReturnToAnchor` | **KEEP** | One proven consumer, correct disposal, no duplicate owner, and no platform dependency inversion. |
+| Retired `.ode-method-choice-layout` | **ALREADY REMOVED** | No source or CSS occurrence remains; current layout is vertical. |
+| Proven dead placeholder, branch, selector, diagram, or registry | **REMOVE: NONE** | The bounded consumer scan found no safe deletion. |
+| Phase-era comments in `methodMathContent.ts` and `odeSession.ts` | **DEFER** | Harmless non-runtime housekeeping notes; touching accepted product source would add freeze risk without release value. |
+| Further spacing, typography, color, diagram, or wording polish | **DEFER** | Accepted, non-blocking, and explicitly outside the freeze objective. |
+
+### Bundle, lazy graph, and validation
+
+There is no bundle delta because no product source changed. The Production
+build still emits 115 modules with these raw/gzip sizes in kB:
+
+| Asset | Accepted Phase 4 | Integration freeze | Delta |
+|---|---:|---:|---:|
+| Platform CSS | 30.07 / 5.47 | 30.07 / 5.47 | 0 / 0 |
+| Platform JS | 59.04 / 18.29 | 59.04 / 18.29 | 0 / 0 |
+| Shared workflow CSS | 21.08 / 3.45 | 21.08 / 3.45 | 0 / 0 |
+| Shared workflow JS | 14.43 / 3.57 | 14.43 / 3.57 | 0 / 0 |
+| ODE CSS | 34.10 / 6.34 | 34.10 / 6.34 | 0 / 0 |
+| ODE JS | 362.11 / 111.25 | 362.11 / 111.25 | 0 / 0 |
+| Linear Systems CSS | 26.06 / 4.92 | 26.06 / 4.92 | 0 / 0 |
+| Linear Systems JS | 75.80 / 22.63 | 75.80 / 22.63 | 0 / 0 |
+| Tutor CSS / JS | 6.61 / 1.81; 12.14 / 4.61 | unchanged | 0 / 0 |
+| Glossary CSS / JS | 4.83 / 1.31; 10.13 / 3.50 | unchanged | 0 / 0 |
+| Readonly math JS | 2.08 / 0.92 | 2.08 / 0.92 | 0 / 0 |
+| Convergence state JS | 58.24 / 17.31 | 58.24 / 17.31 | 0 / 0 |
+| MathLive JS | 819.11 / 228.04 | 819.11 / 228.04 | 0 / 0 |
+| Editable math / Compute Engine JS | 1,143.84 / 308.81 | 1,143.84 / 308.81 | 0 / 0 |
+
+Home and `/ode` contain no complete ODE teaching. The complete ODE Lab owns
+Method teaching and `ReturnToAnchor` behind its existing dynamic route.
+Linear Systems contains no ODE teaching. Tutor, Glossary, MathLive, Compute
+Engine, readonly/editable math, Chart.js, and Convergence retain their existing
+deferred or Lab-owned boundaries. The build's ordinary >500 kB advisory does
+not identify an eager-loading defect; no dependency or chunk workaround was
+introduced.
+
+Focused verification passed 14 files / 147 tests covering content/projection,
+audit disconnect, all-eight view, safe math, return navigation, session/order,
+route/lifecycle, New experiment, Compare/Convergence, and route ownership.
+`npm.cmd run verify:boundaries` passed all four owners plus the Vercel adapter.
+`npm.cmd run typecheck` passed frontend, numerics, and contracts. The standalone
+Production build passed all workspace typechecks and the 115-module build.
+Exactly one `npm.cmd run verify` was invoked; it passed boundaries, 104 files /
+1,349 tests, frontend/numerics/contracts and API typechecks, and the Production
+build. No full verification was rerun. `git diff --check` and targeted
+documentation-link validation passed before the final status commit.
+
+The task-owned browser server used only for the required freeze smoke was
+stopped before handoff; port 4317 has no listener. The small external evidence
+packet is
+`C:/Users/bruce/.codex/attachments/method-teaching-freeze-evidence/` and
+contains seven screenshots covering desktop Light/Dark, mobile 390/320, and
+Linear Systems Output.
+
+### Problems, resolution, freeze rules, and next gate
+
+The only milestone inconsistency was stale phase-number/status authority: the
+old plan still described later implementation slices even though their
+responsibilities shipped in accepted Phases 2–4. Source and browser evidence
+showed no missing product work. The resolution is responsibility-based plan
+reconciliation plus canonical acceptance/freeze documentation, with no source
+cleanup. The ordinary large-chunk advisory and two harmless phase-era comments
+are non-blocking and deferred.
+
+Durable freeze rules: do not reimplement superseded Phase 5/6 slices; keep the
+accepted vertical cognitive flow; keep one complete lens per catalog family;
+Data owns editable family order and reselection preserves it; Compare remains
+secondary and first-order-only; orientation controls remain presentation-only;
+Production consumes only learner-safe teaching; and any future product change
+requires a new, independently authorized task.
+
+Files changed for the freeze are documentation only:
+
+- `docs/superpowers/specs/2026-08-22-cross-lab-method-teaching-alignment-v2-design.md`;
+- `docs/superpowers/plans/2026-08-22-cross-lab-method-teaching-alignment-v2-implementation-plan.md`;
+- `PLAN.md`;
+- `docs/INDEX.md`; and
+- `docs/PROJECT_HANDOFF.md`.
+
+`CURRENT_ARCHITECTURE.md` and `README.md` remain unchanged because runtime
+architecture and released/Production behavior did not change. There is no new
+teaching, broad redesign, numerical/session/order/Compare/Data/Output/
+Convergence change, Trace, Replay, Motion, Tutor/Glossary feature, Linear
+Systems source, PDE, dependency, platform-wide `ReturnToAnchor`, push,
+Preview, Production deployment, or release claim. Cross-Lab Presentation
+Phase 7 remains paused.
+
+The exact next gate is a separate **FINAL READ-ONLY METHOD TEACHING ALIGNMENT
+V2 RELEASE AUDIT**. Do not perform it automatically. If it passes, freeze
+Method Teaching v2; only then may a separately authorized task consider
+resuming the paused Cross-Lab Presentation release sequence.
+
 ## Cross-Lab Method Teaching Alignment v2 — Phase 4 Maintainer composition correction candidate — 2026-08-23
+
+*Historical pre-acceptance checkpoint. The Phase 4 acceptance and Integration
+Freeze section above supersedes this checkpoint's status and next gate while
+preserving its exact implementation and browser evidence.*
 
 ### Starting candidate and Maintainer finding
 

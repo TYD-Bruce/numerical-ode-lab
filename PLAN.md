@@ -3,11 +3,9 @@
 ## Current status
 
 **Active milestone: Cross-Lab Method Teaching Alignment v2 — Phases 0 through
-3 are Maintainer-accepted, with the Phase 3 P3 findings closed. Phase 4
-history/second-order teaching is implemented, and its Maintainer-requested
-composition correction is implemented and locally/browser verified as a
-candidate. Stop for Maintainer visual confirmation before the independent
-Phase 4 audit; later phases remain unauthorized.**
+4 are Maintainer-accepted. Implementation is COMPLETE and the integration
+freeze is PASS. The next gate is the separate FINAL READ-ONLY Method Teaching
+Alignment v2 release audit. Cross-Lab Presentation Phase 7 remains paused.**
 
 Cross-Lab Presentation Sync Phases 0 through 6 are implemented. The Phase 6
 entry-safe `ModuleOverview` and proven duplicate-style cleanup passed its
@@ -33,6 +31,18 @@ landscape branch, makes Data the editable order owner, preserves initialized
 family-specific order on reselection, makes Read selected method evidence-
 gated, and accepts the bounded formula/diagram/content decisions recorded in
 the design and handoff.
+
+Phase 4 is **MAINTAINER ACCEPTED** at
+`b554d29c7448a394582417de81911cbbb7c56eb0` (tree
+`b8221cf818c91fe75c51490b8a7732b592336831`). Its independent audit returned
+`P0 = 0`, `P1 = 0`, `P2 = 0`, and `P3 = 1`; documentation-only
+`PHASE4-P3-01` is **CLOSED**. The bounded integration freeze found no product,
+mathematical, accessibility, state, lazy-loading, or cross-Lab blocker and
+required no product-source change. The active
+[implementation-plan reconciliation](docs/superpowers/plans/2026-08-22-cross-lab-method-teaching-alignment-v2-implementation-plan.md#11-current-reconciliation-ledger--2026-08-23)
+records that the former Phase 5/6 implementation slices are superseded by
+accepted current behavior, Phase 7 evidence is satisfied, and only the final
+read-only release verdict genuinely remains.
 
 Cross-Lab Presentation Phase 7 is **paused**, not failed or completed. Phase 0
 authority/copy alignment remains accepted at
@@ -74,7 +84,7 @@ status documents. `PHASE3-P3-02` is closed by extending the existing
 learner/governance disconnect test to cover `odeMethodTeachingView.ts`; the
 renderer, learner projection, and ODE app do not import the audit-only owner.
 
-Phase 4 closes its mandatory preflight in commit
+Phase 4 closed its mandatory preflight in commit
 `f574f16f9eae57e263b638ded11a534d839e8cf7` (tree
 `74e3d0f7307d6486787b469f85663ec8bc35e83f`), implements the four authorized
 history/second-order lenses in `1fcc053108c0e11988cb20c9d36759e11eab97f6`
@@ -87,7 +97,7 @@ family order remains read-only Method context, Data remains its editable
 owner, and the new diagrams/formulas/processes preserve the approved startup,
 Newton, BDF6, and staggered-state boundaries.
 
-Before that independent audit, Maintainer visual review recorded
+Before the independent audit, Maintainer visual review recorded
 `PHASE4-VIS-01` (P2): the desktop landscape and deep selected lens had become
 peer columns rather than sequential Survey → Learn layers. The bounded
 correction is implemented at `45cf1326e4686cd1d807e223883541d3b48a51bf`
@@ -99,22 +109,24 @@ control appears only after the landscape has left view and returns focus to
 its heading without session state; its mobile visual is a compact 44 × 44
 arrow. The evidence-backed mobile Read selected method action remains.
 
-The corrected Phase 4 candidate passed focused and full tests, all typechecks,
+The corrected Phase 4 implementation passed focused and full tests, all typechecks,
 the 115-module Production build, one full `verify` invocation with its yielded
 tail conservatively reconfirmed by the standalone API typecheck and root
 build, bundle/lazy inspection, and 1440/390/320 Light/Dark browser review. No
 teaching authority, numerical algorithm, session schema, family-order
 authority, Compare behavior, Data, Output, Convergence, Tutor, Glossary,
-Linear Systems, Motion, PDE, dependency, or route boundary changed. No later
-alignment phase, push, or deployment is authorized. Cross-Lab Presentation
-Phase 7 remains paused.
+Linear Systems, Motion, PDE, dependency, or route boundary changed. The
+independent Phase 4 audit then passed with only documentation/status
+carry-forward `PHASE4-P3-01`, now closed. The integration freeze reconfirmed
+all-eight completeness, the accepted vertical cognitive flow, method/order
+preservation, Data/Output/Compare/Convergence boundaries, accessibility,
+responsive Light/Dark behavior, lifecycle, and bundle/lazy ownership. No
+source fix or additional implementation phase is required.
 
-The exact next gate is **Maintainer visual confirmation of the corrected Phase
-4 composition**, then an **independent Phase 4 mathematical / teaching /
-accessibility audit**. Do not begin that audit automatically, begin later
-alignment integration/release phases, resume Presentation Phase 7, push, or
-deploy. Historical Phase 1/2/3 next-gate wording below is superseded by this
-current status.
+The exact next gate is the **FINAL READ-ONLY METHOD TEACHING ALIGNMENT V2
+RELEASE AUDIT**. Do not perform that audit automatically, resume Cross-Lab
+Presentation Phase 7, change product source, push, or deploy. Historical
+Phase 1/2/3/4 next-gate wording below is superseded by this current status.
 
 Linear Systems Teaching v2 is **MAINTAINER ACCEPTED** at commit
 `484fc9153de33be7949e82b29386c94fe63d19c8` (tree
