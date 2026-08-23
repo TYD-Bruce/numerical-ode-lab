@@ -2,6 +2,148 @@
 
 This is the durable handoff for future contributors. Use it with the current codebase and the authoritative design and plan; do not rely on prior chat history.
 
+## Tutor API Production packaging recovery — verified — 2026-08-23
+
+### Production verdict and identities
+
+The narrow Tutor API packaging blocker is closed. Method Teaching Alignment
+v2 and Cross-Lab Presentation System v1 remain **FROZEN**; Production is
+**VERIFIED** and the final classification is **PRODUCTION_RELEASE_VERIFIED**.
+Final severity is `P0 = 0`, `P1 = 0`, `P2 = 0`, and `P3 = 0`.
+
+The original public release was
+`010a64d2c002d234bd79a8844d0478aaacefcdbf` (tree
+`a49ddee60db16ff02079af1fbed55b19f9c584f3`). Its exact-tree private sync was
+`3b3c8c634f30a355ae876c3c43122c43840a424e`, and broken Production deployment
+`dpl_7PE3VLjjxzaAP2CUWy2zkTkr33E7` initialized `/api/chat` with
+`ERR_MODULE_NOT_FOUND` for
+`/var/task/node_modules/@numerical-t-lab/backend/src/ai/chatHandler.ts`,
+imported by `/var/task/api/chat.js`. Malformed input therefore returned HTTP
+500 `text/plain` with `FUNCTION_INVOCATION_FAILED` instead of the accepted
+structured JSON 400 response. `PROD-P1-TUTOR-PACKAGING = CLOSED`.
+
+The verified public fix is
+`8e78aef8f01360e76b6c45dbea12824ef52a3735` (tree
+`b3dea8ef7ca57ccf0de968d2117438b3b8c83b03`), **Fix Vercel Tutor API
+packaging**. `origin/main` was advanced normally from the original release to
+that commit after fetch, ancestry, and dry-run checks. The private deployment
+parent remained `3b3c8c634f30a355ae876c3c43122c43840a424e`; exact-tree sync commit
+`9649cb67b8ef1dfc507fa3238dc45789220a84e3` has tree
+`b3dea8ef7ca57ccf0de968d2117438b3b8c83b03`, one private parent, and no diff
+from the public fix. `vercel/main` was advanced by a normal fast-forward push;
+the public and private histories were not merged.
+
+Vercel deployment `dpl_YFqmC3pN7XFdnWjUV2TZM9io9b7y` at
+`https://numerical-t-bxrnidt7m-bruce-tian.vercel.app/` is `READY`, records
+private commit `9649cb67b8ef1dfc507fa3238dc45789220a84e3`, and owns the canonical
+`https://numerical-t-lab.vercel.app/` alias. The immutable deployment URL and
+canonical URL both return HTTP 400, `application/json; charset=utf-8`, and
+`{"error":"messages array is required."}` for malformed `POST /api/chat`.
+Runtime evidence records only the expected 400 serverless invocations and no
+module-resolution or initialization error.
+
+### Rollback safety outcome
+
+The established Vercel Instant Rollback UI was opened and its confirmation
+explicitly identified prior READY deployment
+`dpl_UfwD53XrJgRUVjgjtwKi9XTajwTU` as the target and the broken deployment as
+the source. After confirmation, the dashboard remained indefinitely at
+**Assigning production domains**, while connector and canonical-API evidence
+continued to resolve the broken deployment. In accordance with the ambiguity
+rule, rollback activity stopped without a retry, alias edit, environment
+change, or deployment deletion. Therefore rollback is recorded as **not
+completed / prior deployment not restored**, rather than falsely claimed as
+successful. The subsequent exact fix deployment was promoted automatically by
+the existing Git integration after it became READY and passed its immutable
+API test.
+
+### Root cause and correction
+
+The root adapter imported the workspace package subpath
+`@numerical-t-lab/backend/chat-handler`; `backend/package.json` exported that
+subpath directly to `./src/ai/chatHandler.ts`. Local Bundler-mode TypeScript,
+Vite/Vitest workspace resolution, and the workspace link all accepted the
+source-TS export, so existing local typechecks and focused tests passed. The
+Vercel TypeScript builder emitted the function entry as `api/chat.js` while
+leaving the runtime package import/export directed at the `.ts` workspace
+source path. That source artifact was absent from the deployed function,
+causing the runtime failure. Separately, keeping `api/chat.test.ts` under the
+filesystem API directory caused Vercel to build a second `/api/chat.test`
+function and exposed NodeNext TS2835 for its extensionless `./chat` import.
+
+The smallest architecture-preserving correction changes the thin adapter to
+the statically traceable, compiler-supported ESM source-relative specifier
+`../backend/src/ai/chatHandler.js`. TypeScript resolves the authored `.ts`
+module, while emitted Node ESM resolves the emitted `.js` module without a
+runtime workspace symlink or `.ts` package export. The adapter test moved to
+`backend/src/ai/chatAdapter.test.ts`, outside the Vercel filesystem function
+directory, and uses explicit `.js` ESM specifiers. New
+`backend/src/ai/chatPackaging.test.ts` proves the thin single-owner boundary,
+the one-file API directory, emitted-module resolution, the absence of the
+unavailable workspace `.ts` runtime path, and the malformed-request 400 JSON
+contract. `scripts/verify/importBoundaries.mjs` now requires that one exact
+backend implementation import. Backend business/provider logic, DTOs,
+validation, status semantics, prompts, provider selection, and error handling
+are unchanged; no package, dependency, Vercel configuration, project, domain,
+or environment setting changed.
+
+### Packaging and validation evidence
+
+The packaging test was added first and failed for the intended three reasons:
+the bare workspace import, the extra test file in `api/`, and an emitted
+package unable to satisfy the runtime import. After correction, focused
+adapter/packaging/handler/prompt verification passed 4 files / 45 tests. API
+typecheck, frontend/numerics/contracts typecheck, the import-boundary suite, a
+direct NodeNext compile, and a local `@vercel/nft` trace passed without a
+TS2835 or trace warning. The focused emitted-package test compiled and loaded
+the same API/backend boundary and reached handler validation. The local API
+harness returned HTTP 400 JSON for `{}` with mock/provider-free authority.
+
+The standalone Production build passed all workspace typechecks and emitted
+115 modules. Exactly one full `npm.cmd run verify` was invoked; it passed all
+boundaries, 105 files / 1,352 tests, frontend/numerics/contracts and API
+typechecks, and the 115-module Production build. No second full verification
+was run. `git diff --check` passed. The Vercel build used CLI 59.3.0, completed
+without TS2835, and retained only the existing dependency-script and large
+chunk advisories. The deployed Resources view proves exactly one function:
+`/api/chat`, Node.js 24.x, 25.6 kB; `/api/chat.test` is absent. A current local
+Vercel CLI was not installed, so no unsupported local `vercel build` claim is
+made; the compiler-emitted package test, NodeNext check, file trace, exact
+remote Resources view, and runtime invocation together provide the packaging
+evidence.
+
+Canonical static/API precedence also passed: malformed `/api/chat` returned
+JSON rather than SPA HTML; representative hashed JS returned HTTP 200
+`application/javascript`, and representative hashed CSS returned HTTP 200
+`text/css`.
+
+### Bounded Production regression and exclusions
+
+The bounded smoke passed Home, a direct-load and refresh of the nested ODE
+Lab, the ODE Method surface, Forward Euler Data → Run → Output, Starter 3×3
+Linear Systems Output, Tutor open/close, and Glossary open/close. Tutor was not
+sent a paid or valid provider request. Responsive evidence passed at a real
+400-pixel document viewport with document `scrollWidth == clientWidth`; Dark
+mode also passed there. Representative browser logs contained no console or
+network entry, and no first-party asset failure, serverless initialization
+failure, or route 404 was observed. Temporary browser width, zoom, and theme
+changes were restored.
+
+The fix makes no frontend redesign, Method Teaching, presentation, numerical,
+session, Compare, Convergence, Tutor feature, provider/prompt, Glossary, Linear
+Systems behavior, dependency, Vercel project, environment, or domain change.
+There was no force push, history rewrite, public/private history merge, paid
+completion, second deployment for documentation, or unrelated phase work.
+
+The deployed function tree is the public fix tree
+`b3dea8ef7ca57ccf0de968d2117438b3b8c83b03`. This post-verification handoff is
+a later documentation-only closeout on public `main`; it is intentionally not
+part of the deployed tree and must not be synchronized to `vercel/main` merely
+to redeploy documentation.
+
+**Exact next gate:** RELEASE COMPLETE. STOP. Do not begin another frontend
+phase, Motion, Tutor feature work, or PDE work from this recovery task.
+
 ## Final Production Release Closeout — frozen candidate record — 2026-08-23
 
 ### Final freeze authority
