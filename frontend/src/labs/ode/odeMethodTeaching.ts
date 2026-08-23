@@ -6,7 +6,11 @@ import {
 } from "@numerical-t-lab/numerics/ode/method-catalog";
 import type { MethodFamily } from "@numerical-t-lab/numerics/ode/solvers";
 import type { ReadonlyMathContent } from "../../math/ui/readonlyMath";
-import { methodTeachingMathContent } from "../../math/ui/methodMathContent";
+import {
+  methodTeachingMathContent,
+  methodTeachingSupportingMathContent,
+  type MethodTeachingSupportingFormula,
+} from "../../math/ui/methodMathContent";
 import {
   ODE_METHOD_CONCEPTS,
   teachingContentFor,
@@ -97,6 +101,7 @@ export interface OdeMethodTeachingLearnerProfile
       };
   readonly configurableParameters: readonly OdeMethodConfigurableParameter[];
   readonly primaryFormula: ReadonlyMathContent;
+  readonly supportingFormulas: readonly MethodTeachingSupportingFormula[];
   readonly selectedConcepts: readonly OdeMethodConcept[];
 }
 
@@ -244,6 +249,16 @@ export function deriveOdeMethodTeachingProfile(
     commonMisconception: { ...content.commonMisconception },
     advancedDetails: content.advancedDetails.map((detail) => ({ ...detail })),
     selectedConceptIds: [...content.selectedConceptIds],
+    ...(content.staticDiagram
+      ? {
+          staticDiagram: {
+            kind: content.staticDiagram.kind,
+            title: content.staticDiagram.title,
+            caption: content.staticDiagram.caption,
+            steps: content.staticDiagram.steps.map((step) => ({ ...step })),
+          },
+        }
+      : {}),
     identity: {
       family: entry.family,
       displayName: entry.displayName,
@@ -271,6 +286,13 @@ export function deriveOdeMethodTeachingProfile(
       : { available: false, reason: "second_order_profile" },
     configurableParameters: configurableParameters(entry),
     primaryFormula: primaryFormula(entry),
+    supportingFormulas: methodTeachingSupportingMathContent(entry.family).map(
+      (formula) => ({
+        id: formula.id,
+        title: formula.title,
+        content: { ...formula.content },
+      })
+    ),
     selectedConcepts: content.selectedConceptIds.map((id) => ({
       ...ODE_METHOD_CONCEPTS[id],
     })),

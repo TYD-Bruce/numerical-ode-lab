@@ -86,6 +86,46 @@ describe("reviewed ODE method teaching content", () => {
     }
   });
 
+  it("owns only the approved Phase 3 static teaching diagrams", () => {
+    const forwardEuler = teachingContentFor("forward_euler").staticDiagram;
+    expect(forwardEuler?.kind).toBe("one_step");
+    expect(forwardEuler?.caption).toContain("current slope");
+    expect(forwardEuler?.steps.map((step) => step.id)).toEqual([
+      "current_state",
+      "current_slope",
+      "step_change",
+      "next_approximation",
+    ]);
+
+    const backwardEuler = teachingContentFor("backward_euler").staticDiagram;
+    expect(backwardEuler?.kind).toBe("endpoint_relation");
+    expect(backwardEuler?.caption).toContain("starting guess");
+    expect(backwardEuler?.caption).toContain("accepted");
+
+    expect(teachingContentFor("taylor").staticDiagram).toBeUndefined();
+
+    const rk4 = teachingContentFor("rk4").staticDiagram;
+    expect(rk4?.kind).toBe("stage_path");
+    expect(rk4?.steps.map((step) => step.id)).toEqual([
+      "k1",
+      "k2",
+      "k3",
+      "k4",
+      "weighted_update",
+    ]);
+    expect(rk4?.steps.slice(0, 4).every((step) => step.title.includes("Temporary slope"))).toBe(true);
+    expect(rk4?.steps.at(-1)?.title).toContain("accepted next approximation");
+
+    for (const family of [
+      "adams_bashforth",
+      "adams_moulton",
+      "bdf",
+      "leapfrog",
+    ] as const) {
+      expect(teachingContentFor(family).staticDiagram).toBeUndefined();
+    }
+  });
+
   it("records the accepted implicit, BDF6, Taylor, RK4, and Leap-Frog boundaries", () => {
     const backwardEuler = learnerText("backward_euler");
     expect(backwardEuler).toContain("new endpoint");

@@ -3,6 +3,7 @@ import { METHOD_CATALOG } from "@numerical-t-lab/numerics/ode/method-catalog";
 import {
   ODE_METHOD_FOUNDATION_MATH,
   methodMathContent,
+  methodTeachingSupportingMathContent,
   methodTeachingMathContent,
 } from "./methodMathContent";
 
@@ -68,6 +69,47 @@ describe("methodMathContent", () => {
       expect(content).not.toHaveProperty("evaluate");
       expect(content).not.toHaveProperty("mathJson");
       expect(Object.isFrozen(content)).toBe(true);
+    }
+  });
+
+  it("owns the closed supporting mathematics for the four one-step teaching lenses", () => {
+    expect(
+      methodTeachingSupportingMathContent("forward_euler")
+    ).toEqual([]);
+    expect(
+      methodTeachingSupportingMathContent("backward_euler").map(
+        (formula) => formula.id
+      )
+    ).toEqual(["backward_euler_predictor", "backward_euler_residual"]);
+    expect(
+      methodTeachingSupportingMathContent("taylor").map(
+        (formula) => formula.id
+      )
+    ).toEqual(["taylor_path_derivative"]);
+    expect(
+      methodTeachingSupportingMathContent("rk4").map((formula) => formula.id)
+    ).toEqual(["rk4_k1", "rk4_k2", "rk4_k3", "rk4_k4"]);
+
+    const rk4 = methodTeachingSupportingMathContent("rk4");
+    expect(rk4[0]?.content.displayText).toContain("k₁ = f(tₙ, uₙ)");
+    expect(rk4[1]?.content.displayText).toContain("h/2");
+    expect(rk4[2]?.content.displayText).toContain("k₂");
+    expect(rk4[3]?.content.displayText).toContain("h k₃");
+
+    for (const formula of [
+      ...methodTeachingSupportingMathContent("backward_euler"),
+      ...methodTeachingSupportingMathContent("taylor"),
+      ...rk4,
+    ]) {
+      expect(Object.keys(formula.content).sort()).toEqual([
+        "ariaLabel",
+        "displayText",
+        "latex",
+      ]);
+      expect(formula.content.ariaLabel).toMatch(/[A-Za-z]/);
+      expect(formula.content).not.toHaveProperty("html");
+      expect(formula.content).not.toHaveProperty("evaluate");
+      expect(formula.content).not.toHaveProperty("mathJson");
     }
   });
 });

@@ -5,6 +5,21 @@ export interface MethodMathContent {
   formula?: ReadonlyMathContent;
 }
 
+export type MethodTeachingSupportingFormulaId =
+  | "backward_euler_predictor"
+  | "backward_euler_residual"
+  | "taylor_path_derivative"
+  | "rk4_k1"
+  | "rk4_k2"
+  | "rk4_k3"
+  | "rk4_k4";
+
+export interface MethodTeachingSupportingFormula {
+  readonly id: MethodTeachingSupportingFormulaId;
+  readonly title: string;
+  readonly content: ReadonlyMathContent;
+}
+
 export const ODE_METHOD_FOUNDATION_MATH = Object.freeze({
   firstOrderIvp: Object.freeze({
     latex:
@@ -38,6 +53,87 @@ const FORMULAS: Record<MethodCatalogEntry["family"], Omit<ReadonlyMathContent, "
   leapfrog: { latex: "u''=a(t,u)", ariaLabel: "u double prime equals a of t and u" },
 };
 
+function supportingFormula(
+  id: MethodTeachingSupportingFormulaId,
+  title: string,
+  content: ReadonlyMathContent
+): MethodTeachingSupportingFormula {
+  return Object.freeze({
+    id,
+    title,
+    content: Object.freeze({ ...content }),
+  });
+}
+
+const ONE_STEP_SUPPORTING_MATH: Readonly<
+  Partial<
+    Record<
+      MethodCatalogEntry["family"],
+      readonly MethodTeachingSupportingFormula[]
+    >
+  >
+> = Object.freeze({
+  backward_euler: Object.freeze([
+    supportingFormula(
+      "backward_euler_predictor",
+      "Forward Euler predictor — starting guess only",
+      {
+        latex: "u_{n+1}^{(0)}=u_n+h f(t_n,u_n)",
+        displayText: "uₙ₊₁⁽⁰⁾ = uₙ + h f(tₙ, uₙ)",
+        ariaLabel:
+          "the initial guess u sub n plus 1 superscript zero equals u sub n plus h times f of t sub n and u sub n",
+      }
+    ),
+    supportingFormula(
+      "backward_euler_residual",
+      "Endpoint residual — the equation Newton solves",
+      {
+        latex: "R(z)=z-u_n-h f(t_{n+1},z)",
+        displayText: "R(z) = z − uₙ − h f(tₙ₊₁, z)",
+        ariaLabel:
+          "R of z equals z minus u sub n minus h times f of t sub n plus 1 and z",
+      }
+    ),
+  ]),
+  taylor: Object.freeze([
+    supportingFormula(
+      "taylor_path_derivative",
+      "How the slope changes along the solution path",
+      {
+        latex: "\\frac{d}{dt}f(t,y(t))=f_t+f_y f",
+        displayText: "d/dt f(t, y(t)) = fₜ + fᵧ f",
+        ariaLabel:
+          "the derivative with respect to t of f of t and y of t equals f sub t plus f sub y times f",
+      }
+    ),
+  ]),
+  rk4: Object.freeze([
+    supportingFormula("rk4_k1", "Stage 1 · start slope", {
+      latex: "k_1=f(t_n,u_n)",
+      displayText: "k₁ = f(tₙ, uₙ)",
+      ariaLabel: "k 1 equals f of t sub n and u sub n",
+    }),
+    supportingFormula("rk4_k2", "Stage 2 · first midpoint slope", {
+      latex: "k_2=f\\!\\left(t_n+\\frac{h}{2},u_n+\\frac{h}{2}k_1\\right)",
+      displayText: "k₂ = f(tₙ + h/2, uₙ + (h/2)k₁)",
+      ariaLabel:
+        "k 2 equals f at t sub n plus h over 2 and u sub n plus h over 2 times k 1",
+    }),
+    supportingFormula("rk4_k3", "Stage 3 · second midpoint slope", {
+      latex: "k_3=f\\!\\left(t_n+\\frac{h}{2},u_n+\\frac{h}{2}k_2\\right)",
+      displayText: "k₃ = f(tₙ + h/2, uₙ + (h/2)k₂)",
+      ariaLabel:
+        "k 3 equals f at t sub n plus h over 2 and u sub n plus h over 2 times k 2",
+    }),
+    supportingFormula("rk4_k4", "Stage 4 · endpoint slope", {
+      latex: "k_4=f(t_n+h,u_n+h k_3)",
+      displayText: "k₄ = f(tₙ + h, uₙ + h k₃)",
+      ariaLabel:
+        "k 4 equals f at t sub n plus h and u sub n plus h times k 3",
+    }),
+  ]),
+});
+
 const LEAPFROG_TEACHING_FORMULA: ReadonlyMathContent = Object.freeze({
   latex:
     "\\begin{aligned}v_{-1/2}&=v_0-\\frac{h}{2}a(t_0,u_0),\\\\v_{n+1/2}&=v_{n-1/2}+h a(t_n,u_n),\\\\u_{n+1}&=u_n+h v_{n+1/2},\\\\v_{n+1}&=v_{n+1/2}+\\frac{h}{2}a(t_{n+1},u_{n+1})\\end{aligned}",
@@ -61,4 +157,10 @@ export function methodTeachingMathContent(
     return { formula: { ...LEAPFROG_TEACHING_FORMULA } };
   }
   return methodMathContent(entry);
+}
+
+export function methodTeachingSupportingMathContent(
+  family: MethodCatalogEntry["family"]
+): readonly MethodTeachingSupportingFormula[] {
+  return ONE_STEP_SUPPORTING_MATH[family] ?? Object.freeze([]);
 }

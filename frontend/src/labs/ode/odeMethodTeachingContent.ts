@@ -112,6 +112,25 @@ export interface OdeMethodAdvancedDetail {
   readonly text: string;
 }
 
+export type OdeMethodTeachingDiagramKind =
+  | "one_step"
+  | "endpoint_relation"
+  | "stage_path";
+
+export interface OdeMethodTeachingDiagramStep {
+  readonly id: string;
+  readonly label: string;
+  readonly title: string;
+  readonly detail: string;
+}
+
+export interface OdeMethodTeachingDiagram {
+  readonly kind: OdeMethodTeachingDiagramKind;
+  readonly title: string;
+  readonly caption: string;
+  readonly steps: readonly OdeMethodTeachingDiagramStep[];
+}
+
 export interface OdeMethodTeachingContent {
   readonly coreIdea: string;
   readonly accessibleVerbalization: string;
@@ -132,6 +151,7 @@ export interface OdeMethodTeachingContent {
   };
   readonly advancedDetails: readonly OdeMethodAdvancedDetail[];
   readonly selectedConceptIds: readonly OdeMethodConceptId[];
+  readonly staticDiagram?: OdeMethodTeachingDiagram;
 }
 
 function deepFreeze<T>(value: T): T {
@@ -208,6 +228,38 @@ const REVIEWED_CONTENT: Record<MethodFamily, OdeMethodTeachingContent> = {
         text: "Preset-specific coarse-step behavior can motivate stability analysis, but a plotted shape alone does not prove stability or accuracy.",
       },
     ],
+    staticDiagram: {
+      kind: "one_step",
+      title: "From one current slope to one stored update",
+      caption:
+        "The current slope supplies a proposed change; only the completed update becomes the next stored approximation.",
+      steps: [
+        {
+          id: "current_state",
+          label: "Current state",
+          title: "Begin at tₙ, uₙ",
+          detail: "Use the approximation already stored on the fixed grid.",
+        },
+        {
+          id: "current_slope",
+          label: "Current slope",
+          title: "Sample f(tₙ, uₙ)",
+          detail: "Evaluate the entered right-hand side once at that state.",
+        },
+        {
+          id: "step_change",
+          label: "One step",
+          title: "Scale the slope by h",
+          detail: "The product h times the current slope is the proposed change.",
+        },
+        {
+          id: "next_approximation",
+          label: "Stored update",
+          title: "Form uₙ₊₁",
+          detail: "Add the change and store one next approximation.",
+        },
+      ],
+    },
     selectedConceptIds: [
       "numerical_approximation",
       "current_slope",
@@ -276,6 +328,38 @@ const REVIEWED_CONTENT: Record<MethodFamily, OdeMethodTeachingContent> = {
         text: "The kernel solves the difference between the proposed endpoint value and the implicit endpoint update, using the explicit prediction only as a starting value.",
       },
     ],
+    staticDiagram: {
+      kind: "endpoint_relation",
+      title: "The endpoint value must satisfy its own slope relation",
+      caption:
+        "A Forward Euler predictor is only the starting guess; Newton solves the endpoint relation before the next value is accepted.",
+      steps: [
+        {
+          id: "known_state",
+          label: "Known state",
+          title: "Begin from uₙ",
+          detail: "The current approximation is already stored.",
+        },
+        {
+          id: "predictor",
+          label: "Starting guess",
+          title: "Form an explicit predictor",
+          detail: "This estimate initializes the solve; it is not the accepted result.",
+        },
+        {
+          id: "endpoint_relation",
+          label: "Unknown endpoint",
+          title: "Require the new slope relation",
+          detail: "The unknown next value appears inside the endpoint slope.",
+        },
+        {
+          id: "newton_solve",
+          label: "Residual solve",
+          title: "Use Newton",
+          detail: "Accept the endpoint value only after controlled convergence.",
+        },
+      ],
+    },
     selectedConceptIds: [
       "endpoint_relation",
       "nonlinear_residual",
@@ -425,6 +509,44 @@ const REVIEWED_CONTENT: Record<MethodFamily, OdeMethodTeachingContent> = {
         text: "The current kernel uses four stage evaluations in start, midpoint, midpoint, and endpoint order; those temporary stages are not accepted solution points.",
       },
     ],
+    staticDiagram: {
+      kind: "stage_path",
+      title: "Four slope samples feed one weighted update",
+      caption:
+        "RK4 samples temporary slopes at the start, midpoint, midpoint, and endpoint; their weighted combination creates one accepted next approximation.",
+      steps: [
+        {
+          id: "k1",
+          label: "Start",
+          title: "Temporary slope k₁",
+          detail: "Sample at the current stored state.",
+        },
+        {
+          id: "k2",
+          label: "Midpoint",
+          title: "Temporary slope k₂",
+          detail: "Probe a half-step trial state built from k₁.",
+        },
+        {
+          id: "k3",
+          label: "Midpoint",
+          title: "Temporary slope k₃",
+          detail: "Probe a new half-step trial state built from k₂.",
+        },
+        {
+          id: "k4",
+          label: "Endpoint",
+          title: "Temporary slope k₄",
+          detail: "Probe an endpoint trial state built from k₃.",
+        },
+        {
+          id: "weighted_update",
+          label: "Conclusion",
+          title: "One accepted next approximation",
+          detail: "Combine the four slopes with the implemented weights.",
+        },
+      ],
+    },
     selectedConceptIds: [
       "numerical_approximation",
       "stage_evaluation",

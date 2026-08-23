@@ -52,6 +52,27 @@ function methodControl(target: ParentNode, name: string): HTMLButtonElement {
   return control;
 }
 
+async function selectMethod(target: ParentNode, name: string): Promise<void> {
+  methodControl(target, name).click();
+  await Promise.resolve();
+}
+
+function selectedShell(target: ParentNode): HTMLElement {
+  const shell = target.querySelector<HTMLElement>(
+    "[data-selected-method-shell]"
+  );
+  if (!shell) throw new Error("Missing selected-method shell.");
+  return shell;
+}
+
+function selectedDeepLens(target: ParentNode): HTMLElement {
+  const lens = target.querySelector<HTMLElement>(
+    "[data-selected-method-deep-lens]"
+  );
+  if (!lens) throw new Error("Missing selected-method deep teaching lens.");
+  return lens;
+}
+
 function successfulMethodSession() {
   const starter = createBeginnerStarterSession();
   const expression = createSuccessfulExpressionSnapshot(
@@ -179,7 +200,10 @@ describe("ODE Phase 2 Method opening", () => {
       selectedContent?.querySelector("[data-selected-method-formula]")
     ).not.toBeNull();
     expect(selectedContent?.querySelector(".ode-selected-availability")).not.toBeNull();
-    expect(selectedContent?.querySelector(".ode-selected-next")).not.toBeNull();
+    expect(
+      selectedContent?.querySelector("[data-selected-method-deep-lens]")
+    ).not.toBeNull();
+    expect(selectedContent?.querySelector(".ode-selected-next")).toBeNull();
     expect(selectedContent?.querySelector("[data-selected-method-shell]")).toBeNull();
     expect(
       target.querySelector<HTMLButtonElement>("[data-compare]")?.hasAttribute(
@@ -454,5 +478,279 @@ describe("ODE Phase 2 Method opening", () => {
     const third = mountOdeApp({ target, initialSession: saved });
     expect(target.querySelectorAll("[data-method-family]")).toHaveLength(8);
     third.dispose();
+  });
+});
+
+describe("ODE Phase 3 one-step selected teaching lenses", () => {
+  beforeEach(() => document.body.replaceChildren());
+
+  it("teaches one complete Forward Euler update from current slope to after-solve questions", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const mounted = mountOdeApp({
+      target,
+      initialSession: createBeginnerStarterSession(),
+    });
+
+    const shell = selectedShell(target);
+    const lens = selectedDeepLens(target);
+    expect(lens.dataset.selectedMethodDeepLens).toBe("forward_euler");
+    expect(shell.textContent).toContain(
+      "Follow the slope at the current stored approximation"
+    );
+    expect(
+      lens.querySelectorAll("[data-primary-method-formula]")
+    ).toHaveLength(1);
+    expect(lens.textContent).toContain("uₙ₊₁ = uₙ + h fₙ");
+    expect(lens.textContent).toContain("Current approximation");
+    expect(lens.textContent).toContain("Current slope");
+    expect(lens.textContent).toContain("Proposed change");
+    expect(
+      lens.querySelectorAll("[data-method-update-process] li")
+    ).toHaveLength(5);
+    expect(lens.textContent).toContain(
+      "one right-hand-side evaluation per fixed step"
+    );
+    expect(lens.textContent).toContain("no nonlinear solve");
+    expect(lens.textContent).toContain("Theoretical order");
+    expect(lens.textContent).toContain("After the solve — what to inspect");
+    expect(lens.textContent).toContain("valid enabled exact reference");
+    expect(lens.textContent).not.toMatch(/Forward Euler is unstable/i);
+
+    const diagram = lens.querySelector<HTMLElement>(
+      "[data-method-teaching-diagram='one_step']"
+    );
+    expect(diagram).not.toBeNull();
+    expect(diagram?.querySelector("figcaption")?.textContent).toContain(
+      "current slope"
+    );
+    expect(diagram?.textContent).not.toMatch(/\b\d+\.\d+\b/);
+
+    expect(
+      [...lens.querySelectorAll<HTMLElement>("[data-method-concept]")].map(
+        (concept) => concept.dataset.methodConcept
+      )
+    ).toEqual([
+      "numerical_approximation",
+      "current_slope",
+      "fixed_step_grid",
+      "exact_reference",
+      "refinement_observed_order",
+      "stability_accuracy",
+    ]);
+    mounted.dispose();
+  });
+
+  it("makes Backward Euler's unknown endpoint, predictor, residual, and Newton boundary explicit", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const mounted = mountOdeApp({
+      target,
+      initialSession: createBeginnerStarterSession(),
+    });
+
+    await selectMethod(target, "Backward Euler");
+    const lens = selectedDeepLens(target);
+    expect(lens.dataset.selectedMethodDeepLens).toBe("backward_euler");
+    expect(lens.textContent).toContain("new endpoint");
+    expect(lens.textContent).toContain("Unknown endpoint value");
+    expect(lens.textContent).toContain("Forward Euler prediction");
+    expect(lens.textContent).toContain("starting guess");
+    expect(lens.textContent).toContain("UI-default Newton");
+    expect(lens.textContent).toContain("controlled nonlinear-solve failure");
+    expect(lens.textContent).toContain("A-stable for the scalar test equation");
+    expect(lens.textContent).toContain(
+      "Nonlinear convergence, absolute stability, and approximation accuracy are separate questions"
+    );
+    expect(lens.textContent).not.toMatch(/best stiff solver|always stable/i);
+    expect(
+      [...lens.querySelectorAll<HTMLElement>("[data-supporting-method-formula]")].map(
+        (formula) => formula.dataset.supportingMethodFormula
+      )
+    ).toEqual(["backward_euler_predictor", "backward_euler_residual"]);
+    expect(
+      lens.querySelector("[data-method-teaching-diagram='endpoint_relation']")
+    ).not.toBeNull();
+    expect(
+      lens.querySelectorAll("[data-method-update-process] li")
+    ).toHaveLength(4);
+    mounted.dispose();
+  });
+
+  it("keeps Taylor 2's derivative information internal and subordinate", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const mounted = mountOdeApp({
+      target,
+      initialSession: createBeginnerStarterSession(),
+    });
+
+    await selectMethod(target, "Taylor Method (Order 2)");
+    const lens = selectedDeepLens(target);
+    expect(lens.dataset.selectedMethodDeepLens).toBe("taylor");
+    expect(lens.textContent).toContain("learner's entered right-hand side f(t, y)");
+    expect(lens.textContent).toContain("estimates internally");
+    expect(lens.textContent).toContain("five right-hand-side evaluations");
+    expect(lens.textContent).toContain("Theoretical order");
+    expect(lens.textContent).toContain("2");
+    expect(
+      lens.querySelector("[data-supporting-method-formula='taylor_path_derivative']")
+    ).not.toBeNull();
+    expect(lens.querySelector("[data-method-teaching-diagram]")).toBeNull();
+    const details = lens.querySelector<HTMLDetailsElement>(
+      "[data-method-advanced-details]"
+    );
+    expect(details).not.toBeNull();
+    expect(details?.open).toBe(false);
+    expect(details?.textContent).toContain("Internal derivative estimates");
+    expect(details?.textContent).toContain("implementation detail");
+    expect(lens.querySelector("input, select, textarea")).toBeNull();
+    mounted.dispose();
+  });
+
+  it("teaches RK4 as four temporary slope stages followed by one weighted accepted update", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const mounted = mountOdeApp({
+      target,
+      initialSession: createBeginnerStarterSession(),
+    });
+
+    await selectMethod(target, "Runge-Kutta 4");
+    const shell = selectedShell(target);
+    const lens = selectedDeepLens(target);
+    expect(lens.dataset.selectedMethodDeepLens).toBe("rk4");
+    expect(shell.textContent).toContain("Sample four slopes inside one time step");
+    expect(lens.textContent).toContain("four right-hand-side evaluations");
+    expect(lens.textContent).toContain("Theoretical order");
+    expect(lens.textContent).toContain("4");
+    expect(lens.textContent).toContain("smooth problems");
+    expect(lens.textContent).toContain("not accepted solution points");
+    expect(lens.textContent).not.toMatch(/always (more accurate|better|more efficient)/i);
+    expect(
+      [...lens.querySelectorAll<HTMLElement>("[data-supporting-method-formula]")].map(
+        (formula) => formula.dataset.supportingMethodFormula
+      )
+    ).toEqual(["rk4_k1", "rk4_k2", "rk4_k3", "rk4_k4"]);
+    expect(
+      lens.querySelectorAll("[data-method-update-process] li")
+    ).toHaveLength(5);
+    const diagram = lens.querySelector<HTMLElement>(
+      "[data-method-teaching-diagram='stage_path']"
+    );
+    expect(diagram).not.toBeNull();
+    expect(
+      [...(diagram?.querySelectorAll<HTMLElement>("[data-diagram-step]") ?? [])].map(
+        (step) => step.dataset.diagramStep
+      )
+    ).toEqual(["k1", "k2", "k3", "k4", "weighted_update"]);
+    expect(diagram?.textContent).toContain("Temporary slope");
+    expect(diagram?.textContent).toContain("One accepted next approximation");
+    mounted.dispose();
+  });
+
+  it("replaces one deep lens on selection while keeping history and Leap-Frog at the shallow Phase 2 boundary", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const mounted = mountOdeApp({
+      target,
+      initialSession: createBeginnerStarterSession(),
+    });
+
+    for (const [name, family] of [
+      ["Forward Euler", "forward_euler"],
+      ["Backward Euler", "backward_euler"],
+      ["Taylor Method (Order 2)", "taylor"],
+      ["Runge-Kutta 4", "rk4"],
+    ] as const) {
+      await selectMethod(target, name);
+      const lenses = target.querySelectorAll<HTMLElement>(
+        "[data-selected-method-deep-lens]"
+      );
+      expect(lenses).toHaveLength(1);
+      expect(lenses[0]?.dataset.selectedMethodDeepLens).toBe(family);
+    }
+
+    for (const name of [
+      "Adams-Bashforth",
+      "Adams-Moulton",
+      "Backward Differentiation Formula",
+      "Leap-Frog",
+    ]) {
+      await selectMethod(target, name);
+      const shell = selectedShell(target);
+      expect(shell.querySelector("[data-selected-method-deep-lens]")).toBeNull();
+      expect(shell.querySelector("[data-selected-method-concepts]")).toBeNull();
+      expect(shell.querySelector("[data-selected-method-after-solve]")).toBeNull();
+      expect(shell.textContent).toContain(
+        "A deeper guided walkthrough is not included for this method yet"
+      );
+    }
+
+    const landscape = target.querySelector<HTMLElement>(
+      "[data-ode-method-landscape]"
+    )!;
+    expect(landscape.querySelectorAll("[data-method-family]")).toHaveLength(8);
+    expect(landscape.querySelector("[data-primary-method-formula]")).toBeNull();
+    expect(landscape.querySelector("[data-method-update-process]")).toBeNull();
+    expect(landscape.querySelector("[data-method-concept]")).toBeNull();
+    mounted.dispose();
+  });
+
+  it("keeps deep teaching inside the generalized inset with one primary formula owner and no governance content", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const mounted = mountOdeApp({
+      target,
+      initialSession: createBeginnerStarterSession(),
+    });
+
+    await selectMethod(target, "Runge-Kutta 4");
+    const shell = selectedShell(target);
+    const content = shell.querySelector<HTMLElement>(
+      "[data-selected-method-content]"
+    )!;
+    const lens = selectedDeepLens(target);
+    expect(content.contains(lens)).toBe(true);
+    expect(shell.children).toHaveLength(1);
+    expect(lens.querySelectorAll("[data-primary-method-formula]")).toHaveLength(1);
+    const primaryFormula = lens.querySelector<HTMLElement>(
+      "[data-primary-method-formula]"
+    )!;
+    expect(
+      primaryFormula.matches("[role='math']") ||
+        primaryFormula.querySelectorAll("[role='math']").length === 1
+    ).toBe(true);
+    expect(lens.querySelector("figure figcaption")).not.toBeNull();
+    expect(lens.querySelectorAll("h3").length).toBeGreaterThan(3);
+    expect(
+      lens.querySelector("[data-method-advanced-details] h4")
+    ).not.toBeNull();
+    expect(target.querySelectorAll("h1")).toHaveLength(1);
+    const dom = shell.innerHTML;
+    for (const marker of [
+      "sourcePaths",
+      "authorityIds",
+      "claimStatus",
+      "ready_for_independent_audit",
+      "source_backed_qualified",
+      "packages/",
+      "frontend/src/",
+      ".test.ts",
+      "Maintainer",
+      "Codex",
+      "Cursor",
+    ]) {
+      expect(dom).not.toContain(marker);
+    }
+    expect(shell.textContent).not.toMatch(/final approximation:\s*[-+]?\d/i);
+    expect(shell.textContent).not.toMatch(/observed order(?: is|:)\s*\d/i);
+    mounted.dispose();
   });
 });

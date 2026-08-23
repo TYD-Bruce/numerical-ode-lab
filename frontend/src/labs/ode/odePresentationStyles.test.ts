@@ -54,4 +54,22 @@ describe("ODE selected-method presentation ownership", () => {
     expect(contentRule).toContain("padding:");
     expect(contentRule).not.toContain("border-inline-start");
   });
+
+  it("keeps Phase 3 teaching under the inset with local math containment and authored mobile flow", () => {
+    const lens = rule(".ode-selected-teaching-lens");
+    const primaryMath = rule(".ode-method-primary-math");
+    const supportingMath = rule(".ode-method-supporting-formula-math");
+
+    expect(lens).toContain("display: grid");
+    expect(lens).toContain("min-width: 0");
+    expect(lens).not.toContain("border-inline-start");
+    expect(primaryMath).toContain("background: var(--lab-surface-inset)");
+    expect(supportingMath).toContain("overflow-x: auto");
+    expect(styles).toMatch(
+      /@media \(max-width: 640px\)[\s\S]*?\.ode-method-diagram-track\s*\{[\s\S]*?flex-direction:\s*column;/
+    );
+    expect(`${lens}${primaryMath}${supportingMath}`).not.toContain(
+      "var(--space-5)"
+    );
+  });
 });

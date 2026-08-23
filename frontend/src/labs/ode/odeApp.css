@@ -377,7 +377,7 @@
 
 .ode-method-choice-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.14fr) minmax(19rem, 0.86fr);
+  grid-template-columns: minmax(20rem, 0.9fr) minmax(26rem, 1.1fr);
   gap: clamp(var(--lab-space-block), 4vw, var(--lab-space-section));
   align-items: start;
 }
@@ -524,7 +524,8 @@
 
 .ode-selected-core-idea {
   color: var(--text);
-  font-size: 1.02rem;
+  font-size: 1.08rem;
+  line-height: 1.55;
 }
 
 .ode-selected-method-metadata {
@@ -560,6 +561,344 @@
   padding: var(--space-3);
   border-block: 1px solid var(--lab-border-quiet);
   background: var(--lab-surface-inset);
+}
+
+.ode-selected-teaching-lens {
+  display: grid;
+  gap: var(--lab-space-block);
+  min-width: 0;
+  margin-top: var(--space-2);
+}
+
+.ode-selected-teaching-lens > *,
+.ode-method-explanation-layout > *,
+.ode-method-practical-facts-grid > *,
+.ode-method-interpretation-rows > *,
+.ode-method-concept-list > *,
+.ode-method-after-solve-list > * {
+  min-width: 0;
+}
+
+.ode-selected-teaching-lens h3,
+.ode-selected-teaching-lens h4,
+.ode-selected-teaching-lens p,
+.ode-selected-teaching-lens dl,
+.ode-selected-teaching-lens ol,
+.ode-selected-teaching-lens ul,
+.ode-selected-teaching-lens figure {
+  margin-block: 0;
+}
+
+.ode-selected-teaching-lens h3 {
+  font-size: var(--lab-type-section-title-size);
+  line-height: var(--lab-type-section-title-line);
+}
+
+.ode-selected-teaching-lens h4 {
+  font-size: var(--lab-type-supporting-size);
+  line-height: 1.35;
+}
+
+.ode-method-teaching-label,
+.ode-method-diagram-step-label,
+.ode-method-supporting-formula-title {
+  color: var(--lab-stage-method-foreground);
+  font-family: var(--lab-font-technical);
+  font-size: var(--lab-type-metadata-size);
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ode-method-primary-math {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-6);
+  border-block: 1px solid var(--lab-stage-method-border);
+  background: var(--lab-surface-inset);
+}
+
+.ode-method-primary-math > h3 {
+  font-size: clamp(1.15rem, 2vw, 1.35rem);
+}
+
+.ode-method-primary-formula {
+  padding: var(--space-4) 0;
+  background: transparent;
+  font-size: clamp(1.08rem, 2.1vw, 1.32rem);
+}
+
+.ode-method-formula-verbalization,
+.ode-method-section-lead,
+.ode-method-diagram figcaption {
+  color: var(--muted);
+  font-size: var(--lab-type-supporting-size);
+  line-height: 1.55;
+}
+
+.ode-method-diagram {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+  padding-block: var(--space-4);
+  border-block: 1px solid var(--lab-border-quiet);
+}
+
+.ode-method-diagram-title {
+  color: var(--text);
+  font-weight: 750;
+}
+
+.ode-method-diagram-track {
+  display: flex;
+  gap: var(--space-2);
+  align-items: stretch;
+  min-width: 0;
+}
+
+.ode-method-diagram-step {
+  display: grid;
+  flex: 1 1 0;
+  gap: var(--space-1);
+  min-width: 0;
+  padding: var(--space-3) var(--space-2);
+  border-top: var(--space-1) solid var(--lab-stage-method-accent);
+  background: color-mix(
+    in srgb,
+    var(--lab-stage-method-surface) 58%,
+    transparent
+  );
+}
+
+.ode-method-diagram-step strong {
+  font-size: var(--lab-type-supporting-size);
+  line-height: 1.3;
+}
+
+.ode-method-diagram-step-detail {
+  color: var(--muted);
+  font-size: var(--lab-type-metadata-size);
+  line-height: 1.4;
+}
+
+.ode-method-diagram-connector {
+  align-self: center;
+  color: var(--lab-stage-method-foreground);
+  font-family: var(--lab-font-technical);
+  font-weight: 800;
+}
+
+.ode-method-supporting-math,
+.ode-method-formula-anatomy,
+.ode-method-update,
+.ode-method-practical-facts,
+.ode-method-interpretation,
+.ode-selected-method-concepts,
+.ode-selected-method-after-solve {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.ode-method-supporting-math-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.ode-method-supporting-formula {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--lab-border-quiet);
+}
+
+.ode-method-supporting-formula-math {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-block: var(--space-2);
+  color: var(--text);
+  font-family: var(--lab-font-technical);
+  font-size: 0.96rem;
+}
+
+.ode-method-explanation-layout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--lab-space-block);
+  min-width: 0;
+  padding-top: var(--space-2);
+}
+
+.ode-method-formula-anatomy dl,
+.ode-method-concept-list,
+.ode-method-after-solve-list {
+  display: grid;
+  gap: 0;
+}
+
+.ode-method-formula-anatomy dl > div,
+.ode-method-concept-list > div,
+.ode-method-after-solve-list > div {
+  padding-block: var(--space-3);
+  border-top: 1px solid var(--lab-border-quiet);
+}
+
+.ode-method-formula-anatomy dt,
+.ode-method-formula-anatomy dd,
+.ode-method-concept-list dt,
+.ode-method-concept-list dd,
+.ode-method-after-solve-list dt,
+.ode-method-after-solve-list dd {
+  margin: 0;
+}
+
+.ode-method-formula-anatomy dt,
+.ode-method-concept-list dt,
+.ode-method-after-solve-list dt {
+  color: var(--text);
+  font-weight: 750;
+}
+
+.ode-method-formula-anatomy dd,
+.ode-method-concept-list dd,
+.ode-method-after-solve-list dd {
+  margin-top: var(--space-1);
+  color: var(--muted);
+  font-size: var(--lab-type-supporting-size);
+  line-height: 1.5;
+}
+
+.ode-method-update ol {
+  display: grid;
+  gap: var(--space-2);
+  padding: 0;
+  list-style: none;
+  counter-reset: ode-method-step;
+}
+
+.ode-method-update li {
+  display: grid;
+  grid-template-columns: 1.8rem minmax(0, 1fr);
+  gap: var(--space-2);
+  align-items: start;
+  counter-increment: ode-method-step;
+  color: var(--muted);
+  font-size: var(--lab-type-supporting-size);
+  line-height: 1.5;
+}
+
+.ode-method-update li::before {
+  display: grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border: 1px solid var(--lab-stage-method-border);
+  border-radius: 50%;
+  color: var(--lab-stage-method-foreground);
+  content: counter(ode-method-step);
+  font-family: var(--lab-font-technical);
+  font-size: var(--lab-type-metadata-size);
+  font-weight: 750;
+}
+
+.ode-method-practical-facts,
+.ode-method-interpretation,
+.ode-selected-method-concepts,
+.ode-selected-method-after-solve {
+  padding-top: var(--lab-space-block);
+  border-top: 1px solid var(--lab-border-standard);
+}
+
+.ode-method-practical-facts-grid,
+.ode-method-interpretation-rows,
+.ode-method-concept-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 var(--lab-space-block);
+}
+
+.ode-method-practical-facts-grid > div,
+.ode-method-interpretation-rows > div {
+  padding-block: var(--space-3);
+  border-top: 1px solid var(--lab-border-quiet);
+}
+
+.ode-method-practical-facts-grid p,
+.ode-method-practical-facts-grid ul,
+.ode-method-interpretation-rows p {
+  margin-top: var(--space-2);
+  color: var(--muted);
+  font-size: var(--lab-type-supporting-size);
+  line-height: 1.5;
+}
+
+.ode-method-practical-facts-grid ul {
+  display: grid;
+  gap: var(--space-1);
+  padding-inline-start: var(--space-4);
+}
+
+.ode-method-misconception {
+  grid-column: 1 / -1;
+  padding-inline-start: var(--space-3);
+  border-inline-start: var(--space-1) solid var(--lab-stage-method-accent);
+}
+
+.ode-method-misconception-incorrect {
+  color: var(--text) !important;
+  font-weight: 650;
+}
+
+.ode-method-advanced-details {
+  border: 1px solid var(--lab-border-quiet);
+  border-radius: var(--lab-radius-compact);
+  background: color-mix(
+    in srgb,
+    var(--lab-surface-inset) 62%,
+    transparent
+  );
+}
+
+.ode-method-advanced-details > summary {
+  padding: var(--space-3) var(--space-4);
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.ode-method-advanced-details > summary:focus-visible {
+  outline: var(--lab-focus-ring-width) solid var(--lab-focus-ring-color);
+  outline-offset: var(--lab-focus-ring-offset);
+}
+
+.ode-method-advanced-details-body {
+  display: grid;
+  gap: var(--space-3);
+  padding: 0 var(--space-4) var(--space-4);
+}
+
+.ode-method-advanced-details-body section {
+  display: grid;
+  gap: var(--space-2);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--lab-border-quiet);
+}
+
+.ode-method-advanced-details-body p {
+  color: var(--muted);
+  font-size: var(--lab-type-supporting-size);
+  line-height: 1.5;
+}
+
+.ode-selected-method-after-solve {
+  padding: var(--lab-space-block);
+  border: 1px solid var(--lab-stage-output-border);
+  background: var(--lab-stage-output-surface);
 }
 
 .ode-selected-availability,
@@ -1292,8 +1631,24 @@
 @media (max-width: 640px) {
   .ode-problem-examples,
   .ode-problem-roles,
-  .ode-selected-method-metadata {
+  .ode-selected-method-metadata,
+  .ode-method-explanation-layout,
+  .ode-method-practical-facts-grid,
+  .ode-method-interpretation-rows,
+  .ode-method-concept-list {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ode-method-diagram-track {
+    flex-direction: column;
+  }
+
+  .ode-method-diagram-connector {
+    transform: rotate(90deg);
+  }
+
+  .ode-method-misconception {
+    grid-column: 1;
   }
 
   .ode-problem-roles > div:nth-last-child(2) {
@@ -1363,6 +1718,8 @@
   .ode-problem-example,
   .ode-second-order-boundary,
   .ode-selected-method-content,
+  .ode-method-primary-math,
+  .ode-selected-method-after-solve,
   .ode-method-data-transition {
     padding-inline: var(--space-3);
   }
@@ -1387,7 +1744,10 @@
   .ode-second-order-boundary,
   .ode-selected-method-shell,
   .ode-method-data-transition,
-  .ode-selected-method-formula {
+  .ode-selected-method-formula,
+  .ode-method-diagram-step,
+  .ode-method-advanced-details,
+  .ode-selected-method-after-solve {
     border-color: CanvasText;
     background: Canvas;
     color: CanvasText;

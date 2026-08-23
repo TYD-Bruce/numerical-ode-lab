@@ -216,6 +216,44 @@ describe("pure ODE method teaching derivation", () => {
     expect(profileText("backward_euler")).toContain("scalar test equation");
   });
 
+  it("projects only the approved static diagrams and closed supporting formulas", () => {
+    const forwardEuler = profile("forward_euler");
+    expect(forwardEuler.staticDiagram?.kind).toBe("one_step");
+    expect(forwardEuler.supportingFormulas).toEqual([]);
+
+    const backwardEuler = profile("backward_euler");
+    expect(backwardEuler.staticDiagram?.kind).toBe("endpoint_relation");
+    expect(backwardEuler.supportingFormulas.map((formula) => formula.id)).toEqual([
+      "backward_euler_predictor",
+      "backward_euler_residual",
+    ]);
+
+    const taylor = profile("taylor");
+    expect(taylor.staticDiagram).toBeUndefined();
+    expect(taylor.supportingFormulas.map((formula) => formula.id)).toEqual([
+      "taylor_path_derivative",
+    ]);
+
+    const rk4 = profile("rk4");
+    expect(rk4.staticDiagram?.kind).toBe("stage_path");
+    expect(rk4.supportingFormulas.map((formula) => formula.id)).toEqual([
+      "rk4_k1",
+      "rk4_k2",
+      "rk4_k3",
+      "rk4_k4",
+    ]);
+
+    for (const family of [
+      "adams_bashforth",
+      "adams_moulton",
+      "bdf",
+      "leapfrog",
+    ] as const) {
+      expect(profile(family).staticDiagram).toBeUndefined();
+      expect(profile(family).supportingFormulas).toEqual([]);
+    }
+  });
+
   it("uses only the closed safe readonly formula authority", () => {
     for (const entry of METHOD_CATALOG) {
       const selected = profile(entry.family);
