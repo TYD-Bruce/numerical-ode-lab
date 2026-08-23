@@ -4,11 +4,11 @@ const { handleChatRequest } = vi.hoisted(() => ({
   handleChatRequest: vi.fn(),
 }));
 
-vi.mock("@numerical-t-lab/backend/chat-handler", () => ({
+vi.mock("./chatHandler.js", () => ({
   handleChatRequest,
 }));
 
-import handler from "./chat";
+import handler from "../../../api/chat.js";
 
 function responseDouble() {
   const response = {

@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import {
   handleChatRequest,
   type ChatHandlerBody,
-} from "@numerical-t-lab/backend/chat-handler";
+} from "../backend/src/ai/chatHandler.js";
 
 export default async function handler(
   req: VercelRequest,

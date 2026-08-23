@@ -94,8 +94,17 @@ for (const [owner, directory] of sourceRoots) {
 
 const apiAdapter = resolve(repoRoot, "api/chat.ts");
 const adapterImports = importsFrom(await readFile(apiAdapter, "utf8"));
-if (!adapterImports.includes("@numerical-t-lab/backend/chat-handler")) {
-  violations.push("api/chat.ts must delegate to @numerical-t-lab/backend/chat-handler");
+const backendHandlerSpecifier = "../backend/src/ai/chatHandler.js";
+const backendImplementationImports = adapterImports.filter(
+  (specifier) => specifier.startsWith("../backend/"),
+);
+if (
+  backendImplementationImports.length !== 1 ||
+  backendImplementationImports[0] !== backendHandlerSpecifier
+) {
+  violations.push(
+    `api/chat.ts must delegate only to ${backendHandlerSpecifier}`,
+  );
 }
 if (adapterImports.some((specifier) => specifier.startsWith("@numerical-t-lab/frontend"))) {
   violations.push("api/chat.ts must not import frontend implementation");
