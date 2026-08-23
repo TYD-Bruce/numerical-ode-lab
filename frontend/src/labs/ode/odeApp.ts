@@ -151,6 +151,10 @@ import {
   hasCompleteMethodTeachingLens,
   renderOdeMethodTeachingLens,
 } from "./odeMethodTeachingView";
+import {
+  createOdeReturnToAnchor,
+  type MountedOdeReturnToAnchor,
+} from "./odeReturnToAnchor";
 import "./odeApp.css";
 
 runCoefficientValidation();
@@ -272,6 +276,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     options.initialSession.output.single?.firstOrderRun ?? null;
   let convergenceStates = options.initialSession.convergenceByFingerprint;
   let activeConvergenceView: ConvergenceStudyViewHandle | null = null;
+  let activeMethodReturn: MountedOdeReturnToAnchor | null = null;
   let lastMeaningfulInteraction: number | undefined;
   let activeResetDialog: HTMLElement | null = null;
   let resetTrigger: HTMLElement | null = null;
@@ -298,6 +303,11 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     lastFirstOrderRunSnapshot = next.output.single?.firstOrderRun ?? null;
     convergenceStates = next.convergenceByFingerprint;
     lastMeaningfulInteraction = undefined;
+  }
+
+  function disposeMethodReturn(): void {
+    activeMethodReturn?.dispose();
+    activeMethodReturn = null;
   }
 
   function applyTutorChartInstruction(instruction: ChartInstruction): void {
@@ -1013,6 +1023,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       disposeExpressionUi();
       disposeConvergenceUi();
       disposePrimaryChart();
+      disposeMethodReturn();
       disposeWorkflowNavigation(
         app.querySelector<HTMLElement>("[data-workflow-navigation]")
       );
@@ -1148,6 +1159,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       });
       renderContextLede(shell, glossaryRender);
       app.append(shell);
+      activeMethodReturn?.refresh();
       glossaryRender.commitImmediateScopes();
       if (!outputMountPending) glossaryRender.commitOutputScope();
       if (isCurrentGeneration(generation)) emitSessionUpdate();
@@ -1339,6 +1351,9 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
     eyebrow.className = "ode-method-eyebrow";
     eyebrow.textContent = "The method landscape";
     const heading = document.createElement("h2");
+    heading.id = "ode-method-landscape-heading";
+    heading.tabIndex = -1;
+    heading.dataset.methodLandscapeHeading = "true";
     heading.textContent = "See how the methods relate";
     const lead = document.createElement("p");
     lead.className = "ode-method-landscape-lead";
@@ -1616,19 +1631,29 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
 
     const opening = document.createElement("div");
     opening.className = "choose-panel ode-method-opening";
-    const choice = document.createElement("div");
-    choice.className = "ode-method-choice-layout";
-    choice.append(renderMethodLandscape(glossaryRender));
+    const landscape = renderMethodLandscape(glossaryRender);
+    opening.append(renderProblemFoundation(), landscape);
     if (selected) {
       const lens = document.createElement("div");
       lens.className = "ode-method-lens-column";
+      lens.dataset.methodLensColumn = "true";
       lens.append(
         renderSelectedMethodShell(selected),
         renderDataTransition(selected)
       );
-      choice.append(lens);
+      const landscapeHeading = landscape.querySelector<HTMLElement>(
+        "[data-method-landscape-heading]"
+      );
+      if (!landscapeHeading) {
+        throw new Error("The ODE method landscape requires a return target.");
+      }
+      activeMethodReturn = createOdeReturnToAnchor({
+        target: landscapeHeading,
+        visibilityAnchor: landscape,
+        accessibleName: "Back to method selection",
+      });
+      opening.append(activeMethodReturn.element, lens);
     }
-    opening.append(renderProblemFoundation(), choice);
     if (selectionAnnouncement) {
       const status = document.createElement("p");
       status.className = "sr-only";
@@ -3610,6 +3635,7 @@ export function mountOdeApp(options: MountOdeAppOptions): MountedOdeApp {
       disposeExpressionUi();
       disposeConvergenceUi();
       disposePrimaryChart();
+      disposeMethodReturn();
       disposeWorkflowNavigation(
         app.querySelector<HTMLElement>("[data-workflow-navigation]")
       );

@@ -232,6 +232,8 @@
 }
 
 .ode-method-opening {
+  display: flex;
+  flex-direction: column;
   gap: clamp(var(--lab-space-section), 5vw, var(--lab-space-stage));
 }
 
@@ -375,16 +377,11 @@
   font-size: var(--lab-type-supporting-size);
 }
 
-.ode-method-choice-layout {
-  display: grid;
-  grid-template-columns: minmax(20rem, 0.9fr) minmax(26rem, 1.1fr);
-  gap: clamp(var(--lab-space-block), 4vw, var(--lab-space-section));
-  align-items: start;
-}
-
 .ode-method-landscape {
   display: grid;
   gap: var(--space-3);
+  padding-bottom: var(--lab-space-section);
+  border-bottom: 1px solid var(--lab-border-standard);
 }
 
 .ode-method-groups {
@@ -421,9 +418,14 @@
   display: grid;
   grid-column: 2;
   grid-row: 1 / span 2;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
   gap: var(--space-2);
   min-width: 0;
+}
+
+.ode-method-group[data-method-group="second_order_staggered"]
+  .ode-method-options {
+  grid-template-columns: minmax(0, 18rem);
 }
 
 .ode-read-selected-method {
@@ -494,7 +496,29 @@
 .ode-method-lens-column {
   display: grid;
   gap: var(--space-3);
+  width: 100%;
+  max-width: 72rem;
   min-width: 0;
+  margin-inline: auto;
+}
+
+.ode-return-to-method-selection {
+  position: fixed;
+  z-index: 10;
+  inset-inline-end: clamp(var(--space-3), 3vw, var(--space-6));
+  inset-block-end: clamp(var(--space-3), 3vw, var(--space-6));
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+  border-color: var(--lab-action-secondary-border);
+  border-radius: var(--lab-radius-compact);
+  background: var(--lab-surface-elevated);
+  color: var(--text);
+  box-shadow: none;
+  font-size: var(--lab-type-supporting-size);
+}
+
+.ode-return-to-method-selection[hidden] {
+  display: none;
 }
 
 .ode-selected-method-shell {
@@ -523,6 +547,7 @@
 }
 
 .ode-selected-core-idea {
+  max-width: var(--lab-readable-measure);
   color: var(--text);
   font-size: 1.08rem;
   line-height: 1.55;
@@ -711,7 +736,7 @@
 }
 
 .ode-method-diagram-predictor_corrector .ode-method-diagram-branches {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   width: 100%;
 }
 
@@ -1663,8 +1688,7 @@
 }
 
 @media (max-width: 60rem) {
-  .ode-problem-foundation-body,
-  .ode-method-choice-layout {
+  .ode-problem-foundation-body {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -1672,9 +1696,6 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .ode-method-lens-column {
-    max-width: var(--lab-readable-measure);
-  }
 }
 
 @media (max-width: 640px) {
@@ -1734,6 +1755,11 @@
     margin-top: var(--space-2);
   }
 
+  .ode-method-group[data-method-group="second_order_staggered"]
+    .ode-method-options {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .ode-read-selected-method {
     display: inline-flex;
     grid-column: 1;
@@ -1747,6 +1773,12 @@
   .ode-method-data-transition .btn,
   .ode-compare-entry .btn {
     width: 100%;
+  }
+
+  .ode-return-to-method-selection {
+    inset-inline-end: var(--space-3);
+    inset-block-end: var(--space-3);
+    max-width: calc(100vw - (2 * var(--space-3)));
   }
 
   .new-experiment-actions {
@@ -1786,6 +1818,10 @@
   .ode-method-data-transition {
     padding-inline: var(--space-3);
   }
+
+  .ode-return-to-method-selection {
+    padding-inline: var(--space-2);
+  }
 }
 
 @media (forced-colors: active) {
@@ -1814,6 +1850,12 @@
     border-color: CanvasText;
     background: Canvas;
     color: CanvasText;
+  }
+
+  .ode-return-to-method-selection {
+    border-color: ButtonText;
+    background: ButtonFace;
+    color: ButtonText;
   }
 
   .card.is-selected,

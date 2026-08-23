@@ -214,6 +214,151 @@ describe("ODE Phase 2 Method opening", () => {
     mounted.dispose();
   });
 
+  it("stacks one complete landscape before one selected lens and the sole Data transition", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const mounted = mountOdeApp({
+      target,
+      initialSession: createBeginnerStarterSession(),
+    });
+
+    const opening = target.querySelector<HTMLElement>(".ode-method-opening")!;
+    const landscape = opening.querySelector<HTMLElement>(
+      "[data-ode-method-landscape]"
+    )!;
+    const lensColumn = opening.querySelector<HTMLElement>(
+      "[data-method-lens-column]"
+    )!;
+    const shell = lensColumn.querySelector<HTMLElement>(
+      "[data-selected-method-shell]"
+    )!;
+    const transition = lensColumn.querySelector<HTMLElement>(
+      "[data-method-data-transition]"
+    )!;
+
+    expect(opening.querySelector(".ode-method-choice-layout")).toBeNull();
+    expect(opening.querySelectorAll("[data-ode-method-landscape]")).toHaveLength(1);
+    expect(opening.querySelectorAll("[data-selected-method-shell]")).toHaveLength(1);
+    expect(landscape.parentElement).toBe(opening);
+    expect(lensColumn.parentElement).toBe(opening);
+    expect(
+      landscape.compareDocumentPosition(lensColumn) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(
+      shell.compareDocumentPosition(transition) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(landscape.querySelectorAll("[data-method-family]")).toHaveLength(8);
+    expect(landscape.querySelector("[data-compare]")).not.toBeNull();
+    expect(transition.querySelectorAll("[data-continue-data]")).toHaveLength(1);
+    expect(opening.querySelectorAll("[data-continue-data]")).toHaveLength(1);
+
+    await selectMethod(target, "Adams-Moulton");
+    expect(target.querySelectorAll("[data-selected-method-shell]")).toHaveLength(1);
+    expect(selectedDeepLens(target).dataset.selectedMethodDeepLens).toBe(
+      "adams_moulton"
+    );
+    expect(
+      target.querySelector("[data-method-teaching-diagram='predictor_corrector']")
+    ).not.toBeNull();
+
+    mounted.dispose();
+  });
+
+  it("returns from deep teaching to the connected landscape without changing product state", async () => {
+    const { mountOdeApp } = await import("./odeApp");
+    const target = document.createElement("div");
+    document.body.append(target);
+    const starter = createBeginnerStarterSession();
+    const recordMeaningfulInteraction = vi.fn();
+    const mounted = mountOdeApp({
+      target,
+      initialSession: {
+        ...starter,
+        methodOrders: Object.freeze({
+          ...starter.methodOrders,
+          adams_bashforth: 7,
+          adams_moulton: 6,
+          bdf: 5,
+        }),
+      },
+      lifecycle: {
+        updateSession: vi.fn(),
+        recordMeaningfulInteraction,
+        applyConfirmedReset: vi.fn(),
+      },
+    });
+
+    const landscape = target.querySelector<HTMLElement>(
+      "[data-ode-method-landscape]"
+    )!;
+    const heading = landscape.querySelector<HTMLElement>(
+      "[data-method-landscape-heading]"
+    )!;
+    const scrollIntoView = vi.fn();
+    Object.defineProperty(heading, "scrollIntoView", {
+      configurable: true,
+      value: scrollIntoView,
+    });
+    vi.spyOn(landscape, "getBoundingClientRect").mockReturnValue({
+      x: 0,
+      y: -900,
+      width: 900,
+      height: 800,
+      top: -900,
+      right: 900,
+      bottom: -100,
+      left: 0,
+      toJSON: () => ({}),
+    });
+    Object.defineProperty(window, "scrollY", {
+      configurable: true,
+      value: 1200,
+    });
+
+    const control = target.querySelector<HTMLButtonElement>(
+      "[data-return-method-selection]"
+    )!;
+    expect(control).toBeInstanceOf(HTMLButtonElement);
+    expect(control.type).toBe("button");
+    expect(control.getAttribute("aria-label")).toBe(
+      "Back to method selection"
+    );
+    expect(control.getAttribute("aria-controls")).toBe(heading.id);
+    window.dispatchEvent(new Event("scroll"));
+    expect(control.hidden).toBe(false);
+
+    const before = mounted.getSession();
+    control.click();
+    expect(scrollIntoView).toHaveBeenCalledWith({
+      behavior: "auto",
+      block: "start",
+    });
+    expect(document.activeElement).toBe(heading);
+    expect(mounted.getSession()).toEqual(before);
+    expect(mounted.getSession().step).toBe("choose");
+    expect(mounted.getSession().selectedMethod).toEqual({
+      family: "forward_euler",
+    });
+    expect(mounted.getSession().methodOrders).toMatchObject({
+      adams_bashforth: 7,
+      adams_moulton: 6,
+      bdf: 5,
+    });
+    expect(mounted.getSession().output).toEqual({});
+    expect(recordMeaningfulInteraction).not.toHaveBeenCalled();
+
+    await selectMethod(target, "Backward Differentiation Formula");
+    expect(target.querySelectorAll("[data-return-method-selection]")).toHaveLength(1);
+    expect(mounted.getSession().selectedMethod).toEqual({
+      family: "bdf",
+      order: 5,
+    });
+    mounted.dispose();
+    expect(target.querySelector("[data-return-method-selection]")).toBeNull();
+  });
+
   it("keeps real selection on Method with connected focus, no scroll, and one polite update", async () => {
     const { mountOdeApp } = await import("./odeApp");
     const target = document.createElement("div");

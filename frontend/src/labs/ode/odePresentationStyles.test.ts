@@ -43,6 +43,23 @@ describe("ODE presentation typography", () => {
 });
 
 describe("ODE selected-method presentation ownership", () => {
+  it("uses one vertical Method composition and a controlled editorial lens width", () => {
+    const opening = rule(".ode-method-opening");
+    const landscape = rule(".ode-method-landscape");
+    const lensColumn = rule(".ode-method-lens-column");
+    const returnControl = rule(".ode-return-to-method-selection");
+
+    expect(opening).toContain("flex-direction: column");
+    expect(styles).not.toContain(".ode-method-choice-layout");
+    expect(landscape).toContain("border-bottom:");
+    expect(lensColumn).toContain("width: 100%");
+    expect(lensColumn).toContain("max-width:");
+    expect(lensColumn).toContain("margin-inline: auto");
+    expect(returnControl).toContain("position: fixed");
+    expect(returnControl).toContain("box-shadow: none");
+    expect(returnControl).not.toMatch(/gradient|animation/);
+  });
+
   it("keeps the selected rail on the shell and one generalized inset on its content", () => {
     const shellRailRule = styles.match(
       /\.ode-selected-method-shell\s*\{[^}]*border-inline-start:[^}]*\}/
@@ -59,6 +76,9 @@ describe("ODE selected-method presentation ownership", () => {
     const lens = rule(".ode-selected-teaching-lens");
     const primaryMath = rule(".ode-method-primary-math");
     const supportingMath = rule(".ode-method-supporting-formula-math");
+    const predictorBranches = rule(
+      ".ode-method-diagram-predictor_corrector .ode-method-diagram-branches"
+    );
 
     expect(lens).toContain("display: grid");
     expect(lens).toContain("min-width: 0");
@@ -74,9 +94,10 @@ describe("ODE selected-method presentation ownership", () => {
     expect(styles).toMatch(
       /\.ode-method-diagram-predictor_corrector \.ode-method-diagram-track\s*\{[\s\S]*?flex-direction:\s*column;/
     );
-    expect(styles).toMatch(
-      /\.ode-method-diagram-predictor_corrector \.ode-method-diagram-branches\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\);/
+    expect(predictorBranches).toContain(
+      "grid-template-columns: minmax(0, 1fr)"
     );
+    expect(predictorBranches).not.toContain("repeat(2");
     expect(styles).toMatch(
       /\.ode-method-diagram-solution_history \.ode-method-diagram-step\s*\{[\s\S]*?border-inline-start:/
     );
